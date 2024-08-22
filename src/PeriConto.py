@@ -69,6 +69,8 @@ COLOURS = {
         "comment"         : QtGui.QColor(155, 155, 255),
         "integer"         : QtGui.QColor(155, 155, 255),
         "string"          : QtGui.QColor(255, 200, 200, 255),
+        "selected"        : QtGui.QColor(252,248,192, 255),
+        "unselect"        : QtGui.QColor(255,255,255,255),
         }
 
 EDGE_COLOUR = {
@@ -85,7 +87,10 @@ QBRUSHES = {"is_a_subclass_of": QtGui.QBrush(COLOURS["is_a_subclass_of"]),
             "value"           : QtGui.QBrush(COLOURS["value"]),
             "comment"         : QtGui.QBrush(COLOURS["comment"]),
             "integer"         : QtGui.QBrush(COLOURS["integer"]),
-            "string"          : QtGui.QBrush(COLOURS["string"]), }
+            "string"          : QtGui.QBrush(COLOURS["string"]),
+            "selected"        : QtGui.QBrush(COLOURS["selected"]),
+            "unselect"        : QtGui.QBrush(COLOURS["unselect"])
+            }
 
 DIRECTION = {
         "is_a_subclass_of": 1,
@@ -230,6 +235,8 @@ class OntobuilderUI(QMainWindow):
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
 
+    self.DEBUGG = True
+
     roundButton(self.ui.pushLoad, "load", tooltip="load ontology")
     roundButton(self.ui.pushCreate, "plus", tooltip="create")
     roundButton(self.ui.pushVisualise, "dot_graph", tooltip="visualise ontology")
@@ -275,6 +282,7 @@ class OntobuilderUI(QMainWindow):
     self.TTLfile = None
     self.elucidations = {}
     self.selected_item = None
+    self.previously_selected_item = None
     self.root_class = None
     self.load_elucidation = True
 
@@ -316,7 +324,6 @@ class OntobuilderUI(QMainWindow):
               "add_subclass",
               "add_primitive",
               "elucidation",
-              "remove_class_link"
               ]
     elif state == "selected_primitive":
       show = ["save",
@@ -336,7 +343,7 @@ class OntobuilderUI(QMainWindow):
               "link_new_class",
               "elucidation",
               ]
-    elif state == "linked":
+    elif state == "is_linked":
       show = ["save",
               "exit",
               "add_primitive",
@@ -352,66 +359,10 @@ class OntobuilderUI(QMainWindow):
       else:
         self.gui_objects[b].show()
 
-  def __createTree(self, origin):
-    widget = self.ui.treeClass
-    widget.clear()
+  def debugging(self, *info):
+    if self.DEBUGG :
+      print("debugging", info)
 
-    rootItem = QTreeWidgetItem(widget)
-    widget.setColumnCount(1)
-    rootItem.root = origin
-    rootItem.setText(0, origin)
-    rootItem.setSelected(True)
-    rootItem.predicate = None
-    widget.addTopLevelItem(rootItem)
-    self.current_class = origin
-    tuples = self.__prepareTree(origin)
-    self.__makeTree(tuples, origin=origin, stack=[], items={origin: rootItem})
-    # self.__makeTree(origin=Literal(origin), subject_stack=[], parent=rootItem)
-    widget.show()
-    widget.expandAll()
-    self.current_subclass = origin
-    self.__ui_state("show_tree")
-
-  def __prepareTree(self, origin):
-    graph = self.CLASSES[self.current_class]
-    # print(graph.serialize(format='turtle'))
-    # print("debugging", origin)
-    tuples_plus = []
-    for subject, predicate, object_ in graph.triples((None, None, None)):
-      s = str(subject)
-      p = MYTerms[predicate]
-      o = str(object_)
-      if p not in ["value"] + PRIMITIVES:
-        tuples_plus.append((s, o, p))
-      else:
-        tuples_plus.append((o, s, p))
-    return tuples_plus
-
-  def __makeTree(self, touples, origin=[], stack=[], items={}):
-    for s, o, p in touples:
-      if (s, o, p) not in stack:
-        if s != origin:
-          if o in items:
-            # print("add %s <-- %s" % (o, s),p)
-            item = QTreeWidgetItem(items[o])
-            # print("debugging -- color",p )
-            # item.setBackground(0, COLOURS[p])
-            item.predicate = p
-            item.setForeground(0, QBRUSHES[p])
-            stack.append((s, o, p))
-            item.setText(0, s)
-            items[s] = item
-            self.__makeTree(touples, origin=s, stack=stack, items=items)
-
-  def __makeSetOfAllNames(self):
-    names = set(self.class_names)
-    for g in self.CLASSES:
-      for n in self.subclass_names[g]:
-        names.add(n)
-    return names
-
-  def __extractLabelsFromCoatingOntology(self):
-    self.CoatingOntology.triples
 
   def on_pushCreate_pressed(self):
     dialog = UI_String("name for your ontology file", placeholdertext="file name extension is default")
@@ -446,6 +397,26 @@ class OntobuilderUI(QMainWindow):
 
     self.__createTree(self.root_class)
 
+  def on_textElucidation_textChanged(self):
+    # print("debugging change text")
+    if self.load_elucidation:
+      self.load_elucidation = False
+      self.ui.pushAddElucidation.hide()
+      return
+
+    self.ui.pushAddElucidation.show()
+
+  def on_pushAddElucidation_pressed(self):
+    self.load_elucidation = True
+    self.ui.pushAddElucidation.hide()
+    text_ID = self.selected_item.text(0)
+    predicate = self.selected_item.predicate
+    if self.__hasElucidation(text_ID, predicate):
+      p = self.__makePathName(text_ID)
+      d = self.ui.textElucidation.toPlainText()
+      self.elucidations[p] = d
+      pass
+
   def on_treeClass_itemPressed(self, item, column):
     self.on_treeClass_itemSelectionChanged()
 
@@ -465,35 +436,45 @@ class OntobuilderUI(QMainWindow):
       predicate = None
     # print("debugging -- ", text_ID)
     self.selected_item = item
+    self.debugging("column ", item.columnCount())
+    self.selected_item.setBackground(item.columnCount(),QBRUSHES["selected"])
+
+    if self.previously_selected_item:
+      column = self.colorCount()
+      self.debugging("column ", self.previously_selected_item.columnCount())
+      self.previously_selected_item.setBackground(column, QBRUSHES["unselect"])
+      self.previously_selected_item = self.selected_item
     # self.current_subclass = text_ID
 
     # if text_ID in self.class_names:
     if self.__isClass(text_ID):
-      # print("debugging -- is class", text_ID)
+      self.debugging("-- is class", text_ID)
       self.__ui_state("selected_class")
       if self.current_class != text_ID:
         self.__shiftClass(text_ID)
       if self.__isRoot(text_ID):
+        self.debugging("-- is root", text_ID)
         self.__ui_state("selected_root")
     elif self.__islinked(text_ID):
-      # print("debugging -- is linked", text_ID)
-      self.__ui_state("linked")
+      self.debugging("-- is linked", text_ID)
+      self.__ui_state("is_linked")
       self.current_subclass = text_ID
     elif self.__isSubClass(text_ID):
-      # print("debugging -- it is a subclass", text_ID)
+      self.debugging("-- it is a subclass", text_ID)
       self.__ui_state("selected_subclass")
       if not self.__permittedClasses():
-        # print(">> no_existing_classes")
+        self.debugging(">> no_existing_classes")
         self.__ui_state("no_existing_classes")
       else:
-        # print(">>>>selected_subclass")
+        self.debugging("--selected_subclass")
         self.__ui_state("selected_subclass")
       self.current_subclass = text_ID
     elif self.__isPrimitive(predicate):
-      # print("debugging -- is a primitive")
+      self.debugging("-- is a primitive", predicate)
       self.__ui_state("selected_primitive")
-    elif self.__isValue:
+    elif self.__isValue(predicate):
       self.__ui_state("value_selected")
+      self.debugging("-- isvalue", predicate )
     else:
       print("should not come here")
 
@@ -534,81 +515,6 @@ class OntobuilderUI(QMainWindow):
       if new_name:
         self.__renameItemInGraph(ID, new_name, predicate)
       # print("debugging -- renaming")
-
-  def __renameItemInGraph(self, ID, new_name, predicate):
-    graph = self.CLASSES[self.current_class]
-    for s, p, o in graph.triples((None, None, Literal(ID))):
-      # print("debugging -- change triple", s, p, o)
-      self.CLASSES[self.current_class].remove((s, p, o))
-      object = makeRDFCompatible(new_name)
-      self.CLASSES[self.current_class].add((s, RDFSTerms[predicate], object))
-    for s, p, o in graph.triples((Literal(ID), None, None)):
-      # print("debugging -- change triple", s, p, o)  # add to graph
-      self.CLASSES[self.current_class].remove((s, p, o))
-      subject = makeRDFCompatible(new_name)
-      self.CLASSES[self.current_class].add((subject, RDFSTerms[predicate], o))
-    self.__createTree(self.current_class)
-
-  def on_textElucidation_textChanged(self):
-    # print("debugging change text")
-    if self.load_elucidation:
-      self.load_elucidation = False
-      self.ui.pushAddElucidation.hide()
-      return
-
-    self.ui.pushAddElucidation.show()
-
-  def on_pushAddElucidation_pressed(self):
-    self.load_elucidation = True
-    self.ui.pushAddElucidation.hide()
-    text_ID = self.selected_item.text(0)
-    predicate = self.selected_item.predicate
-    if self.__hasElucidation(text_ID, predicate):
-      p = self.__makePathName(text_ID)
-      d = self.ui.textElucidation.toPlainText()
-      self.elucidations[p] = d
-      pass
-
-  def __makePathName(self, text_ID):
-    p = self.root_class
-    for i in self.class_path[1:]:
-      p = p + ".%s" % i
-    if text_ID not in p:
-      item_name = text_ID
-      p = p + ".%s" % item_name
-    return p
-
-  def __isClass(self, ID):
-    return ID in self.class_names
-
-  def __isRoot(self, ID):
-    if self.__isClass(ID):
-      return ID == self.class_names[0]
-
-
-  def __isSubClass(self, ID):
-    return (ID in self.subclass_names[self.current_class]) and \
-      (ID not in self.class_names)
-
-  def __isPrimitive(self, text_ID):
-    # print("debugging -- is primitive", text_ID)
-    return text_ID in PRIMITIVES
-
-  def __isValue(self, predicate):
-    return predicate == VALUE
-
-  def __islinked(self, ID):
-    for cl in self.link_lists:
-      for linked_class, linked_to_class, linked_to_subclass in self.link_lists[cl]:
-        if linked_to_class == self.current_class:
-          if linked_to_subclass == ID:
-            return True
-
-    return False
-
-  def __hasElucidation(self, text_ID, predicate):
-    return self.__isClass(text_ID) or self.__isSubClass(text_ID) or self.__isValue(predicate)
-
   def on_pushAddSubclass_pressed(self):
     # print("debugging -- add subclass")
 
@@ -672,21 +578,6 @@ class OntobuilderUI(QMainWindow):
     self.primitives[self.current_class][self.current_subclass].append(primitive_ID)
     print("debugging -- end of add")
 
-  def __addItemToTree(self, internal_object, predicate, internal_subject, parent_item=None):
-    object = makeRDFCompatible(internal_object)
-    subject = makeRDFCompatible(internal_subject)
-    self.CLASSES[self.current_class].add((subject, RDFSTerms[predicate], object))
-    # generate GUI tree
-    if not parent_item:
-      parent_item = self.ui.treeClass.currentItem()
-    item = QTreeWidgetItem(parent_item)
-    item.setText(0, internal_object)
-    item.predicate = predicate
-    # item.setBackground(0, COLOURS[predicate])# PRIMITIVE_COLOUR)
-    item.setForeground(0, QBRUSHES[predicate])
-    self.ui.treeClass.expandAll()
-    self.changed = True
-    return item
 
   def on_pushAddNewClass_pressed(self):
     # print("debugging -- add class")
@@ -758,62 +649,12 @@ class OntobuilderUI(QMainWindow):
       self.ui.treeClass.expandAll()
       self.changed = True
 
-  def __permittedClasses(self):
-    permitted_classes = []
-    for cl in self.CLASSES:
-      if cl != self.current_class:
-        if cl not in self.link_lists[cl]:
-          if cl not in self.class_path:
-            permitted_classes.append(cl)
-    return permitted_classes
-
-  def __addToClassPath(self, addclass):
-    self.class_path.append(addclass)
-    self.ui.listClasses.clear()
-    self.ui.listClasses.addItems(self.class_path)
-
-  def __cutClassPath(self, cutclass):
-    i = self.class_path.index(cutclass)
-    self.class_path = self.class_path[:i + 1]
-    self.ui.listClasses.clear()
-    self.ui.listClasses.addItems(self.class_path)
-
   def on_listClasses_itemClicked(self, item):
     class_ID = item.text()
     # print("debugging -- ", class_ID)
     self.__shiftClass(class_ID)
 
-  def __shiftClass(self, class_ID):
-    # print("debugging ---------------")
-    self.current_class = class_ID
-    self.__createTree(class_ID)
-    if class_ID not in self.class_path:
-      self.__addToClassPath(class_ID)
-    else:
-      self.__cutClassPath(class_ID)
 
-  def on_pushExit_pressed(self):
-    self.closeMe()
-
-  def closeEvent(self, event):
-    self.closeMe()
-
-  def closeMe(self):
-    if self.changed:
-      # dialog = QMessageBox()
-      dialog = makeMessageBox(message="save changes", buttons=["YES", "NO"])
-      if dialog == "YES":
-        # print("save")
-        self.on_pushSave_pressed()
-
-      elif dialog == "NO":
-        pass
-        # print("exit")
-
-    else:
-      pass
-      # print("no changes")
-    sys.exit()
 
   def on_pushSave_pressed(self):
     # print("debugging -- pushSave")
@@ -944,6 +785,196 @@ class OntobuilderUI(QMainWindow):
 
     dot = self.__makeDotGraph()
     dot.view()
+
+
+  def on_pushExit_pressed(self):
+    self.closeMe()
+
+  def closeEvent(self, event):
+    self.closeMe()
+
+  def closeMe(self):
+    if self.changed:
+      # dialog = QMessageBox()
+      dialog = makeMessageBox(message="save changes", buttons=["YES", "NO"])
+      if dialog == "YES":
+        # print("save")
+        self.on_pushSave_pressed()
+
+      elif dialog == "NO":
+        pass
+        # print("exit")
+
+    else:
+      pass
+      # print("no changes")
+    sys.exit()
+
+
+  def __createTree(self, origin):
+    widget = self.ui.treeClass
+    widget.clear()
+
+    rootItem = QTreeWidgetItem(widget)
+    widget.setColumnCount(1)
+    rootItem.root = origin
+    rootItem.setText(0, origin)
+    rootItem.setSelected(True)
+    rootItem.predicate = None
+    widget.addTopLevelItem(rootItem)
+    self.current_class = origin
+    tuples = self.__prepareTree(origin)
+    self.__makeTree(tuples, origin=origin, stack=[], items={origin: rootItem})
+    # self.__makeTree(origin=Literal(origin), subject_stack=[], parent=rootItem)
+    widget.show()
+    widget.expandAll()
+    self.current_subclass = origin
+    self.__ui_state("show_tree")
+
+  def __prepareTree(self, origin):
+    graph = self.CLASSES[self.current_class]
+    # print(graph.serialize(format='turtle'))
+    # print("debugging", origin)
+    tuples_plus = []
+    for subject, predicate, object_ in graph.triples((None, None, None)):
+      s = str(subject)
+      p = MYTerms[predicate]
+      o = str(object_)
+      if p not in ["value"] + PRIMITIVES:
+        tuples_plus.append((s, o, p))
+      else:
+        tuples_plus.append((o, s, p))
+    return tuples_plus
+
+  def __makeTree(self, touples, origin=[], stack=[], items={}):
+    for s, o, p in touples:
+      if (s, o, p) not in stack:
+        if s != origin:
+          if o in items:
+            # print("add %s <-- %s" % (o, s),p)
+            item = QTreeWidgetItem(items[o])
+            # print("debugging -- color",p )
+            # item.setBackground(0, COLOURS[p])
+            item.predicate = p
+            item.setForeground(0, QBRUSHES[p])
+            stack.append((s, o, p))
+            item.setText(0, s)
+            items[s] = item
+            self.__makeTree(touples, origin=s, stack=stack, items=items)
+
+  def __makeSetOfAllNames(self):
+    names = set(self.class_names)
+    for g in self.CLASSES:
+      for n in self.subclass_names[g]:
+        names.add(n)
+    return names
+
+  def __extractLabelsFromCoatingOntology(self):
+    self.CoatingOntology.triples
+  def __renameItemInGraph(self, ID, new_name, predicate):
+    graph = self.CLASSES[self.current_class]
+    for s, p, o in graph.triples((None, None, Literal(ID))):
+      # print("debugging -- change triple", s, p, o)
+      self.CLASSES[self.current_class].remove((s, p, o))
+      object = makeRDFCompatible(new_name)
+      self.CLASSES[self.current_class].add((s, RDFSTerms[predicate], object))
+    for s, p, o in graph.triples((Literal(ID), None, None)):
+      # print("debugging -- change triple", s, p, o)  # add to graph
+      self.CLASSES[self.current_class].remove((s, p, o))
+      subject = makeRDFCompatible(new_name)
+      self.CLASSES[self.current_class].add((subject, RDFSTerms[predicate], o))
+    self.__createTree(self.current_class)
+
+
+
+  def __makePathName(self, text_ID):
+    p = self.root_class
+    for i in self.class_path[1:]:
+      p = p + ".%s" % i
+    if text_ID not in p:
+      item_name = text_ID
+      p = p + ".%s" % item_name
+    return p
+
+  def __isClass(self, ID):
+    return ID in self.class_names
+
+  def __isRoot(self, ID):
+    if self.__isClass(ID):
+      return ID == self.class_names[0]
+
+
+  def __isSubClass(self, ID):
+    return (ID in self.subclass_names[self.current_class]) and \
+      (ID not in self.class_names)
+
+  def __isPrimitive(self, text_ID):
+    # print("debugging -- is primitive", text_ID)
+    return text_ID in PRIMITIVES
+
+  def __isValue(self, predicate):
+    return predicate == VALUE
+
+  def __islinked(self, ID):
+    for cl in self.link_lists:
+      for linked_class, linked_to_class, linked_to_subclass in self.link_lists[cl]:
+        if linked_to_class == self.current_class:
+          if linked_to_subclass == ID:
+            return True
+
+    return False
+
+  def __hasElucidation(self, text_ID, predicate):
+    return self.__isClass(text_ID) or self.__isSubClass(text_ID) or self.__isValue(predicate)
+
+
+
+  def __addItemToTree(self, internal_object, predicate, internal_subject, parent_item=None):
+    object = makeRDFCompatible(internal_object)
+    subject = makeRDFCompatible(internal_subject)
+    self.CLASSES[self.current_class].add((subject, RDFSTerms[predicate], object))
+    # generate GUI tree
+    if not parent_item:
+      parent_item = self.ui.treeClass.currentItem()
+    item = QTreeWidgetItem(parent_item)
+    item.setText(0, internal_object)
+    item.predicate = predicate
+    # item.setBackground(0, COLOURS[predicate])# PRIMITIVE_COLOUR)
+    item.setForeground(0, QBRUSHES[predicate])
+    self.ui.treeClass.expandAll()
+    self.changed = True
+    return item
+
+  def __permittedClasses(self):
+    permitted_classes = []
+    for cl in self.CLASSES:
+      if cl != self.current_class:
+        if cl not in self.link_lists[cl]:
+          if cl not in self.class_path:
+            permitted_classes.append(cl)
+    return permitted_classes
+
+  def __addToClassPath(self, addclass):
+    self.class_path.append(addclass)
+    self.ui.listClasses.clear()
+    self.ui.listClasses.addItems(self.class_path)
+
+  def __cutClassPath(self, cutclass):
+    i = self.class_path.index(cutclass)
+    self.class_path = self.class_path[:i + 1]
+    self.ui.listClasses.clear()
+    self.ui.listClasses.addItems(self.class_path)
+
+
+  def __shiftClass(self, class_ID):
+    # print("debugging ---------------")
+    self.current_class = class_ID
+    self.__createTree(class_ID)
+    if class_ID not in self.class_path:
+      self.__addToClassPath(class_ID)
+    else:
+      self.__cutClassPath(class_ID)
+
 
   def __makeDotGraph(self):
     graph_overall = Graph()
