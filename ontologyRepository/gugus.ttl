@@ -3,104 +3,45 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-ckg:andozing rdfs:subClassOf ckg:surfaceTreatmentProcess .
+ckg:AddressSpecifications rdf:value ckg:AddressLine_01,
+        ckg:AddressLine_02,
+        ckg:City,
+        ckg:Country,
+        ckg:ZIP ;
+    rdfs:isDefinedBy ckg:Address .
 
-ckg:chemicalComponent rdf:value ckg:URL,
-        ckg:quantityMeasure ;
-    rdfs:isDefinedBy ckg:etching,
-        ckg:offTheShelf,
-        ckg:product,
-        ckg:reactant,
-        ckg:solGelCoating .
+ckg:Address rdfs:subClassOf ckg:ProducerSpecifications .
 
-ckg:electrolyte rdfs:isDefinedBy ckg:pickling .
+ckg:AddressLine_01 xsd:string ckg:string .
 
-ckg:nonreactive rdfs:subClassOf ckg:chemical .
+ckg:AddressLine_02 xsd:string ckg:string .
 
-ckg:washing rdfs:subClassOf ckg:surfaceTreatmentProcess .
+ckg:City xsd:string ckg:string .
 
-ckg:URL xsd:string ckg:string .
+ckg:Country xsd:string ckg:string .
 
-ckg:binder rdfs:subClassOf ckg:coatingLayer .
+ckg:OranisationName xsd:string ckg:string .
 
-ckg:catalyst rdfs:subClassOf ckg:additive .
+ckg:OranisationNumber xsd:integer ckg:integer .
 
-ckg:colourPigment rdfs:subClassOf ckg:pigment .
+ckg:Producer rdfs:subClassOf ckg:ProductSpecifications .
 
-ckg:defoamerAgent rdfs:subClassOf ckg:additive .
+ckg:ProducerSpecifications rdf:value ckg:OranisationName,
+        ckg:OranisationNumber ;
+    rdfs:isDefinedBy ckg:Producer .
 
-ckg:dryingAgent rdfs:subClassOf ckg:additive .
+ckg:Product rdfs:subClassOf ckg:PassPort .
 
-ckg:dye rdfs:subClassOf ckg:additive .
+ckg:ProductSpecifications rdfs:isDefinedBy ckg:Product,
+        ckg:rawProduct_01,
+        ckg:rawProduct_02,
+        ckg:rawProduct_03 .
 
-ckg:etching rdfs:subClassOf ckg:surfaceTreatmentProcess .
+ckg:ZIP xsd:integer ckg:integer .
 
-ckg:extender rdfs:subClassOf ckg:coatingLayer .
+ckg:rawProduct_01 rdfs:subClassOf ckg:PassPort .
 
-ckg:filler rdfs:subClassOf ckg:pigment .
+ckg:rawProduct_02 rdfs:subClassOf ckg:PassPort .
 
-ckg:inhibitorPigment rdfs:subClassOf ckg:pigment .
-
-ckg:lightStabiliser rdfs:subClassOf ckg:additive .
-
-ckg:offTheShelf rdfs:subClassOf ckg:material .
-
-ckg:pickling rdfs:subClassOf ckg:surfaceTreatmentProcess .
-
-ckg:polymerisationProcess rdfs:subClassOf ckg:productionProcess .
-
-ckg:preTreatedSurface rdfs:subClassOf ckg:layers .
-
-ckg:preservative rdfs:subClassOf ckg:additive .
-
-ckg:processProduct rdfs:subClassOf ckg:material .
-
-ckg:product rdfs:subClassOf ckg:chemical .
-
-ckg:quantityMeasure xsd:integer ckg:integer .
-
-ckg:reactant rdfs:subClassOf ckg:chemical .
-
-ckg:reaction rdfs:isDefinedBy ckg:polymerisationProcess .
-
-ckg:rheologyAgent rdfs:subClassOf ckg:additive .
-
-ckg:solGelCoating rdfs:subClassOf ckg:surfaceTreatmentProcess .
-
-ckg:substrate rdfs:subClassOf ckg:coatedProduct .
-
-ckg:surfaceActiveAgent rdfs:subClassOf ckg:additive .
-
-ckg:wettingAgent rdfs:subClassOf ckg:additive .
-
-ckg:layers rdfs:subClassOf ckg:coatedProduct .
-
-ckg:material rdfs:isDefinedBy ckg:binder,
-        ckg:catalyst,
-        ckg:colourPigment,
-        ckg:defoamerAgent,
-        ckg:dryingAgent,
-        ckg:dye,
-        ckg:extender,
-        ckg:filler,
-        ckg:inhibitorPigment,
-        ckg:lightStabiliser,
-        ckg:preTreatedSurface,
-        ckg:preservative,
-        ckg:rheologyAgent,
-        ckg:substrate,
-        ckg:surfaceActiveAgent,
-        ckg:wettingAgent .
-
-ckg:productionProcess rdfs:isDefinedBy ckg:processProduct .
-
-ckg:chemical rdfs:subClassOf ckg:reaction .
-
-ckg:pigment rdfs:subClassOf ckg:coatingLayer .
-
-ckg:coatingLayer rdfs:subClassOf ckg:layers .
-
-ckg:surfaceTreatmentProcess rdfs:subClassOf ckg:productionProcess .
-
-ckg:additive rdfs:subClassOf ckg:coatingLayer .
+ckg:rawProduct_03 rdfs:subClassOf ckg:PassPort .
 

@@ -991,9 +991,9 @@ class BackEnd:
                                                   self.current_class)
 
     gugus = convertQuadsGraphIntoRDFGraph(self.quads)
-    debuggPlotAndRender(gugus, "made_quads", True)
+    debuggPlotAndRender(gugus, "../made_quads", True)
     gugus = self.working_tree.collectGraphs()
-    debuggPlotAndRender(gugus, "complete graph", True)
+    debuggPlotAndRender(gugus, "../complete graph", True)
 
     # print("debugging -- the quads", self.quads)
 

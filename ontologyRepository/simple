@@ -1,11 +1,14 @@
 digraph {
-	a
-	simple [fillcolor=red shape=none style=filled]
-	a -> simple [color=blue]
 	string [color=green fillcolor=gray shape=none style=filled]
 	string
-	l -> string [color=cyan]
-	a
-	l
-	a -> l [color=black]
+	primitive -> string [color=cyan]
+	newclass [color=red shape=rectangle]
+	subclass
+	newclass -> subclass [color=red]
+	subclass
+	simple [fillcolor=red shape=none style=filled]
+	subclass -> simple [color=blue]
+	newclass [color=red shape=rectangle]
+	primitive
+	newclass -> primitive [color=black]
 }

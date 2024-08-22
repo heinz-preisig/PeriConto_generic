@@ -1,7 +1,7 @@
 import os
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
+from PyQt6 import QtCore
+from PyQt6 import QtGui
 
 # ===========================================  icons ==============================
 ICONS = {}
@@ -44,16 +44,12 @@ BUTTON_ICON_STYLE_ROUND += 'padding: 6px;'
 
 def roundButton(button, what, tooltip=None):
   button.setText("")
-  button.setFixedSize(BUTTON_ICON_SIZE)
-  button.setIcon(getIcon(what))
+  button.setFixedSize(size,size)
+  icon = getIcon(what)
+  button.setIcon(icon) #getIcon(what))
   button.setStyleSheet(BUTTON_ICON_STYLE_ROUND)
   button.setIconSize(BUTTON_ICON_SIZE)
   button.setToolTip(tooltip)
-  # button.setStyleSheet("""QToolTip {
-  #                            background-color: black;
-  #                            color: white;
-  #                            border: black solid 1px
-  #                            }""")
 
 
 def getIcon(what):
@@ -66,8 +62,10 @@ def getIcon(what):
   f_name = os.path.join(os.getcwd(), 'resources', "icons", ICONS[what])
   # print("debugging .....", f_name)
   if os.path.exists(f_name):
-    pm = QtGui.QPixmap(f_name)
-    return QtGui.QIcon(pm)
+    # pm = QtGui.QPixmap(f_name)
+    icon = QtGui.QIcon(f_name)
+
+    return icon #QtGui.QIcon(pm)
   else:
     print("no such file : ", f_name)
     pass

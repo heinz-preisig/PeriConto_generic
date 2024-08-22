@@ -25,8 +25,8 @@ from copy import copy
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
-from resources.resources_icons import roundButton
-from resources.single_list_selector import Ui_Dialog
+from resources_icons import roundButton
+from single_list_selector import Ui_Dialog
 
 
 class SingleListSelector(QtWidgets.QDialog):
@@ -46,11 +46,12 @@ class SingleListSelector(QtWidgets.QDialog):
      -- left button is default reject
      -- returns selection and state (left | right | selected)
     '''
-    self.thelist = thelist
-    self.selection = None
     QtWidgets.QDialog.__init__(self, parent=myparent)
     self.ui = Ui_Dialog()
     self.ui.setupUi(self)
+
+    self.thelist = thelist
+    self.selection = None
 
 
     roundButton(self.ui.pushLeft, left_icon, left_tooltip )
@@ -149,3 +150,15 @@ class SingleListSelector(QtWidgets.QDialog):
     print('reject', self.selection)
     self.hide()
     return
+
+if __name__ == '__main__':
+
+
+  a = QtWidgets.QApplication([])
+
+  w = SingleListSelector(["give name", "name"])
+  w.setModal(True)
+  w.show()
+  r = w.selection()
+  print(r)
+  a.exec_()

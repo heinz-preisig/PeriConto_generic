@@ -19,12 +19,13 @@ __version__ = "6.00"
 __email__ = "heinz.preisig@chemeng.ntnu.no"
 __status__ = "beta"
 
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
+from PyQt6 import QtCore
+from PyQt6 import QtWidgets
 
-from resources.ui_string_dialog import Ui_Dialog
-from resources.resources_icons import roundButton
+
+# from ui_string_dialog import  Ui_Dialog
+from ui_string_dialog import Ui_Dialog
+from resources_icons import roundButton
 
 
 class UI_String(QtWidgets.QDialog):
@@ -50,14 +51,14 @@ class UI_String(QtWidgets.QDialog):
     :param reject: method/function reference
     """
     # TODO: add validator
-    QtWidgets.QDialog.__init__(self)
+    QtWidgets.QDialog.__init__(self, parent=None)
     self.ui = Ui_Dialog()
     self.ui.setupUi(self)
     # print(" <<<< show me")
-    self.hide()
+    # self.hide()
     self.placeholdertext = placeholdertext
     self.limiting_list = limiting_list
-    self.setWindowTitle(prompt)
+    # self.setWindowTitle(prompt)
     self.text = None
 
 
@@ -72,12 +73,13 @@ class UI_String(QtWidgets.QDialog):
     self.ui.lineEdit.textChanged.connect(self.newText)
     self.ui.pushReject.setFocus()
     self.ui.lineEdit.setPlaceholderText(placeholdertext)
+    # self.exec()
 
-    self.palette_red = QtGui.QPalette()
-    self.palette_red.setColor(QtGui.QPalette.Text, QtCore.Qt.red)
-
-    self.palette_black = QtGui.QPalette()
-    self.palette_black.setColor(QtGui.QPalette.Text, QtCore.Qt.black)
+    # self.palette_red = QtGui.QPalette()
+    # self.palette_red.setColor(QtGui.QPalette.Text, QtCore.Qt.red)
+    #
+    # self.palette_black = QtGui.QPalette()
+    # self.palette_black.setColor(QtGui.QPalette.Text, QtCore.Qt.black)
 
     if fokus:
       self.ui.lineEdit.setFocus()
@@ -92,10 +94,10 @@ class UI_String(QtWidgets.QDialog):
       return
 
     if (text in self.limiting_list) or (text[0] == " "):
-      self.ui.lineEdit.setPalette(self.palette_red)
+      # self.ui.lineEdit.setPalette(self.palette_red)
       self.ui.pushAccept.hide()
     else:
-      self.ui.lineEdit.setPalette(self.palette_black)
+      # self.ui.lineEdit.setPalette(self.palette_black)
       self.ui.pushAccept.show()
 
   def __accept(self):

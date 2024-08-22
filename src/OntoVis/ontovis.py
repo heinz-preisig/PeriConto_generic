@@ -74,7 +74,7 @@ class Ontovis(QWidget):
 
     def loadPage(self):
   
-        with open('../nx.html', 'r') as f:
+        with open('../../nx.html', 'r') as f:
 
             html = f.read()
             self.webEngineView.setHtml(html)

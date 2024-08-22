@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'ui_string_dialog.ui'
+# Form implementation generated from reading ui file 'ui_single_list_selector.ui'
 #
 # Created by: PyQt6 UI code generator 6.7.1
 #
@@ -16,7 +16,7 @@ class Ui_Dialog(object):
         Dialog.resize(513, 194)
         Dialog.setModal(True)
         self.gridLayoutWidget = QtWidgets.QWidget(parent=Dialog)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 10, 488, 168))
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 10, 488, 188))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -43,17 +43,11 @@ class Ui_Dialog(object):
         self.gridLayout.addWidget(self.pushAccept, 0, 0, 1, 1)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayout.addItem(spacerItem1, 1, 0, 1, 1)
-        self.lineEdit = QtWidgets.QLineEdit(parent=self.gridLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lineEdit.sizePolicy().hasHeightForWidth())
-        self.lineEdit.setSizePolicy(sizePolicy)
-        self.lineEdit.setMinimumSize(QtCore.QSize(400, 30))
-        self.lineEdit.setObjectName("lineEdit")
-        self.gridLayout.addWidget(self.lineEdit, 1, 1, 1, 1)
         spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayout.addItem(spacerItem2, 2, 1, 1, 1)
+        self.listWidget = QtWidgets.QListWidget(parent=self.gridLayoutWidget)
+        self.listWidget.setObjectName("listWidget")
+        self.gridLayout.addWidget(self.listWidget, 1, 1, 1, 1)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)

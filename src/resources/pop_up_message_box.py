@@ -21,30 +21,31 @@ __status__ = "beta"
 
 import sys
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 
+# QtWidgets.QMessageBox.StandardButton.OK
 BUTTONS = {
-        "OK"             : QtWidgets.QMessageBox.Ok,
-        "NO"             : QtWidgets.QMessageBox.No,
-        "YES"             : QtWidgets.QMessageBox.Yes,
-        "open"           : QtWidgets.QMessageBox.Open,
-        "save"           : QtWidgets.QMessageBox.Save,
-        "cancel"         : QtWidgets.QMessageBox.Cancel,
-        "close"          : QtWidgets.QMessageBox.Close,
-        "discard"        : QtWidgets.QMessageBox.Discard,
-        "apply"          : QtWidgets.QMessageBox.Apply,
-        "reset"          : QtWidgets.QMessageBox.Reset,
-        "restore_default": QtWidgets.QMessageBox.RestoreDefaults,
-        "help"           : QtWidgets.QMessageBox.Help,
-        "save_all"       : QtWidgets.QMessageBox.SaveAll,
-        "yes"            : QtWidgets.QMessageBox.Yes,
-        "yes_to_all"     : QtWidgets.QMessageBox.YesToAll,
-        "no"             : QtWidgets.QMessageBox.No,
-        "no_to_all"      : QtWidgets.QMessageBox.NoToAll,
-        "abort"          : QtWidgets.QMessageBox.Abort,
-        "retry"          : QtWidgets.QMessageBox.Retry,
-        "ignore"         : QtWidgets.QMessageBox.Ignore,
-        "no button"      : QtWidgets.QMessageBox.NoButton,
+        "OK"             : QtWidgets.QMessageBox.StandardButton.Ok,
+        "NO"             : QtWidgets.QMessageBox.StandardButton.No,
+        "YES"             : QtWidgets.QMessageBox.StandardButton.Yes,
+        "open"           : QtWidgets.QMessageBox.StandardButton.Open,
+        "save"           : QtWidgets.QMessageBox.StandardButton.Save,
+        "cancel"         : QtWidgets.QMessageBox.StandardButton.Cancel,
+        "close"          : QtWidgets.QMessageBox.StandardButton.Close,
+        "discard"        : QtWidgets.QMessageBox.StandardButton.Discard,
+        "apply"          : QtWidgets.QMessageBox.StandardButton.Apply,
+        "reset"          : QtWidgets.QMessageBox.StandardButton.Reset,
+        "restore_default": QtWidgets.QMessageBox.StandardButton.RestoreDefaults,
+        "help"           : QtWidgets.QMessageBox.StandardButton.Help,
+        "save_all"       : QtWidgets.QMessageBox.StandardButton.SaveAll,
+        "yes"            : QtWidgets.QMessageBox.StandardButton.Yes,
+        "yes_to_all"     : QtWidgets.QMessageBox.StandardButton.YesToAll,
+        "no"             : QtWidgets.QMessageBox.StandardButton.No,
+        "no_to_all"      : QtWidgets.QMessageBox.StandardButton.NoToAll,
+        "abort"          : QtWidgets.QMessageBox.StandardButton.Abort,
+        "retry"          : QtWidgets.QMessageBox.StandardButton.Retry,
+        "ignore"         : QtWidgets.QMessageBox.StandardButton.Ignore,
+        "no button"      : QtWidgets.QMessageBox.StandardButton.NoButton,
         }
 
 
@@ -56,8 +57,8 @@ def makeMessageBox(message, buttons=["cancel", "OK"], infotext=""):
   msg_box.setText(message)
   msg_box.setInformativeText(infotext)
   msg_box.setWindowTitle("dialog")
-  msg_box.setWindowFlags( QtCore.Qt.CustomizeWindowHint |QtCore.Qt.Popup)
-
+  # msg_box.setWindowFlags( QtCore.Qt.CustomizeWindowHint |QtCore.Qt.Popup)
+  msg_box.setWindowFlags(QtCore.Qt.WindowType.Popup)
   # save = QtWidgets.QMessageBox.Save
   # discard = QtWidgets.QMessageBox.Discard
   # cancel = QtWidgets.QMessageBox.Cancel
@@ -68,7 +69,7 @@ def makeMessageBox(message, buttons=["cancel", "OK"], infotext=""):
   msg_box.setStandardButtons(mybuttons)  # discard | save | cancel);
   msg_box.setDefaultButton(BUTTONS[buttons[0]])
   msg_box.show()
-  r = msg_box.exec_()
+  r = msg_box.exec()
 
   for i in BUTTONS:
     if r == BUTTONS[i]:

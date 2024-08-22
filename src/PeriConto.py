@@ -14,24 +14,29 @@ So the approach is to use an internal representation of the predicates and trans
 
 import json
 import os
+import sys
 
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import *
+
+root = os.path.abspath(os.path.join("."))
+sys.path.extend([root, os.path.join(root, 'resources')])
+
+
+from PyQt6 import QtGui
+from PyQt6.QtWidgets import *
 from graphviz import Digraph
 from rdflib import ConjunctiveGraph
 from rdflib import Graph
 from rdflib import Literal
-from rdflib import RDF, RDFS
-from rdflib.namespace import RDFS
+from rdflib import RDF
 from rdflib import XSD
-from rdflib import namespace
+from rdflib.namespace import RDFS
 
 # from graphHAP import Graph
 from PeriConto_gui import Ui_MainWindow
 from resources.pop_up_message_box import makeMessageBox
 from resources.resources_icons import roundButton
-from resources.single_list_selector_impl import SingleListSelector
 from resources.ui_string_dialog_impl import UI_String
+from resources.ui_single_list_selector_impl import UI_stringSelector
 
 RDFSTerms = {
         "is_a_subclass_of": RDFS.subClassOf,
@@ -66,7 +71,6 @@ COLOURS = {
         "string"          : QtGui.QColor(255, 200, 200, 255),
         }
 
-
 EDGE_COLOUR = {
         "is_a_subclass_of": "blue",
         "link_to_class"   : "red",
@@ -82,7 +86,6 @@ QBRUSHES = {"is_a_subclass_of": QtGui.QBrush(COLOURS["is_a_subclass_of"]),
             "comment"         : QtGui.QBrush(COLOURS["comment"]),
             "integer"         : QtGui.QBrush(COLOURS["integer"]),
             "string"          : QtGui.QBrush(COLOURS["string"]), }
-
 
 DIRECTION = {
         "is_a_subclass_of": 1,
@@ -110,14 +113,14 @@ def plot(graph, class_names=[]):
   # Add nodes 1 and 2
   for s, p, o in graph.triples((None, None, None)):
     ss = str(s)
-    ss_ = str(ss).replace(":","-")
+    ss_ = str(ss).replace(":", "-")
     sp = str(p)
     so = str(o)
-    so_ = str(o).replace(":","-")
+    so_ = str(o).replace(":", "-")
     if ss in class_names:
       dot.node(ss_, color='red', shape="rectangle")
     elif so in PRIMITIVES:
-      dot.node(so_, color='green',  style='filled', fillcolor="gray", shape="none")
+      dot.node(so_, color='green', style='filled', fillcolor="gray", shape="none")
       # dot.node(so_, color='green', shape="rectangle")
     else:
       dot.node(ss_)
@@ -148,11 +151,11 @@ def plot(graph, class_names=[]):
                # label=my_p,
                color=EDGE_COLOUR[my_p])
 
-
   # Visualize the graph
   return dot
 
-#TODO:  this is specific to json data, allow ttl as well!
+
+# TODO:  this is specific to json data, allow ttl as well!
 def putData(data, file_spec, indent="  "):
   print("writing to file: ", file_spec)
   dump = json.dumps(data, indent=indent)
@@ -243,7 +246,10 @@ class OntobuilderUI(QMainWindow):
             "add_primitive"      : self.ui.pushAddPrimitive,
             "link_new_class"     : self.ui.pushAddNewClass,
             "link_existing_class": self.ui.pushAddExistingClass,
-            "remove"             : self.ui.pushRemoveNode,
+            "remove_subclass"    : self.ui.pushRemoveSubClass,
+            "remove_primitive"   : self.ui.pushRemovePrimitive,
+            "remove_class_link"  : self.ui.pushRemoveClassLink,
+            "remove_class"       : self.ui.pushRemoveClass,
             "elucidation"        : self.ui.groupElucidation,
             "elucidation_button" : self.ui.pushAddElucidation,
             }
@@ -272,15 +278,7 @@ class OntobuilderUI(QMainWindow):
     self.root_class = None
     self.load_elucidation = True
 
-
     self.CoatingOntology = Graph()
-    self.CoatingOntology.parse("coating_ontology.ttl", format="turtle")
-    # for s,p,o in self.CoatingOntology.triples((None,None,None)):
-      # print(s,p,o)
-      # print("- s: ",self.CoatingOntology.preferredLabel(s))
-      # print("- p: ",self.CoatingOntology.preferredLabel(p))
-      # print("- o: ",self.CoatingOntology.preferredLabel(o),"\n")
-        # print(self.CoatingOntology.qname(x) if isinstance(x,"URIRef") else x, end=" ")
     print("debugging -- read coating ontology")
 
   def __ui_state(self, state):
@@ -302,6 +300,14 @@ class OntobuilderUI(QMainWindow):
               "add_primitive",
               "link_new_class",
               "link_existing_class",
+              "remove_subclass",
+              "elucidation",
+              ]
+    elif state == "selected_root":
+      show = ["save",
+              "exit",
+              "add_subclass",
+              "add_primitive",
               "elucidation",
               ]
     elif state == "selected_class":
@@ -310,10 +316,12 @@ class OntobuilderUI(QMainWindow):
               "add_subclass",
               "add_primitive",
               "elucidation",
+              "remove_class_link"
               ]
     elif state == "selected_primitive":
       show = ["save",
               "exit",
+              "remove_primitive"
               ]
     elif state == "value_selected":
       show = ["save",
@@ -333,6 +341,7 @@ class OntobuilderUI(QMainWindow):
               "exit",
               "add_primitive",
               "elucidation",
+              "remove_class_link",
               ]
     else:
       show = []
@@ -404,11 +413,9 @@ class OntobuilderUI(QMainWindow):
   def __extractLabelsFromCoatingOntology(self):
     self.CoatingOntology.triples
 
-
-
   def on_pushCreate_pressed(self):
     dialog = UI_String("name for your ontology file", placeholdertext="file name extension is default")
-    dialog.exec_()
+    dialog.exec()
     name = dialog.getText()
     if name:
       fname = name.split(".")[0] + ".json"
@@ -418,7 +425,7 @@ class OntobuilderUI(QMainWindow):
       return
 
     dialog = UI_String("root identifier", placeholdertext="provide an identifier for the root")
-    dialog.exec_()
+    dialog.exec()
     name = dialog.getText()
     if not name:
       self.close()
@@ -466,10 +473,12 @@ class OntobuilderUI(QMainWindow):
       self.__ui_state("selected_class")
       if self.current_class != text_ID:
         self.__shiftClass(text_ID)
+      if self.__isRoot(text_ID):
+        self.__ui_state("selected_root")
     elif self.__islinked(text_ID):
       # print("debugging -- is linked", text_ID)
       self.__ui_state("linked")
-      self.current_subclass=text_ID
+      self.current_subclass = text_ID
     elif self.__isSubClass(text_ID):
       # print("debugging -- it is a subclass", text_ID)
       self.__ui_state("selected_subclass")
@@ -502,11 +511,10 @@ class OntobuilderUI(QMainWindow):
       if not_exist:
         self.elucidations[not_exist] = ""
 
-  # def on_treeClass_itemSelectionChanged(self):
-  #   print("debugging -- selection changed")
+    # def on_treeClass_itemSelectionChanged(self):
+    #   print("debugging -- selection changed")
 
     self.ui.treeClass.clearSelection()
-
 
   def on_treeClass_itemDoubleClicked(self, item, column):
     # print("debugging -- double click", item.text(0))
@@ -520,8 +528,8 @@ class OntobuilderUI(QMainWindow):
         forbidden = self.__makeSetOfAllNames()
       else:
         forbidden = self.value_names[self.current_class]
-      dialog = UI_String("new name", placeholdertext=str(item.text(0)),limiting_list=forbidden)
-      dialog.exec_()
+      dialog = UI_String("new name", placeholdertext=str(item.text(0)), limiting_list=forbidden)
+      dialog.exec()
       new_name = dialog.getText()
       if new_name:
         self.__renameItemInGraph(ID, new_name, predicate)
@@ -573,9 +581,14 @@ class OntobuilderUI(QMainWindow):
   def __isClass(self, ID):
     return ID in self.class_names
 
+  def __isRoot(self, ID):
+    if self.__isClass(ID):
+      return ID == self.class_names[0]
+
+
   def __isSubClass(self, ID):
     return (ID in self.subclass_names[self.current_class]) and \
-           (ID not in self.class_names)
+      (ID not in self.class_names)
 
   def __isPrimitive(self, text_ID):
     # print("debugging -- is primitive", text_ID)
@@ -603,7 +616,7 @@ class OntobuilderUI(QMainWindow):
     # forbidden = sorted(self.subclass_names[self.current_class]) + sorted(self.class_names)
     forbidden = self.__makeSetOfAllNames()
     dialog = UI_String("name for subclass", limiting_list=forbidden)
-    dialog.exec_()
+    dialog.exec()
     subclass_ID = dialog.getText()
 
     if not subclass_ID:
@@ -621,36 +634,34 @@ class OntobuilderUI(QMainWindow):
     # add to graph
     subject = makeRDFCompatible(subclass_ID)
     object = makeRDFCompatible(self.current_subclass)
-    predicate = "is_a_subclass_of"
     self.CLASSES[self.current_class].add((subject, RDFSTerms["is_a_subclass_of"], object))
 
     # generate GUI tree
     self.__createTree(self.current_class)
-    # parent_item = self.ui.treeClass.currentItem()
-    # item = QTreeWidgetItem(parent_item)
-    # item.predicate = predicate
-    # item.setText(0, subclass_ID)
-    # self.ui.treeClass.expandAll()
     self.changed = True
 
   def on_pushAddPrimitive_pressed(self):
-    # print("debugging -- add primitive")
+    print("debugging -- add primitive first")
     # forbidden = self.subclass_names[self.current_class]
+
     forbidden = self.value_names[self.current_class] + self.subclass_names[self.current_class]
     dialog = UI_String("name for primitive", limiting_list=forbidden)
-    dialog.exec_()
+    dialog.exec()
     primitive_ID = dialog.getText()
+    print("debugging -- ", primitive_ID)
+    del dialog
     if not primitive_ID:
       return
 
     permitted_classes = PRIMITIVES
-    dialog = SingleListSelector(permitted_classes)
-    dialog.exec_()
-    primitive_class = dialog.getSelection()
+    dialog2 = UI_stringSelector("hello",permitted_classes)
+    dialog2.exec()
+
     # print("debugging")
+    primitive_class = dialog2.getSelection()
     if not primitive_class:
       return
-
+    print("debugging -- add primitive")
     self.value_names[self.current_class].append(primitive_ID)
 
     # add to graph
@@ -659,6 +670,7 @@ class OntobuilderUI(QMainWindow):
     if self.current_subclass not in self.primitives[self.current_class]:
       self.primitives[self.current_class][self.current_subclass] = []
     self.primitives[self.current_class][self.current_subclass].append(primitive_ID)
+    print("debugging -- end of add")
 
   def __addItemToTree(self, internal_object, predicate, internal_subject, parent_item=None):
     object = makeRDFCompatible(internal_object)
@@ -682,7 +694,7 @@ class OntobuilderUI(QMainWindow):
     forbidden = self.__makeSetOfAllNames()
     # forbidden = sorted(self.class_names)
     dialog = UI_String("name for subclass", limiting_list=forbidden)
-    dialog.exec_()
+    dialog.exec()
     class_ID = dialog.getText()
     if not class_ID:
       return
@@ -720,8 +732,8 @@ class OntobuilderUI(QMainWindow):
 
     # print("debugging -- ", permitted_classes)
     if permitted_classes:
-      dialog = SingleListSelector(permitted_classes)
-      dialog.exec_()
+      dialog = UI_stringSelector("select",permitted_classes)
+      dialog.exec()
       selection = dialog.getSelection()
       # print("debugging")
       if not selection:
@@ -788,6 +800,7 @@ class OntobuilderUI(QMainWindow):
 
   def closeMe(self):
     if self.changed:
+      # dialog = QMessageBox()
       dialog = makeMessageBox(message="save changes", buttons=["YES", "NO"])
       if dialog == "YES":
         # print("save")
@@ -800,7 +813,7 @@ class OntobuilderUI(QMainWindow):
     else:
       pass
       # print("no changes")
-    self.close()
+    sys.exit()
 
   def on_pushSave_pressed(self):
     # print("debugging -- pushSave")
@@ -811,14 +824,14 @@ class OntobuilderUI(QMainWindow):
     conjunctiveGraph = ConjunctiveGraph()
     for cl in self.class_definition_sequence:
       uri = Literal(cl)
-      for s,p,o in self.CLASSES[cl].triples((None,None,None)):
-        print(s,p,o)
-        conjunctiveGraph.get_context(uri).add((s,p,o))
+      for s, p, o in self.CLASSES[cl].triples((None, None, None)):
+        print(s, p, o)
+        conjunctiveGraph.get_context(uri).add((s, p, o))
 
     print("debugging")
 
     f = self.JsonFile.split(".")[0] + ".nqd"
-    inf = open(f,'w')
+    inf = open(f, 'w')
     inf.write(conjunctiveGraph.serialize(format="nquads"))
     inf.close()
 
@@ -883,7 +896,7 @@ class OntobuilderUI(QMainWindow):
       self.class_definition_sequence.append(g)
       self.class_names.append(g)
       self.subclass_names[g] = []
-      self.primitives[g] = {}#{g: []}
+      self.primitives[g] = {}  # {g: []}
       self.value_names[g] = []
       self.link_lists[g] = []
       self.CLASSES[g] = Graph()
@@ -941,11 +954,14 @@ class OntobuilderUI(QMainWindow):
     # print("debugging -- dot")
     graph_name = self.root_class
     file_name = graph_name + ".pdf"
-    file_path = os.path.join(ONTOLOGY_DIRECTORY,file_name)
+    file_path = os.path.join(ONTOLOGY_DIRECTORY, file_name)
     if os.path.exists(file_path):
       saveBackupFile(file_path)
     dot.render(graph_name, directory=ONTOLOGY_DIRECTORY)
     return dot
+
+
+# def on_pushRemoveNode
 
 
 if __name__ == "__main__":
@@ -959,4 +975,4 @@ if __name__ == "__main__":
 
   MainWindow = OntobuilderUI()
   MainWindow.show()
-  sys.exit(app.exec_())
+  sys.exit(app.exec())
