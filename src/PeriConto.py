@@ -686,10 +686,6 @@ class OntobuilderUI(QMainWindow):
     self.changed = True
 
 
-  def on_listClasses_itemClicked(self, item):
-    class_ID = item.text()
-    # print("debugging -- ", class_ID)
-    self.__shiftClass(class_ID)
 
 
 
@@ -820,6 +816,12 @@ class OntobuilderUI(QMainWindow):
     self.__createTree(self.root_class)
     self.ui.listClasses.addItems(self.class_path)
     self.__ui_state("show_tree")
+
+
+  def on_listClasses_itemClicked(self, item):
+    class_ID = item.text()
+    # print("debugging -- ", class_ID)
+    self.__shiftClass(class_ID)
 
   def on_pushVisualise_pressed(self):
 
