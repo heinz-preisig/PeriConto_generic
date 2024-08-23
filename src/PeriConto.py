@@ -8,19 +8,16 @@ So the approach is to use an internal representation of the predicates and trans
 
 
 """
-import copy
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
+import glob
 import json
 import os
 import sys
-import glob
-
 
 root = os.path.abspath(os.path.join("."))
 sys.path.extend([root, os.path.join(root, 'resources')])
-
 
 from PyQt6 import QtGui
 from PyQt6.QtWidgets import *
@@ -61,8 +58,8 @@ COLOURS = {
         "comment"         : QtGui.QColor(155, 155, 255),
         "integer"         : QtGui.QColor(155, 155, 255),
         "string"          : QtGui.QColor(255, 200, 200, 255),
-        "selected"        : QtGui.QColor(252,248,192, 255),
-        "unselect"        : QtGui.QColor(255,255,255,255),
+        "selected"        : QtGui.QColor(252, 248, 192, 255),
+        "unselect"        : QtGui.QColor(255, 255, 255, 255),
         }
 
 EDGE_COLOUR = {
@@ -97,7 +94,6 @@ LINK_COLOUR = QtGui.QColor(255, 100, 5, 255)
 PRIMITIVE_COLOUR = QtGui.QColor(255, 3, 23, 255)
 
 ONTOLOGY_DIRECTORY = "../ontologyRepository"
-
 
 
 def plot(graph, class_names=[]):
@@ -361,9 +357,8 @@ class OntobuilderUI(QMainWindow):
         self.gui_objects[b].show()
 
   def debugging(self, *info):
-    if self.DEBUGG :
+    if self.DEBUGG:
       print("debugging", info)
-
 
   def on_pushCreate_pressed(self):
     dialog = UI_String("name for your ontology file", placeholdertext="file name extension is default")
@@ -422,7 +417,7 @@ class OntobuilderUI(QMainWindow):
 
     text_ID = item.text(column)
 
-    self.debugging("you picked column %s with id %s"%(column,text_ID))
+    self.debugging("you picked column %s with id %s" % (column, text_ID))
 
     try:
       predicate = item.predicate
@@ -468,7 +463,7 @@ class OntobuilderUI(QMainWindow):
       self.__ui_state("selected_primitive")
     elif self.__isValue(predicate):
       self.__ui_state("value_selected")
-      self.debugging("-- isvalue", predicate )
+      self.debugging("-- isvalue", predicate)
     else:
       print("should not come here")
 
@@ -552,7 +547,7 @@ class OntobuilderUI(QMainWindow):
       return
 
     permitted_classes = PRIMITIVES
-    dialog2 = UI_stringSelector("hello",permitted_classes)
+    dialog2 = UI_stringSelector("hello", permitted_classes)
     dialog2.exec()
 
     # print("debugging")
@@ -569,7 +564,6 @@ class OntobuilderUI(QMainWindow):
       self.primitives[self.current_class][self.current_subclass] = []
     self.primitives[self.current_class][self.current_subclass].append(primitive_ID)
     print("debugging -- end of add")
-
 
   def on_pushAddNewClass_pressed(self):
     # print("debugging -- add class")
@@ -615,7 +609,7 @@ class OntobuilderUI(QMainWindow):
 
     # print("debugging -- ", permitted_classes)
     if permitted_classes:
-      dialog = UI_stringSelector("select",permitted_classes)
+      dialog = UI_stringSelector("select", permitted_classes)
       dialog.exec()
       selection = dialog.getSelection()
       # print("debugging")
@@ -651,11 +645,11 @@ class OntobuilderUI(QMainWindow):
     link_lists = {}
     for Class in self.link_lists:
       link_lists[Class] = []
-      for s,p,o in self.link_lists[Class]:
+      for s, p, o in self.link_lists[Class]:
         if s != class_ID:
-          link_lists[Class].append((s,p,o))
+          link_lists[Class].append((s, p, o))
 
-      self.debugging("--new link list for class %s:"% Class, link_lists[Class])
+      self.debugging("--new link list for class %s:" % Class, link_lists[Class])
 
     self.link_lists = link_lists
 
@@ -667,7 +661,7 @@ class OntobuilderUI(QMainWindow):
     self.__removeClassPath(class_ID)
 
     previous_class_ID = self.class_definition_sequence.index(class_ID)
-    self.current_class_ID = self.class_definition_sequence[previous_class_ID-1]
+    self.current_class_ID = self.class_definition_sequence[previous_class_ID - 1]
     self.class_definition_sequence.remove(class_ID)
     self.debugging(("--cleaned class list"))
     self.debugging("--cleand class sequence", self.class_definition_sequence)
@@ -685,13 +679,8 @@ class OntobuilderUI(QMainWindow):
 
     self.changed = True
 
-
-  def on_listClasses_itemClicked(self, item):
-    class_ID = item.text()
-    # print("debugging -- ", class_ID)
-    self.__shiftClass(class_ID)
-
-
+  def onpushRemoveClassLink_pressed(self):
+    pass
 
   def on_pushSave_pressed(self):
     # print("debugging -- pushSave")
@@ -717,7 +706,6 @@ class OntobuilderUI(QMainWindow):
 
     conjunctiveGraph = self.__prepareConjunctiveGraph()
 
-
     dialog = QFileDialog.getOpenFileName(None,
                                          "Load Ontology",
                                          ONTOLOGY_DIRECTORY,
@@ -738,7 +726,7 @@ class OntobuilderUI(QMainWindow):
       if not jsonfile:
         return
 
-      fname = jsonfile+".json"
+      fname = jsonfile + ".json"
       JsonFile = os.path.join(ONTOLOGY_DIRECTORY, fname)
 
     f = JsonFile.split(".")[0] + ".nqd"
@@ -826,9 +814,13 @@ class OntobuilderUI(QMainWindow):
     dot = self.__makeDotGraph()
     dot.view()
 
-
   def on_pushExit_pressed(self):
     self.closeMe()
+
+  def on_listClasses_itemClicked(self, item):
+    class_ID = item.text()
+    # print("debugging -- ", class_ID)
+    self.__shiftClass(class_ID)
 
   def closeEvent(self, event):
     self.closeMe()
@@ -849,7 +841,6 @@ class OntobuilderUI(QMainWindow):
       pass
       # print("no changes")
     sys.exit()
-
 
   def __createTree(self, origin):
     widget = self.ui.treeClass
@@ -886,7 +877,6 @@ class OntobuilderUI(QMainWindow):
         tuples_plus.append((o, s, p))
     return tuples_plus
 
-
   def __prepareConjunctiveGraph(self):
     conjunctiveGraph = ConjunctiveGraph()
     for cl in self.class_definition_sequence:
@@ -895,7 +885,6 @@ class OntobuilderUI(QMainWindow):
         print(s, p, o)
         conjunctiveGraph.get_context(uri).add((s, p, o))
     return conjunctiveGraph
-
 
   def __prepareJsonData(self):
     data = {}
@@ -915,7 +904,6 @@ class OntobuilderUI(QMainWindow):
     inf.write(conjunctiveGraph.serialize(format="nquads"))
     inf.close()
     print("written to file ", f)
-
 
   def __makeTree(self, touples, origin=[], stack=[], items={}):
     for s, o, p in touples:
@@ -942,6 +930,7 @@ class OntobuilderUI(QMainWindow):
 
   def __extractLabelsFromCoatingOntology(self):
     self.CoatingOntology.triples
+
   def __renameItemInGraph(self, ID, new_name, predicate):
     graph = self.CLASSES[self.current_class]
     for s, p, o in graph.triples((None, None, Literal(ID))):
@@ -955,8 +944,6 @@ class OntobuilderUI(QMainWindow):
       subject = makeRDFCompatible(new_name)
       self.CLASSES[self.current_class].add((subject, RDFSTerms[predicate], o))
     self.__createTree(self.current_class)
-
-
 
   def __makePathName(self, text_ID):
     p = self.root_class
@@ -973,7 +960,6 @@ class OntobuilderUI(QMainWindow):
   def __isRoot(self, ID):
     if self.__isClass(ID):
       return ID == self.class_names[0]
-
 
   def __isSubClass(self, ID):
     return (ID in self.subclass_names[self.current_class]) and \
@@ -997,8 +983,6 @@ class OntobuilderUI(QMainWindow):
 
   def __hasElucidation(self, text_ID, predicate):
     return self.__isClass(text_ID) or self.__isSubClass(text_ID) or self.__isValue(predicate)
-
-
 
   def __addItemToTree(self, internal_object, predicate, internal_subject, parent_item=None):
     object = makeRDFCompatible(internal_object)
@@ -1030,7 +1014,7 @@ class OntobuilderUI(QMainWindow):
     self.ui.listClasses.clear()
     self.ui.listClasses.addItems(self.class_path)
 
-  def __removeClassPath(self,class_ID):
+  def __removeClassPath(self, class_ID):
     class_path = []
     for c in self.class_path:
       if class_ID != c:
@@ -1039,13 +1023,11 @@ class OntobuilderUI(QMainWindow):
     self.ui.listClasses.clear()
     self.ui.listClasses.addItems(self.class_path)
 
-
   def __cutClassPath(self, cutclass):
     i = self.class_path.index(cutclass)
     self.class_path = self.class_path[:i + 1]
     self.ui.listClasses.clear()
     self.ui.listClasses.addItems(self.class_path)
-
 
   def __shiftClass(self, class_ID):
     # print("debugging ---------------")
@@ -1055,7 +1037,6 @@ class OntobuilderUI(QMainWindow):
       self.__addToClassPath(class_ID)
     else:
       self.__cutClassPath(class_ID)
-
 
   def __makeDotGraph(self):
     graph_overall = Graph()
