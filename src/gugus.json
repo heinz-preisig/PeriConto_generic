@@ -15,14 +15,14 @@
     ],
     "newclass": [
       [
-        "newclass",
-        "value",
-        "primitive"
-      ],
-      [
         "primitive",
         "string",
         "string"
+      ],
+      [
+        "newclass",
+        "value",
+        "primitive"
       ]
     ]
   },

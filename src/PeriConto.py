@@ -8,13 +8,14 @@ So the approach is to use an internal representation of the predicates and trans
 
 
 """
-
+import copy
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
 import json
 import os
 import sys
+import glob
 
 
 root = os.path.abspath(os.path.join("."))
@@ -53,15 +54,6 @@ VALUE = "value"
 PRIMITIVES = ["integer", "string", "comment"]
 ADD_ELUCIDATIONS = ["class", "subclass", VALUE]
 
-# COLOURS = {
-#         "is_a_subclass_of": QtGui.QColor(255, 255, 255, 255),
-#         "link_to_class"   : QtGui.QColor(255, 100, 5, 255),
-#         "value"           : QtGui.QColor(155, 155, 255),
-#         "comment"         : QtGui.QColor(155, 155, 255),
-#         "integer"         : QtGui.QColor(155, 155, 255),
-#         "string"          : QtGui.QColor(255, 200, 200, 255),
-#         }
-
 COLOURS = {
         "is_a_subclass_of": QtGui.QColor(0, 0, 0, 255),
         "link_to_class"   : QtGui.QColor(255, 100, 5, 255),
@@ -88,8 +80,8 @@ QBRUSHES = {"is_a_subclass_of": QtGui.QBrush(COLOURS["is_a_subclass_of"]),
             "comment"         : QtGui.QBrush(COLOURS["comment"]),
             "integer"         : QtGui.QBrush(COLOURS["integer"]),
             "string"          : QtGui.QBrush(COLOURS["string"]),
-            "selected"        : QtGui.QBrush(COLOURS["selected"]),
-            "unselect"        : QtGui.QBrush(COLOURS["unselect"])
+            # "selected"        : QtGui.QBrush(COLOURS["selected"]), # not needed auto-implemented
+            # "unselect"        : QtGui.QBrush(COLOURS["unselect"]),
             }
 
 DIRECTION = {
@@ -106,8 +98,6 @@ PRIMITIVE_COLOUR = QtGui.QColor(255, 3, 23, 255)
 
 ONTOLOGY_DIRECTORY = "../ontologyRepository"
 
-
-# TTLFile = os.path.join(ONTOLOGY_DIRECTORY, "%s.json" % "HAP")
 
 
 def plot(graph, class_names=[]):
@@ -242,12 +232,14 @@ class OntobuilderUI(QMainWindow):
     roundButton(self.ui.pushVisualise, "dot_graph", tooltip="visualise ontology")
     roundButton(self.ui.pushSave, "save", tooltip="save ontology")
     roundButton(self.ui.pushExit, "exit", tooltip="exit")
+    roundButton(self.ui.pushSaveAs, "save_as", tooltip="save with new name")
 
     self.gui_objects = {
             "load"               : self.ui.pushLoad,
             "create"             : self.ui.pushCreate,
             "visualise"          : self.ui.pushVisualise,
             "save"               : self.ui.pushSave,
+            "save_as"            : self.ui.pushSaveAs,
             "exit"               : self.ui.pushExit,
             "add_subclass"       : self.ui.pushAddSubclass,
             "add_primitive"      : self.ui.pushAddPrimitive,
@@ -298,11 +290,13 @@ class OntobuilderUI(QMainWindow):
               ]
     elif state == "show_tree":
       show = ["save",
+              "save_as",
               "exit",
               "visualise",
               ]
     elif state == "selected_subclass":
       show = ["save",
+              "save_as",
               "exit",
               "add_subclass",
               "add_primitive",
@@ -313,6 +307,7 @@ class OntobuilderUI(QMainWindow):
               ]
     elif state == "selected_root":
       show = ["save",
+              "save_as",
               "exit",
               "add_subclass",
               "add_primitive",
@@ -320,23 +315,28 @@ class OntobuilderUI(QMainWindow):
               ]
     elif state == "selected_class":
       show = ["save",
+              "save_as",
               "exit",
               "add_subclass",
               "add_primitive",
               "elucidation",
+              "remove_class",
               ]
     elif state == "selected_primitive":
       show = ["save",
+              "save_as",
               "exit",
               "remove_primitive"
               ]
     elif state == "value_selected":
       show = ["save",
+              "save_as",
               "exit",
               "elucidation",
               ]
     elif state == "no_existing_classes":
       show = ["save",
+              "save_as",
               "exit",
               "add_subclass",
               "add_primitive",
@@ -345,6 +345,7 @@ class OntobuilderUI(QMainWindow):
               ]
     elif state == "is_linked":
       show = ["save",
+              "save_as",
               "exit",
               "add_primitive",
               "elucidation",
@@ -418,33 +419,26 @@ class OntobuilderUI(QMainWindow):
       pass
 
   def on_treeClass_itemPressed(self, item, column):
-    self.on_treeClass_itemSelectionChanged()
 
-  def on_treeClass_itemSelectionChanged(self):
-    item_list = self.ui.treeClass.selectedItems()
-    # print("debugging", item_list.__class__, len(item_list))
-    if len(item_list) == 1:
-      item = item_list[0]
-    else:
-      return
-    column = 0
     text_ID = item.text(column)
+
+    self.debugging("you picked column %s with id %s"%(column,text_ID))
+
     try:
       predicate = item.predicate
     except:
       item.predicate = None
       predicate = None
-    # print("debugging -- ", text_ID)
     self.selected_item = item
-    self.debugging("column ", item.columnCount())
-    self.selected_item.setBackground(item.columnCount(),QBRUSHES["selected"])
+    self.debugging("column ", column)
+
+    item.setSelected(True)
+    # self.selected_item.setBackground(item.columnCount(),QBRUSHES["selected"])
 
     if self.previously_selected_item:
-      column = self.colorCount()
       self.debugging("column ", self.previously_selected_item.columnCount())
-      self.previously_selected_item.setBackground(column, QBRUSHES["unselect"])
+      # self.previously_selected_item.setBackground(column, QBRUSHES["unselect"])
       self.previously_selected_item = self.selected_item
-    # self.current_subclass = text_ID
 
     # if text_ID in self.class_names:
     if self.__isClass(text_ID):
@@ -492,9 +486,6 @@ class OntobuilderUI(QMainWindow):
       if not_exist:
         self.elucidations[not_exist] = ""
 
-    # def on_treeClass_itemSelectionChanged(self):
-    #   print("debugging -- selection changed")
-
     self.ui.treeClass.clearSelection()
 
   def on_treeClass_itemDoubleClicked(self, item, column):
@@ -515,6 +506,7 @@ class OntobuilderUI(QMainWindow):
       if new_name:
         self.__renameItemInGraph(ID, new_name, predicate)
       # print("debugging -- renaming")
+
   def on_pushAddSubclass_pressed(self):
     # print("debugging -- add subclass")
 
@@ -649,6 +641,51 @@ class OntobuilderUI(QMainWindow):
       self.ui.treeClass.expandAll()
       self.changed = True
 
+  def on_pushRemoveClass_pressed(self):
+
+    item = self.selected_item
+    class_ID = item.text(0)
+    self.debugging("found class to be removed")
+
+    # clean link_list
+    link_lists = {}
+    for Class in self.link_lists:
+      link_lists[Class] = []
+      for s,p,o in self.link_lists[Class]:
+        if s != class_ID:
+          link_lists[Class].append((s,p,o))
+
+      self.debugging("--new link list for class %s:"% Class, link_lists[Class])
+
+    self.link_lists = link_lists
+
+    self.class_names.remove(class_ID)
+    del self.primitives[class_ID]
+    del self.elucidations[class_ID]
+    del self.subclass_names[class_ID]
+    del self.value_names[class_ID]
+    self.__removeClassPath(class_ID)
+
+    previous_class_ID = self.class_definition_sequence.index(class_ID)
+    self.current_class_ID = self.class_definition_sequence[previous_class_ID-1]
+    self.class_definition_sequence.remove(class_ID)
+    self.debugging(("--cleaned class list"))
+    self.debugging("--cleand class sequence", self.class_definition_sequence)
+    del self.CLASSES[class_ID]
+
+    # remove links
+    rdfclass_ID = makeRDFCompatible(class_ID)
+    for Class in self.CLASSES:
+      for t in self.CLASSES[Class].triples((rdfclass_ID, None, None)):
+        self.CLASSES[Class].remove(t)
+
+    self.__createTree(self.current_class_ID)
+
+    pass
+
+    self.changed = True
+
+
   def on_listClasses_itemClicked(self, item):
     class_ID = item.text()
     # print("debugging -- ", class_ID)
@@ -662,56 +699,59 @@ class OntobuilderUI(QMainWindow):
     # NOTE: this does work fine, but one cannot read it afterwards. Issue is the parser. It assumes that the subject and
     # NOTE: object are in the namespace.
 
-    conjunctiveGraph = ConjunctiveGraph()
-    for cl in self.class_definition_sequence:
-      uri = Literal(cl)
-      for s, p, o in self.CLASSES[cl].triples((None, None, None)):
-        print(s, p, o)
-        conjunctiveGraph.get_context(uri).add((s, p, o))
-
-    print("debugging")
+    conjunctiveGraph = self.__prepareConjunctiveGraph()
 
     f = self.JsonFile.split(".")[0] + ".nqd"
-    inf = open(f, 'w')
-    inf.write(conjunctiveGraph.serialize(format="nquads"))
-    inf.close()
-
-    print("written to file ", f)
+    self.__writeQuadFile(conjunctiveGraph, f)
 
     # Note: saving it with the RDF syntax did not work for loading. Needs more reading...?
 
-    data = {}
-    graphs = {}
-    for cl in self.class_definition_sequence:
-      graphs[cl] = []
-      for s, p, o in self.CLASSES[cl].triples((None, None, None)):
-        my_p = MYTerms[p]
-        graphs[cl].append((s, my_p, o))
-
-    data["root"] = self.root_class
-    data["graphs"] = graphs
-    data["elucidations"] = self.elucidations
-
+    data = self.__prepareJsonData()
     saveWithBackup(data, self.JsonFile)
 
     dot = self.__makeDotGraph()
 
-    # graphs = Graph("Memory")
-    # for cl in self.class_definition_sequence:
-    #   # graphs[cl] = []
-    #   for t in self.CLASSES[cl].triples((None, None, None)):
-    #     graphs.add(t)
-    #
-    # self.JsonFile = self.JsonFile.split(".ttl")[0] + ".nquads"
-    #
-    # graphs.serialize(TTLFile, format="nquads")
-    # saveWithBackup(graphs, TTLFile)
-    # self.changed = False
-
     self.changed = False
 
-  # def saveAs(self):
-  #   print("not implemented")
+  def on_pushSaveAs_pressed(self):
+
+    conjunctiveGraph = self.__prepareConjunctiveGraph()
+
+
+    dialog = QFileDialog.getOpenFileName(None,
+                                         "Load Ontology",
+                                         ONTOLOGY_DIRECTORY,
+                                         "*.json",
+                                         )
+    JsonFile = dialog[0]
+    if not JsonFile:
+
+      jsonfiles = []
+      for file in glob.glob("%s/*.json" % ONTOLOGY_DIRECTORY):
+        basename = os.path.basename(file)
+        name, _ = basename.split(".")
+        jsonfiles.append(name)
+
+      dialog = UI_String("name for subclass", limiting_list=jsonfiles)
+      dialog.exec()
+      jsonfile = dialog.getText()
+      if not jsonfile:
+        return
+
+      fname = jsonfile+".json"
+      JsonFile = os.path.join(ONTOLOGY_DIRECTORY, fname)
+
+    f = JsonFile.split(".")[0] + ".nqd"
+    self.__writeQuadFile(conjunctiveGraph, f)
+
+    # Note: saving it with the RDF syntax did not work for loading. Needs more reading...?
+
+    data = self.__prepareJsonData()
+    saveWithBackup(data, JsonFile)
+
+    dot = self.__makeDotGraph()
+
+    self.changed = False
 
   def on_pushLoad_pressed(self):
     # options = QFileDialog.Options()
@@ -846,6 +886,37 @@ class OntobuilderUI(QMainWindow):
         tuples_plus.append((o, s, p))
     return tuples_plus
 
+
+  def __prepareConjunctiveGraph(self):
+    conjunctiveGraph = ConjunctiveGraph()
+    for cl in self.class_definition_sequence:
+      uri = Literal(cl)
+      for s, p, o in self.CLASSES[cl].triples((None, None, None)):
+        print(s, p, o)
+        conjunctiveGraph.get_context(uri).add((s, p, o))
+    return conjunctiveGraph
+
+
+  def __prepareJsonData(self):
+    data = {}
+    graphs = {}
+    for cl in self.class_definition_sequence:
+      graphs[cl] = []
+      for s, p, o in self.CLASSES[cl].triples((None, None, None)):
+        my_p = MYTerms[p]
+        graphs[cl].append((s, my_p, o))
+    data["root"] = self.root_class
+    data["graphs"] = graphs
+    data["elucidations"] = self.elucidations
+    return data
+
+  def __writeQuadFile(self, conjunctiveGraph, f):
+    inf = open(f, 'w')
+    inf.write(conjunctiveGraph.serialize(format="nquads"))
+    inf.close()
+    print("written to file ", f)
+
+
   def __makeTree(self, touples, origin=[], stack=[], items={}):
     for s, o, p in touples:
       if (s, o, p) not in stack:
@@ -958,6 +1029,16 @@ class OntobuilderUI(QMainWindow):
     self.class_path.append(addclass)
     self.ui.listClasses.clear()
     self.ui.listClasses.addItems(self.class_path)
+
+  def __removeClassPath(self,class_ID):
+    class_path = []
+    for c in self.class_path:
+      if class_ID != c:
+        class_path.append(c)
+    self.class_path = class_path
+    self.ui.listClasses.clear()
+    self.ui.listClasses.addItems(self.class_path)
+
 
   def __cutClassPath(self, cutclass):
     i = self.class_path.index(cutclass)

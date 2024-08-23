@@ -3,26 +3,26 @@
   "graphs": {
     "simple": [
       [
-        "subclass",
-        "is_a_subclass_of",
-        "simple"
-      ],
-      [
         "newclass",
         "link_to_class",
         "subclass"
+      ],
+      [
+        "subclass",
+        "is_a_subclass_of",
+        "simple"
       ]
     ],
     "newclass": [
       [
-        "newclass",
-        "value",
-        "primitive"
-      ],
-      [
         "primitive",
         "string",
         "string"
+      ],
+      [
+        "newclass",
+        "value",
+        "primitive"
       ]
     ]
   },
