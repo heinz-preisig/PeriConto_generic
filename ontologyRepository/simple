@@ -1,26 +1,14 @@
 digraph {
-	newclass [color=red shape=rectangle]
+	string [color=green fillcolor=gray shape=none style=filled]
+	string
+	primitive -> string [color=cyan]
 	subclass
-	newclass -> subclass [color=red]
-	hello
-	gugus
-	hello -> gugus [color=blue]
+	simple [fillcolor=red shape=none style=filled]
+	subclass -> simple [color=blue]
 	newclass [color=red shape=rectangle]
 	primitive
 	newclass -> primitive [color=black]
 	newclass [color=red shape=rectangle]
-	hello
-	newclass -> hello [color=red]
-	gugus
-	simple [fillcolor=red shape=none style=filled]
-	gugus -> simple [color=blue]
-	newclass [color=red shape=rectangle]
-	gugus
-	newclass -> gugus [color=red]
 	subclass
-	simple [fillcolor=red shape=none style=filled]
-	subclass -> simple [color=blue]
-	string [color=green fillcolor=gray shape=none style=filled]
-	string
-	primitive -> string [color=cyan]
+	newclass -> subclass [color=red]
 }
