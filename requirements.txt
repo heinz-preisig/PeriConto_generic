@@ -337,7 +337,6 @@ toml @ file:///tmp/build/80754af9/toml_1616166611790/work
 tomlkit @ file:///work/ci_py311/tomlkit_1676823218885/work
 toolz @ file:///work/ci_py311/toolz_1676827522705/work
 tornado @ file:///croot/tornado_1690848263220/work
-TPG==3.2.4
 tqdm @ file:///croot/tqdm_1679561862951/work
 traitlets @ file:///work/ci_py311/traitlets_1676823305040/work
 transformers @ file:///croot/transformers_1693308319445/work

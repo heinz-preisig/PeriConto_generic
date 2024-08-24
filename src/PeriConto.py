@@ -8,6 +8,7 @@ So the approach is to use an internal representation of the predicates and trans
 
 
 """
+import copy
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
@@ -19,7 +20,7 @@ import sys
 root = os.path.abspath(os.path.join("."))
 sys.path.extend([root, os.path.join(root, 'resources')])
 
-from PyQt6 import QtGui
+from PyQt6 import QtGui, QtCore
 from PyQt6.QtWidgets import *
 from graphviz import Digraph
 from rdflib import ConjunctiveGraph
@@ -220,6 +221,8 @@ class OntobuilderUI(QMainWindow):
     super(OntobuilderUI, self).__init__()
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
+
+    self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
 
     self.DEBUGG = True
 
@@ -500,7 +503,7 @@ class OntobuilderUI(QMainWindow):
       new_name = dialog.getText()
       if new_name:
         self.__renameItemInGraph(ID, new_name, predicate)
-      # print("debugging -- renaming")
+      # print("debugging -- renaming")F
 
   def on_pushAddSubclass_pressed(self):
     # print("debugging -- add subclass")
@@ -642,41 +645,29 @@ class OntobuilderUI(QMainWindow):
     self.debugging("found class to be removed")
 
     # clean link_list
-    link_lists = self.__removeLinkFromLinkList(class_ID)
+    self.__removeClass(class_ID)
 
-    self.link_lists = link_lists
 
-    self.class_names.remove(class_ID)
-    del self.primitives[class_ID]
-    del self.elucidations[class_ID]
-    del self.subclass_names[class_ID]
-    del self.value_names[class_ID]
-    self.__removeClassPath(class_ID)
+  def on_pushRemoveClassLink_pressed(self):
+    Class = self.current_class
+    subclass = self.current_subclass
+    self.__removeLinkFromLinkList(subclass)
+    subclass_id = self.current_subclass
 
-    previous_class_ID = self.class_definition_sequence.index(class_ID)
-    self.current_class_ID = self.class_definition_sequence[previous_class_ID - 1]
-    self.class_definition_sequence.remove(class_ID)
-    self.debugging(("--cleaned class list"))
-    self.debugging("--cleand class sequence", self.class_definition_sequence)
-    del self.CLASSES[class_ID]
+    object = makeRDFCompatible(subclass_id)
+    triple = (None, RDFSTerms["link_to_class"], object)
+    removed_classs = set()
+    for t in self.CLASSES[Class].triples(triple):
+      self.CLASSES[Class].remove(t)
+      removed_classs.add(str(t[0]))
 
-    # remove links
-    rdfclass_ID = makeRDFCompatible(class_ID)
-    for Class in self.CLASSES:
-      for t in self.CLASSES[Class].triples((rdfclass_ID, None, None)):
-        self.CLASSES[Class].remove(t)
+    self.__checkForUnusedClasses(removed_classs)
 
-    self.__createTree(self.current_class_ID)
+    self.__createTree(self.current_class)
+
 
     pass
 
-    self.changed = True
-
-  def on_pushRemoveClassLink_pressed(self):
-    self.__removeLinkFromLinkList()
-    Class = self.current_class_ID
-
-    # for t in self.CLASSES[Class].triples(())
 
   def on_pushSave_pressed(self):
     # print("debugging -- pushSave")
@@ -860,7 +851,7 @@ class OntobuilderUI(QMainWindow):
 
   def __prepareTree(self, origin):
     graph = self.CLASSES[self.current_class]
-    # print(graph.serialize(format='turtle'))
+    print(graph.serialize(format='turtle'))
     # print("debugging", origin)
     tuples_plus = []
     for subject, predicate, object_ in graph.triples((None, None, None)):
@@ -894,6 +885,66 @@ class OntobuilderUI(QMainWindow):
     data["graphs"] = graphs
     data["elucidations"] = self.elucidations
     return data
+
+  def __removeClass(self, class_ID):
+    link_lists = self.__removeLinkFromLinkList(class_ID)
+    self.link_lists = link_lists
+    self.class_names.remove(class_ID)
+    del self.primitives[class_ID]
+    del self.elucidations[class_ID]
+    del self.subclass_names[class_ID]
+    del self.value_names[class_ID]
+    self.__removeClassPath(class_ID)
+    previous_class = self.class_definition_sequence.index(class_ID)
+    self.current_class = self.class_definition_sequence[previous_class - 1]
+    self.class_definition_sequence.remove(class_ID)
+    self.debugging(("--cleaned class list"))
+    self.debugging("--cleand class sequence", self.class_definition_sequence)
+    del self.CLASSES[class_ID]
+    # remove links
+    rdfclass_ID = makeRDFCompatible(class_ID)
+    for Class in self.CLASSES:
+      for t in self.CLASSES[Class].triples((rdfclass_ID, None, None)):
+        self.CLASSES[Class].remove(t)
+    self.__createTree(self.current_class)
+    pass
+
+    # clean out elucidations associated with the deleted class
+    elucidations = copy.copy(self.elucidations)
+    for e in elucidations:
+      if class_ID in e:
+        del self.elucidations[e]
+
+
+    self.changed = True
+
+
+  def __checkForUnusedClasses(self, removed_classs):
+    current_set_of_classes = set(self.CLASSES.keys())
+    used_classes_set = set([])
+    for c in current_set_of_classes:
+      if c not in removed_classs:
+        for s, p, o in self.CLASSES[c].triples((None, None, None)):
+          if (str(s) in current_set_of_classes) or (str(o) in current_set_of_classes):
+            used_classes_set.add(c)
+    # not used classes:
+    not_used_classes = current_set_of_classes - used_classes_set
+    print("not used set of classes: ", not_used_classes)
+
+    to_remove_classes = set()
+
+    not_used_classes = not_used_classes
+    for c in not_used_classes:
+      untreated_classes = not_used_classes - to_remove_classes
+      dialog = UI_stringSelector("you got unused classes -- select the one you want to delete or cancel", untreated_classes)
+      dialog.exec()
+      selection = dialog.getSelection()
+      if selection:
+        self.__removeClass(selection)
+        untreated_classes.remove(selection)
+      else:
+        break
+
 
   def __writeQuadFile(self, conjunctiveGraph, f):
     inf = open(f, 'w')

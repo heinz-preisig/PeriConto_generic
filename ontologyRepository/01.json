@@ -1,0 +1,22 @@
+{
+  "root": "simple",
+  "graphs": {
+    "simple": [
+      [
+        "subclass",
+        "is_a_subclass_of",
+        "simple"
+      ],
+      [
+        "subclass2",
+        "is_a_subclass_of",
+        "simple"
+      ]
+    ]
+  },
+  "elucidations": {
+    "simple": "",
+    "simple.subclass": null,
+    "simple.subclass2": null
+  }
+}

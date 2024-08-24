@@ -75,3 +75,15 @@ class UI_stringSelector(QtWidgets.QDialog):
 
 
 
+
+if __name__ == '__main__':
+
+
+  a = QtWidgets.QApplication([])
+
+  w = UI_stringSelector("select", set(["jacob","give name", "name"]))
+  w.setModal(True)
+  w.show()
+  r = w.getSelection()
+  print(r)
+  a.exec()
