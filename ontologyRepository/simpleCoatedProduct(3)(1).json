@@ -5,7 +5,37 @@
       [
         "ChemicalComponent",
         "link_to_class",
+        "PreTreatmentLayer"
+      ],
+      [
+        "ChemicalComponent",
+        "link_to_class",
+        "Pigment"
+      ],
+      [
+        "ChemicalComponent",
+        "link_to_class",
         "Substrate"
+      ],
+      [
+        "Layers",
+        "is_a_subclass_of",
+        "simpleCoatedProduct"
+      ],
+      [
+        "PreTreatmentLayer",
+        "is_a_subclass_of",
+        "Layers"
+      ],
+      [
+        "Binder",
+        "is_a_subclass_of",
+        "Coating"
+      ],
+      [
+        "ChemicalComponent",
+        "link_to_class",
+        "Binder"
       ],
       [
         "Coating",
@@ -18,39 +48,9 @@
         "Coating"
       ],
       [
-        "ChemicalComponent",
-        "link_to_class",
-        "Binder"
-      ],
-      [
-        "PreTreatmentLayer",
-        "is_a_subclass_of",
-        "Layers"
-      ],
-      [
         "Substrate",
         "is_a_subclass_of",
         "simpleCoatedProduct"
-      ],
-      [
-        "Layers",
-        "is_a_subclass_of",
-        "simpleCoatedProduct"
-      ],
-      [
-        "Binder",
-        "is_a_subclass_of",
-        "Coating"
-      ],
-      [
-        "ChemicalComponent",
-        "link_to_class",
-        "PreTreatmentLayer"
-      ],
-      [
-        "ChemicalComponent",
-        "link_to_class",
-        "Pigment"
       ]
     ],
     "ChemicalComponent": [
@@ -65,14 +65,14 @@
         "URL"
       ],
       [
-        "URL",
-        "string",
-        "string"
-      ],
-      [
         "ChemicalComponent",
         "value",
         "Volume"
+      ],
+      [
+        "URL",
+        "string",
+        "string"
       ]
     ]
   },

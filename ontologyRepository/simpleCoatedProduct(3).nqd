@@ -1,0 +1,15 @@
+"ChemicalComponent" <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> "Substrate" <simpleCoatedProduct> .
+"Pigment" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "Coating" <simpleCoatedProduct> .
+"Coating" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "Layers" <simpleCoatedProduct> .
+"ChemicalComponent" <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> "Binder" <simpleCoatedProduct> .
+"PreTreatmentLayer" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "Layers" <simpleCoatedProduct> .
+"Substrate" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "simpleCoatedProduct" <simpleCoatedProduct> .
+"Layers" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "simpleCoatedProduct" <simpleCoatedProduct> .
+"Binder" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "Coating" <simpleCoatedProduct> .
+"ChemicalComponent" <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> "PreTreatmentLayer" <simpleCoatedProduct> .
+"ChemicalComponent" <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> "Pigment" <simpleCoatedProduct> .
+"Volume" <http://www.w3.org/2001/XMLSchema#integer> "integer" <ChemicalComponent> .
+"ChemicalComponent" <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "URL" <ChemicalComponent> .
+"URL" <http://www.w3.org/2001/XMLSchema#string> "string" <ChemicalComponent> .
+"ChemicalComponent" <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "Volume" <ChemicalComponent> .
+
