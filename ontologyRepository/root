@@ -1,0 +1,11 @@
+digraph {
+	subsubclass [color=red shape=rectangle]
+	subclass [fillcolor=lightcoral shape=none style=filled]
+	subsubclass -> subclass [color=blue]
+	subclass [color=red shape=rectangle]
+	root
+	subclass -> root [color=blue]
+	newclass [color=red shape=rectangle]
+	subsubclass [fillcolor=red shape=none style=filled]
+	newclass -> subsubclass [color=red]
+}

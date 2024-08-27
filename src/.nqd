@@ -1,4 +1,0 @@
-"newclass" <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> "subclass" <simple> .
-"subclass" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "simple" <simple> .
-"subclass2" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "newclass" <newclass> .
-

@@ -1,0 +1,4 @@
+"kk" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "root" <root> .
+"o" <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> "kk" <root> .
+"ll" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "o" <o> .
+

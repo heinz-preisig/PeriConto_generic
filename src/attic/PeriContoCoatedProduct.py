@@ -25,7 +25,7 @@ from rdflib import Literal
 from PeriConto import COLOURS
 from PeriConto import LINK_COLOUR
 from PeriConto import MYTerms
-from PeriConto import ONTOLOGY_DIRECTORY
+from PeriConto import ONTOLOGY_REPOSITORY
 from PeriConto import PRIMITIVES
 from PeriConto import PRIMITIVE_COLOUR
 from PeriConto import RDFSTerms
@@ -254,7 +254,7 @@ class CoatedProduct(QMainWindow):
     name = dialog.getText()
     if name:
       fname = name.split(".")[0] + ".json"
-      self.JsonFile = os.path.join(ONTOLOGY_DIRECTORY, fname)
+      self.JsonFile = os.path.join(ONTOLOGY_REPOSITORY, fname)
     else:
       self.close()
 
@@ -742,7 +742,7 @@ class CoatedProduct(QMainWindow):
   def on_pushLoad_pressed(self):
     dialog = QFileDialog.getOpenFileName(None,
                                          "Load Ontology",
-                                         ONTOLOGY_DIRECTORY,
+                                         ONTOLOGY_REPOSITORY,
                                          "*.json",
                                          )
     self.JsonFile = dialog[0]
@@ -822,7 +822,7 @@ class CoatedProduct(QMainWindow):
     dot = plot(graph_overall, self.class_names)
     # print("debugging -- dot")
     graph_name = self.root_class
-    dot.render(graph_name, directory=ONTOLOGY_DIRECTORY)
+    dot.render(graph_name, directory=ONTOLOGY_REPOSITORY)
     return dot
 
 

@@ -33,7 +33,7 @@ from treeid import ObjectTreeNonUniqueTags, invertDict
 import graphviz
 
 from PeriConto import MYTerms
-from PeriConto import ONTOLOGY_DIRECTORY
+from PeriConto import ONTOLOGY_REPOSITORY
 from PeriConto import PRIMITIVES
 from PeriConto import RDFSTerms
 from PeriConto import VALUE
@@ -920,11 +920,11 @@ class WorkingTree(SuperGraph):
     class_names = list(self.RDFConjunctiveGraph.keys())
     dot = plotQuads(graph_overall, class_names)
     graph_name = self.txt_root_class
-    dot.render(graph_name, directory=ONTOLOGY_DIRECTORY, view=True)
-    if not os.path.exists(os.path.join(ONTOLOGY_DIRECTORY, "legend.pdf")):
+    dot.render(graph_name, directory=ONTOLOGY_REPOSITORY, view=True)
+    if not os.path.exists(os.path.join(ONTOLOGY_REPOSITORY, "legend.pdf")):
       # TODO: add button for legend
       leg = LegendPlot()
-      leg.render("legend", directory=ONTOLOGY_DIRECTORY, view=True)
+      leg.render("legend", directory=ONTOLOGY_REPOSITORY, view=True)
     return dot
 
   def collectGraphs(self):
@@ -1057,7 +1057,7 @@ class BackEnd:
 
     self.FrontEnd.fileNameDialogOpen(state, "file_name",
                                  "ontology",
-                                 ONTOLOGY_DIRECTORY,
+                                     ONTOLOGY_REPOSITORY,
                                  "*.json",
                                  "exit")
 
@@ -1069,7 +1069,7 @@ class BackEnd:
 
     self.FrontEnd.fileNameDialogOpen(state, "file_name",
                                  "instantiate knowledge graph",
-                                 ONTOLOGY_DIRECTORY,
+                                     ONTOLOGY_REPOSITORY,
                                  "*.ttl",
                                  "exit")
 
@@ -1081,7 +1081,7 @@ class BackEnd:
 
     self.FrontEnd.fileNameDialogSave(state, "file_name",
                                  "ontology",
-                                 ONTOLOGY_DIRECTORY,
+                                     ONTOLOGY_REPOSITORY,
                                  "*.ttl",
                                  "exit")
 
@@ -1099,7 +1099,7 @@ class BackEnd:
     global current_event_data
     filename_save = current_event_data["file_name"]
 
-    self.ttlFile = os.path.join(ONTOLOGY_DIRECTORY, filename_save)
+    self.ttlFile = os.path.join(ONTOLOGY_REPOSITORY, filename_save)
     print('printing filepath to save ttl..', self.ttlFile)
     current_kg = self.ContainerGraph.to_rdflibConjunctiveGraph()
     

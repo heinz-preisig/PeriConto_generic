@@ -1,0 +1,28 @@
+{
+  "root": "root",
+  "graphs": {
+    "root": [
+      [
+        "subsubclass",
+        "is_a_subclass_of",
+        "subclass"
+      ],
+      [
+        "newclass",
+        "link_to_class",
+        "subsubclass"
+      ],
+      [
+        "subclass",
+        "is_a_subclass_of",
+        "root"
+      ]
+    ],
+    "newclass": []
+  },
+  "elucidations": {
+    "root.subclass": null,
+    "root.subsubclass": null,
+    "newclass": null
+  }
+}

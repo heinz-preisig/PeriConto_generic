@@ -1,0 +1,4 @@
+"subsubclass" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "subclass" <root> .
+"subclass" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "root" <root> .
+"newClass" <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> "subsubclass" <root> .
+

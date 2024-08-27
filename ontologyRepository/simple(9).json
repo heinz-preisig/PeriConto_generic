@@ -3,14 +3,14 @@
   "graphs": {
     "simple": [
       [
-        "subclass2",
-        "is_a_subclass_of",
-        "simple"
-      ],
-      [
         "newclass",
         "link_to_class",
         "subclass"
+      ],
+      [
+        "subclass2",
+        "is_a_subclass_of",
+        "simple"
       ],
       [
         "subclass",
