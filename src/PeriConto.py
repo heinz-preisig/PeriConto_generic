@@ -46,7 +46,7 @@ from resources.ui_single_list_selector_impl import UI_stringSelector
 
 RDFS = namespace.RDFS
 BASE = "http://example.org"
-PERICONTO = BASE + "#"
+PERICONTO = BASE
 
 ONTOLOGY_REPOSITORY = "../ontologyRepository"
 ROOTCLASS ="root"
@@ -64,9 +64,8 @@ RDFSTerms = {
 
 MYTerms = {v: k for k, v in RDFSTerms.items()}
 
-VALUE = "value"
 PRIMITIVES = ["integer", "string", "comment"]
-ADD_ELUCIDATIONS = ["class", "subclass", VALUE]
+ADD_ELUCIDATIONS = ["class", "subclass", "value"]
 
 COLOURS = {
         "is_a_subclass_of": QtGui.QColor(0, 0, 0, 255),
@@ -223,7 +222,7 @@ def getData(file_spec):
     return None
 
 
-def makeRDFCompatible(identifier):
+def makeRDFCompatible(identifier):  #TODO remove
   """
   To be adapted to imported notation.
   For now it generates rdflib Literals
@@ -231,18 +230,18 @@ def makeRDFCompatible(identifier):
   return Literal(identifier)
 
 def makeURI(identifier):
-  uri = URIRef(PERICONTO + identifier)
+  uri = URIRef(PERICONTO + ":" + identifier)
   print("uri: ", identifier, "-->", uri)
   return uri
 
 class DataModel():
   def __init__(self):
-    self.namespaces = {"periconto" : Namespace(PERICONTO)}
+    self.namespaces = {ROOTCLASS : Namespace(PERICONTO)}
 
     self.GRAPHS = {}
-    self.addClass(ROOTCLASS)#{ROOTCLASS: Graph('Memory', Literal(ROOTCLASS))}
-    self.ELUCIDATIONS = {(makeURI(ROOTCLASS), RDFSTerms["comment"], Literal("root class"))}
-
+    self.addClass(ROOTCLASS)
+    triple = (makeURI(ROOTCLASS), RDFSTerms["comment"], Literal("root class"))
+    self.GRAPHS[ROOTCLASS].add(triple)
 
   def __makeURIForClass(self, name):
     return URIRef(PERICONTO  + name)
@@ -262,21 +261,23 @@ class DataModel():
     triple = (None, RDFSTerms["integer"], None)
     return [o for s,p,o in self.GRAPHS[Class].triples(triple)]
 
-  def getElucidationList(self, Class):
-    triple = (None, RDFSTerms["comment"], None)
-    return [s for s,p,o in self.GRAPHS[Class].triples(triple)]
-
-  def getElucidation(self, Class, name):
-    self.__makeURIForClass(name)
-    triple = (None,RDFSTerms["comment"], None)
-
   def getStringList(self, Class):
     triple = (None,RDFSTerms["string"], None)
     return [s for s,p,o in self.GRAPHS[Class].triples(triple)]
 
+  def getValueList(self, Class):
+    triple = (None, RDFSTerms["value"], None)
+    return [s for s,p,o in self.GRAPHS[Class].triples(triple)]
+
+
+  def getElucidationList(self, Class):
+    triple = (None,RDFSTerms["comment"], None)
+    return [s for s,p,o in self.GRAPHS[Class].triples(triple)]
+
+
   def getAllNames(self):
     triple = (None,None,None)
-    return [str(s).split("#")[1] for c in self.GRAPHS for s,p,o in self.GRAPHS[c].triples(triple)]
+    return [str(s).split(":")[-1] for c in self.GRAPHS for s,p,o in self.GRAPHS[c].triples(triple)]
 
   def addClass(self, Class):
     uri = makeURI(Class)
@@ -320,21 +321,40 @@ class DataModel():
     return makeURI(name) in self.getLinkList(Class)
 
   def isPrimitive(self, Class, name):
+    return (self.isInteger(Class, name)
+            or self.isString(Class, name)
+            or self.isElucidation(Class,name)
+            )
+
+
+  def isInteger(self, Class, name):
     uri = makeURI(name)
-    return ((uri in self.getIntegerList(Class))
-            or
-            (uri in self.getStringList(Class)))
+    return uri in self.getIntegerList(Class)
+
+  def isString(self, Class, name):
+    uri = makeURI(name)
+    return uri in self.getStringList(Class)
+
+  def isElucidation(self, Class, name):
+    uri = makeURI(name)
+    return (uri in self.getElucidationList(Class))
+
+  def isValue(self, Class, name):
+    uri = makeURI(name)
+    return (uri in self.getValueList(Class))
 
 
 
 
 class OntobuilderUI(QMainWindow):
   def __init__(self):
-    super(OntobuilderUI, self).__init__()
+    # super(OntobuilderUI, self).__init__()
+    # super(QMainWindow, self).__init__()
+    QMainWindow.__init__(self)
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
 
-    self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
+    self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)   #???
 
     self.DEBUGG = True
 
@@ -513,7 +533,7 @@ class OntobuilderUI(QMainWindow):
 
     self.ui.pushAddElucidation.show()
 
-  def on_pushAddElucidation_pressed(self):
+  def on_pushAddElucidation_pressed(self):  #TODO: fix
     self.load_elucidation = True
     self.ui.pushAddElucidation.hide()
     text_ID = self.selected_item.text(0)
@@ -578,7 +598,7 @@ class OntobuilderUI(QMainWindow):
     else:
       print("should not come here")
 
-    if self.dataModel.getElucidation(self.current_class, text_ID):
+    if self.dataModel.getElucidationList(self.current_class):
       self.ui.pushAddElucidation.hide()
       self.load_elucidation = True
       p = self.__makePathName(text_ID)
@@ -953,10 +973,10 @@ class OntobuilderUI(QMainWindow):
     # print("debugging", origin)
     tuples_plus = []
     for subject, predicate, object_ in graph.triples((None, None, None)):
-      _,s = str(subject).split("#")
+      s = str(subject).split(":")[-1]
       p = MYTerms[predicate]
-      _,o = str(object_).split("#")
-      if p not in ["value"] + PRIMITIVES:
+      o = str(object_).split(":")[-1]
+      if p not in PRIMITIVES:
         tuples_plus.append((s, o, p))
       else:
         tuples_plus.append((o, s, p))
