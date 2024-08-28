@@ -4,14 +4,14 @@
 ns1:root {
     ns1:root a rdfs:Class .
 
-    ns1:k rdfs:subClassOf ns1:root .
+    ns1:kk rdfs:subClassOf ns1:root .
 
-    ns1:o ns1:k rdfs:isDefinedBy .
+    ns1:o ns1:kk rdfs:isDefinedBy .
 }
 
 ns1:o {
     ns1:o a rdfs:Class .
 
-    ns1:kk rdfs:subClassOf ns1:o .
+    ns1:kkk rdfs:subClassOf ns1:o .
 }
 

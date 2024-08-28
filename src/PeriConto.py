@@ -17,6 +17,8 @@ import json
 import os
 import sys
 
+from rdflib import Namespace
+
 root = os.path.abspath(os.path.join("."))
 sys.path.extend([root, os.path.join(root, 'resources')])
 
@@ -44,7 +46,7 @@ from resources.ui_single_list_selector_impl import UI_stringSelector
 
 RDFS = namespace.RDFS
 BASE = "http://example.org"
-DIGIPASS = BASE + "#"
+PERICONTO = BASE + "#"
 
 ONTOLOGY_REPOSITORY = "../ontologyRepository"
 ROOTCLASS ="root"
@@ -229,20 +231,21 @@ def makeRDFCompatible(identifier):
   return Literal(identifier)
 
 def makeURI(identifier):
-  uri = URIRef(DIGIPASS + identifier)
+  uri = URIRef(PERICONTO + identifier)
   print("uri: ", identifier, "-->", uri)
   return uri
 
 class DataModel():
   def __init__(self):
-    # self.RDFCLASSES = {}
+    self.namespaces = {"periconto" : Namespace(PERICONTO)}
+
     self.GRAPHS = {}
     self.addClass(ROOTCLASS)#{ROOTCLASS: Graph('Memory', Literal(ROOTCLASS))}
     self.ELUCIDATIONS = {(makeURI(ROOTCLASS), RDFSTerms["comment"], Literal("root class"))}
 
 
   def __makeURIForClass(self, name):
-    return URIRef(DIGIPASS + "#" + name)
+    return URIRef(PERICONTO  + name)
 
   def getClassNamesList(self):
     return list(self.GRAPHS.keys())
@@ -278,6 +281,7 @@ class DataModel():
   def addClass(self, Class):
     uri = makeURI(Class)
     self.GRAPHS[Class] = Graph("Memory", uri)
+    # self.GRAPHS[Class].bind("periconto",self.namespaces["periconto"])
     triple = (uri, RDFSTerms["is_type"], RDFSTerms["class"])
     self.GRAPHS[Class].add(triple)
     return self.getClassNamesList()
@@ -768,7 +772,7 @@ class OntobuilderUI(QMainWindow):
 
     conjunctiveGraph = self.__prepareConjunctiveGraph()
 
-    f = self.project_file_name.split(".")[0] + ".nqd"
+    f = self.project_file_name.split(".")[0] + ".trig"
     f_name = os.path.join(ONTOLOGY_REPOSITORY, f)
     self.__writeQuadFile(conjunctiveGraph, f_name)
 
@@ -1043,7 +1047,7 @@ class OntobuilderUI(QMainWindow):
 
   def __writeQuadFile(self, conjunctiveGraph, f):
     inf = open(f, 'w')
-    inf.write(conjunctiveGraph.serialize(format="nquads"))
+    inf.write(conjunctiveGraph.serialize(format="trig")) #"nquads"))
     inf.close()
     print("written to file ", f)
 
