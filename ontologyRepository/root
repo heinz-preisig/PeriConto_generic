@@ -1,11 +1,17 @@
 digraph {
-	subsubclass [color=red shape=rectangle]
-	subclass [fillcolor=lightcoral shape=none style=filled]
-	subsubclass -> subclass [color=blue]
-	subclass [color=red shape=rectangle]
-	root
-	subclass -> root [color=blue]
-	newclass [color=red shape=rectangle]
-	subsubclass [fillcolor=red shape=none style=filled]
-	newclass -> subsubclass [color=red]
+	"http-//example.org/o" [color=red shape=rectangle]
+	"http-//www.w3.org/2000/01/rdf-schema#Class"
+	"http-//example.org/o" -> "http-//www.w3.org/2000/01/rdf-schema#Class" [color=orange]
+	"http-//example.org/root#o"
+	"http-//example.org/root#k"
+	"http-//example.org/root#o" -> "http-//example.org/root#k" [color=red]
+	"http-//example.org/root#k"
+	"http-//example.org/root#root"
+	"http-//example.org/root#k" -> "http-//example.org/root#root" [color=blue]
+	"http-//example.org/o#k"
+	"http-//example.org/o#o"
+	"http-//example.org/o#k" -> "http-//example.org/o#o" [color=blue]
+	"http-//example.org/root" [color=red shape=rectangle]
+	"http-//www.w3.org/2000/01/rdf-schema#Class"
+	"http-//example.org/root" -> "http-//www.w3.org/2000/01/rdf-schema#Class" [color=orange]
 }

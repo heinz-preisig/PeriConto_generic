@@ -44,8 +44,9 @@ from resources.ui_single_list_selector_impl import UI_stringSelector
 
 RDFS = namespace.RDFS
 BASE = "http://example.org"
-CLASS_SEPERATOR = "#"
-PERICONTO = BASE + CLASS_SEPERATOR
+ITEM_SEPARATOR = "#"
+CLASS_SEPARATOR = "/"
+PERICONTO = BASE + ITEM_SEPARATOR
 
 ONTOLOGY_REPOSITORY = "../ontologyRepository"
 ROOTCLASS = "root"
@@ -87,6 +88,7 @@ EDGE_COLOUR = {
         "comment"         : "green",
         "integer"         : "darkorange",
         "string"          : "cyan",
+        "type"            : "orange",
         }
 
 QBRUSHES = {
@@ -107,14 +109,18 @@ DIRECTION = {
         "comment"         : -1,
         "integer"         : -1,
         "string"          : -1,
+        "type"            : -1,
         }
 
 LINK_COLOUR = QtGui.QColor(255, 100, 5, 255)
 PRIMITIVE_COLOUR = QtGui.QColor(255, 3, 23, 255)
 
 
-def extractNameFromClassURI(uri):
-  return uri.split(CLASS_SEPERATOR)[-1]
+def extract_name_from_class_uri(uri):
+  return uri.split(ITEM_SEPARATOR)[-1]
+
+def extract_class_name(uri):
+  return uri.split(CLASS_SEPARATOR)[-1]
 
 
 def plot(graph, class_names=[]):
@@ -265,23 +271,23 @@ class DataModel():
 
   def getSubClassList(self, Class):
     triple = (None, RDFSTerms["is_a_subclass_of"], None)
-    return [s for s, p, o in self.GRAPHS[Class].triples(triple)]
+    return [extract_name_from_class_uri(s) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
   def getLinkList(self, Class):
     triple = (None, RDFSTerms["link_to_class"], None)
-    return [o for s, p, o in self.GRAPHS[Class].triples(triple)]
+    return [extract_name_from_class_uri(o) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
   def getIntegerList(self, Class):
     triple = (None, RDFSTerms["integer"], None)
-    return [o for s, p, o in self.GRAPHS[Class].triples(triple)]
+    return [extract_name_from_class_uri(o) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
   def getStringList(self, Class):
     triple = (None, RDFSTerms["string"], None)
-    return [s for s, p, o in self.GRAPHS[Class].triples(triple)]
+    return [extract_name_from_class_uri(s) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
   def getValueList(self, Class):
     triple = (None, RDFSTerms["value"], None)
-    return [s for s, p, o in self.GRAPHS[Class].triples(triple)]
+    return [extract_name_from_class_uri(s) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
   def getElucidationList(self, Class):
     triple = (None, RDFSTerms["comment"], None)
@@ -289,7 +295,7 @@ class DataModel():
 
   def getAllNames(self, Class):
     triple = (None, None, None)
-    return [extractNameFromClassURI(s) for s, p, o in self.GRAPHS[Class].triples(triple)]
+    return [extract_name_from_class_uri(s) for s, p, o in self.GRAPHS[Class].triples(triple)]
     # return [str(s).split(":")[-1] for c in self.GRAPHS for s,p,o in self.GRAPHS[c].triples(triple)]
 
   def addClass(self, Class):
@@ -333,9 +339,34 @@ class DataModel():
     object = self.makeURI(Class, subClass)
     triple = (None, RDFSTerms["link_to_class"], object)
     for s, p, o in self.GRAPHS[Class].triples(triple):
-      subject = extractNameFromClassURI(s)
+      subject = extract_name_from_class_uri(s)
     self.GRAPHS[Class].remove(triple)
     return subject
+
+  def removePrimitive(self, Class, primitive):
+    # subject = self.makeURI(Class, primitive)
+    if self.isInteger(Class, primitive):
+      predicate_ID = "integer"
+    elif self.isString(Class, primitive ):
+      predicate_ID = "string"
+    elif self.isElucidation(Class, primitive):
+      predicate_ID = "comment"
+    else:
+      return
+    subject = self.makeURI(Class, primitive)
+    triple = (subject, RDFSTerms[predicate_ID], None)
+    for t in self.GRAPHS[Class].triples(triple):
+      self.GRAPHS[Class].remove(t)
+
+    if self.isValue(Class, primitive):
+      predicate_ID = "value"
+      self.__removePrimitive(Class, predicate_ID, primitive)
+
+  def __removePrimitive(self, Class, predicate_ID, primitive):
+    subject = self.makeURI(Class, primitive)
+    triple = (subject, RDFSTerms[predicate_ID], None)
+    for t in self.GRAPHS[Class].triples(triple):
+      self.GRAPHS[Class].remove(t)
 
   def isRoot(self, name):
     return name == ROOTCLASS
@@ -346,10 +377,10 @@ class DataModel():
 
   def isSubClass(self, Class, name):
     l = self.getSubClassList(Class)
-    return self.makeURI(Class, name) in l
+    return name in l
 
   def isLinkedWidth(self, Class, name):
-    return self.makeURI(Class, name) in self.getLinkList(Class)
+    return name in self.getLinkList(Class)
 
   def isPrimitive(self, Class, name):
     return (self.isInteger(Class, name)
@@ -358,20 +389,17 @@ class DataModel():
             )
 
   def isInteger(self, Class, name):
-    uri = self.makeURI(Class, name)
-    return uri in self.getIntegerList(Class)
+    return name in self.getIntegerList(Class)
 
   def isString(self, Class, name):
-    uri = self.makeURI(Class, name)
-    return uri in self.getStringList(Class)
+    return name in self.getStringList(Class)
 
   def isElucidation(self, Class, name):
     uri = self.makeURI(Class, name)
     return (uri in self.getElucidationList(Class))
 
   def isValue(self, Class, name):
-    uri = self.makeURI(Class, name)
-    return (uri in self.getValueList(Class))
+    return name in self.getValueList(Class)
 
   def whatIsThis(self, Class, name):
     if self.isInteger(Class, name): return "integer"
@@ -430,7 +458,7 @@ class OntobuilderUI(QMainWindow):
 
     self.__ui_state("start")
     self.current_class = None
-    self.current_class_or_subclass = None
+    self.current_item_ID = None
     self.class_path = []
     self.elucidations = {}
     self.selected_item = None
@@ -566,6 +594,8 @@ class OntobuilderUI(QMainWindow):
 
     text_ID = item.text(column)
 
+    self.current_item_ID = text_ID
+
     self.debugging("you picked column %s with id %s" % (column, text_ID),
                    self.dataModel.whatIsThis(self.current_class, text_ID))
 
@@ -589,7 +619,6 @@ class OntobuilderUI(QMainWindow):
     if self.dataModel.isClass(text_ID):
       self.debugging("-- is class", text_ID)
       self.__ui_state("selected_class")
-      self.current_class_or_subclass = text_ID
       if self.current_class != text_ID:
         self.__shiftClass(text_ID)
       if self.dataModel.isRoot(text_ID):
@@ -598,26 +627,24 @@ class OntobuilderUI(QMainWindow):
     elif self.dataModel.isLinkedWidth(self.current_class, text_ID):
       self.debugging("-- is linked", text_ID)
       self.__ui_state("is_linked")
-      self.current_class_or_subclass = text_ID
     elif self.dataModel.isSubClass(self.current_class, text_ID):
       self.debugging("-- it is a subclass", text_ID)
       self.__ui_state("selected_subclass")
-      self.current_class_or_subclass = text_ID
       if not self.__permittedClasses():
         self.debugging(">> no_existing_classes")
         self.__ui_state("no_existing_classes")
       else:
         self.debugging("--selected_subclass")
         self.__ui_state("selected_subclass")
-      self.current_class_or_subclass = text_ID
-    elif self.dataModel.isPrimitive(self.current_class, predicate):
+    elif self.dataModel.isPrimitive(self.current_class, text_ID):
       self.debugging("-- is a primitive", predicate)
       self.__ui_state("selected_primitive")
-    elif self.dataModel.isValue(predicate):
+    elif self.dataModel.isValue(self.current_class, text_ID):
       self.__ui_state("value_selected")
       self.debugging("-- isvalue", predicate)
     else:
       print("should not come here")
+      self.__ui_state("show_tree")
 
     if self.dataModel.getElucidationList(self.current_class):
       self.ui.pushAddElucidation.hide()
@@ -667,7 +694,7 @@ class OntobuilderUI(QMainWindow):
     self.ui.textElucidation.clear()
 
     # add to graph
-    self.dataModel.addSubclass(self.current_class, self.current_class_or_subclass, subClass)
+    self.dataModel.addSubclass(self.current_class, self.current_item_ID, subClass)
 
     # generate GUI tree
     self.__createTree(self.current_class)
@@ -695,11 +722,8 @@ class OntobuilderUI(QMainWindow):
     # self.value_names[self.current_class].append(primitive_ID)
 
     # add to graph
-    item = self.__addItemToTree(primitive_ID, "value", self.current_class_or_subclass)
-    self.__addItemToTree(primitive_class, primitive_class, primitive_ID, parent_item=item)
-    # if self.current_subclass not in self.primitives[self.current_class]:
-    #   self.primitives[self.current_class][self.current_subclass] = []
-    # self.primitives[self.current_class][self.current_subclass].append(primitive_ID)
+    item = self.__addItemToTree(self.current_item_ID, "value", primitive_ID)
+    # self.__addItemToTree(primitive_class, primitive_class, primitive_ID, parent_item=item)
     self.debugging("end of add")
 
   def on_pushAddNewClass_pressed(self):
@@ -717,7 +741,7 @@ class OntobuilderUI(QMainWindow):
     self.elucidations[Class] = None
 
     # make link
-    self.dataModel.addLink(self.current_class, Class, self.current_class_or_subclass)
+    self.dataModel.addLink(self.current_class, Class, self.current_item_ID)
 
     self.__createTree(Class)
     self.__addToClassPath(addclass=Class)
@@ -738,7 +762,7 @@ class OntobuilderUI(QMainWindow):
 
       Class = selection
       subject = makeRDFCompatible(Class)
-      object = makeRDFCompatible(self.current_class_or_subclass)
+      object = makeRDFCompatible(self.current_item_ID)
       self.dataModel.GRAPHS[self.current_class].add((subject, RDFSTerms["link_to_class"], object))
 
       parent_item = self.ui.treeClass.currentItem()
@@ -755,18 +779,19 @@ class OntobuilderUI(QMainWindow):
 
     item = self.selected_item
     Class = item.text(0)
+    self.__removeClass(Class)
+
+  def __removeClass(self, Class):
     self.debugging("found class to be removed")
     self.dataModel.removeClass(Class)
     self.__removeClassPath(Class)
-
     self.current_class = self.class_path[-1]
-    origin = self.current_class
-    self.__createTree(origin)
+    self.__createTree(self.current_class)
     self.__ui_state("show_tree")
 
   def on_pushRemoveClassLink_pressed(self):
 
-    removed_class = self.dataModel.removeLinkInClass(self.current_class, self.current_class_or_subclass)
+    removed_class = self.dataModel.removeLinkInClass(self.current_class, self.current_item_ID)
     self.__checkForUnusedClasses(removed_class)
     self.__createTree(self.current_class)
     self.__ui_state("show_tree")
@@ -777,6 +802,16 @@ class OntobuilderUI(QMainWindow):
     conjunctiveGraph = self.__prepareConjunctiveGraph()
     self.__writeQuadFile(conjunctiveGraph, self.project_file_name)
     self.changed = False
+
+  def on_pushRemovePrimitive_pressed(self):
+    self.dataModel.removePrimitive(self.current_class, self.current_item_ID)
+
+    self.__createTree(self.current_class)
+    self.__ui_state("show_tree")
+
+    self.change = True
+
+
 
   def on_pushSaveAs_pressed(self):
 
@@ -885,17 +920,20 @@ class OntobuilderUI(QMainWindow):
     print(graph.serialize(format='turtle'))
     # print("debugging", origin)
     tuples_plus = []
-    for subject, predicate, object_ in graph.triples((None, None, None)):
-      try:
-        s = extractNameFromClassURI(subject)
-        p = MYTerms[predicate]
-        o = extractNameFromClassURI(object_)
-        if p not in PRIMITIVES:
-          tuples_plus.append((s, o, p))
-        else:
-          tuples_plus.append((o, s, p))
-      except:
-        pass
+    for subject, predicate, object in graph.triples((None, None, None)):
+      if not ITEM_SEPARATOR in subject:
+        s = str(subject).split(CLASS_SEPARATOR)[-1]
+      else:
+        s = extract_name_from_class_uri(subject)
+      p = MYTerms[predicate]
+      o = extract_name_from_class_uri(object)
+      # tuples_plus.append((s,p,o))
+      if p not in PRIMITIVES:
+        tuples_plus.append((s, p, o))
+      else:
+        tuples_plus.append((o, p, s))
+    self.debugging("tuples", tuples_plus)
+
     return tuples_plus
 
   def __prepareConjunctiveGraph(self):
@@ -910,47 +948,23 @@ class OntobuilderUI(QMainWindow):
         conjunctiveGraph.get_context(namespaces[cl]).add((s, p, o))
     return conjunctiveGraph
 
-  def __prepareJsonData(self):
-    data = {}
-    graphs = {}
-    for cl in self.dataModel.getClassNamesList():
-      graphs[cl] = []
-      for s, p, o in self.dataModel.GRAPHS[cl].triples((None, None, None)):
-        my_p = MYTerms[p]
-        graphs[cl].append((s, my_p, o))
-    data["root"] = ROOTCLASS
-    data["graphs"] = graphs
-    data["elucidations"] = self.elucidations
-    return data
+  # def __prepareJsonData(self):
+  #   data = {}
+  #   graphs = {}
+  #   for cl in self.dataModel.getClassNamesList():
+  #     graphs[cl] = []
+  #     for s, p, o in self.dataModel.GRAPHS[cl].triples((None, None, None)):
+  #       my_p = MYTerms[p]
+  #       graphs[cl].append((s, my_p, o))
+  #   data["root"] = ROOTCLASS
+  #   data["graphs"] = graphs
+  #   data["elucidations"] = self.elucidations
+  #   return data
 
-  def __removeClass(self, Class):
-    self.dataModel.removeClass(Class)
-    self.__cutClassPath(Class)
-
-    # self._
-    # self.__removeClassPath(Class)
-    # # previous_class = self.class_definition_sequence.index(Class)
-    # # self.current_class = self.class_definition_sequence[previous_class - 1]
-    # # self.class_definition_sequence.remove(Class)
-    # self.__cutClassPath(Class)
-    # self.debugging(("--cleaned class list"))
-    # self.debugging("--cleand class sequence", self.class_path)
-    # del self.dataModel.GRAPHS[Class]
-    # # remove links
-    # rdfClass = makeRDFCompatible(Class)
-    # for Class in self.dataModel.GRAPHS:
-    #   for t in self.dataModel.GRAPHS[Class].triples((rdfClass, None, None)):
-    #     self.dataModel.GRAPHS[Class].remove(t)
-    # self.__createTree(self.current_class)
-    # pass
-    #
-    # # clean out elucidations associated with the deleted class
-    # elucidations = copy.copy(self.elucidations)
-    # for e in elucidations:
-    #   if Class in e:
-    #     del self.elucidations[e]
-
-    self.changed = True
+  # def __removeClass(self, Class):
+  #   self.dataModel.removeClass(Class)
+  #   self.__cutClassPath(Class)
+  #   self.changed = True
 
   def __checkForUnusedClasses(self, removed_classs):
     current_set_of_classes = set(self.dataModel.GRAPHS.keys())
@@ -958,7 +972,7 @@ class OntobuilderUI(QMainWindow):
     for c in current_set_of_classes:
       if c not in removed_classs:
         for s, p, o in self.dataModel.GRAPHS[c].triples((None, None, None)):
-          if (str(s) in current_set_of_classes) or (extractNameFromClassURI(o) in current_set_of_classes):
+          if (str(s) in current_set_of_classes) or (extract_name_from_class_uri(o) in current_set_of_classes):
             used_classes_set.add(c)
     # not used classes:
     not_used_classes = current_set_of_classes - used_classes_set
@@ -974,7 +988,7 @@ class OntobuilderUI(QMainWindow):
       dialog.exec()
       selection = dialog.getSelection()
       if selection:
-        self.__removeClass(selection)
+        self.on_pushRemoveClass_pressed(selection)
         untreated_classes.remove(selection)
       else:
         break
@@ -987,17 +1001,25 @@ class OntobuilderUI(QMainWindow):
     print("written to file ", f)
 
   def __makeTree(self, touples, origin=[], stack=[], items={}):
-    for s, o, p in touples:
-      if (s, o, p) not in stack:
+    for s, p, o in touples:
+      # if s == "root":
+      #   self.debugging(("subject is root"))
+      # if p == "string":
+      #   self.debugging("found string", s,p,o)
+      # if p == "value":
+      #   self.debugging("found value", s,p,o)
+      if (s, p,o) not in stack:
         if s != origin:
           if o in items:
-            # print("add %s <-- %s" % (o, s),p)
+            # self.debugging("adding s,p,o", s,p,o)
+            # self.debugging("add %s <-- %s" % (o, s),p)
+            # self.debugging("stack", stack)
             item = QTreeWidgetItem(items[o])
             # print("debugging -- color",p )
             # item.setBackground(0, COLOURS[p])
             item.predicate = p
             item.setForeground(0, QBRUSHES[p])
-            stack.append((s, o, p))
+            stack.append((s, p, o))
             item.setText(0, s)
             items[s] = item
             self.__makeTree(touples, origin=s, stack=stack, items=items)
@@ -1017,7 +1039,7 @@ class OntobuilderUI(QMainWindow):
     self.__createTree(self.current_class)
     self.__ui_state("show_tree")
 
-  def __makePathName(self, text_ID):
+  def __makePathName(self, text_ID):  #todo: to remove
     p = ROOTCLASS
     for i in self.class_path[1:]:
       p = p + ".%s" % i
@@ -1091,19 +1113,27 @@ class OntobuilderUI(QMainWindow):
     return dialog.getText()
 
   def __makeDotGraph(self):
-    graph_overall = Graph()
-    for cl in self.dataModel.GRAPHS:
-      for t in self.dataModel.GRAPHS[cl].triples((None, None, None)):
-        graph_overall.add(t)
-    dot = plot(graph_overall, self.dataModel.getAllNames())  # class_names)
-    # print("debugging -- dot")
-    graph_name = ROOTCLASS
-    file_name = graph_name + ".pdf"
-    file_path = os.path.join(ONTOLOGY_REPOSITORY, file_name)
-    if os.path.exists(file_path):
-      saveBackupFile(file_path)
-    dot.render(graph_name, directory=ONTOLOGY_REPOSITORY)
-    return dot
+    tuples = []
+    for Class in self.dataModel.getClassNamesList():
+      tuples.extend(self.__prepareTree(Class))
+    pass
+    # graph_overall = Graph()
+    # names = []
+    # for cl in self.dataModel.GRAPHS:
+    #   for s,p,o in self.dataModel.GRAPHS[cl].triples((None, None, None)):
+    #     graph_overall.add((s,p,o))
+    #     name = extractNameFromClassURI(s)
+    #     names.append(name)
+    #
+    # dot = plot(graph_overall, names)  # class_names)
+    # # print("debugging -- dot")
+    # graph_name = ROOTCLASS
+    # file_name = graph_name + ".pdf"
+    # file_path = os.path.join(ONTOLOGY_REPOSITORY, file_name)
+    # if os.path.exists(file_path):
+    #   saveBackupFile(file_path)
+    # dot.render(graph_name, directory=ONTOLOGY_REPOSITORY)
+    # return dot
 
   # enable moving the window --https://www.youtube.com/watch?v=R4jfg9mP_zo&t=152s
   def mousePressEvent(self, event, QMouseEvent=None):
