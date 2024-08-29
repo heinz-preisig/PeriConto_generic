@@ -36,10 +36,64 @@ from PeriConto import MYTerms
 from PeriConto import ONTOLOGY_REPOSITORY
 from PeriConto import PRIMITIVES
 from PeriConto import RDFSTerms
-from PeriConto import VALUE
+# from PeriConto import VALUE
 from PeriConto import getData, saveWithBackup
 from PeriConto import makeRDFCompatible
 from PeriConto import DIRECTION
+
+
+VALUE="value"
+
+def getFilesAndVersions(abs_name, ext):
+  base_name = os.path.basename(abs_name)
+  ver = 0  # initial last version
+  _s = []
+  directory = os.path.dirname(abs_name)  # listdir(os.getcwd())
+  files = os.listdir(directory)
+
+  for f in files:
+    n, e = os.path.splitext(f)
+    #        print 'name', n
+    if e == ext:  # this is another type
+      if n[0:len(base_name) + 1] == base_name + "(":  # only those that start with name
+        #  extract version
+        l = n.index("(")
+        r = n.index(")")
+        assert l * r >= 0  # both must be there
+        v = int(n[l + 1:r])
+        ver = max([ver, v])
+        _s.append(n)
+  return _s, ver
+
+def saveBackupFile(path):
+  ver_temp = "(%s)"
+  (abs_name, ext) = os.path.splitext(path)  # path : directory/<name>.<ext>
+  if os.path.exists(path):
+    _f, ver = getFilesAndVersions(abs_name, ext)
+    old_path = path
+    new_path = abs_name + ver_temp % str(ver + 1) + ext
+    next_path = abs_name + ver_temp % str(ver + 2) + ext
+    os.rename(old_path, new_path)
+    return old_path, new_path, next_path
+  else:
+    print("Error -- no such file : %s" % path, file=sys.stderr)
+    return
+
+
+def saveWithBackup(data, path):
+  if os.path.exists(path):
+    old_path, new_path, next_path = saveBackupFile(path)
+  putData(data, path)
+
+
+def getData(file_spec):
+  # print("get data from ", file_spec)
+  if os.path.exists(file_spec):
+    f = open(file_spec, "r")
+    data = json.loads(f.read())
+    return data
+  else:
+    return None
 
 EDGE_COLOUR = {
         "is_a_subclass_of": "blue",
