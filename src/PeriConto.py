@@ -81,15 +81,6 @@ COLOURS = {
         "unselect"        : QtGui.QColor(255, 255, 255, 255),
         }
 
-EDGE_COLOUR = {
-        "is_a_subclass_of": "blue",
-        "link_to_class"   : "red",
-        "value"           : "black",
-        "comment"         : "green",
-        "integer"         : "darkorange",
-        "string"          : "cyan",
-        "type"            : "orange",
-        }
 
 QBRUSHES = {
         "is_a_subclass_of": QtGui.QBrush(COLOURS["is_a_subclass_of"]),
@@ -122,47 +113,108 @@ def extract_name_from_class_uri(uri):
 def extract_class_name(uri):
   return uri.split(CLASS_SEPARATOR)[-1]
 
+class TreePlot:
+  EDGE_COLOURS = {
+          "is_a_subclass_of": "blue",
+          "link_to_class"   : "red",
+          "value"           : "black",
+          "comment"         : "green",
+          "integer"         : "darkorange",
+          "string"          : "cyan",
+          "type"            : "orange",
+          }
 
-def plot(graph, class_names=[]):
+  NODE_SPECS = {
+          "class": {"colour": "red",
+                    "shape": "rectangle",
+                    "fillcolor": "gray",
+                    "style": "filled",
+                    },
+          "subclass": {"colour": "orange",
+                    "shape": "",
+                    "fillcolor": "white",
+                    "style": "filled",
+                       },
+          "primitive": {"colour": "blue",
+                    "shape": "rectangle",
+                    "fillcolor": "white",
+                    "style": "filled",
+                       },
+          "root": {"colour": "red",
+                    "shape": "rectangle",
+                    "fillcolor": "white",
+                    "style": "filled",
+                       },
+          "other": {"colour": None,
+                    "shape": None,
+                    "fillcolor": None,
+                    "style": None,
+                       },
+          }
+
+  def __init__(self, graph_tripples, class_names ):
+    self.classes = class_names
+    self.tripples = graph_tripples
+    self.dot = Digraph()
+
+  def addNode(self, node, type):
+    specs = self.NODE_SPECS[type]
+
+    self.dot.node(node,
+                    color=specs["colour"],
+                    shape=specs["shape"],
+                  fillcolor=specs["fillcolor"],
+                  style=specs["style"],
+                  )
+
+  def addEdge(self, From, To):
+    self.dot.edge(From, To)
+
   """
   Create Digraph plot
   """
-  dot = Digraph()
-  # Add nodes 1 and 2
-  for s, p, o in graph.triples((None, None, None)):
-    ss = str(s)
-    ss_ = str(ss).replace(":", "-")
-    sp = str(p)
-    so = str(o)
-    so_ = str(o).replace(":", "-")
-    if ss in class_names:
-      dot.node(ss_, color='red', shape="rectangle")
-    elif so in PRIMITIVES:
-      dot.node(so_, color='green', style='filled', fillcolor="gray", shape="none")
-      # dot.node(so_, color='green', shape="rectangle")
-    else:
-      dot.node(ss_)
+  # dot = Digraph()
+  # # Add nodes 1 and 2
+  # for s,p,o in graph:
+  #   print(s,p,o)
+  #   dot.node(str(s))
+  #   dot.node(str(o))
+  #   dot.edge(str(s),str(o))
 
-    if so == class_names[0]:
-      dot.node(so_, style="filled", fillcolor="red", shape="none")
-    elif so in class_names:
-      dot.node(so_, style="filled", fillcolor="lightcoral", shape="none")
-    else:
-      dot.node(so_)
-
-    my_p = MYTerms[p]
-
-    if DIRECTION[my_p] == 1:
-      dot.edge(ss_, so_,
-               # label=my_p,
-               color=EDGE_COLOUR[my_p])
-    else:
-      dot.edge(ss_, so_,
-               # label=my_p,
-               color=EDGE_COLOUR[my_p])
+  # for s, p, o in graph:
+  #   ss = str(s)
+  #   ss_ = str(ss).replace(":", "-")
+  #   sp = str(p)
+  #   so = str(o)
+  #   so_ = str(o).replace(":", "-")
+  #   if ss in class_names:
+  #     dot.node(ss_, color='red', shape="rectangle")
+  #   elif so in PRIMITIVES:
+  #     dot.node(so_, color='green', style='filled', fillcolor="gray", shape="none")
+  #     # dot.node(so_, color='green', shape="rectangle")
+  #   else:
+  #     dot.node(ss_)
+  #
+  #   if so == class_names[0]:
+  #     dot.node(so_, style="filled", fillcolor="red", shape="none")
+  #   elif so in class_names:
+  #     dot.node(so_, style="filled", fillcolor="lightcoral", shape="none")
+  #   else:
+  #     dot.node(so_)
+  #
+  #   my_p = MYTerms[p]
+  #
+  #   if DIRECTION[my_p] == 1:
+  #     dot.edge(ss_, so_,
+  #              # label=my_p,
+  #              color=EDGE_COLOUR[my_p])
+  #   else:
+  #     dot.edge(ss_, so_,
+  #              # label=my_p,
+  #              color=EDGE_COLOUR[my_p])
 
   # Visualize the graph
-  return dot
+  # return dot
 
 
 #
@@ -321,6 +373,19 @@ class DataModel():
     triple = (s, RDFSTerms["is_a_subclass_of"], o)
     self.GRAPHS[Class].add(triple)
     pass
+
+  def addPrimitive(self, Class, ClassOrSubClass, name, type):
+    s = self.makeURI(Class, name)
+    o = self.makeURI(Class, ClassOrSubClass)
+    p = RDFSTerms["value"]
+    triple = s,p,o
+    self.GRAPHS[Class].add(triple)
+    sv = self.makeURI(Class, type)
+    p = RDFSTerms[type]
+    ov = s
+    # triple = s,p,ov
+    triple = sv,p,ov
+    self.GRAPHS[Class].add(triple)
 
   def addLink(self, Class, subj, obj):
     subject = self.makeURI(Class, subj)
@@ -711,7 +776,7 @@ class OntobuilderUI(QMainWindow):
       return
 
     permitted_classes = PRIMITIVES
-    dialog2 = UI_stringSelector("hello", permitted_classes)
+    dialog2 = UI_stringSelector("choose primitive", permitted_classes)
     dialog2.exec()
 
     # print("debugging")
@@ -722,9 +787,15 @@ class OntobuilderUI(QMainWindow):
     # self.value_names[self.current_class].append(primitive_ID)
 
     # add to graph
-    item = self.__addItemToTree(self.current_item_ID, "value", primitive_ID)
+    # item = self.__addItemToTree(self.current_item_ID, "value", primitive_ID)
     # self.__addItemToTree(primitive_class, primitive_class, primitive_ID, parent_item=item)
+    self.dataModel.addPrimitive(self.current_class,self.current_item_ID, primitive_ID, primitive_class)
     self.debugging("end of add")
+
+    # generate GUI tree
+    self.__createTree(self.current_class)
+    self.changed = True
+
 
   def on_pushAddNewClass_pressed(self):
     # print("debugging -- add class")
@@ -871,7 +942,6 @@ class OntobuilderUI(QMainWindow):
   def on_pushVisualise_pressed(self):
 
     dot = self.__makeDotGraph()
-    dot.view()
 
   def on_pushExit_pressed(self):
     self.closeMe()
@@ -890,7 +960,6 @@ class OntobuilderUI(QMainWindow):
       elif dialog == "NO":
         pass
         # print("exit")
-
     else:
       pass
       # print("no changes")
@@ -912,11 +981,10 @@ class OntobuilderUI(QMainWindow):
     self.__makeTree(tuples, origin=origin, stack=[], items={origin: rootItem})
     widget.show()
     widget.expandAll()
-    # self.current_subclass = origin
     self.__ui_state("show_tree")
 
   def __prepareTree(self, origin):
-    graph = self.dataModel.GRAPHS[self.current_class]  # CLASSES[self.current_class]
+    graph = self.dataModel.GRAPHS[self.current_class]
     print(graph.serialize(format='turtle'))
     # print("debugging", origin)
     tuples_plus = []
@@ -927,11 +995,11 @@ class OntobuilderUI(QMainWindow):
         s = extract_name_from_class_uri(subject)
       p = MYTerms[predicate]
       o = extract_name_from_class_uri(object)
-      # tuples_plus.append((s,p,o))
-      if p not in PRIMITIVES:
-        tuples_plus.append((s, p, o))
-      else:
-        tuples_plus.append((o, p, s))
+      tuples_plus.append((s,p,o))
+      # if p not in PRIMITIVES:
+      #   tuples_plus.append((s, p, o))
+      # else:
+      #   tuples_plus.append((o, p, s))
     self.debugging("tuples", tuples_plus)
 
     return tuples_plus
@@ -942,29 +1010,10 @@ class OntobuilderUI(QMainWindow):
     for ns in namespaces:
       conjunctiveGraph.bind(ns, namespaces[ns])
     for cl in self.dataModel.getClassNamesList():  # class_definition_sequence:
-      uri = self.dataModel.makeURI(cl, cl)  # TODO: check
       for s, p, o in self.dataModel.GRAPHS[cl].triples((None, None, None)):
         # print(s, p, o)
         conjunctiveGraph.get_context(namespaces[cl]).add((s, p, o))
     return conjunctiveGraph
-
-  # def __prepareJsonData(self):
-  #   data = {}
-  #   graphs = {}
-  #   for cl in self.dataModel.getClassNamesList():
-  #     graphs[cl] = []
-  #     for s, p, o in self.dataModel.GRAPHS[cl].triples((None, None, None)):
-  #       my_p = MYTerms[p]
-  #       graphs[cl].append((s, my_p, o))
-  #   data["root"] = ROOTCLASS
-  #   data["graphs"] = graphs
-  #   data["elucidations"] = self.elucidations
-  #   return data
-
-  # def __removeClass(self, Class):
-  #   self.dataModel.removeClass(Class)
-  #   self.__cutClassPath(Class)
-  #   self.changed = True
 
   def __checkForUnusedClasses(self, removed_classs):
     current_set_of_classes = set(self.dataModel.GRAPHS.keys())
@@ -1052,9 +1101,6 @@ class OntobuilderUI(QMainWindow):
     return self.__isClass(text_ID) or self.__isSubClass(text_ID) or self.__isValue(predicate)
 
   def __addItemToTree(self, internal_object, predicate, internal_subject, parent_item=None):
-    object = self.dataModel.makeURI(self.current_class, internal_object)
-    subject = self.dataModel.makeURI(self.current_class, internal_subject)
-    self.dataModel.GRAPHS[self.current_class].add((subject, RDFSTerms[predicate], object))
     # generate GUI tree
     if not parent_item:
       parent_item = self.ui.treeClass.currentItem()
@@ -1113,27 +1159,29 @@ class OntobuilderUI(QMainWindow):
     return dialog.getText()
 
   def __makeDotGraph(self):
-    tuples = []
-    for Class in self.dataModel.getClassNamesList():
-      tuples.extend(self.__prepareTree(Class))
+    class_names =  self.dataModel.getClassNamesList()
+    triples = set()
+    for Class in class_names:
+      for t in self.__prepareTree(Class):
+        triples.add(t)
     pass
-    # graph_overall = Graph()
-    # names = []
-    # for cl in self.dataModel.GRAPHS:
-    #   for s,p,o in self.dataModel.GRAPHS[cl].triples((None, None, None)):
-    #     graph_overall.add((s,p,o))
-    #     name = extractNameFromClassURI(s)
-    #     names.append(name)
-    #
-    # dot = plot(graph_overall, names)  # class_names)
-    # # print("debugging -- dot")
-    # graph_name = ROOTCLASS
-    # file_name = graph_name + ".pdf"
-    # file_path = os.path.join(ONTOLOGY_REPOSITORY, file_name)
-    # if os.path.exists(file_path):
-    #   saveBackupFile(file_path)
-    # dot.render(graph_name, directory=ONTOLOGY_REPOSITORY)
-    # return dot
+
+    dot = TreePlot(triples, class_names)
+    for s,p,o in triples:
+      type = "other"
+      if s == "root":        type = "root"
+      if p == "is_a_subclass_of" : type = "subclass"
+      if p == "link_to_class" : type = "class"
+      if p in PRIMITIVES: type = "primitive"
+
+      dot.addNode(o, type)
+
+    for s,p,o in triples:
+      dot.addEdge(s,o)
+    pass
+    dot.dot.view()
+    return
+
 
   # enable moving the window --https://www.youtube.com/watch?v=R4jfg9mP_zo&t=152s
   def mousePressEvent(self, event, QMouseEvent=None):
