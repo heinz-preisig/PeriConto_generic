@@ -1,0 +1,16 @@
+@prefix newclass: <http://example.org/newclass> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix root: <http://example.org/root> .
+
+root: {
+    root: a rdfs:Class .
+
+    <http://example.org/root#newclass> rdfs:isDefinedBy <http://example.org/root#before> .
+
+    <http://example.org/root#before> rdfs:subClassOf <http://example.org/root#root> .
+}
+
+newclass: {
+    newclass: a rdfs:Class .
+}
+

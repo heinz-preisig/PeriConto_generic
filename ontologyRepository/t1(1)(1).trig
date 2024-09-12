@@ -13,9 +13,9 @@ o: {
 root: {
     root: a rdfs:Class .
 
-    <http://example.org/root#string> xsd:string <http://example.org/root#pr> .
+    <http://example.org/root#o> rdfs:isDefinedBy <http://example.org/root#k> .
 
-    o: rdfs:isDefinedBy <http://example.org/root#k> .
+    <http://example.org/root#string> xsd:string <http://example.org/root#pr> .
 
     <http://example.org/root#k> rdfs:subClassOf <http://example.org/root#root> .
 
