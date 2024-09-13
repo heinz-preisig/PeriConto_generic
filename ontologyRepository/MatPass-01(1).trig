@@ -1,0 +1,47 @@
+@prefix Address: <http://example.org/Address> .
+@prefix Component: <http://example.org/Component> .
+@prefix Producer: <http://example.org/Producer> .
+@prefix Properties: <http://example.org/Properties> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix root: <http://example.org/root> .
+
+Producer: {
+    Producer: a rdfs:Class .
+
+    <http://example.org/Producer#Address> rdfs:isDefinedBy <http://example.org/Producer#address> .
+
+    <http://example.org/Producer#address> rdfs:subClassOf <http://example.org/Producer#Producer> .
+}
+
+Component: {
+    Component: a rdfs:Class .
+
+    <http://example.org/Component#producer> rdfs:subClassOf <http://example.org/Component#Component> .
+
+    <http://example.org/Component#properties> rdfs:subClassOf <http://example.org/Component#Component> .
+}
+
+Address: {
+    Address: a rdfs:Class .
+}
+
+Properties: {
+    Properties: a rdfs:Class .
+}
+
+root: {
+    root: a rdfs:Class .
+
+    <http://example.org/root#Component> rdfs:isDefinedBy <http://example.org/root#component> .
+
+    <http://example.org/root#Producer> rdfs:isDefinedBy <http://example.org/root#producer> .
+
+    <http://example.org/root#Properties> rdfs:isDefinedBy <http://example.org/root#properties> .
+
+    <http://example.org/root#component> rdfs:subClassOf <http://example.org/root#root> .
+
+    <http://example.org/root#producer> rdfs:subClassOf <http://example.org/root#root> .
+
+    <http://example.org/root#properties> rdfs:subClassOf <http://example.org/root#root> .
+}
+
