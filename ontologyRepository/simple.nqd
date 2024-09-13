@@ -1,6 +1,0 @@
-"newclass" <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "primitive" <newclass> .
-"primitive" <http://www.w3.org/2001/XMLSchema#string> "string" <newclass> .
-"newclass" <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> "subclass" <simple> .
-"subclass2" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "simple" <simple> .
-"subclass" <http://www.w3.org/2000/01/rdf-schema#subClassOf> "simple" <simple> .
-

@@ -1,8 +1,0 @@
-digraph {
-	subclass
-	simple [fillcolor=red shape=none style=filled]
-	subclass -> simple [color=blue]
-	subclass2
-	simple [fillcolor=red shape=none style=filled]
-	subclass2 -> simple [color=blue]
-}
