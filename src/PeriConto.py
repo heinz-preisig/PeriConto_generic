@@ -62,12 +62,25 @@ RDFSTerms = {
         "comment"         : RDFS.comment,
         "integer"         : XSD.integer,
         "string"          : XSD.string,
-        "type"            : RDF.type,
+        # "type"            : RDF.type,
+        }
+RDFSTerms = {
+        "class"           : RDFS.Class,
+        "is_type"         : RDF.type,
+        "is_a_subclass_of": RDFS.member,
+        "link_to_class"   : RDFS.type,
+        "value"           : RDF.value,
+        "comment"         : RDFS.comment,
+        "integer"         : XSD.integer,
+        "string"          : XSD.string,
+        "decimal"         : XSD.decimal,
+        "uri"             : XSD.anyURI,
+        # "type"            : RDF.type,
         }
 
 MYTerms = {v: k for k, v in RDFSTerms.items()}
 
-PRIMITIVES = ["integer", "string", "comment", "real"]
+PRIMITIVES = ["integer", "string", "comment", "decimal", "uri"]
 ADD_ELUCIDATIONS = ["class", "subclass", "value"]
 
 COLOURS = {
@@ -100,7 +113,7 @@ DIRECTION = {
         "comment"         : -1,
         "integer"         : -1,
         "string"          : -1,
-        "type"            : -1,
+        # "type"            : -1,
         }
 
 LINK_COLOUR = QtGui.QColor(255, 100, 5, 255)
@@ -125,7 +138,7 @@ class TreePlot:
           "comment"         : "green",
           "integer"         : "darkorange",
           "string"          : "cyan",
-          "type"            : "orange",
+          # "type"            : "orange",
           }
 
   NODE_SPECS = {
