@@ -755,20 +755,12 @@ class OntobuilderUI(QMainWindow):
     dialog2 = UI_stringSelector("choose primitive", permitted_classes)
     dialog2.exec()
 
-    # print("debugging")
     primitive_class = dialog2.getSelection()
     if not primitive_class:
       return
     self.debugging("add primitive")
-    # self.value_names[self.current_class].append(primitive_ID)
-
-    # add to graph
-    # item = self.__addItemToTree(self.current_item_ID, "value", primitive_ID)
-    # self.__addItemToTree(primitive_class, primitive_class, primitive_ID, parent_item=item)
     self.dataModel.addPrimitive(self.current_class,self.current_item_ID, primitive_ID, primitive_class)
     self.debugging("end of add")
-
-    # generate GUI tree
     self.__createTree(self.current_class)
     self.changed = True
 
@@ -793,8 +785,8 @@ class OntobuilderUI(QMainWindow):
     self.__createTree(Class)
     self.__addToClassPath(addclass=Class)
     self.current_class = Class
-    self.changed = True
     self.__ui_state("show_tree")
+    self.changed = True
 
   def on_pushAddExistingClass_pressed(self):
     permitted_classes = self.__permittedClasses()
@@ -832,6 +824,7 @@ class OntobuilderUI(QMainWindow):
     previous_class = self.class_path[-1]
     self.current_class = previous_class
     self.__shiftClass(previous_class)
+    self.changed = True
 
 
   def on_pushRemoveClassLink_pressed(self):
@@ -840,6 +833,7 @@ class OntobuilderUI(QMainWindow):
     self.__checkForUnusedClasses(removed_class)
     self.__createTree(self.current_class)
     self.__ui_state("show_tree")
+    self.changed = True
 
   def on_pushSave_pressed(self):
     # print("debugging -- pushSave")
