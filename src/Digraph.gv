@@ -1,10 +1,12 @@
 digraph {
-	subsubclass [color=red fillcolor=red shape=rectangle style=filled]
-	root [color=orange fillcolor=white shape="" style=filled]
-	subclass [color=orange fillcolor=white shape="" style=filled]
 	Class [color=red fillcolor=white shape=rectangle style=filled]
-	newclass -> subsubclass
-	subclass -> root
-	subsubclass -> subclass
+	o [color=orange fillcolor=white shape="" style=filled]
+	root [color=orange fillcolor=white shape="" style=filled]
+	k [color=red fillcolor=red shape=rectangle style=filled]
+	Class
 	root -> Class
+	k -> o
+	k -> root
+	o -> k
+	o -> Class
 }
