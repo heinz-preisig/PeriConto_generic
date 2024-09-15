@@ -1,0 +1,36 @@
+@prefix newClass: <http://example.org/newClass> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix root: <http://example.org/root> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+newClass: {
+    newClass: a rdfs:Class .
+
+    <http://example.org/newClass#comment> rdfs:comment <http://example.org/newClass#c> .
+
+    <http://example.org/newClass#decimal> xsd:decimal <http://example.org/newClass#r> .
+
+    <http://example.org/newClass#integer> xsd:integer <http://example.org/newClass#i> .
+
+    <http://example.org/newClass#uri> xsd:anyURI <http://example.org/newClass#u> .
+
+    <http://example.org/newClass#c> rdf:value <http://example.org/newClass#newClass> .
+
+    <http://example.org/newClass#i> rdf:value <http://example.org/newClass#newClass> .
+
+    <http://example.org/newClass#r> rdf:value <http://example.org/newClass#newClass> .
+
+    <http://example.org/newClass#u> rdf:value <http://example.org/newClass#newClass> .
+}
+
+root: {
+    root: a rdfs:Class .
+
+    <http://example.org/root#newClass> a <http://example.org/root#subsub> .
+
+    <http://example.org/root#sub> rdfs:member <http://example.org/root#root> .
+
+    <http://example.org/root#subsub> rdfs:member <http://example.org/root#sub> .
+}
+
