@@ -18,7 +18,7 @@ import sys
 from rdflib import Namespace
 
 root = os.path.abspath(os.path.join("."))
-sys.path.extend([root, os.path.join(root, 'resources')])
+sys.path.extend([root, os.path.join(root, "resources")])
 
 from PyQt6 import QtGui, QtCore
 from PyQt6.QtWidgets import *
@@ -53,54 +53,61 @@ ROOTCLASS = "root"
 
 FILE_FORMAT = "trig"
 
+# RDFSTerms = {
+#         "class"           : RDFS.Class,
+#         "is_type"         : RDF.type,
+#         "is_a_subclass_of": RDFS.subClassOf,
+#         "link_to_class"   : RDFS.isDefinedBy,
+#         "value"           : RDF.value,
+#         "comment"         : RDFS.comment,
+#         "integer"         : XSD.integer,
+#         "string"          : XSD.string,
+#         # "type"            : RDF.type,
+#         }
 RDFSTerms = {
         "class"           : RDFS.Class,
-        "is_type"         : RDF.type,
-        "is_a_subclass_of": RDFS.subClassOf,
-        "link_to_class"   : RDFS.isDefinedBy,
+        "is_class"         : RDF.type,       # was "is_type"
+        "is_member": RDFS.member,
+        "defines"   : RDF.type,
         "value"           : RDF.value,
+        "data_type"       :RDFS.Datatype,
         "comment"         : RDFS.comment,
         "integer"         : XSD.integer,
         "string"          : XSD.string,
-        "type"            : RDF.type,
+        "decimal"         : XSD.decimal,
+        "uri"             : XSD.anyURI,
+        # "type"            : RDF.type,
         }
 
 MYTerms = {v: k for k, v in RDFSTerms.items()}
 
-PRIMITIVES = ["integer", "string", "comment", "real"]
+PRIMITIVES = ["integer", "comment", "string", "decimal", "uri"]
 ADD_ELUCIDATIONS = ["class", "subclass", "value"]
 
 COLOURS = {
-        "is_a_subclass_of": QtGui.QColor(0, 0, 0, 255),
-        "link_to_class"   : QtGui.QColor(255, 100, 5, 255),
+        "is_member": QtGui.QColor(0, 0, 0, 255),
+        "defines"   : QtGui.QColor(255, 100, 5, 255),
         "value"           : QtGui.QColor(155, 155, 255),
+        "data_type" : QtGui.QColor(100,100,100),
         "comment"         : QtGui.QColor(155, 155, 255),
         "integer"         : QtGui.QColor(155, 155, 255),
         "string"          : QtGui.QColor(255, 200, 200, 255),
-        # "selected"        : QtGui.QColor(252, 248, 192, 255),
-        # "unselect"        : QtGui.QColor(255, 255, 255, 255),
+        "decimal"         : QtGui.QColor(255, 200, 100, 255),
+        "uri"         : QtGui.QColor(100, 200, 100, 255),
         }
 
-
-QBRUSHES = {
-        "is_a_subclass_of": QtGui.QBrush(COLOURS["is_a_subclass_of"]),
-        "link_to_class"   : QtGui.QBrush(COLOURS["link_to_class"]),
-        "value"           : QtGui.QBrush(COLOURS["value"]),
-        "comment"         : QtGui.QBrush(COLOURS["comment"]),
-        "integer"         : QtGui.QBrush(COLOURS["integer"]),
-        "string"          : QtGui.QBrush(COLOURS["string"]),
-        # "selected"        : QtGui.QBrush(COLOURS["selected"]), # not needed auto-implemented
-        # "unselect"        : QtGui.QBrush(COLOURS["unselect"]),
-        }
+QBRUSHES = {}
+for c_hash in COLOURS.keys():
+ QBRUSHES[c_hash] = QtGui.QBrush(COLOURS[c_hash])
 
 DIRECTION = {
-        "is_a_subclass_of": 1,
-        "link_to_class"   : 1,
+        "is_member": 1,
+        "defines"   : 1,
         "value"           : -1,
         "comment"         : -1,
         "integer"         : -1,
         "string"          : -1,
-        "type"            : -1,
+        # "type"            : -1,
         }
 
 LINK_COLOUR = QtGui.QColor(255, 100, 5, 255)
@@ -119,13 +126,13 @@ class TreePlot:
   """
 
   EDGE_COLOURS = {
-          "is_a_subclass_of": "blue",
-          "link_to_class"   : "red",
+          "is_member": "blue",
+          "defines"   : "red",
           "value"           : "black",
           "comment"         : "green",
           "integer"         : "darkorange",
           "string"          : "cyan",
-          "type"            : "orange",
+          # "type"            : "orange",
           }
 
   NODE_SPECS = {
@@ -187,7 +194,7 @@ def getFilesAndVersions(abs_name, ext):
 
   for f in files:
     n, e = os.path.splitext(f)
-    #        print 'name', n
+    #        print "name", n
     if e == ext:  # this is another type
       if n[0:len(base_name) + 1] == base_name + "(":  # only those that start with name
         #  extract version
@@ -266,7 +273,7 @@ class DataModel():
     return uri
 
   def makeClassURI(self, Class):
-    uid = '%s/%s' % (BASE, Class)
+    uid = "%s/%s" % (BASE, Class)
     uris = URIRef(uid)
     return uid, uris
 
@@ -287,11 +294,11 @@ class DataModel():
     return list(self.GRAPHS.keys())
 
   def getSubClassList(self, Class):
-    triple = (None, RDFSTerms["is_a_subclass_of"], None)
+    triple = (None, RDFSTerms["is_member"], None)
     return [extract_name_from_class_uri(s) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
   def getLinkList(self, Class):
-    triple = (None, RDFSTerms["link_to_class"], None)
+    triple = (None, RDFSTerms["defines"], None)
     return [extract_name_from_class_uri(o) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
   def getIntegerList(self, Class):
@@ -322,7 +329,7 @@ class DataModel():
     self.GRAPHS[Class].bind(Class, self.namespaces[Class])
 
     sub = URIRef(uid)
-    triple = (sub, RDFSTerms["is_type"], RDFSTerms["class"])
+    triple = (sub, RDFSTerms["is_class"], RDFSTerms["class"])
     self.GRAPHS[Class].add(triple)
     return self.getClassNamesList()
 
@@ -332,7 +339,7 @@ class DataModel():
     _, classURI = self.makeClassURI(Class)
     for c in self.getClassNamesList():
       graph = self.GRAPHS[c]
-      for t in graph.triples((classURI, RDFSTerms["link_to_class"], None)):
+      for t in graph.triples((classURI, RDFSTerms["defines"], None)):
         graph.remove(t)
     del self.GRAPHS[Class]
 
@@ -342,7 +349,7 @@ class DataModel():
   def addSubclass(self, Class, ClassOrSubClass, name):
     s = self.makeURI(Class, name)
     o = self.makeURI(Class, ClassOrSubClass)
-    triple = (s, RDFSTerms["is_a_subclass_of"], o)
+    triple = (s, RDFSTerms["is_member"], o)
     self.GRAPHS[Class].add(triple)
     pass
 
@@ -352,29 +359,29 @@ class DataModel():
     p = RDFSTerms["value"]
     triple = s,p,o
     self.GRAPHS[Class].add(triple)
-    sv = self.makeURI(Class, type)
-    p = RDFSTerms[type]
-    ov = s
+    sv = s #self.makeURI(Class, name)
+    p = RDFSTerms["data_type"]
+    ov = RDFSTerms[type] #self.makeURI(Class, name) #s
     # triple = s,p,ov
-    triple = sv,p,ov
+    triple = ov,p,sv #sv,p,ov
     self.GRAPHS[Class].add(triple)
 
   def addLink(self, Class, subj, obj):
     subject = self.makeURI(Class, subj)
     object = self.makeURI(Class, obj)
-    predicate = RDFSTerms["link_to_class"]
+    predicate = RDFSTerms["defines"]
     self.GRAPHS[Class].add((subject, predicate, object))
 
   def removeAllLinksToClass(self, Class):
     _, classURI = self.makeClassURI(Class)
     for c in self.getClassNamesList():
-      triple = (classURI, RDFSTerms["link_to_class"], None)
+      triple = (classURI, RDFSTerms["defines"], None)
       for t in self.GRAPHS[c].triples(triple):
         self.GRAPHS[c].remove(t)
 
   def removeLinkInClass(self, Class, subClass):
     object = self.makeURI(Class, subClass)
-    triple = (None, RDFSTerms["link_to_class"], object)
+    triple = (None, RDFSTerms["defines"], object)
     for s, p, o in self.GRAPHS[Class].triples(triple):
       subject = extract_name_from_class_uri(s)
     self.GRAPHS[Class].remove(triple)
@@ -388,25 +395,6 @@ class DataModel():
     for t in graph.triples((primitiveURI,None, None)):
       graph.remove(t)
     pass
-    # subject = self.makeURI(Class, primitive)
-    # if self.isInteger(Class, primitive):
-    #   predicate_ID = "integer"
-    # elif self.isString(Class, primitive ):
-    #   predicate_ID = "string"
-    # elif self.isElucidation(Class, primitive):
-    #   predicate_ID = "comment"
-    # else:
-    #   return
-    # subject = self.makeURI(Class, primitive)
-    # triple = (subject, RDFSTerms[predicate_ID], None)
-    # for t in self.GRAPHS[Class].triples(triple):
-    #   self.GRAPHS[Class].remove(t)
-    #
-    # if self.isValue(Class, primitive):
-    #   predicate_ID = "value"
-    #   self.__removePrimitive(Class, predicate_ID, primitive)
-
-
 
   def isRoot(self, name):
     return name == ROOTCLASS
@@ -442,14 +430,15 @@ class DataModel():
     return name in self.getValueList(Class)
 
   def whatIsThis(self, Class, name):
-    if self.isInteger(Class, name): return "integer"
-    if self.isString(Class, name): return "string"
-    if self.isValue(Class, name): return "value"
-    if self.isClass(Class): return "class"
-    if self.isSubClass(Class, name): return "subclass"
-    if self.isElucidation(Class, name): return "elucidation"
-    if self.isLinkedWidth(Class, name): return "linked"
-    return None
+    what = []
+    if self.isClass(name): what.append("class")
+    if self.isSubClass(Class, name): what.append("subclass")
+    if self.isInteger(Class, name): what.append("integer")
+    if self.isString(Class, name): what.append( "string")
+    if self.isValue(Class, name):what.append("value")
+    if self.isElucidation(Class, name): what.append("elucidation")
+    if self.isLinkedWidth(Class, name): what.append("linked")
+    return what
 
 
 class OntobuilderUI(QMainWindow):
@@ -708,7 +697,7 @@ class OntobuilderUI(QMainWindow):
     ID = str(item.text(column))
     predicate = item.predicate
     if self.dataModel.isSubClass(self.current_class, ID):
-      predicate = "is_a_subclass_of"
+      predicate = "is_member"
       # rename subclass
 
       prompt = "new name"
@@ -802,12 +791,12 @@ class OntobuilderUI(QMainWindow):
       Class = selection
       _,subject = self.dataModel.makeClassURI(Class)
       object = self.dataModel.makeURI(self.current_class, self.current_item_ID)
-      self.dataModel.GRAPHS[self.current_class].add((subject, RDFSTerms["link_to_class"], object))
+      self.dataModel.GRAPHS[self.current_class].add((subject, RDFSTerms["defines"], object))
 
       parent_item = self.ui.treeClass.currentItem()
       item = QTreeWidgetItem(parent_item)
       item.setText(0, Class)
-      p = "link_to_class"
+      p = "defines"
       item.predicate = p
       # item.setBackground(0, LINK_COLOUR)
       item.setForeground(0, QBRUSHES[p])
@@ -955,7 +944,7 @@ class OntobuilderUI(QMainWindow):
 
   def __prepareTree(self, origin):
     graph = self.dataModel.GRAPHS[origin] #self.current_class]
-    print(graph.serialize(format='turtle'))
+    print(graph.serialize(format="turtle"))
     # print("debugging", origin)
     tuples_plus = []
     for subject, predicate, object in graph.triples((None, None, None)):
@@ -1015,7 +1004,7 @@ class OntobuilderUI(QMainWindow):
 
   def __writeQuadFile(self, conjunctiveGraph, f):
     saveBackupFile(f)
-    inf = open(f, 'w')
+    inf = open(f, "w")
     inf.write(conjunctiveGraph.serialize(format=FILE_FORMAT))
     inf.close()
     print("written to file ", f)
@@ -1134,8 +1123,8 @@ class OntobuilderUI(QMainWindow):
       print(s,p,o)
       type = "other"
       if s == "root":        type = "root"
-      if p == "is_a_subclass_of" : type = "subclass"
-      if p == "link_to_class" : type = "class"
+      if p == "is_member" : type = "subclass"
+      if p == "defines" : type = "class"
       if p in PRIMITIVES: type = "primitive"
 
       dot.addNode(o, type)
