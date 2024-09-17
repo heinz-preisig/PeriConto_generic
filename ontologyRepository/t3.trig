@@ -1,0 +1,43 @@
+@prefix gugus: <http://example.org/gugus> .
+@prefix home: <http://example.org/home> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix root: <http://example.org/root> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+root: {
+    root: a rdfs:Class .
+
+    <http://example.org/root#c> rdf:value <http://example.org/root#root> ;
+        rdfs:Datatype rdfs:comment .
+
+    <http://example.org/root#i> rdf:value <http://example.org/root#root> ;
+        rdfs:Datatype xsd:integer .
+
+    <http://example.org/root#r> rdf:value <http://example.org/root#root> ;
+        rdfs:Datatype xsd:decimal .
+
+    <http://example.org/root#s> rdf:value <http://example.org/root#root> ;
+        rdfs:Datatype xsd:string .
+
+    <http://example.org/root#sub> rdfs:isDefinedBy <http://example.org/root#gugus> ;
+        rdfs:member root: .
+
+    <http://example.org/root#web> rdf:value <http://example.org/root#root> ;
+        rdfs:Datatype xsd:anyURI .
+}
+
+gugus: {
+    gugus: a rdfs:Class .
+
+    <http://example.org/gugus#joeggel> rdfs:isDefinedBy <http://example.org/gugus#home> ;
+        rdfs:member gugus: .
+}
+
+home: {
+    home: a rdfs:Class .
+
+    <http://example.org/home#web> rdf:value <http://example.org/home#home> ;
+        rdfs:Datatype xsd:anyURI .
+}
+

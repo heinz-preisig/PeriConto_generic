@@ -106,7 +106,7 @@
        <item row="0" column="0">
         <widget class="QPushButton" name="pushAddSubclass">
          <property name="text">
-          <string>add subclass</string>
+          <string>add item</string>
          </property>
         </widget>
        </item>
@@ -153,7 +153,7 @@
        <item row="2" column="0">
         <widget class="QPushButton" name="pushRemoveSubClass">
          <property name="text">
-          <string>remove subclass</string>
+          <string>remove item</string>
          </property>
         </widget>
        </item>
@@ -246,19 +246,19 @@
       <x>20</x>
       <y>140</y>
       <width>261</width>
-      <height>621</height>
+      <height>471</height>
      </rect>
     </property>
     <property name="title">
-     <string>class list</string>
+     <string>class path</string>
     </property>
     <widget class="QListWidget" name="listClasses">
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>40</y>
+       <y>30</y>
        <width>251</width>
-       <height>561</height>
+       <height>401</height>
       </rect>
      </property>
     </widget>
@@ -309,13 +309,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushExit">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="horizontalSpacer_11">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -327,6 +320,34 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushMinimise">
+       <property name="text">
+        <string>min</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushMaximise">
+       <property name="text">
+        <string>max</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushNormal">
+       <property name="text">
+        <string>norm</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushExit">
+       <property name="text">
+        <string>exit</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
