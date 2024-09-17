@@ -68,7 +68,7 @@ RDFSTerms = {
         "class"           : RDFS.Class,
         "is_class"         : RDF.type,       # was "is_type"
         "is_member": RDFS.member,
-        "defines"   : RDF.type,
+        "is_defined_by"   : RDFS.isDefinedBy,
         "value"           : RDF.value,
         "data_type"       :RDFS.Datatype,
         "comment"         : RDFS.comment,
@@ -76,17 +76,16 @@ RDFSTerms = {
         "string"          : XSD.string,
         "decimal"         : XSD.decimal,
         "uri"             : XSD.anyURI,
-        # "type"            : RDF.type,
         }
 
 MYTerms = {v: k for k, v in RDFSTerms.items()}
 
 PRIMITIVES = ["integer", "comment", "string", "decimal", "uri"]
-ADD_ELUCIDATIONS = ["class", "subclass", "value"]
+ADD_ELUCIDATIONS = ["class", "is_member", "value"]
 
 COLOURS = {
         "is_member": QtGui.QColor(0, 0, 0, 255),
-        "defines"   : QtGui.QColor(255, 100, 5, 255),
+        "is_defined_by"   : QtGui.QColor(255, 100, 5, 255),
         "value"           : QtGui.QColor(155, 155, 255),
         "data_type" : QtGui.QColor(100,100,100),
         "comment"         : QtGui.QColor(155, 155, 255),
@@ -100,15 +99,15 @@ QBRUSHES = {}
 for c_hash in COLOURS.keys():
  QBRUSHES[c_hash] = QtGui.QBrush(COLOURS[c_hash])
 
-DIRECTION = {
-        "is_member": 1,
-        "defines"   : 1,
-        "value"           : -1,
-        "comment"         : -1,
-        "integer"         : -1,
-        "string"          : -1,
-        # "type"            : -1,
-        }
+# DIRECTION = {
+#         "is_member": 1,
+#         "is_defined_by"   : 1,
+#         "value"           : -1,
+#         "comment"         : -1,
+#         "integer"         : -1,
+#         "string"          : -1,
+#         # "type"            : -1,
+#         }
 
 LINK_COLOUR = QtGui.QColor(255, 100, 5, 255)
 PRIMITIVE_COLOUR = QtGui.QColor(255, 3, 23, 255)
@@ -126,27 +125,34 @@ class TreePlot:
   """
 
   EDGE_COLOURS = {
+          "is_class" : "red",
           "is_member": "blue",
-          "defines"   : "red",
+          "is_defined_by"   : "darkorange",
           "value"           : "black",
-          "comment"         : "green",
-          "integer"         : "darkorange",
-          "string"          : "cyan",
-          # "type"            : "orange",
+          "data_type"       : "green",
+          # "comment"         : "green",
+          # "integer"         : "darkorange",
+          # "string"          : "cyan",
+          "other"            : "orange",
           }
 
   NODE_SPECS = {
-          "class": {"colour": "red",
+          "Class": {"colour": "red",
                     "shape": "rectangle",
                     "fillcolor": "red",
                     "style": "filled",
                     },
-          "subclass": {"colour": "orange",
+          "class": {"colour": "red",
+                    "shape": "rectangle",
+                    "fillcolor": "white",
+                    "style": "filled",
+                    },
+          "member": {"colour": "orange",
                     "shape": "",
                     "fillcolor": "white",
                     "style": "filled",
                        },
-          "primitive": {"colour": "blue",
+          "value": {"colour": "blue",
                     "shape": "rectangle",
                     "fillcolor": "white",
                     "style": "filled",
@@ -156,20 +162,29 @@ class TreePlot:
                     "fillcolor": "white",
                     "style": "filled",
                        },
+          # "linked": {"colour": "red",
+          #           "shape": "rectangle",
+          #           "fillcolor": "red",
+          #           "style": "filled",
+          #           },
           "other": {"colour": None,
                     "shape": None,
                     "fillcolor": None,
                     "style": None,
                        },
           }
+  NODE_SPECS["linked"] = NODE_SPECS["class"]
 
-  def __init__(self, graph_tripples, class_names ):
+  def __init__(self, graph_name, graph_tripples, class_names ):
     self.classes = class_names
     self.tripples = graph_tripples
-    self.dot = Digraph()
+    self.dot = Digraph(graph_name)
 
   def addNode(self, node, type):
-    specs = self.NODE_SPECS[type]
+    try:
+     specs = self.NODE_SPECS[type]
+    except:
+      specs = self.NODE_SPECS["other"]
 
     self.dot.node(node,
                     color=specs["colour"],
@@ -178,8 +193,15 @@ class TreePlot:
                   style=specs["style"],
                   )
 
-  def addEdge(self, From, To):
-    self.dot.edge(From, To)
+  def addEdge(self, From, To, type):
+    try:
+      colour = self.EDGE_COLOURS[type]
+    except:
+      colour = self.EDGE_COLOURS["other"]
+    self.dot.edge(From, To,
+                  color=colour,
+                  label=type
+                  )
 
 
 
@@ -221,21 +243,6 @@ def saveBackupFile(path):
     print("Error -- no such file : %s" % path, file=sys.stderr)
     return
 
-
-# def saveWithBackup(data, path): #  NOTE: leave for the time beeing
-#   if os.path.exists(path):
-#     old_path, new_path, next_path = saveBackupFile(path)
-#   putData(data, path)
-#
-#
-# def getData(file_spec):#  NOTE: leave for the time beeing
-#   # print("get data from ", file_spec)
-#   if os.path.exists(file_spec):
-#     f = open(file_spec, "r")
-#     data = json.loads(f.read())
-#     return data
-#   else:
-#     return None
 
 
 def makeRDFCompatible(identifier):  # TODO remove
@@ -297,8 +304,19 @@ class DataModel():
     triple = (None, RDFSTerms["is_member"], None)
     return [extract_name_from_class_uri(s) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
-  def getLinkList(self, Class):
-    triple = (None, RDFSTerms["defines"], None)
+
+  def getAllLinkedClasses(self):
+    s = set()
+    for c in self.GRAPHS:
+      triple = None, RDFSTerms["is_defined_by"], None
+      for t in self.GRAPHS[c].triples(triple):
+        _,_,o = t
+        s.add(extract_name_from_class_uri(o))
+    return s
+
+  def getLinkList(self, Class, name):
+    object = self.makeURI("root", name)
+    triple = (object, RDFSTerms["is_defined_by"], None)
     return [extract_name_from_class_uri(o) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
   def getIntegerList(self, Class):
@@ -336,22 +354,34 @@ class DataModel():
 
 
   def removeClass(self, Class):
-    _, classURI = self.makeClassURI(Class)
     for c in self.getClassNamesList():
+      classURI = self.makeURI(c,Class)
       graph = self.GRAPHS[c]
-      for t in graph.triples((classURI, RDFSTerms["defines"], None)):
+      triple = (None, RDFSTerms["is_defined_by"], classURI)
+      for t in graph.triples(triple):
         graph.remove(t)
     del self.GRAPHS[Class]
 
-    self.removeAllLinksToClass(Class)
+    # self.removeAllLinksToClass(Class)
     return self.getClassNamesList()
 
   def addSubclass(self, Class, ClassOrSubClass, name):
-    s = self.makeURI(Class, name)
-    o = self.makeURI(Class, ClassOrSubClass)
+    if Class == ClassOrSubClass:
+      _, o = self.makeClassURI(Class)
+    else:
+      o = self.makeURI(Class, ClassOrSubClass)
+    s = self.makeURI(Class,name)
+
     triple = (s, RDFSTerms["is_member"], o)
     self.GRAPHS[Class].add(triple)
     pass
+
+  def removeSubClass(self, Class, item):
+    s = self.makeURI(Class, item)
+    triple = s, RDFSTerms["is_member"], None
+    for t in self.GRAPHS[Class].triples(triple):
+      self.GRAPHS[Class].remove(t)
+      pass
 
   def addPrimitive(self, Class, ClassOrSubClass, name, type):
     s = self.makeURI(Class, name)
@@ -363,25 +393,32 @@ class DataModel():
     p = RDFSTerms["data_type"]
     ov = RDFSTerms[type] #self.makeURI(Class, name) #s
     # triple = s,p,ov
-    triple = ov,p,sv #sv,p,ov
+    triple = sv,p,ov
     self.GRAPHS[Class].add(triple)
 
-  def addLink(self, Class, subj, obj):
+  def addLink(self, Class, obj, subj):
     subject = self.makeURI(Class, subj)
     object = self.makeURI(Class, obj)
-    predicate = RDFSTerms["defines"]
+    predicate = RDFSTerms["is_defined_by"]
     self.GRAPHS[Class].add((subject, predicate, object))
 
-  def removeAllLinksToClass(self, Class):
-    _, classURI = self.makeClassURI(Class)
-    for c in self.getClassNamesList():
-      triple = (classURI, RDFSTerms["defines"], None)
-      for t in self.GRAPHS[c].triples(triple):
-        self.GRAPHS[c].remove(t)
+  # def removeAllLinksToClass(self, Class):
+  #   classURI = self.makeURI(Class,Class)
+  #   for c in self.getClassNamesList():
+  #     triple = (None, RDFSTerms["is_defined_by"], classURI)
+  #     for t in self.GRAPHS[c].triples(triple):
+  #       self.GRAPHS[c].remove(t)
 
-  def removeLinkInClass(self, Class, subClass):
-    object = self.makeURI(Class, subClass)
-    triple = (None, RDFSTerms["defines"], object)
+  def removeLinkInClass(self, Class, item):
+
+    o_name =self.getLinkList(Class, item)[0]
+    object = self.makeURI(Class, o_name)
+
+    subject = self.makeURI("root", item)
+    triple = (subject, RDFSTerms["is_defined_by"], object)
+
+
+    # triple = (None, RDFSTerms["is_defined_by"], object)
     for s, p, o in self.GRAPHS[Class].triples(triple):
       subject = extract_name_from_class_uri(s)
     self.GRAPHS[Class].remove(triple)
@@ -408,7 +445,8 @@ class DataModel():
     return name in l
 
   def isLinkedWidth(self, Class, name):
-    return name in self.getLinkList(Class)
+    l = self.getLinkList(Class, name)
+    return l != []
 
   def isPrimitive(self, Class, name):
     return (self.isInteger(Class, name)
@@ -429,10 +467,10 @@ class DataModel():
   def isValue(self, Class, name):
     return name in self.getValueList(Class)
 
-  def whatIsThis(self, Class, name):
+  def what_is_this(self, Class, name):
     what = []
-    if self.isClass(name): what.append("class")
-    if self.isSubClass(Class, name): what.append("subclass")
+    if self.isClass(name) or (name == "Class"): what.append("class")
+    if self.isSubClass(Class, name): what.append("is_member")
     if self.isInteger(Class, name): what.append("integer")
     if self.isString(Class, name): what.append( "string")
     if self.isValue(Class, name):what.append("value")
@@ -447,16 +485,20 @@ class OntobuilderUI(QMainWindow):
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
 
-    self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)  # ???
+    self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
 
-    self.DEBUGG = True
+    self.DEBUGG = False
 
     roundButton(self.ui.pushLoad, "load", tooltip="load ontology")
     roundButton(self.ui.pushCreate, "plus", tooltip="create")
     roundButton(self.ui.pushVisualise, "dot_graph", tooltip="visualise ontology")
     roundButton(self.ui.pushSave, "save", tooltip="save ontology")
-    roundButton(self.ui.pushExit, "exit", tooltip="exit")
+    # roundButton(self.ui.pushExit, "exit", tooltip="exit")
+    roundButton(self.ui.pushExit, "reject", tooltip="exit", mysize=25)
     roundButton(self.ui.pushSaveAs, "save_as", tooltip="save with new name")
+    roundButton(self.ui.pushMinimise, "min_view", tooltip="minimise",mysize=25)
+    roundButton(self.ui.pushMaximise, "max_view", tooltip="maximise",mysize=25)
+    roundButton(self.ui.pushNormal, "normal_view", tooltip="normal",mysize=25)
 
     self.gui_objects = {
             "load"               : self.ui.pushLoad,
@@ -589,7 +631,6 @@ class OntobuilderUI(QMainWindow):
     if name:
       self.project_file_spec = os.path.join(ONTOLOGY_REPOSITORY, name + ".%s" % FILE_FORMAT)
     else:
-      self.close()
       return
 
     self.dataModel = DataModel()
@@ -627,7 +668,7 @@ class OntobuilderUI(QMainWindow):
     self.current_item_ID = text_ID
 
     self.debugging("you picked column %s with id %s" % (column, text_ID),
-                   self.dataModel.whatIsThis(self.current_class, text_ID))
+                   self.dataModel.what_is_this(self.current_class, text_ID))
 
     try:
       predicate = item.predicate
@@ -646,7 +687,13 @@ class OntobuilderUI(QMainWindow):
       self.previously_selected_item = self.selected_item
 
     # if text_ID in self.class_names:
-    if self.dataModel.isClass(text_ID):
+    isclass = self.dataModel.isClass(text_ID)
+    is_linked_with = self.dataModel.isLinkedWidth(self.current_class, text_ID)
+    is_item = self.dataModel.isSubClass(self.current_class, text_ID)
+    is_primitive = self.dataModel.isPrimitive(self.current_class, text_ID)
+    is_value = self.dataModel.isValue(self.current_class, text_ID)
+
+    if isclass:
       self.debugging("-- is class", text_ID)
       self.__ui_state("selected_class")
       if self.current_class != text_ID:
@@ -654,22 +701,22 @@ class OntobuilderUI(QMainWindow):
       if self.dataModel.isRoot(text_ID):
         self.debugging("-- is root", text_ID)
         self.__ui_state("selected_root")
-    elif self.dataModel.isLinkedWidth(self.current_class, text_ID):
+    elif is_linked_with:
       self.debugging("-- is linked", text_ID)
       self.__ui_state("is_linked")
-    elif self.dataModel.isSubClass(self.current_class, text_ID):
+    elif is_item:
       self.debugging("-- it is a subclass", text_ID)
       self.__ui_state("selected_subclass")
-      if not self.__permittedClasses():
-        self.debugging(">> no_existing_classes")
-        self.__ui_state("no_existing_classes")
-      else:
-        self.debugging("--selected_subclass")
-        self.__ui_state("selected_subclass")
-    elif self.dataModel.isPrimitive(self.current_class, text_ID):
+      # if not self.__permittedClasses():
+      #   self.debugging(">> no_existing_classes")
+      #   self.__ui_state("no_existing_classes")
+      # else:
+      #   self.debugging("--selected_subclass")
+      #   self.__ui_state("selected_subclass")
+    elif is_primitive:
       self.debugging("-- is a primitive", predicate)
       self.__ui_state("selected_primitive")
-    elif self.dataModel.isValue(self.current_class, text_ID):
+    elif is_value:
       self.__ui_state("selected_value")
       self.debugging("-- isvalue", predicate)
     else:
@@ -693,7 +740,7 @@ class OntobuilderUI(QMainWindow):
     self.ui.treeClass.clearSelection()
 
   def on_treeClass_itemDoubleClicked(self, item, column):
-    print("debugging -- double click", item.text(0))
+    self.debugging("debugging -- double click", item.text(0))
     ID = str(item.text(column))
     predicate = item.predicate
     if self.dataModel.isSubClass(self.current_class, ID):
@@ -794,12 +841,12 @@ class OntobuilderUI(QMainWindow):
       Class = selection
       _,subject = self.dataModel.makeClassURI(Class)
       object = self.dataModel.makeURI(self.current_class, self.current_item_ID)
-      self.dataModel.GRAPHS[self.current_class].add((subject, RDFSTerms["defines"], object))
+      self.dataModel.GRAPHS[self.current_class].add((subject, RDFSTerms["is_defined_by"], object))
 
       parent_item = self.ui.treeClass.currentItem()
       item = QTreeWidgetItem(parent_item)
       item.setText(0, Class)
-      p = "defines"
+      p = "is_defined_by"
       item.predicate = p
       # item.setBackground(0, LINK_COLOUR)
       item.setForeground(0, QBRUSHES[p])
@@ -816,6 +863,15 @@ class OntobuilderUI(QMainWindow):
     previous_class = self.class_path[-1]
     self.current_class = previous_class
     self.__shiftClass(previous_class)
+    self.changed = True
+
+  def on_pushRemoveSubClass_pressed(self):
+
+    item = self.selected_item
+    subclass = item.text(0)
+    self.dataModel.removeSubClass(self.current_class, subclass)
+    self.__shiftClass(self.current_class)
+    self.changed = True
 
 
   def on_pushRemoveClassLink_pressed(self):
@@ -824,6 +880,7 @@ class OntobuilderUI(QMainWindow):
     self.__checkForUnusedClasses(removed_class)
     self.__createTree(self.current_class)
     self.__ui_state("show_tree")
+    self.changed = True
 
   def on_pushSave_pressed(self):
     # print("debugging -- pushSave")
@@ -898,6 +955,15 @@ class OntobuilderUI(QMainWindow):
     Class = item.text()
     self.__shiftClass(Class)
 
+  def on_pushMinimise_pressed(self):
+    self.showMinimized()
+
+  def on_pushMaximise_pressed(self):
+    self.showMaximized()
+
+  def on_pushNormal_pressed(self):
+    self.showNormal()
+
 
   def on_pushVisualise_pressed(self):
 
@@ -945,18 +1011,34 @@ class OntobuilderUI(QMainWindow):
 
   def __prepareTree(self, origin):
     graph = self.dataModel.GRAPHS[origin] #self.current_class]
-    print(graph.serialize(format="turtle"))
+    self.debugging(graph.serialize(format="turtle"))
     # print("debugging", origin)
     tuples_plus = []
     for subject, predicate, object in graph.triples((None, None, None)):
-      # print("--", subject,predicate,object)
+      self.debugging("--", subject,predicate,object)
       if not ITEM_SEPARATOR in subject:
         s = str(subject).split(CLASS_SEPARATOR)[-1]
       else:
         s = extract_name_from_class_uri(subject)
       p = MYTerms[predicate]
-      o = extract_name_from_class_uri(object)
-      tuples_plus.append((s,p,o))
+      if not ITEM_SEPARATOR in object:
+        o = str(object).split(CLASS_SEPARATOR)[-1]
+      else:
+        o = extract_name_from_class_uri(object)
+
+      # print("s,p,o is:", s,": ",self.dataModel.what_is_this(self.current_class,s),
+      #       "p: ", p,
+      #       "o: ",o , self.dataModel.what_is_this(self.current_class,o))
+
+      if ((predicate == RDFSTerms["is_defined_by"]) or
+              (predicate == RDFSTerms["data_type"])):
+        triple = o,p,s,-1
+      else:
+        triple = s,p,o,1
+
+
+
+      tuples_plus.append(triple)
       # if p not in PRIMITIVES:
       #   tuples_plus.append((s, p, o))
       # else:
@@ -1011,14 +1093,15 @@ class OntobuilderUI(QMainWindow):
     print("written to file ", f)
 
   def __makeTree(self, tuples, origin=[], stack=[], items={}):
-    for s, p, o in tuples:
-      if (s, p,o) not in stack:
+    for q in tuples:
+      if q not in stack:
+        s,p,o,dir = q
         if s != origin:
           if o in items:
             item = QTreeWidgetItem(items[o])
             item.predicate = p
             item.setForeground(0, QBRUSHES[p])
-            stack.append((s, p, o))
+            stack.append(q) #(s, p, o))
             item.setText(0, s)
             items[s] = item
             self.__makeTree(tuples, origin=s, stack=stack, items=items)
@@ -1067,13 +1150,19 @@ class OntobuilderUI(QMainWindow):
     return item
 
   def __permittedClasses(self):
-    permitted_classes = []
-    for cl in self.dataModel.GRAPHS:
-      if cl != self.current_class:
-        if cl not in self.dataModel.getLinkList(cl):  # link_lists[cl]:
-          if cl not in self.class_path:
-            permitted_classes.append(cl)
-    return permitted_classes
+    all_linke_classes = self.dataModel.getAllLinkedClasses()
+    for c in all_linke_classes:
+      if (c == self.current_class) or (c in self.class_path):
+        all_linke_classes.remove(c)
+
+    return all_linke_classes
+    # permitted_classes = []
+    # for cl in self.dataModel.GRAPHS:
+    #   if cl != self.current_class:
+    #     if cl not in self.dataModel.getAllLinkedClasses():  # link_lists[cl]:
+    #       if cl not in self.class_path:
+    #         permitted_classes.append(cl)
+    # return permitted_classes
 
   def __addToClassPath(self, addclass):
     self.class_path.append(addclass)
@@ -1118,25 +1207,51 @@ class OntobuilderUI(QMainWindow):
       for t in self.__prepareTree(Class):
         triples.add(t)
     pass
+    print("\n---------------------------------")
+    file_name = os.path.join(ONTOLOGY_REPOSITORY,self.project_name)
+    dot = TreePlot(file_name, triples, class_names)
+    for s,p,o, dir in triples:
+      self.debugging("adding node", s,p,o)
+      subject_type = self.dataModel.what_is_this(self.current_class, s)
+      object_type = self.dataModel.what_is_this(self.current_class, o)
 
-    dot = TreePlot(triples, class_names)
-    for s,p,o in triples:
-      print(s,p,o)
-      type = "other"
-      if s == "root":        type = "root"
-      if p == "is_member" : type = "subclass"
-      if p == "defines" : type = "class"
-      if p in PRIMITIVES: type = "primitive"
+      # type = "other"
+      try:
+        type = object_type[0]
+      except:
+        type = "other"
 
-      dot.addNode(o, type)
+      print("s,p,o is:", s, ": ", subject_type,
+            "p: ", p,
+            "o: ", o, object_type,
+            "d: ", dir)
+      if "class"in object_type:
+        type = "class"
+      if "linked" in object_type:
+        type = "linked"
+      if o == "Class":
+        type = "Class"
 
-    for s,p,o in triples:
-      dot.addEdge(s,o)
+      if dir == -1:
+        node = s
+      else:
+        node = o
+
+      print(node)
+      print("adding", node, type)
+
+      dot.addNode(node, type)
+
+    for s,p,o,dir in triples:
+      if dir == -1:
+        dot.addEdge(o,s,p)
+      else:
+        dot.addEdge(s,o,p)
     pass
     # dot.dot.view()
     file_path = os.path.join(ONTOLOGY_REPOSITORY, self.project_name+"pdf")
-    ggg = dot.dot.render(view=True)
-    #os.rename(ggg, file_path)
+    ggg = dot.dot.render(view=True,cleanup=True)
+    # os.rename(ggg, file_path)
 
     return
 

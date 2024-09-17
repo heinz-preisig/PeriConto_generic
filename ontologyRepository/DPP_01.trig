@@ -1,0 +1,27 @@
+@prefix Address: <http://example.org/Address> .
+@prefix Producer: <http://example.org/Producer> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix root: <http://example.org/root> .
+
+Producer: {
+    Producer: a rdfs:Class .
+
+    <http://example.org/Producer#address> rdfs:isDefinedBy <http://example.org/Producer#Address> ;
+        rdfs:member Producer: .
+}
+
+Address: {
+    Address: a rdfs:Class .
+}
+
+root: {
+    root: a rdfs:Class .
+
+    <http://example.org/root#producer> rdfs:isDefinedBy <http://example.org/root#Producer> ;
+        rdfs:member <http://example.org/root#product> .
+
+    <http://example.org/root#structure> rdfs:member <http://example.org/root#product> .
+
+    <http://example.org/root#product> rdfs:member root: .
+}
+

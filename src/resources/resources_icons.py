@@ -25,24 +25,45 @@ ICONS["reset"] = "reset_button_hap.svg"
 ICONS["screen_shot"] = "screen_shot_button_hap.svg"
 ICONS["save_as"] = "save_as_button_hap.svg"
 ICONS["plus"] = "plus_button_hap.svg"
+ICONS["minus"] = "minus_button_hap.svg"
+ICONS["max_view"] = "plus_button_hap.svg"
+ICONS["min_view"] = "minus_button_hap.svg"
+ICONS["normal_view"] = "normal_view_button_hap.svg"
 ICONS["update"] = "update_button_hap.svg"
 ICONS["next"] = "next_button_hap.svg"
 ICONS["expand"] ="expand_tree_button_hap.svg"
 ICONS["collaps"] = "collaps_tree_button_hap.svg"
 
-size = 52
-BUTTON_ICON_SIZE = QtCore.QSize(size, size)
-round = 'border-radius: %spx; ' % (size / 2)
-BUTTON_ICON_STYLE_ROUND = 'background-color: white; '
-BUTTON_ICON_STYLE_ROUND += 'border-style: outset; '
-BUTTON_ICON_STYLE_ROUND += 'border-width: 2px; '
-BUTTON_ICON_STYLE_ROUND += round
-BUTTON_ICON_STYLE_ROUND += 'border-color: white;    '
-BUTTON_ICON_STYLE_ROUND += 'font: bold 14px;   '
-BUTTON_ICON_STYLE_ROUND += 'padding: 6px;'
+# size = 52
+# defaultsize = size
+# BUTTON_ICON_SIZE = QtCore.QSize(size, size)
+# round = 'border-radius: %spx; ' % (size / 2)
+# BUTTON_ICON_STYLE_ROUND = 'background-color: white; '
+# BUTTON_ICON_STYLE_ROUND += 'border-style: outset; '
+# BUTTON_ICON_STYLE_ROUND += 'border-width: 2px; '
+# BUTTON_ICON_STYLE_ROUND += round
+# BUTTON_ICON_STYLE_ROUND += 'border-color: white;    '
+# BUTTON_ICON_STYLE_ROUND += 'font: bold 14px;   '
+# BUTTON_ICON_STYLE_ROUND += 'padding: 6px;'
 
 
-def roundButton(button, what, tooltip=None):
+def roundButton(button, what, tooltip=None, mysize=None):
+  defaultsize = 52
+  if mysize:
+    size=mysize
+  else:
+    size = defaultsize
+
+  BUTTON_ICON_SIZE = QtCore.QSize(size, size)
+  round = 'border-radius: %spx; ' % (size / 2)
+  BUTTON_ICON_STYLE_ROUND = 'background-color: white; '
+  BUTTON_ICON_STYLE_ROUND += 'border-style: outset; '
+  BUTTON_ICON_STYLE_ROUND += 'border-width: 2px; '
+  BUTTON_ICON_STYLE_ROUND += round
+  BUTTON_ICON_STYLE_ROUND += 'border-color: white;    '
+  BUTTON_ICON_STYLE_ROUND += 'font: bold 14px;   '
+  BUTTON_ICON_STYLE_ROUND += 'padding: 6px;'
+
   button.setText("")
   button.setFixedSize(size,size)
   icon = getIcon(what)
