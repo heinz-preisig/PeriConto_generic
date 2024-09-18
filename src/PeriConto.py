@@ -91,8 +91,8 @@ COLOURS = {
         "comment"         : QtGui.QColor(155, 155, 255),
         "integer"         : QtGui.QColor(155, 155, 255),
         "string"          : QtGui.QColor(255, 200, 200, 255),
-        "decimal"         : QtGui.QColor(255, 200, 100, 255),
-        "uri"         : QtGui.QColor(100, 200, 100, 255),
+        "selected"        : QtGui.QColor(252, 248, 192, 255),
+        "unselect"        : QtGui.QColor(255, 255, 255, 255),
         }
 
 QBRUSHES = {}
@@ -651,15 +651,17 @@ class OntobuilderUI(QMainWindow):
     self.ui.pushAddElucidation.show()
 
   def on_pushAddElucidation_pressed(self):  # TODO: fix
-    self.load_elucidation = True
-    self.ui.pushAddElucidation.hide()
-    text_ID = self.selected_item.text(0)
-    predicate = self.selected_item.predicate
-    if self.__hasElucidation(text_ID, predicate):
-      p = self.__makePathName(text_ID)
-      d = self.ui.textElucidation.toPlainText()
-      self.elucidations[p] = d
-      pass
+    pass
+
+    # self.load_elucidation = True
+    # self.ui.pushAddElucidation.hide()
+    # text_ID = self.selected_item.text(0)
+    # predicate = self.selected_item.predicate
+    # if self.__hasElucidation(text_ID, predicate):
+    #   p = self.__makePathName(text_ID)
+    #   d = self.ui.textElucidation.toPlainText()
+    #   self.elucidations[p] = d
+    #   pass
 
   def on_treeClass_itemPressed(self, item, column):
 
@@ -679,7 +681,7 @@ class OntobuilderUI(QMainWindow):
     self.debugging("column ", column)
 
     item.setSelected(True)
-    # self.selected_item.setBackground(item.columnCount(),QBRUSHES["selected"])
+    # self.selected_item.setBackground(item.columnCount(),QBRUSHES["selected"])  # note:  does not seem to work
 
     if self.previously_selected_item:
       self.debugging("column ", self.previously_selected_item.columnCount())
@@ -707,12 +709,6 @@ class OntobuilderUI(QMainWindow):
     elif is_item:
       self.debugging("-- it is a subclass", text_ID)
       self.__ui_state("selected_subclass")
-      # if not self.__permittedClasses():
-      #   self.debugging(">> no_existing_classes")
-      #   self.__ui_state("no_existing_classes")
-      # else:
-      #   self.debugging("--selected_subclass")
-      #   self.__ui_state("selected_subclass")
     elif is_primitive:
       self.debugging("-- is a primitive", predicate)
       self.__ui_state("selected_primitive")
@@ -742,8 +738,9 @@ class OntobuilderUI(QMainWindow):
   def on_treeClass_itemDoubleClicked(self, item, column):
     self.debugging("debugging -- double click", item.text(0))
     ID = str(item.text(column))
-    predicate = item.predicate
-    if self.dataModel.isSubClass(self.current_class, ID):
+    predicate = item.predicate  #TODO: still used ?
+    if (self.dataModel.isSubClass(self.current_class, ID)
+            or self.dataModel.isPrimitive(self.current_class,ID)) :
       predicate = "is_member"
       # rename subclass
 

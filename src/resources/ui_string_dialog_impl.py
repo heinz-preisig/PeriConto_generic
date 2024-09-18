@@ -95,7 +95,7 @@ class UI_String(QtWidgets.QDialog):
 
     if (text in self.limiting_list) or (text[0] == " "):
       # self.ui.lineEdit.setPalette(self.palette_red)
-      self.ui.lineEdit.setStyleSheet("color: red; backgroun-color: white")
+      self.ui.lineEdit.setStyleSheet("color: red; background-color: white")
       self.ui.pushAccept.hide()
     else:
       # self.ui.lineEdit.setPalette(self.palette_black)
