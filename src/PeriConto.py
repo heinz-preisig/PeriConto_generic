@@ -296,7 +296,7 @@ class DataModel():
     self.GRAPHS = {}
     for i in data.contexts():
       Class = str(i.identifier).split("/")[-1]
-      self.GRAPHS[Class] = data.get_graph(i.identifier)
+      self.GRAPHS[Class] = data._graph(i.identifier)
 
     self.namespaces = {}
     for (prefix, namespace) in data.namespaces():
@@ -791,6 +791,15 @@ class OntobuilderUI(QMainWindow):
     # generate GUI tree
     self.__createTree(self.current_class)
     self.changed = True
+
+  def on_pushRemoveSubClass_pressed(self):
+    pass
+    itemID = self.current_item_ID
+    Class = self.current_class
+    self.dataModel.removeSubClass(Class, itemID)
+    self.__createTree(self.current_class)
+    self.changed = True
+
 
   def on_pushAddPrimitive_pressed(self):
     self.debugging("add primitive first")
