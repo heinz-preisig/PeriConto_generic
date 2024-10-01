@@ -8,6 +8,7 @@ So the approach is to use an internal representation of the predicates and trans
 
 
 """
+import copy
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
@@ -16,6 +17,7 @@ import os
 import sys
 
 import rdflib.term
+from babel.messages.extract import extract
 from rdflib import Namespace
 
 root = os.path.abspath(os.path.join("."))
@@ -355,6 +357,21 @@ class DataModel():
     self.GRAPHS[Class].add(triple)
     return self.getClassNamesList()
 
+  def checkForClassIsUsed(self,Class):
+    current_set_of_classes = set(self.GRAPHS.keys())
+    found = 0
+    uri = self.makeURI("root", Class)
+    for c in current_set_of_classes:
+      triple = (None,None,uri)
+      for t in self.GRAPHS[c].triples(triple):
+        found += 1
+
+    if found == 0:
+      dialog = makeMessageBox("remove class %s"%Class, buttons=["NO", "YES"])
+      if dialog == "YES":
+        self.removeClass(Class)
+
+
   def removeClass(self, Class):
     for c in self.getClassNamesList():
       classURI = self.makeURI(c, Class)
@@ -432,9 +449,9 @@ class DataModel():
 
     # triple = (None, RDFSTerms["is_defined_by"], object)
     for s, p, o in self.GRAPHS[Class].triples(triple):
-      subject = extract_name_from_class_uri(s)
+      object = extract_name_from_class_uri(o)
     self.GRAPHS[Class].remove(triple)
-    return subject
+    return object
 
   def removePrimitive(self, Class, primitive):
     graph = self.GRAPHS[Class]
@@ -888,7 +905,8 @@ class OntobuilderUI(QMainWindow):
   def on_pushRemoveClassLink_pressed(self):
 
     removed_class = self.dataModel.removeLinkInClass(self.current_class, self.current_item_ID)
-    self.__checkForUnusedClasses(removed_class)
+    # self.__checkForUnusedClasses(removed_class)
+    self.dataModel.checkForClassIsUsed((removed_class))
     self.__createTree(self.current_class)
     self.__ui_state("show_tree")
     self.changed = True
@@ -1065,32 +1083,43 @@ class OntobuilderUI(QMainWindow):
         conjunctiveGraph.get_context(namespaces[cl]).add((s, p, o))
     return conjunctiveGraph
 
-  def __checkForUnusedClasses(self, removed_classs):
-    current_set_of_classes = set(self.dataModel.GRAPHS.keys())
-    used_classes_set = set([])
-    for c in current_set_of_classes:
-      if c not in removed_classs:
-        for s, p, o in self.dataModel.GRAPHS[c].triples((None, None, None)):
-          if (str(s) in current_set_of_classes) or (extract_name_from_class_uri(o) in current_set_of_classes):
-            used_classes_set.add(c)
-    # not used classes:
-    not_used_classes = current_set_of_classes - used_classes_set
-    self.debugging("not used set of classes: ", not_used_classes)
-
-    to_remove_classes = set()
-
-    not_used_classes = not_used_classes
-    for c in not_used_classes:
-      untreated_classes = not_used_classes - to_remove_classes
-      dialog = UI_stringSelector("you got unused classes -- select the one you want to delete or cancel",
-                                 untreated_classes)
-      dialog.exec()
-      selection = dialog.getSelection()
-      if selection:
-        self.on_pushRemoveClass_pressed()
-        untreated_classes.remove(selection)
-      else:
-        break
+  # def __checkForUnusedClasses(self, ):
+  #
+  #   unused_classes = set(self.dataModel.GRAPHS.keys())
+  #   current_set_of_classes = copy.copy(unused_classes)
+  #
+  #   for c in current_set_of_classes:
+  #     uri = self.dataModel.makeURI("root",c)
+  #     for t in self.dataModel
+  #
+  #
+  #   # current_set_of_classes = set(self.dataModel.GRAPHS.keys())
+  #   # used_classes_set = set([])
+  #   # for c in current_set_of_classes:
+  #   #   if c not in removed_class:
+  #   #     for s, p, o in self.dataModel.GRAPHS[c].triples((None, None, None)):
+  #   #       t1 =(extract_class_name(s) in current_set_of_classes)
+  #   #       t2 = (extract_name_from_class_uri(o) in current_set_of_classes)
+  #   #       if t1 or t2:
+  #   #         used_classes_set.add(c)
+  #   # # not used classes:
+  #   # not_used_classes = current_set_of_classes - used_classes_set
+  #   # self.debugging("not used set of classes: ", not_used_classes)
+  #   #
+  #   # to_remove_classes = set()
+  #
+  #   not_used_classes = not_used_classes
+  #   for c in not_used_classes:
+  #     untreated_classes = not_used_classes - to_remove_classes - set("root")
+  #     dialog = UI_stringSelector("you got unused classes -- select the one you want to delete or cancel",
+  #                                untreated_classes)
+  #     dialog.exec()
+  #     selection = dialog.getSelection()
+  #     if selection:
+  #       self.dataModel.removeClass(selection)
+  #       untreated_classes.remove(selection)
+  #     else:
+  #       break
 
   def __writeQuadFile(self, conjunctiveGraph, f):
     saveBackupFile(f)
