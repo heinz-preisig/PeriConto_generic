@@ -15,6 +15,7 @@ import copy
 import glob
 import os
 import sys
+from types import new_class
 
 import rdflib.term
 from babel.messages.extract import extract
@@ -52,7 +53,7 @@ CLASS_SEPARATOR = "/"
 PERICONTO = BASE + ITEM_SEPARATOR
 
 ONTOLOGY_REPOSITORY = "../ontologyRepository"
-ROOTCLASS = "root"
+ROOTCLASS = "ROOT"
 
 FILE_FORMAT = "trig"
 
@@ -167,7 +168,7 @@ class TreePlot:
                   "fillcolor": "white",
                   "style"    : "filled",
                   },
-          "root"  : {
+          "ROOT"  : {
                   "colour"   : "red",
                   "shape"    : "rectangle",
                   "fillcolor": "white",
@@ -317,11 +318,14 @@ class DataModel():
       triple = None, RDFSTerms["is_defined_by"], None
       for t in self.GRAPHS[c].triples(triple):
         _, _, o = t
-        s.add(extract_name_from_class_uri(o))
+        if ITEM_SEPARATOR in o:
+          s.add(extract_name_from_class_uri(o))
+        elif CLASS_SEPARATOR in o:
+          s.add(extract_class_name(o))
     return s
 
   def getLinkList(self, Class, name):
-    object = self.makeURI("root", name)
+    object = self.makeURI("ROOT", name)
     triple = (object, RDFSTerms["is_defined_by"], None)
     return [extract_name_from_class_uri(o) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
@@ -343,7 +347,8 @@ class DataModel():
 
   def getAllNames(self, Class):
     triple = (None, None, None)
-    return [extract_name_from_class_uri(s) for s, p, o in self.GRAPHS[Class].triples(triple)]
+
+    return {extract_name_from_class_uri(s) for s, p, o in self.GRAPHS[Class].triples(triple)}
     # return [str(s).split(":")[-1] for c in self.GRAPHS for s,p,o in self.GRAPHS[c].triples(triple)]
 
   def addClass(self, Class):
@@ -360,7 +365,7 @@ class DataModel():
   def checkForClassIsUsed(self,Class):
     current_set_of_classes = set(self.GRAPHS.keys())
     found = 0
-    uri = self.makeURI("root", Class)
+    uri = self.makeURI("ROOT", Class)
     for c in current_set_of_classes:
       triple = (None,None,uri)
       for t in self.GRAPHS[c].triples(triple):
@@ -444,7 +449,7 @@ class DataModel():
     o_name = self.getLinkList(Class, item)[0]
     object = self.makeURI(Class, o_name)
 
-    subject = self.makeURI("root", item)
+    subject = self.makeURI("ROOT", item)
     triple = (subject, RDFSTerms["is_defined_by"], object)
 
     # triple = (None, RDFSTerms["is_defined_by"], object)
@@ -849,18 +854,20 @@ class OntobuilderUI(QMainWindow):
     if not Class:
       return
 
-    self.dataModel.addClass(Class)
+    newClass = Class.upper()
+
+    self.dataModel.addClass(newClass)
 
     # elucidation
     self.ui.textElucidation.clear()
     self.elucidations[Class] = None
 
     # make link
-    self.dataModel.addLink(self.current_class, Class, self.current_item_ID)
+    self.dataModel.addLink(self.current_class, newClass, self.current_item_ID)
 
-    self.__createTree(Class)
-    self.__addToClassPath(addclass=Class)
-    self.current_class = Class
+    self.__createTree(newClass)
+    self.__addToClassPath(addclass=newClass)
+    self.current_class = newClass
     self.__ui_state("show_tree")
     self.changed = True
 
@@ -876,9 +883,11 @@ class OntobuilderUI(QMainWindow):
         return
 
       Class = selection
-      _, subject = self.dataModel.makeClassURI(Class)
-      object = self.dataModel.makeURI(self.current_class, self.current_item_ID)
-      self.dataModel.GRAPHS[self.current_class].add((subject, RDFSTerms["is_defined_by"], object))
+      _, object = self.dataModel.makeClassURI(Class)
+      subject = self.dataModel.makeURI(self.current_class, self.current_item_ID)
+      triple = (subject, RDFSTerms["is_defined_by"], object)
+      self.dataModel.GRAPHS[self.current_class].add(triple)
+      print("adding triple:", triple)
 
       parent_item = self.ui.treeClass.currentItem()
       item = QTreeWidgetItem(parent_item)
@@ -1089,7 +1098,7 @@ class OntobuilderUI(QMainWindow):
   #   current_set_of_classes = copy.copy(unused_classes)
   #
   #   for c in current_set_of_classes:
-  #     uri = self.dataModel.makeURI("root",c)
+  #     uri = self.dataModel.makeURI("ROOT",c)
   #     for t in self.dataModel
   #
   #
@@ -1110,7 +1119,7 @@ class OntobuilderUI(QMainWindow):
   #
   #   not_used_classes = not_used_classes
   #   for c in not_used_classes:
-  #     untreated_classes = not_used_classes - to_remove_classes - set("root")
+  #     untreated_classes = not_used_classes - to_remove_classes - set("ROOT")
   #     dialog = UI_stringSelector("you got unused classes -- select the one you want to delete or cancel",
   #                                untreated_classes)
   #     dialog.exec()
@@ -1186,19 +1195,13 @@ class OntobuilderUI(QMainWindow):
     return item
 
   def __permittedClasses(self):
-    all_linke_classes = self.dataModel.getAllLinkedClasses()
-    for c in all_linke_classes:
+    all_linked_classes = self.dataModel.getAllLinkedClasses()
+    permitted_classes = copy.copy(all_linked_classes)
+    for c in all_linked_classes:
       if (c == self.current_class) or (c in self.class_path):
-        all_linke_classes.remove(c)
+        permitted_classes.remove(c)
 
-    return all_linke_classes
-    # permitted_classes = []
-    # for cl in self.dataModel.GRAPHS:
-    #   if cl != self.current_class:
-    #     if cl not in self.dataModel.getAllLinkedClasses():  # link_lists[cl]:
-    #       if cl not in self.class_path:
-    #         permitted_classes.append(cl)
-    # return permitted_classes
+    return permitted_classes
 
   def __addToClassPath(self, addclass):
     self.class_path.append(addclass)
@@ -1270,6 +1273,8 @@ class OntobuilderUI(QMainWindow):
 
       if dir == -1:
         node = s
+        if "class" in subject_type:
+          type = "Class"
       else:
         node = o
 
