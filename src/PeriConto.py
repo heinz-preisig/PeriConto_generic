@@ -81,11 +81,12 @@ RDFSTerms = {
         "decimal"      : XSD.decimal,
         "uri"          : XSD.anyURI,
         "label"         : RDFS.label,
+        "boolean"      : XSD.boolean,
         }
 
 MYTerms = {v: k for k, v in RDFSTerms.items()}
 
-PRIMITIVES = ["integer", "comment", "string", "decimal", "uri"]
+PRIMITIVES = ["integer", "comment", "string", "decimal", "uri", "boolean"]
 ADD_ELUCIDATIONS = ["class", "is_member", "value"]
 
 COLOURS = {

@@ -1,7 +1,25 @@
 @prefix CAPACITIVE_ENTITY: <http://example.org/CAPACITIVE_ENTITY> .
 @prefix CAPACITY: <http://example.org/CAPACITY> .
 @prefix ROOT: <http://example.org/ROOT> .
+@prefix TIME_SCALE: <http://example.org/TIME_SCALE> .
+@prefix TOKEN: <http://example.org/TOKEN> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+TIME_SCALE: {
+    TIME_SCALE: a rdfs:Class .
+
+    <http://example.org/TIME_SCALE#TIME_SCALE> rdf:value <http://example.org/TIME_SCALE#constant>,
+            <http://example.org/TIME_SCALE#dynamic>,
+            <http://example.org/TIME_SCALE#event> .
+
+    <http://example.org/TIME_SCALE#constant> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/TIME_SCALE#dynamic> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/TIME_SCALE#event> rdfs:Datatype xsd:boolean .
+}
 
 ROOT: {
     ROOT: a rdfs:Class .
@@ -14,6 +32,18 @@ ROOT: {
     <http://example.org/ROOT#Nodes> rdfs:member <http://example.org/ROOT#Graph> .
 
     <http://example.org/ROOT#Graph> rdfs:member ROOT: .
+}
+
+CAPACITIVE_ENTITY: {
+    CAPACITIVE_ENTITY: a rdfs:Class .
+
+    <http://example.org/CAPACITIVE_ENTITY#advatar> rdfs:member CAPACITIVE_ENTITY: .
+
+    <http://example.org/CAPACITIVE_ENTITY#temporal> rdfs:isDefinedBy <http://example.org/CAPACITIVE_ENTITY#TIME_SCALE> ;
+        rdfs:member CAPACITIVE_ENTITY: .
+
+    <http://example.org/CAPACITIVE_ENTITY#tokens> rdfs:isDefinedBy <http://example.org/CAPACITIVE_ENTITY#TOKEN> ;
+        rdfs:member CAPACITIVE_ENTITY: .
 }
 
 CAPACITY: {
@@ -29,7 +59,11 @@ CAPACITY: {
         rdfs:member CAPACITY: .
 }
 
-CAPACITIVE_ENTITY: {
-    CAPACITIVE_ENTITY: a rdfs:Class .
+TOKEN: {
+    TOKEN: a rdfs:Class .
+
+    <http://example.org/TOKEN#TOKEN> rdf:value <http://example.org/TOKEN#a_token> .
+
+    <http://example.org/TOKEN#a_token> rdfs:Datatype xsd:string .
 }
 
