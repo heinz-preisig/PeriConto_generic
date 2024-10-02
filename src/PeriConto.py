@@ -151,12 +151,6 @@ class TreePlot:
                   "fillcolor": "red",
                   "style"    : "filled",
                   },
-          "class" : {
-                  "colour"   : "red",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
           "member": {
                   "colour"   : "orange",
                   "shape"    : "",
@@ -175,11 +169,11 @@ class TreePlot:
                   "fillcolor": "white",
                   "style"    : "filled",
                   },
-          # "linked": {"colour": "red",
-          #           "shape": "rectangle",
-          #           "fillcolor": "red",
-          #           "style": "filled",
-          #           },
+          "linked": {"colour": "green",
+                    "shape": "rectangle",
+                    "fillcolor": "white",
+                    "style": "filled",
+                    },
           "other" : {
                   "colour"   : None,
                   "shape"    : None,
@@ -187,7 +181,7 @@ class TreePlot:
                   "style"    : None,
                   },
           }
-  NODE_SPECS["linked"] = NODE_SPECS["class"]
+  NODE_SPECS["linked"] = NODE_SPECS["Class"]
 
   def __init__(self, graph_name, graph_tripples, class_names):
     self.classes = class_names
@@ -1261,12 +1255,13 @@ class OntobuilderUI(QMainWindow):
       except:
         type = "other"
 
-      print("s,p,o is:", s, ": ", subject_type,
-            "p: ", p,
-            "o: ", o, object_type,
-            "d: ", dir)
+      # print("s,p,o is:", s, ": ", subject_type,
+      #       "p: ", p,
+      #       "o: ", o, object_type,
+      #       "d: ", dir)
+      print("s: ",s,subject_type, "     o: ", o,object_type)
       if "class" in object_type:
-        type = "class"
+        type = "Class"
       if "linked" in object_type:
         type = "linked"
       if o == "Class":
@@ -1277,10 +1272,12 @@ class OntobuilderUI(QMainWindow):
         if "class" in subject_type:
           type = "Class"
       else:
+        if "class" in object_type:
+          type = "Class"
         node = o
 
-      print(node)
-      print("adding", node, type)
+      # print(node)
+      # print("adding", node, type)
 
       dot.addNode(node, type)
 

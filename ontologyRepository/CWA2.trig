@@ -3,6 +3,7 @@
 @prefix ROOT: <http://example.org/ROOT> .
 @prefix TIME_SCALE: <http://example.org/TIME_SCALE> .
 @prefix TOKEN: <http://example.org/TOKEN> .
+@prefix TRANSPORT: <http://example.org/TRANSPORT> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -24,26 +25,17 @@ TIME_SCALE: {
 ROOT: {
     ROOT: a rdfs:Class .
 
-    <http://example.org/ROOT#Arcs> rdfs:member <http://example.org/ROOT#Graph> .
-
     <http://example.org/ROOT#Capacity> rdfs:isDefinedBy <http://example.org/ROOT#CAPACITY> ;
         rdfs:member <http://example.org/ROOT#Nodes> .
+
+    <http://example.org/ROOT#Transport> rdfs:isDefinedBy <http://example.org/ROOT#TRANSPORT> ;
+        rdfs:member <http://example.org/ROOT#Arcs> .
+
+    <http://example.org/ROOT#Arcs> rdfs:member <http://example.org/ROOT#Graph> .
 
     <http://example.org/ROOT#Nodes> rdfs:member <http://example.org/ROOT#Graph> .
 
     <http://example.org/ROOT#Graph> rdfs:member ROOT: .
-}
-
-CAPACITIVE_ENTITY: {
-    CAPACITIVE_ENTITY: a rdfs:Class .
-
-    <http://example.org/CAPACITIVE_ENTITY#advatar> rdfs:member CAPACITIVE_ENTITY: .
-
-    <http://example.org/CAPACITIVE_ENTITY#temporal> rdfs:isDefinedBy <http://example.org/CAPACITIVE_ENTITY#TIME_SCALE> ;
-        rdfs:member CAPACITIVE_ENTITY: .
-
-    <http://example.org/CAPACITIVE_ENTITY#tokens> rdfs:isDefinedBy <http://example.org/CAPACITIVE_ENTITY#TOKEN> ;
-        rdfs:member CAPACITIVE_ENTITY: .
 }
 
 CAPACITY: {
@@ -57,6 +49,74 @@ CAPACITY: {
 
     <http://example.org/CAPACITY#Physical> rdfs:isDefinedBy CAPACITIVE_ENTITY: ;
         rdfs:member CAPACITY: .
+}
+
+TRANSPORT: {
+    TRANSPORT: a rdfs:Class .
+
+    <http://example.org/TRANSPORT#Mechanism> rdf:value <http://example.org/TRANSPORT#convection> ;
+        rdfs:member TRANSPORT: .
+
+    <http://example.org/TRANSPORT#token> rdfs:isDefinedBy TOKEN: ;
+        rdfs:member TRANSPORT: .
+
+    <http://example.org/TRANSPORT#convection> rdfs:Datatype xsd:boolean .
+}
+
+CAPACITIVE_ENTITY: {
+    CAPACITIVE_ENTITY: a rdfs:Class .
+
+    <http://example.org/CAPACITIVE_ENTITY#circle> rdf:value <http://example.org/CAPACITIVE_ENTITY#radius> ;
+        rdfs:member <http://example.org/CAPACITIVE_ENTITY#graph_object> .
+
+    <http://example.org/CAPACITIVE_ENTITY#line> rdf:value <http://example.org/CAPACITIVE_ENTITY#dotted>,
+            <http://example.org/CAPACITIVE_ENTITY#full> ;
+        rdfs:member <http://example.org/CAPACITIVE_ENTITY#style> .
+
+    <http://example.org/CAPACITIVE_ENTITY#oval> rdf:value <http://example.org/CAPACITIVE_ENTITY#long_axis>,
+            <http://example.org/CAPACITIVE_ENTITY#short_axis> ;
+        rdfs:member <http://example.org/CAPACITIVE_ENTITY#graph_object> .
+
+    <http://example.org/CAPACITIVE_ENTITY#rectangle> rdf:value <http://example.org/CAPACITIVE_ENTITY#length>,
+            <http://example.org/CAPACITIVE_ENTITY#width> ;
+        rdfs:member <http://example.org/CAPACITIVE_ENTITY#graph_object> .
+
+    <http://example.org/CAPACITIVE_ENTITY#square> rdf:value <http://example.org/CAPACITIVE_ENTITY#size> ;
+        rdfs:member <http://example.org/CAPACITIVE_ENTITY#graph_object> .
+
+    <http://example.org/CAPACITIVE_ENTITY#temporal> rdfs:isDefinedBy <http://example.org/CAPACITIVE_ENTITY#TIME_SCALE> ;
+        rdfs:member CAPACITIVE_ENTITY: .
+
+    <http://example.org/CAPACITIVE_ENTITY#tokens> rdfs:isDefinedBy <http://example.org/CAPACITIVE_ENTITY#TOKEN> ;
+        rdfs:member CAPACITIVE_ENTITY: .
+
+    <http://example.org/CAPACITIVE_ENTITY#dotted> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/CAPACITIVE_ENTITY#fill_colour> rdfs:Datatype xsd:string .
+
+    <http://example.org/CAPACITIVE_ENTITY#filled> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/CAPACITIVE_ENTITY#full> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/CAPACITIVE_ENTITY#length> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/CAPACITIVE_ENTITY#long_axis> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/CAPACITIVE_ENTITY#radius> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/CAPACITIVE_ENTITY#short_axis> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/CAPACITIVE_ENTITY#size> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/CAPACITIVE_ENTITY#style> rdf:value <http://example.org/CAPACITIVE_ENTITY#fill_colour>,
+            <http://example.org/CAPACITIVE_ENTITY#filled> ;
+        rdfs:member <http://example.org/CAPACITIVE_ENTITY#advatar> .
+
+    <http://example.org/CAPACITIVE_ENTITY#width> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/CAPACITIVE_ENTITY#advatar> rdfs:member CAPACITIVE_ENTITY: .
+
+    <http://example.org/CAPACITIVE_ENTITY#graph_object> rdfs:member <http://example.org/CAPACITIVE_ENTITY#advatar> .
 }
 
 TOKEN: {
