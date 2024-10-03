@@ -6,12 +6,8 @@ Authors:
 
 
 
-A brief note about the name: The name PERICONTO has two parts: PERI+ CONTO. 
-PERI stands for a term related to Indian Yellow, 
-a mysterious transluscnet paint ingredient used untill 19th century (https://en.wikipedia.org/wiki/Indian_yellow).
-CONTO stands for coating ontologies.
-
-
+A brief note about the name: The name PERICONTO has two parts: PERI + CONTO. PERI stands for a term related to Indian Yellow, 
+a mysterious transluscnet paint ingredient used untill 19th century (https://en.wikipedia.org/wiki/Indian_yellow). CONTO stands for coating ontologies.
 
 
 # how to use PERICONTO_generic_0.1 
