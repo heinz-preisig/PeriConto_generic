@@ -157,7 +157,7 @@ class TreePlot:
                   "fillcolor": "white",
                   "style"    : "filled",
                   },
-          "value" : {
+          "primitive" : {
                   "colour"   : "blue",
                   "shape"    : "rectangle",
                   "fillcolor": "white",
@@ -1259,7 +1259,7 @@ class OntobuilderUI(QMainWindow):
       #       "p: ", p,
       #       "o: ", o, object_type,
       #       "d: ", dir)
-      print("s: ",s,subject_type, "     o: ", o,object_type)
+      print("s: ",s,subject_type, "      p:",p,"     o: ", o,object_type, "     dir:", dir)
       if "class" in object_type:
         type = "Class"
       if "linked" in object_type:
@@ -1271,6 +1271,10 @@ class OntobuilderUI(QMainWindow):
         node = s
         if "class" in subject_type:
           type = "Class"
+        if s in PRIMITIVES:
+          type = "primitive"
+        elif not subject_type:
+          type = "other"
       else:
         if "class" in object_type:
           type = "Class"
