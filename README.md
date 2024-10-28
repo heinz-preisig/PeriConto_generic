@@ -12,7 +12,7 @@ a mysterious transluscnet paint ingredient used untill 19th century (https://en.
 
 # how to use PERICONTO_generic_0.1 
     The program is built on pyqt6 and python 3 
-
+    
     1. make a project directory
     2. change to project directory
     3. create and activate a virtual invironment as following 
@@ -20,6 +20,8 @@ a mysterious transluscnet paint ingredient used untill 19th century (https://en.
         $ source .venv/bin/activate
     4. Install dependencies (there was an unresolvable error with the package PyQtWebEngine,tested in Python 3.6)
         $ pip3 install -r requirements.txt ()
+    5. Issus with icons -- .svg did not show --> install
+       sudo apt-get install python3-pyqt6.qtsvg
     5. launch the PeriConto's GUI
         $ python3 PeriConto.py
 
@@ -61,7 +63,7 @@ a mysterious transluscnet paint ingredient used untill 19th century (https://en.
                 . items and primitives can be renamed (double click on name)
                 . unlink items from a class
                 . remove items, primitives and unused classes
-
+    
     Not (yet) implented:
         1. renaming classes
         2. handling of elucidations
