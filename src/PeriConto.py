@@ -56,6 +56,7 @@ ONTOLOGY_REPOSITORY = "../ontologyRepository"
 ROOTCLASS = "ROOT"
 
 FILE_FORMAT = "trig"
+FILE_FORMAT_ = "json-ld"
 
 # RDFSTerms = {
 #         "class"           : RDFS.Class,
@@ -920,6 +921,11 @@ class OntobuilderUI(QMainWindow):
 
     conjunctiveGraph = self.__prepareConjunctiveGraph()
     self.__writeQuadFile(conjunctiveGraph, self.project_file_spec)
+
+    project_file_spec_json = os.path.join(ONTOLOGY_REPOSITORY, self.project_name + ".%s" % FILE_FORMAT_)
+
+    self.__writeQuadFile(conjunctiveGraph, project_file_spec_json)
+
     self.changed = False
 
   def on_pushRemovePrimitive_pressed(self):
@@ -955,9 +961,11 @@ class OntobuilderUI(QMainWindow):
     else:
       file_name = file_name.split(".")[0]
 
-    fname = file_name + ".%s" % FILE_FORMAT
-    self.project_file_spec = os.path.join(ONTOLOGY_REPOSITORY, fname)
-    self.__writeQuadFile(conjunctiveGraph, self.project_file_spec)
+
+    for f_format in [FILE_FORMAT, FILE_FORMAT_]:
+      fname = file_name + ".%s" % f_format
+      self.project_file_spec = os.path.join(ONTOLOGY_REPOSITORY, fname)
+      self.__writeQuadFile(conjunctiveGraph, self.project_file_spec)
 
     dot = self.__makeDotGraph()
 

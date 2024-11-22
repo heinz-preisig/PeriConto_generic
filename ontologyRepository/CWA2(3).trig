@@ -8,22 +8,6 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-ROOT: {
-    ROOT: a rdfs:Class .
-
-    <http://example.org/ROOT#Capacity> rdfs:isDefinedBy <http://example.org/ROOT#CAPACITY> ;
-        rdfs:member <http://example.org/ROOT#Nodes> .
-
-    <http://example.org/ROOT#Transport> rdfs:isDefinedBy <http://example.org/ROOT#TRANSPORT> ;
-        rdfs:member <http://example.org/ROOT#Arcs> .
-
-    <http://example.org/ROOT#Arcs> rdfs:member <http://example.org/ROOT#Graph> .
-
-    <http://example.org/ROOT#Nodes> rdfs:member <http://example.org/ROOT#Graph> .
-
-    <http://example.org/ROOT#Graph> rdfs:member ROOT: .
-}
-
 CAPACITIVE_ENTITY: {
     CAPACITIVE_ENTITY: a rdfs:Class .
 
@@ -80,17 +64,28 @@ CAPACITIVE_ENTITY: {
     <http://example.org/CAPACITIVE_ENTITY#graph_object> rdfs:member <http://example.org/CAPACITIVE_ENTITY#advatar> .
 }
 
-CAPACITY: {
-    CAPACITY: a rdfs:Class .
+TOKEN: {
+    TOKEN: a rdfs:Class .
 
-    <http://example.org/CAPACITY#Control> rdfs:isDefinedBy <http://example.org/CAPACITY#CAPACITIVE_ENTITY> ;
-        rdfs:member CAPACITY: .
+    <http://example.org/TOKEN#TOKEN> rdf:value <http://example.org/TOKEN#a_token> .
 
-    <http://example.org/CAPACITY#InformationProcessing> rdfs:isDefinedBy CAPACITIVE_ENTITY: ;
-        rdfs:member CAPACITY: .
+    <http://example.org/TOKEN#a_token> rdfs:Datatype xsd:string .
+}
 
-    <http://example.org/CAPACITY#Physical> rdfs:isDefinedBy CAPACITIVE_ENTITY: ;
-        rdfs:member CAPACITY: .
+ROOT: {
+    ROOT: a rdfs:Class .
+
+    <http://example.org/ROOT#Capacity> rdfs:isDefinedBy <http://example.org/ROOT#CAPACITY> ;
+        rdfs:member <http://example.org/ROOT#Nodes> .
+
+    <http://example.org/ROOT#Transport> rdfs:isDefinedBy <http://example.org/ROOT#TRANSPORT> ;
+        rdfs:member <http://example.org/ROOT#Arcs> .
+
+    <http://example.org/ROOT#Arcs> rdfs:member <http://example.org/ROOT#Graph> .
+
+    <http://example.org/ROOT#Nodes> rdfs:member <http://example.org/ROOT#Graph> .
+
+    <http://example.org/ROOT#Graph> rdfs:member ROOT: .
 }
 
 TIME_SCALE: {
@@ -107,12 +102,17 @@ TIME_SCALE: {
     <http://example.org/TIME_SCALE#event> rdfs:Datatype xsd:boolean .
 }
 
-TOKEN: {
-    TOKEN: a rdfs:Class .
+CAPACITY: {
+    CAPACITY: a rdfs:Class .
 
-    <http://example.org/TOKEN#TOKEN> rdf:value <http://example.org/TOKEN#a_token> .
+    <http://example.org/CAPACITY#Control> rdfs:isDefinedBy <http://example.org/CAPACITY#CAPACITIVE_ENTITY> ;
+        rdfs:member CAPACITY: .
 
-    <http://example.org/TOKEN#a_token> rdfs:Datatype xsd:string .
+    <http://example.org/CAPACITY#InformationProcessing> rdfs:isDefinedBy CAPACITIVE_ENTITY: ;
+        rdfs:member CAPACITY: .
+
+    <http://example.org/CAPACITY#Physical> rdfs:isDefinedBy CAPACITIVE_ENTITY: ;
+        rdfs:member CAPACITY: .
 }
 
 TRANSPORT: {
