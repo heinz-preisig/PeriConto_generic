@@ -37,7 +37,7 @@ from rdflib import Literal
 # from rdflib.namespace import RDFS
 
 # from graphHAP import Graph
-from PeriConto_gui import Ui_MainWindow
+from PeriContoSchema_gui import Ui_MainWindow
 from resources.pop_up_message_box import makeMessageBox
 from resources.resources_icons import roundButton
 from resources.ui_string_dialog_impl import UI_String

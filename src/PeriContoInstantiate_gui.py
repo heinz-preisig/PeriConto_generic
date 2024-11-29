@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'PeriContoCoatedProductTree_gui.ui'
+# Form implementation generated from reading ui file 'PeriContoInstantiate_gui.ui'
 #
 # Created by: PyQt6 UI code generator 6.6.1
 #
