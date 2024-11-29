@@ -1,4 +1,3 @@
-@prefix PRODUCT: <http://example.org/PRODUCT> .
 @prefix ROOT: <http://example.org/ROOT> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -9,17 +8,8 @@ ROOT: {
 
     <http://example.org/ROOT#ROOT> rdf:value <http://example.org/ROOT#name> .
 
-    <http://example.org/ROOT#product> rdfs:isDefinedBy <http://example.org/ROOT#PRODUCT> ;
-        rdfs:member ROOT: .
+    <http://example.org/ROOT#product> rdfs:member ROOT: .
 
     <http://example.org/ROOT#name> rdfs:Datatype xsd:string .
-}
-
-PRODUCT: {
-    PRODUCT: a rdfs:Class .
-
-    <http://example.org/PRODUCT#PRODUCT> rdf:value <http://example.org/PRODUCT#name> .
-
-    <http://example.org/PRODUCT#name> rdfs:Datatype xsd:string .
 }
 

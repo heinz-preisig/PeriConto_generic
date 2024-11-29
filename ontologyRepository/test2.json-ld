@@ -12,14 +12,14 @@ ROOT: {
     <http://example.org/ROOT#product> rdfs:isDefinedBy <http://example.org/ROOT#PRODUCT> ;
         rdfs:member ROOT: .
 
-    <http://example.org/ROOT#name> rdfs:Datatype xsd:string .
+    <http://example.org/ROOT#name> rdfs:Datatype xsd:integer .
 }
 
 PRODUCT: {
     PRODUCT: a rdfs:Class .
 
-    <http://example.org/PRODUCT#PRODUCT> rdf:value <http://example.org/PRODUCT#name> .
+    <http://example.org/PRODUCT#PRODUCT> rdf:value <http://example.org/PRODUCT#url> .
 
-    <http://example.org/PRODUCT#name> rdfs:Datatype xsd:string .
+    <http://example.org/PRODUCT#url> rdfs:Datatype xsd:anyURI .
 }
 

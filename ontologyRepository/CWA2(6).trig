@@ -37,8 +37,6 @@ TRANSPORT: {
             <http://example.org/TRANSPORT#diffusion> ;
         rdfs:member TRANSPORT: .
 
-    <http://example.org/TRANSPORT#avatar> rdfs:member TRANSPORT: .
-
     <http://example.org/TRANSPORT#token> rdfs:isDefinedBy TOKEN: ;
         rdfs:member TRANSPORT: .
 
