@@ -18,10 +18,7 @@ ROOT: {
 PRODUCT: {
     PRODUCT: a rdfs:Class .
 
-    <http://example.org/PRODUCT#PRODUCT> rdf:value <http://example.org/PRODUCT#no>,
-            <http://example.org/PRODUCT#url> .
-
-    <http://example.org/PRODUCT#no> rdfs:Datatype xsd:integer .
+    <http://example.org/PRODUCT#PRODUCT> rdf:value <http://example.org/PRODUCT#url> .
 
     <http://example.org/PRODUCT#url> rdfs:Datatype xsd:anyURI .
 }

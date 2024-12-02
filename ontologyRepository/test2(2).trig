@@ -4,6 +4,14 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+PRODUCT: {
+    PRODUCT: a rdfs:Class .
+
+    <http://example.org/PRODUCT#PRODUCT> rdf:value <http://example.org/PRODUCT#url> .
+
+    <http://example.org/PRODUCT#url> rdfs:Datatype xsd:anyURI .
+}
+
 ROOT: {
     ROOT: a rdfs:Class .
 
@@ -13,16 +21,5 @@ ROOT: {
         rdfs:member ROOT: .
 
     <http://example.org/ROOT#name> rdfs:Datatype xsd:integer .
-}
-
-PRODUCT: {
-    PRODUCT: a rdfs:Class .
-
-    <http://example.org/PRODUCT#PRODUCT> rdf:value <http://example.org/PRODUCT#no>,
-            <http://example.org/PRODUCT#url> .
-
-    <http://example.org/PRODUCT#no> rdfs:Datatype xsd:integer .
-
-    <http://example.org/PRODUCT#url> rdfs:Datatype xsd:anyURI .
 }
 

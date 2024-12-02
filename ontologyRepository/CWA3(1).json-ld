@@ -1,0 +1,75 @@
+@prefix AVATAR: <http://example.org/AVATAR> .
+@prefix CAPACITIVE_ENTITY: <http://example.org/CAPACITIVE_ENTITY> .
+@prefix CAPACITY: <http://example.org/CAPACITY> .
+@prefix ROOT: <http://example.org/ROOT> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+AVATAR: {
+    AVATAR: a rdfs:Class .
+
+    <http://example.org/AVATAR#Circle> rdfs:member <http://example.org/AVATAR#GraphObject> .
+
+    <http://example.org/AVATAR#Line> rdf:value <http://example.org/AVATAR#Full>,
+            <http://example.org/AVATAR#dotted> ;
+        rdfs:member <http://example.org/AVATAR#Style> .
+
+    <http://example.org/AVATAR#Oval> rdfs:member <http://example.org/AVATAR#GraphObject> .
+
+    <http://example.org/AVATAR#Rectangle> rdfs:member <http://example.org/AVATAR#GraphObject> .
+
+    <http://example.org/AVATAR#Square> rdfs:member <http://example.org/AVATAR#GraphObject> .
+
+    <http://example.org/AVATAR#FillColour> rdfs:Datatype xsd:string .
+
+    <http://example.org/AVATAR#Filled> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/AVATAR#Full> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/AVATAR#Style> rdf:value <http://example.org/AVATAR#FillColour>,
+            <http://example.org/AVATAR#Filled> ;
+        rdfs:member AVATAR: .
+
+    <http://example.org/AVATAR#dotted> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/AVATAR#GraphObject> rdfs:member AVATAR: .
+}
+
+ROOT: {
+    ROOT: a rdfs:Class .
+
+    <http://example.org/ROOT#Capacity> rdfs:isDefinedBy <http://example.org/ROOT#CAPACITY> ;
+        rdfs:member <http://example.org/ROOT#Nodes> .
+
+    <http://example.org/ROOT#Transport> rdfs:member <http://example.org/ROOT#Arcs> .
+
+    <http://example.org/ROOT#Arcs> rdfs:member <http://example.org/ROOT#Graph> .
+
+    <http://example.org/ROOT#Nodes> rdfs:member <http://example.org/ROOT#Graph> .
+
+    <http://example.org/ROOT#Graph> rdfs:member ROOT: .
+}
+
+CAPACITY: {
+    CAPACITY: a rdfs:Class .
+
+    <http://example.org/CAPACITY#Control> rdfs:member CAPACITY: .
+
+    <http://example.org/CAPACITY#InformationProcessing> rdfs:member CAPACITY: .
+
+    <http://example.org/CAPACITY#Physical> rdfs:isDefinedBy <http://example.org/CAPACITY#CAPACITIVE_ENTITY> ;
+        rdfs:member CAPACITY: .
+}
+
+CAPACITIVE_ENTITY: {
+    CAPACITIVE_ENTITY: a rdfs:Class .
+
+    <http://example.org/CAPACITIVE_ENTITY#Avatar> rdfs:isDefinedBy <http://example.org/CAPACITIVE_ENTITY#AVATAR> ;
+        rdfs:member CAPACITIVE_ENTITY: .
+
+    <http://example.org/CAPACITIVE_ENTITY#Temporal> rdfs:member CAPACITIVE_ENTITY: .
+
+    <http://example.org/CAPACITIVE_ENTITY#Tokens> rdfs:member CAPACITIVE_ENTITY: .
+}
+

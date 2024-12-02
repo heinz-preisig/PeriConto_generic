@@ -29,28 +29,16 @@ DELIMITERS = {
         }
 # A temperary URI for our coating ontology
 BASE = 'http://example.org/'
-
-# from rdflib import Graph
-# from rdflib import Literal
+ROOT = "ROOT"
 
 from rdflib import Namespace, Literal, URIRef, namespace
 from rdflib.graph import Graph, ConjunctiveGraph
-# from rdflib.plugins.stores.memory import Memory
 from rdflib.namespace import RDF, XSD, RDFS
 
 from treeid import ObjectTreeNonUniqueTags, invertDict
 
 # from graphviz import Digraph
 import graphviz
-
-# from PeriConto import MYTerms
-# from PeriConto import ONTOLOGY_REPOSITORY
-# from PeriConto import PRIMITIVES
-# from PeriConto import RDFSTerms
-# from PeriConto import VALUE
-# from PeriConto import getData, saveWithBackup
-# from PeriConto import makeRDFCompatible
-# from PeriConto import DIRECTION
 
 
 ONTOLOGY_REPOSITORY = "../ontologyRepository"
@@ -87,6 +75,8 @@ EDGE_COLOUR = {
 NODE_COLOUR = {
         "root"        : "red",
         "member"      : "white",
+        "sub_class"   : "white",
+        "linked_class": "red",
         "isDefinedBy" : "red",
         "primitive"   : "green",
         "value"       : "lightblue",
@@ -132,11 +122,11 @@ def makeRDFCompatible(identifier):  # TODO remove
   return Literal(identifier)
 
 
-def copyRDFGraph(G_original):
-  G_copy = Graph()
-  for triple in G_original:
-    G_copy.add(triple)
-  return G_copy
+# def copyRDFGraph(G_original):
+#   G_copy = Graph()
+#   for triple in G_original:
+#     G_copy.add(triple)
+#   return G_copy
 
 
 def nodeTypeMembership(node_types, node_tag):
@@ -163,7 +153,7 @@ def nodeTypeMembership(node_types, node_tag):
     is_value
 
 
-def nodeAttributes(node_types, node_tag):
+def nodeAttributes(node_types, node_tag, txt_class_names):
   attributes = {
           "color"    : "white",
           "style"    : "filled",
@@ -181,7 +171,7 @@ def nodeAttributes(node_types, node_tag):
     is_value = nodeTypeMembership(node_types, node_tag)
   if is_root:
     t = "root"
-  elif is_data_class:
+  elif node_tag in txt_class_names:
     t = "linked_class"
   elif is_sub_class:
     t = "sub_class"
@@ -205,7 +195,7 @@ def nodeAttributes(node_types, node_tag):
   return attributes
 
 
-def treePlot(objTree, root, node_types):
+def treePlot(objTree, root, node_types, txt_class_names):
   """
   attribute documentation
   https://graphviz.org/doc/info/attrs.html
@@ -221,7 +211,7 @@ def treePlot(objTree, root, node_types):
   root_str = str(objTree["nodes"][root])
   root_orig = getID(root_str)
   root_str = root_str.replace(":", "-")
-  atr = nodeAttributes(node_types, root_orig)
+  atr = nodeAttributes(node_types, root_orig, txt_class_names)
   # print("debugging ", root_str, atr)
   dot.node(root_str,
            color=atr["color"],
@@ -240,7 +230,7 @@ def treePlot(objTree, root, node_types):
       child_str = str(objTree["nodes"][child])
       child_orig = getID(child_str)
       child_str = child_str.replace(":", "-")
-      atr = nodeAttributes(node_types, child_orig)
+      atr = nodeAttributes(node_types, child_orig, txt_class_names)
       # print("debugging ", child_str, atr)
       dot.node(child_str,
                color=atr["color"],
@@ -296,10 +286,6 @@ def plotQuads(graph, class_names=[""]):
     else:
       dot.node(so_)
 
-    # if so in class_names:
-    #   dot.node(so_, color='red', style = "filled", fillcolor="",  shape="rectangle")
-    # else:
-    #   dot.node(so_)
 
     my_p = MYTerms[p]
     if DIRECTION[my_p] == 1:
@@ -356,8 +342,8 @@ def debuggPlotAndRender(graph, file_name, debugg):
     dot.render(file_name, view=True)
 
 
-def debuggTreePlotAndRender(tree, root, node_types, file_name):
-  dot = treePlot(tree, root, node_types)
+def debuggTreePlotAndRender(tree, root, node_types, file_name, txt_class_names):
+  dot = treePlot(tree, root, node_types, txt_class_names)
   dot.render(file_name, view=True)
 
 
@@ -420,17 +406,18 @@ class SuperGraph():
   def __init__(self):
     self.JsonFile = None
     self.ttlFile = None
-    self.txt_root_class = None
+    self.txt_root_class = ROOT
     self.txt_class_path = []
-    self.txt_class_names = []
-    self.txt_subclass_names = {}
-    self.txt_link_lists = {}
+    self.txt_class_names = set()   #
+    self.txt_member_names = {}
+    self.txt_is_linked = {}
     self.class_definition_sequence = []
     self.txt_primitives = {}
     self.txt_elucidations = {}
-    self.txt_value_lists = {}
-    self.txt_integer_lists = {}
-    self.txt_string_lists = {}
+    # self.txt_value_lists = {}
+    # self.txt_integer_lists = {}
+    # self.txt_string_lists = {}
+    self.id_in_graph = {}
     self.txt_comment_lists = {}
     self.enumerators = {}
 
@@ -438,16 +425,6 @@ class SuperGraph():
 
     pass
 
-  def create(self, root_class):
-    self.txt_root_class = root_class
-    self.RDFGraphDictionary = {self.txt_root_class: Graph('Memory', identifier=root_class)}
-    self.txt_subclass_names[self.txt_root_class] = [self.txt_root_class]
-    self.txt_class_names.append(self.txt_root_class)
-    self.txt_class_path = [self.txt_root_class]
-    self.txt_link_lists[self.txt_root_class] = []
-    self.class_definition_sequence.append(self.txt_root_class)
-    self.txt_primitives[self.txt_root_class] = {self.txt_root_class: []}
-    # conj_graph = self.RDFConjunctiveGraph['self.txt_root_class']
 
   def load(self, JsonFile):
     """
@@ -462,21 +439,35 @@ class SuperGraph():
 
     self.conjunctiveGraph = data
 
-    txt_class_names = set()
-    classes = set()
+    # self.txt_class_names = set()
     rdfclasses = set()
     RDFS = namespace.RDFS
     for s, p, o, g in data.quads((None, None, None, None)):
       if o == RDFS.Class:
         print(extractClassName(s))
-        txt_class_names.add(extractClassName(s))
-        classes.add(extractClassName(s))
+        self.txt_class_names.add(extractClassName(s))
         rdfclasses.add(s)
 
     # self.namespaces = {}
-    for g in classes:
+    for g in self.txt_class_names:
       # self.namespaces[g] = Namespace(g)
       self.RDFGraphDictionary[g] = Graph()
+      self.id_in_graph[g] = set()
+
+    # self.txt_class_names = txt_class_names
+
+    self.txt_root_class = "ROOT"  # data["root"]
+    self.txt_elucidations = {}  # data["elucidations"]
+    for g in self.txt_class_names:
+    #   self.class_definition_sequence.append(g)  # todo: that goes wrong -- used?
+
+      self.txt_member_names[g] = set()
+      # self.txt_primitives[g] = {g: []}
+      self.txt_is_linked[g] = set()
+      self.txt_primitives[g] = {}
+      for p in PRIMITIVES:
+        self.txt_primitives[g][p] = []
+      # self.txt_is_linked[g] = set()
 
     for s, p, o, g in data.quads((None, None, None, None)):
       if o not in RDFS.Class:
@@ -487,60 +478,38 @@ class SuperGraph():
         if not o_name:
           # g_name = extractClassName(g).split(">")[0]
           o_name = g_name.split("/")[-1]
+        if p_name == "member":
+          self.txt_member_names[g_name].add(s_name)
+        elif p_name == "isDefinedBy":
+          self.txt_is_linked[g_name].add(s_name)
+        elif s_name in PRIMITIVES:
+          self.txt_primitives[g_name][s_name].append(o_name)
         self.addGraphGivenInInternalNotation(s_name, p_name, o_name, g_name)
 
-    self.txt_class_names = txt_class_names
 
-    # data = getData(self.JsonFile)
-
-    # print the locaded JSON data
-    # pprint.pprint(data)
-
-    self.txt_root_class = "ROOT"  # data["root"]
-    self.txt_elucidations = {}  # data["elucidations"]
-    for g in self.txt_class_names:
-      self.class_definition_sequence.append(g)  # todo: that goes wrong -- used?
-
-      self.txt_subclass_names[g] = []
-      self.txt_primitives[g] = {g: []}
-      self.txt_link_lists[g] = []
-      # self.RDFGraphDictionary[g] = Graph()
-    #
-    # graphs_internal = data["graphs"]
-    # for g in graphs_internal:
-    #   self.class_definition_sequence.append(g)
-    #   self.txt_class_names.append(g)
-    #   self.txt_subclass_names[g] = []
-    #   self.txt_primitives[g] = {g: []}
-    #   self.txt_link_lists[g] = []
-    #   # Note: defines the graph in a conjunctive graph. The rdflib.graph.ConjunctiveGraph seems to
-    #   # Note:  show discrepancies between python implementation and documentation. Tried .get_graph
-    #   self.RDFGraphDictionary[g] = Graph()
-    #
-    #   for s, p, o in graphs_internal[g]:
-    #     self.addGraphGivenInInternalNotation(s, p, o, g)
 
     self.knowledge_tree, self.node_types = self.makeTreeRepresentation()
 
     self.knowledge_tree["tree"].printMe()
+    pass
 
   def makeTreeRepresentation(self):
     graph_overall = self.collectGraphs()
-    quads = convertRDFintoInternalMultiGraph(graph_overall, "ROOT")  # 'ROOT')
+    mquads = convertRDFintoInternalMultiGraph(graph_overall, "ROOT")  # 'ROOT')
     tree = ObjectTreeNonUniqueTags(self.txt_root_class)
-    self.recurseTree(tree, self.txt_root_class, quads)
+    self.recurseTree(tree, self.txt_root_class, mquads)
     # print("debugging -- generating tree")
 
     types = {"ROOT": self.txt_root_class}
     for t in list(RDFSTerms.keys() - PRIMITIVES):
       types[t] = set()
-    for s, o, p, g in quads:
+    for s, o, p, g in mquads:
       types[p].add(s)
 
     # print("debugging")
     return tree, types
 
-  def recurseTree(self, tree, id, quads):
+  def recurseTree(self, tree, id, mquads):
 
     visited = set()
     stack = [id]
@@ -555,11 +524,16 @@ class SuperGraph():
         stack = stack[1:]
       # nodes.append(cur_node)
       children = []
-      for s, o, p, g in quads:
+      for s, o, p, g in mquads:
         if o == id:
           children.append(str(s))
       for child in reversed(children):  # .get_rev_children():
         tree.addChildtoNode(child, id)
+        if id not in self.txt_class_names:
+          self.id_in_graph[g].add(id)
+        else:
+          if id not in self.class_definition_sequence:
+            self.class_definition_sequence.append(id)
         if child not in stack:
           stack.insert(0, child)
       pass
@@ -585,20 +559,20 @@ class SuperGraph():
     uris = URIRef(uid)
     return uid, uris
 
-  def makeAllListsForAllGraphs(self):
-    # print("debugging")
-    for rdf_graph_ID in self.RDFGraphDictionary:
-      rdf_graph = self.RDFGraphDictionary[rdf_graph_ID]
-      self.makeAllListsForOneGraph(rdf_graph, rdf_graph_ID)
-    pass
-
-  def makeAllListsForOneGraph(self, rdf_graph, rdf_graph_ID):
-    self.txt_subclass_names[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "is_a_subclass_of")
-    self.txt_link_lists[rdf_graph_ID] = makeLinkListBasedOnPredicates(rdf_graph, rdf_graph_ID, "link_to_class")
-    self.txt_value_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "value")
-    self.txt_integer_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "integer")
-    self.txt_string_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "string")
-    self.txt_comment_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "comment")
+  # def makeAllListsForAllGraphs(self):
+  #   # print("debugging")
+  #   for rdf_graph_ID in self.RDFGraphDictionary:
+  #     rdf_graph = self.RDFGraphDictionary[rdf_graph_ID]
+  #     self.makeAllListsForOneGraph(rdf_graph, rdf_graph_ID)
+  #   pass
+  #
+  # def makeAllListsForOneGraph(self, rdf_graph, rdf_graph_ID):
+  #   self.txt_member_names[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "is_a_subclass_of")
+  #   self.txt_is_linked[rdf_graph_ID] = makeLinkListBasedOnPredicates(rdf_graph, rdf_graph_ID, "link_to_class")
+  #   self.txt_value_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "value")
+  #   self.txt_integer_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "integer")
+  #   self.txt_string_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "string")
+  #   self.txt_comment_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "comment")
 
   def addGraphGivenInInternalNotation(self, subject_internal, predicate_internal, object_internal, graph_ID):
     rdf_subject = makeRDFCompatible(subject_internal)
@@ -621,15 +595,6 @@ class SuperGraph():
     kg_store = Memory()
     kg = ConjunctiveGraph(store=kg_store)  # kg_store)
     kg.bind("ckg", ckg)
-    # kg.bind("RDFS", RDFS)
-
-    # print(".....debugging", type(ckg.coatedProduct))
-    # print(".....debugging", ckg.coatedProduct)
-
-    # print("Contexts:")
-    # for kg in kg.contexts():
-    #     print(f"-- {kg.identifier} ")
-    # print("===================")
 
     for subgraph_key in list(self.RDFGraphDictionary.keys()):
 
@@ -650,40 +615,40 @@ class SuperGraph():
 
     return kg
 
-  def isClass(self, ID):
-    return ID in self.txt_class_names
-
-  def isSubClass(self, ID, graph_class):
-    # graph_class is the currently active class
-    if graph_class in self.txt_subclass_names:
-      return (ID in self.txt_subclass_names[graph_class]) and \
-        (ID not in self.txt_class_names)
-    else:
-      return False
-
-  def isPrimitive(self, text_ID):
-    # print("debugging -- is primitive", text_ID)
-    return text_ID in PRIMITIVES
-
-  def isValue(self, predicate):
-    return predicate == "value"
-
-  def isInteger(self, predicate):
-    return predicate == "integer"
-
-  def isComment(self, predicate):
-    return (predicate == "comment")
-
-  def isString(self, predicate):
-    return (predicate == "string")
-
-  def isLinked(self, ID, graph_class):
-    # graph_class is the currently active class
-    for cl in self.txt_link_lists:
-      for linked_class, linked_to_class, linked_to_subclass in self.txt_link_lists[cl]:
-        if linked_to_class == graph_class:
-          if linked_to_subclass == ID:
-            return True
+  # def isClass(self, ID):
+  #   return ID in self.txt_class_names
+  #
+  # def isSubClass(self, ID, graph_class):
+  #   # graph_class is the currently active class
+  #   if graph_class in self.txt_subclass_names:
+  #     return (ID in self.txt_subclass_names[graph_class]) and \
+  #       (ID not in self.txt_class_names)
+  #   else:
+  #     return False
+  #
+  # def isPrimitive(self, text_ID):
+  #   # print("debugging -- is primitive", text_ID)
+  #   return text_ID in PRIMITIVES
+  #
+  # def isValue(self, predicate):
+  #   return predicate == "value"
+  #
+  # def isInteger(self, predicate):
+  #   return predicate == "integer"
+  #
+  # def isComment(self, predicate):
+  #   return (predicate == "comment")
+  #
+  # def isString(self, predicate):
+  #   return (predicate == "string")
+  #
+  # def isLinked(self, ID, graph_class):
+  #   # graph_class is the currently active class
+  #   for cl in self.txt_link_lists:
+  #     for linked_class, linked_to_class, linked_to_subclass in self.txt_link_lists[cl]:
+  #       if linked_to_class == graph_class:
+  #         if linked_to_subclass == ID:
+  #           return True
 
   # No, this does not work!
   # It should be a rdflib's ConjunctiveGraph for serialization to work.
@@ -817,7 +782,7 @@ class WorkingTree(SuperGraph):
 
     node_types = self.container_graph.node_types
     if debugg:
-      debuggTreePlotAndRender(self.tree, 0, node_types, "base_ontology")
+      debuggTreePlotAndRender(self.tree, 0, node_types, "base_ontology", self.txt_class_names)
 
   def instantiateAlongPath(self, paths_in_classes, class_path):
 
@@ -1048,9 +1013,9 @@ class WorkingTree(SuperGraph):
     extract an RDF-subgraph from an RDF-Graph given a root as a string, a label
     it is done via the quads generation that ignore the directionality
     """
-    quads = convertRDFintoInternalMultiGraph(self.container_graph.RDFGraphDictionary[graph_ID], graph_ID)
+    mquads = convertRDFintoInternalMultiGraph(self.container_graph.RDFGraphDictionary[graph_ID], graph_ID)
     extracts = []  # TODO: add button for legend
-    extractSubTree(quads, root, extracts)  # as quads
+    extractSubTree(mquads, root, extracts)  # as quads
     graph = convertQuadsGraphIntoRDFGraph(extracts)
     linked_classes = []
     debuggPlotAndRender(graph, "adding", True)
@@ -1272,6 +1237,13 @@ class BackEnd:
 
     node_original = getID(node_tag)
 
+    graph = None
+    for id in reversed_path:
+      node = self.ContainerGraph.knowledge_tree["nodes"][id]
+      if node in self.txt_class_names:
+        graph = node
+        break
+
     # is_root, \
     # is_comment, \
     # is_data_class, \
@@ -1313,25 +1285,28 @@ class BackEnd:
           self.ui_state("show_tree")
         return
 
-    types = self.working_tree.container_graph.node_types
-    if (node_tag in types["isDefinedBy"]) and (DELIMITERS["instantiated"] in node_tag):
+    # types = self.working_tree.container_graph.node_types
+    instantiated = DELIMITERS["instantiated"] in node_tag
+    if instantiated:
+      test_tag,_ = node_tag.split(DELIMITERS["instantiated"])
+      if (test_tag in self.ContainerGraph.txt_is_linked[graph]):
 
-      # exctract from the working tree to check if one can add a branch
-      parent_ID = self.working_tree.tree["tree"].getImmediateParent(node_ID)
-      sub_tree, map = self.working_tree.tree["tree"].extractSubTreeAndMap(parent_ID)
-      nodes = {}
-      for m in map:
-        nodes[map[m]] = self.working_tree.tree["nodes"][m]
+        # exctract from the working tree to check if one can add a branch
+        parent_ID = self.working_tree.tree["tree"].getImmediateParent(node_ID)
+        sub_tree, map = self.working_tree.tree["tree"].extractSubTreeAndMap(parent_ID)
+        nodes = {}
+        for m in map:
+          nodes[map[m]] = self.working_tree.tree["nodes"][m]
 
-      print("debugging")
-      # if node_original in self.working_tree.tree["nodes"].values(): # too restrictive
-      if node_original in nodes.values():  # relaxed constraint
-        return
-      dialog = self.FrontEnd.dialogYesNo(message="add new ")
-      if dialog == "YES":
-        self.__addBranch(node_ID)
-      elif dialog == "NO":
-        pass
+        print("debugging")
+        # if node_original in self.working_tree.tree["nodes"].values(): # too restrictive
+        if node_original in nodes.values():  # relaxed constraint
+          return
+        dialog = self.FrontEnd.dialogYesNo(message="add new ")
+        if dialog == "YES":
+          self.__addBranch(node_ID)
+        elif dialog == "NO":
+          pass
 
     # if is_linked:
     #   self.current_class = subject
@@ -1389,7 +1364,7 @@ class BackEnd:
       node_types = self.working_tree.container_graph.node_types
       dot = self.working_tree.tree["tree"].plotMe(0)
       dot.render("after", view=True)
-      dot = treePlot(self.working_tree.tree, 0, node_types)
+      dot = treePlot(self.working_tree.tree, 0, node_types, self.txt_class_names)
       dot.render("after all", view=True)
 
     self.__showTree()
@@ -1460,12 +1435,9 @@ class BackEnd:
     self.FrontEnd.controls("selectors", "string", "clear", )
 
   def __makeDotPlot(self):
-    # global working_tree
-    # dot = self.working_tree.tree["tree"].plotMe(0)
-    # dot.render("instantiated", view=True)
 
     node_types = self.working_tree.container_graph.node_types
-    dot = treePlot(self.working_tree.tree, 0, node_types)
+    dot = treePlot(self.working_tree.tree, 0, node_types, self.txt_class_names)
     dot.render("periconto_instantiated", view=True)
 
   def __updateTree(self):

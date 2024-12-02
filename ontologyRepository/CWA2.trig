@@ -8,6 +8,20 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+TIME_SCALE: {
+    TIME_SCALE: a rdfs:Class .
+
+    <http://example.org/TIME_SCALE#TIME_SCALE> rdf:value <http://example.org/TIME_SCALE#constant>,
+            <http://example.org/TIME_SCALE#dynamic>,
+            <http://example.org/TIME_SCALE#event> .
+
+    <http://example.org/TIME_SCALE#constant> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/TIME_SCALE#dynamic> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/TIME_SCALE#event> rdfs:Datatype xsd:boolean .
+}
+
 CAPACITY: {
     CAPACITY: a rdfs:Class .
 
@@ -21,12 +35,20 @@ CAPACITY: {
         rdfs:member CAPACITY: .
 }
 
-TOKEN: {
-    TOKEN: a rdfs:Class .
+ROOT: {
+    ROOT: a rdfs:Class .
 
-    <http://example.org/TOKEN#TOKEN> rdf:value <http://example.org/TOKEN#a_token> .
+    <http://example.org/ROOT#Capacity> rdfs:isDefinedBy <http://example.org/ROOT#CAPACITY> ;
+        rdfs:member <http://example.org/ROOT#Nodes> .
 
-    <http://example.org/TOKEN#a_token> rdfs:Datatype xsd:string .
+    <http://example.org/ROOT#Transport> rdfs:isDefinedBy <http://example.org/ROOT#TRANSPORT> ;
+        rdfs:member <http://example.org/ROOT#Arcs> .
+
+    <http://example.org/ROOT#Arcs> rdfs:member <http://example.org/ROOT#Graph> .
+
+    <http://example.org/ROOT#Nodes> rdfs:member <http://example.org/ROOT#Graph> .
+
+    <http://example.org/ROOT#Graph> rdfs:member ROOT: .
 }
 
 TRANSPORT: {
@@ -105,33 +127,11 @@ CAPACITIVE_ENTITY: {
     <http://example.org/CAPACITIVE_ENTITY#graph_object> rdfs:member <http://example.org/CAPACITIVE_ENTITY#advatar> .
 }
 
-TIME_SCALE: {
-    TIME_SCALE: a rdfs:Class .
+TOKEN: {
+    TOKEN: a rdfs:Class .
 
-    <http://example.org/TIME_SCALE#TIME_SCALE> rdf:value <http://example.org/TIME_SCALE#constant>,
-            <http://example.org/TIME_SCALE#dynamic>,
-            <http://example.org/TIME_SCALE#event> .
+    <http://example.org/TOKEN#TOKEN> rdf:value <http://example.org/TOKEN#a_token> .
 
-    <http://example.org/TIME_SCALE#constant> rdfs:Datatype xsd:boolean .
-
-    <http://example.org/TIME_SCALE#dynamic> rdfs:Datatype xsd:boolean .
-
-    <http://example.org/TIME_SCALE#event> rdfs:Datatype xsd:boolean .
-}
-
-ROOT: {
-    ROOT: a rdfs:Class .
-
-    <http://example.org/ROOT#Capacity> rdfs:isDefinedBy <http://example.org/ROOT#CAPACITY> ;
-        rdfs:member <http://example.org/ROOT#Nodes> .
-
-    <http://example.org/ROOT#Transport> rdfs:isDefinedBy <http://example.org/ROOT#TRANSPORT> ;
-        rdfs:member <http://example.org/ROOT#Arcs> .
-
-    <http://example.org/ROOT#Arcs> rdfs:member <http://example.org/ROOT#Graph> .
-
-    <http://example.org/ROOT#Nodes> rdfs:member <http://example.org/ROOT#Graph> .
-
-    <http://example.org/ROOT#Graph> rdfs:member ROOT: .
+    <http://example.org/TOKEN#a_token> rdfs:Datatype xsd:string .
 }
 

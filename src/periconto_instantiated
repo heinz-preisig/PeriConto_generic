@@ -1,0 +1,106 @@
+digraph {
+	edge [simplify=true]
+	"ROOT-0" [color=red fillcolor=red shape=ellipse style=filled]
+	"Graph-0" [color=black fillcolor=white shape=ellipse style=filled]
+	"Nodes-0" [color=black fillcolor=white shape=ellipse style=filled]
+	Arcs [color=black fillcolor=white shape=ellipse style=filled]
+	"Capacity-0" [color=black fillcolor=white shape=ellipse style=filled]
+	"CAPACITY-0" [color=red fillcolor=red shape=egg style=filled]
+	Control [color=black fillcolor=white shape=ellipse style=filled]
+	InformationProcessing [color=black fillcolor=white shape=ellipse style=filled]
+	"Physical-0" [color=black fillcolor=white shape=ellipse style=filled]
+	"CAPACITIVE_ENTITY-0" [color=red fillcolor=red shape=egg style=filled]
+	Temporal [color=black fillcolor=white shape=ellipse style=filled]
+	"Avatar-0" [color=black fillcolor=white shape=ellipse style=filled]
+	Tokens [color=black fillcolor=white shape=ellipse style=filled]
+	TIME_SCALE [color=red fillcolor=red shape=egg style=filled]
+	constant [color=lightblue fillcolor=lightblue shape=box style=filled]
+	dynamic [color=lightblue fillcolor=lightblue shape=box style=filled]
+	Event [color=lightblue fillcolor=lightblue shape=box style=filled]
+	boolean [color=white fillcolor=white shape=box style=filled]
+	boolean [color=white fillcolor=white shape=box style=filled]
+	boolean [color=white fillcolor=white shape=box style=filled]
+	"AVATAR-0" [color=red fillcolor=red shape=egg style=filled]
+	"Style-0" [color=black fillcolor=white shape=ellipse style=filled]
+	GraphObject [color=black fillcolor=white shape=ellipse style=filled]
+	"FillColour-0" [color=lightblue fillcolor=lightblue shape=box style=filled]
+	Line [color=black fillcolor=white shape=ellipse style=filled]
+	Filled [color=lightblue fillcolor=lightblue shape=box style=filled]
+	"string-0" [color=green fillcolor=green shape=box style=filled]
+	dotted [color=lightblue fillcolor=lightblue shape=box style=filled]
+	Full [color=lightblue fillcolor=lightblue shape=box style=filled]
+	boolean [color=white fillcolor=white shape=box style=filled]
+	boolean [color=white fillcolor=white shape=box style=filled]
+	boolean [color=white fillcolor=white shape=box style=filled]
+	Circle [color=black fillcolor=white shape=ellipse style=filled]
+	Square [color=black fillcolor=white shape=ellipse style=filled]
+	Oval [color=black fillcolor=white shape=ellipse style=filled]
+	Rectangle [color=black fillcolor=white shape=ellipse style=filled]
+	Radius [color=lightblue fillcolor=lightblue shape=box style=filled]
+	decimal [color=white fillcolor=white shape=box style=filled]
+	Size [color=lightblue fillcolor=lightblue shape=box style=filled]
+	decimal [color=white fillcolor=white shape=box style=filled]
+	ShortAxis [color=lightblue fillcolor=lightblue shape=box style=filled]
+	LongAxis [color=lightblue fillcolor=lightblue shape=box style=filled]
+	decimal [color=white fillcolor=white shape=box style=filled]
+	decimal [color=white fillcolor=white shape=box style=filled]
+	Length [color=lightblue fillcolor=lightblue shape=box style=filled]
+	Width [color=lightblue fillcolor=lightblue shape=box style=filled]
+	decimal [color=white fillcolor=white shape=box style=filled]
+	decimal [color=white fillcolor=white shape=box style=filled]
+	TOKEN [color=red fillcolor=red shape=egg style=filled]
+	Token [color=lightblue fillcolor=lightblue shape=box style=filled]
+	string [color=green fillcolor=green shape=box style=filled]
+	Transport [color=black fillcolor=white shape=ellipse style=filled]
+	Control -> "CAPACITY-0"
+	Transport -> Arcs
+	Temporal -> "CAPACITIVE_ENTITY-0"
+	Width -> Rectangle
+	Token -> TOKEN
+	"Physical-0" -> "CAPACITY-0"
+	boolean -> Event
+	"Graph-0" -> "ROOT-0"
+	Circle -> GraphObject
+	Filled -> "Style-0"
+	"Avatar-0" -> "CAPACITIVE_ENTITY-0"
+	constant -> TIME_SCALE
+	decimal -> Radius
+	"Style-0" -> "AVATAR-0"
+	TIME_SCALE -> Temporal
+	InformationProcessing -> "CAPACITY-0"
+	boolean -> dotted
+	decimal -> Length
+	decimal -> LongAxis
+	Oval -> GraphObject
+	"string-0" -> "FillColour-0"
+	Length -> Rectangle
+	decimal -> ShortAxis
+	"CAPACITY-0" -> "Capacity-0"
+	Line -> "Style-0"
+	"FillColour-0" -> "Style-0"
+	Full -> Line
+	dynamic -> TIME_SCALE
+	Radius -> Circle
+	"Capacity-0" -> "Nodes-0"
+	Arcs -> "Graph-0"
+	dotted -> Line
+	Rectangle -> GraphObject
+	boolean -> dynamic
+	ShortAxis -> Oval
+	LongAxis -> Oval
+	"AVATAR-0" -> "Avatar-0"
+	Size -> Square
+	decimal -> Size
+	boolean -> Full
+	string -> Token
+	boolean -> constant
+	Tokens -> "CAPACITIVE_ENTITY-0"
+	"Nodes-0" -> "Graph-0"
+	"CAPACITIVE_ENTITY-0" -> "Physical-0"
+	Square -> GraphObject
+	decimal -> Width
+	TOKEN -> Tokens
+	Event -> TIME_SCALE
+	boolean -> Filled
+	GraphObject -> "AVATAR-0"
+}

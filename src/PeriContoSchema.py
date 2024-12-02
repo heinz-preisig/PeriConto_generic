@@ -188,6 +188,7 @@ class TreePlot:
     self.classes = class_names
     self.tripples = graph_tripples
     self.dot = Digraph(graph_name)
+    self.dot.graph_attr["rankdir"] = "LR"
 
   def addNode(self, node, type):
     try:
@@ -248,15 +249,6 @@ def saveBackupFile(path):
   else:
     print("Error -- no such file : %s" % path, file=sys.stderr)
     return
-
-
-#
-# def makeRDFCompatible(identifier):  # TODO remove
-#   """
-#   To be adapted to imported notation.
-#   For now it generates rdflib Literals
-#   """
-#   return Literal(identifier)
 
 
 class DataModel():
