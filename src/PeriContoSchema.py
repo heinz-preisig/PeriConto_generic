@@ -9,17 +9,14 @@ So the approach is to use an internal representation of the predicates and trans
 
 """
 import copy
-#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-
 import glob
 import os
 import sys
-from types import new_class
 
 import rdflib.term
-from babel.messages.extract import extract
 from rdflib import Namespace
+
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 root = os.path.abspath(os.path.join("."))
 sys.path.extend([root, os.path.join(root, "resources")])
@@ -33,7 +30,6 @@ from rdflib import RDF
 from rdflib import URIRef
 from rdflib import XSD
 from rdflib import namespace
-from rdflib import Literal
 # from rdflib.namespace import RDFS
 
 # from graphHAP import Graph
@@ -51,24 +47,18 @@ BASE = "http://example.org"
 ITEM_SEPARATOR = "#"
 CLASS_SEPARATOR = "/"
 PERICONTO = BASE + ITEM_SEPARATOR
+DATA = BASE + "data/" + ITEM_SEPARATOR
 
 ONTOLOGY_REPOSITORY = "../ontologyRepository"
 ROOTCLASS = "ROOT"
+DATACLASS = "DATA"
+
+COMMENT = "comment"
+ELUCIDATION = "elucidation"
 
 FILE_FORMAT = "trig"
 FILE_FORMAT_ = "json-ld"
 
-# RDFSTerms = {
-#         "class"           : RDFS.Class,
-#         "is_type"         : RDF.type,
-#         "is_a_subclass_of": RDFS.subClassOf,
-#         "link_to_class"   : RDFS.isDefinedBy,
-#         "value"           : RDF.value,
-#         "comment"         : RDFS.comment,
-#         "integer"         : XSD.integer,
-#         "string"          : XSD.string,
-#         # "type"            : RDF.type,
-#         }
 RDFSTerms = {
         "class"        : RDFS.Class,
         "is_class"     : RDF.type,  # was "is_type"
@@ -81,7 +71,7 @@ RDFSTerms = {
         "string"       : XSD.string,
         "decimal"      : XSD.decimal,
         "uri"          : XSD.anyURI,
-        "label"         : RDFS.label,
+        "label"        : RDFS.label,
         "boolean"      : XSD.boolean,
         }
 
@@ -91,9 +81,10 @@ PRIMITIVES = ["integer", "comment", "string", "decimal", "uri", "boolean"]
 ADD_ELUCIDATIONS = ["class", "is_member", "value"]
 
 COLOURS = {
+        "ROOT"        : QtGui.QColor(0,199,255),
         "is_member"    : QtGui.QColor(0, 0, 0, 255),
         "is_defined_by": QtGui.QColor(255, 100, 5, 255),
-        "value"        : QtGui.QColor(155, 155, 255),
+        "value"        : QtGui.QColor(230, 165, 75),
         "data_type"    : QtGui.QColor(100, 100, 100),
         "comment"      : QtGui.QColor(155, 155, 255),
         "integer"      : QtGui.QColor(155, 155, 255),
@@ -106,15 +97,15 @@ QBRUSHES = {}
 for c_hash in COLOURS.keys():
   QBRUSHES[c_hash] = QtGui.QBrush(COLOURS[c_hash])
 
-# DIRECTION = {
-#         "is_member": 1,
-#         "is_defined_by"   : 1,
-#         "value"           : -1,
-#         "comment"         : -1,
-#         "integer"         : -1,
-#         "string"          : -1,
-#         # "type"            : -1,
-#         }
+DIRECTION = {
+        "is_member": 1,
+        "is_defined_by"   : 1,
+        "value"           : -1,
+        "comment"         : -1,
+        "integer"         : -1,
+        "string"          : -1,
+        # "type"            : -1,
+        }
 
 LINK_COLOUR = QtGui.QColor(255, 100, 5, 255)
 PRIMITIVE_COLOUR = QtGui.QColor(255, 3, 23, 255)
@@ -146,36 +137,37 @@ class TreePlot:
           }
 
   NODE_SPECS = {
-          "Class" : {
+          "Class"    : {
                   "colour"   : "red",
                   "shape"    : "rectangle",
                   "fillcolor": "red",
                   "style"    : "filled",
                   },
-          "member": {
+          "member"   : {
                   "colour"   : "orange",
                   "shape"    : "",
                   "fillcolor": "white",
                   "style"    : "filled",
                   },
-          "primitive" : {
+          "primitive": {
                   "colour"   : "blue",
                   "shape"    : "rectangle",
                   "fillcolor": "white",
                   "style"    : "filled",
                   },
-          "ROOT"  : {
+          "ROOT"     : {
                   "colour"   : "red",
                   "shape"    : "rectangle",
                   "fillcolor": "white",
                   "style"    : "filled",
                   },
-          "linked": {"colour": "green",
-                    "shape": "rectangle",
-                    "fillcolor": "white",
-                    "style": "filled",
-                    },
-          "other" : {
+          "linked"   : {
+                  "colour"   : "green",
+                  "shape"    : "rectangle",
+                  "fillcolor": "white",
+                  "style"    : "filled",
+                  },
+          "other"    : {
                   "colour"   : None,
                   "shape"    : None,
                   "fillcolor": None,
@@ -250,13 +242,43 @@ def saveBackupFile(path):
     print("Error -- no such file : %s" % path, file=sys.stderr)
     return
 
+class DataEnumerators:
+  """
+  counters for data -- makes the name unique
+  """
+
+  def __init__(self):
+    self.counters = {}
+    for p in PRIMITIVES:
+      self.counters[p] =  -1
+
+  def setCounter(self, p, value):
+    if p not in PRIMITIVES:
+      print(">>>>>>> oops -- no such counter %s", p)
+      return
+    self.counters[p] = value
+
+  def incrementCounter(self, p):
+    if p not in PRIMITIVES:
+      print(">>>>>>> oops -- no such counter %s", p)
+      return
+    self.counters[p] += 1
+    return self.counters[p]
+
 
 class DataModel():
   def __init__(self):
-    self.namespaces = {ROOTCLASS: Namespace(PERICONTO)}
+    self.namespaces = {
+            ROOTCLASS: Namespace(PERICONTO),
+            DATACLASS: Namespace(DATA),
+            }
 
+    self.data_counters = DataEnumerators()
     self.GRAPHS = {}
-    self.addClass(ROOTCLASS)
+    # for space in self.namespaces:
+    #  self.addClass(space)
+    self.addClass("ROOT")
+
 
   def __makeURIForClass(self, name):
     return URIRef(PERICONTO + name)
@@ -301,16 +323,19 @@ class DataModel():
     return [extract_name_from_class_uri(s) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
   def getAllLinkedClasses(self):
-    s = set()
+    accumulator = set()
     for c in self.GRAPHS:
       triple = None, RDFSTerms["is_defined_by"], None
       for t in self.GRAPHS[c].triples(triple):
         _, _, o = t
-        if ITEM_SEPARATOR in o:
-          s.add(extract_name_from_class_uri(o))
-        elif CLASS_SEPARATOR in o:
-          s.add(extract_class_name(o))
-    return s
+        accumulator.add(self.extractNameFromObject(o))
+    return accumulator
+
+  def extractNameFromObject(self, object):
+    if ITEM_SEPARATOR in object:
+      return extract_name_from_class_uri(object)
+    elif CLASS_SEPARATOR in object:
+      return extract_class_name(object)
 
   def getLinkList(self, Class, name):
     object = self.makeURI("ROOT", name)
@@ -327,7 +352,7 @@ class DataModel():
 
   def getValueList(self, Class):
     triple = (None, RDFSTerms["value"], None)
-    return [extract_name_from_class_uri(s) for s, p, o in self.GRAPHS[Class].triples(triple)]
+    return [extract_name_from_class_uri(o) for s, p, o in self.GRAPHS[Class].triples(triple)]
 
   def getElucidationList(self, Class):
     triple = (None, RDFSTerms["comment"], None)
@@ -344,26 +369,36 @@ class DataModel():
     self.namespaces[Class] = Namespace(uid)
     self.GRAPHS[Class] = Graph("Memory", uris)  # uid)
     self.GRAPHS[Class].bind(Class, self.namespaces[Class])
-
     sub = URIRef(uid)
     triple = (sub, RDFSTerms["is_class"], RDFSTerms["class"])
     self.GRAPHS[Class].add(triple)
+    self.addElucidation(Class, sub)
+
     return self.getClassNamesList()
 
-  def checkForClassIsUsed(self,Class):
+  def addElucidation(self, Class, sub):
+    # name = self.extractNameFromObject(sub)
+    no = self.data_counters.incrementCounter("comment")
+    o = URIRef(self.namespaces[Class] + "#elucidation-%s"%no)
+    # triple = (sub, RDFSTerms["value"], RDFSTerms["comment"])
+    triple = (sub, RDFSTerms["data_type"], o)
+    self.GRAPHS[Class].add(triple)
+    triple = (o, RDFSTerms["value"], RDFSTerms["comment"])
+    self.GRAPHS[Class].add(triple)
+
+  def checkForClassIsUsed(self, Class):
     current_set_of_classes = set(self.GRAPHS.keys())
     found = 0
     uri = self.makeURI("ROOT", Class)
     for c in current_set_of_classes:
-      triple = (None,None,uri)
+      triple = (None, None, uri)
       for t in self.GRAPHS[c].triples(triple):
         found += 1
 
     if found == 0:
-      dialog = makeMessageBox("remove class %s"%Class, buttons=["NO", "YES"])
+      dialog = makeMessageBox("remove class %s" % Class, buttons=["NO", "YES"])
       if dialog == "YES":
         self.removeClass(Class)
-
 
   def removeClass(self, Class):
     for c in self.getClassNamesList():
@@ -385,6 +420,7 @@ class DataModel():
     s = self.makeURI(Class, name)
 
     triple = (s, RDFSTerms["is_member"], o)
+    self.addElucidation(Class, s)
     self.GRAPHS[Class].add(triple)
     pass
 
@@ -396,7 +432,8 @@ class DataModel():
       pass
 
   def addPrimitive(self, Class, ClassOrSubClass, name, type):
-    o = self.makeURI(Class, name)
+    no = self.data_counters.incrementCounter(type)
+    o = self.makeURI(Class, name+"-%s"%no)
     s = self.makeURI(Class, ClassOrSubClass)
     p = RDFSTerms["value"]
     triple = s, p, o
@@ -408,23 +445,21 @@ class DataModel():
     triple = sv, p, ov
     self.GRAPHS[Class].add(triple)
 
-  def addElucidation(self, elucidation, Class, name):
-
-    s = self.makeURI(Class, name)
-    p = RDFSTerms["value"]
-    o = self.makeURI(Class, "elucidation")
-    triple = s, p, o
-    self.GRAPHS[Class].add(triple)
-    # p = RDFSTerms["data_type"]
-    # ov = RDFSTerms["string"]
-    # triple = s, p, ov    # self.GRAPHS[Class].add(triple)
-    # p = "elucidation"
-    oe = rdflib.term.Literal(elucidation, lang="en")
-    # oe = Literal("Literal\elucidation", lang="en")
-    triple = o, p, oe
-    self.GRAPHS[Class].add(triple)
-
-
+  # def addElucidation(self, elucidation, Class, name):
+  #
+  #   s = self.makeURI(Class, name)
+  #   p = RDFSTerms["value"]
+  #   o = self.makeURI(Class, "elucidation")
+  #   triple = s, p, o
+  #   self.GRAPHS[Class].add(triple)
+  #   # p = RDFSTerms["data_type"]
+  #   # ov = RDFSTerms["string"]
+  #   # triple = s, p, ov    # self.GRAPHS[Class].add(triple)
+  #   # p = "elucidation"
+  #   oe = rdflib.term.Literal(elucidation, lang="en")
+  #   # oe = Literal("Literal\elucidation", lang="en")
+  #   triple = o, p, oe
+  #   self.GRAPHS[Class].add(triple)
 
   def addLink(self, Class, obj, subj):
     subject = self.makeURI(Class, subj)
@@ -471,10 +506,7 @@ class DataModel():
     return l != []
 
   def isPrimitive(self, Class, name):
-    return (self.isInteger(Class, name)
-            or self.isString(Class, name)
-            or self.isElucidation(Class, name)
-            )
+    return name in PRIMITIVES
 
   def isInteger(self, Class, name):
     return name in self.getIntegerList(Class)
@@ -483,8 +515,8 @@ class DataModel():
     return name in self.getStringList(Class)
 
   def isElucidation(self, Class, name):
-    uri = self.makeURI(Class, name)
-    return (uri in self.getElucidationList(Class))
+    # uri = self.makeURI(Class, name)
+    return "elucidation" in name
 
   def isValue(self, Class, name):
     return name in self.getValueList(Class)
@@ -509,7 +541,7 @@ class OntobuilderUI(QMainWindow):
 
     self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
 
-    self.DEBUGG = False
+    self.DEBUGG = True
 
     roundButton(self.ui.pushLoad, "load", tooltip="load ontology")
     roundButton(self.ui.pushCreate, "plus", tooltip="create")
@@ -558,7 +590,7 @@ class OntobuilderUI(QMainWindow):
     self.previously_selected_item = None
     self.load_elucidation = True
 
-    self.CoatingOntology = Graph()
+    # self.CoatingOntology = Graph()
     # print("debugging -- read coating ontology")
 
   def __ui_state(self, state):
@@ -668,7 +700,6 @@ class OntobuilderUI(QMainWindow):
     # self.current_class
     # self.current_item_ID
 
-
     self.ui.pushAddElucidation.show()
 
   def on_pushAddElucidation_pressed(self):  # TODO: fix
@@ -690,7 +721,31 @@ class OntobuilderUI(QMainWindow):
 
   def on_treeClass_itemPressed(self, item, column):
 
+    button = QApplication.instance().mouseButtons().name
     text_ID = item.text(column)
+    if button == "RightButton":
+      # print("right button pressed")
+      if ELUCIDATION in text_ID:
+        makeMessageBox("cannot be renamed ", buttons=["OK"])
+        return
+      ID = str(text_ID)
+      is_subclass = self.dataModel.isSubClass(self.current_class, ID)
+      is_value = self.dataModel.isValue(self.current_class, ID)
+      if (is_subclass or is_value):
+        prompt = "new name"
+        placeholder = str(item.text(0))
+
+        new_name = self.__getConstraintString(placeholder, prompt)
+        if new_name:
+          self.__renameItemInGraph(ID, new_name)
+      return
+    elif button == "MiddleButton":
+      print("middle button pressed -- no action")
+      return
+
+    else:  # button == "LeftButton":
+      # print("left button pressed")
+      pass
 
     self.current_item_ID = text_ID
 
@@ -700,33 +755,35 @@ class OntobuilderUI(QMainWindow):
     try:
       predicate = item.predicate
     except:
+      print(">>>>>>>>>>>>>>>>> no predicate")
       item.predicate = None
       predicate = None
     self.selected_item = item
     self.debugging("column ", column)
 
-    item.setSelected(True)
-    # self.selected_item.setBackground(item.columnCount(),QBRUSHES["selected"])  # note:  does not seem to work
+    item.setSelected(True)  # sets background
 
-    if self.previously_selected_item:
+    if self.previously_selected_item:  # TODO: needed?
       self.debugging("column ", self.previously_selected_item.columnCount())
       # self.previously_selected_item.setBackground(column, QBRUSHES["unselect"])
       self.previously_selected_item = self.selected_item
 
     # if text_ID in self.class_names:
+    is_root = self.dataModel.isRoot(text_ID)
     isclass = self.dataModel.isClass(text_ID)
     is_linked_with = self.dataModel.isLinkedWidth(self.current_class, text_ID)
     is_item = self.dataModel.isSubClass(self.current_class, text_ID)
     is_primitive = self.dataModel.isPrimitive(self.current_class, text_ID)
     is_value = self.dataModel.isValue(self.current_class, text_ID)
     is_elucidation = self.dataModel.isElucidation(self.current_class, text_ID)
+    is_comment = text_ID == "comment"
 
-    if isclass:
+    if isclass:  # set gui state
       self.debugging("-- is class", text_ID)
       self.__ui_state("selected_class")
       if self.current_class != text_ID:
         self.__shiftClass(text_ID)
-      if self.dataModel.isRoot(text_ID):
+      if is_root:
         self.debugging("-- is root", text_ID)
         self.__ui_state("selected_root")
     elif is_linked_with:
@@ -747,38 +804,21 @@ class OntobuilderUI(QMainWindow):
       print("should not come here")
       self.__ui_state("show_tree")
 
-    if self.dataModel.getElucidationList(self.current_class):
-      self.ui.pushAddElucidation.hide()
-      self.load_elucidation = True
-      p = self.__makePathName(text_ID)
-      not_exist = None
-      try:
-        self.ui.textElucidation.setPlainText(self.elucidations[p])
-      except:
-        not_exist = p
-        self.ui.textElucidation.clear()
-
-      if not_exist:
-        self.elucidations[not_exist] = ""
+    # if self.dataModel.getElucidationList(self.current_class):
+    #   self.ui.pushAddElucidation.hide()
+    #   self.load_elucidation = True
+    #   p = self.__makePathName(text_ID)
+    #   not_exist = None
+    #   try:
+    #     self.ui.textElucidation.setPlainText(self.elucidations[p])
+    #   except:
+    #     not_exist = p
+    #     self.ui.textElucidation.clear()
+    #
+    #   if not_exist:
+    #     self.elucidations[not_exist] = ""
 
     self.ui.treeClass.clearSelection()
-
-  def on_treeClass_itemDoubleClicked(self, item, column):
-    self.debugging("debugging -- double click", item.text(0))
-    ID = str(item.text(column))
-    predicate = item.predicate  # TODO: still used ?
-    if (self.dataModel.isSubClass(self.current_class, ID)
-            or self.dataModel.isPrimitive(self.current_class, ID)):
-      predicate = "is_member"
-      # rename subclass
-
-      prompt = "new name"
-      placeholder = str(item.text(0))
-
-      new_name = self.__getConstraintString(placeholder, prompt)
-      if new_name:
-        self.__renameItemInGraph(ID, new_name)
-      # print("debugging -- renaming")F
 
   def on_pushAddSubclass_pressed(self):
     # print("debugging -- add subclass")
@@ -791,9 +831,9 @@ class OntobuilderUI(QMainWindow):
       return
 
     # elucidation
-    p = self.__makePathName(subClass)
-    self.elucidations[p] = None
-    self.ui.textElucidation.clear()
+    p = self.__makePathName(subClass) #TODO add elucidation handling
+    # self.elucidations[p] = None
+    # self.ui.textElucidation.clear()
 
     # add to graph
     self.dataModel.addSubclass(self.current_class, self.current_item_ID, subClass)
@@ -809,7 +849,6 @@ class OntobuilderUI(QMainWindow):
     self.dataModel.removeSubClass(Class, itemID)
     self.__createTree(self.current_class)
     self.changed = True
-
 
   def on_pushAddPrimitive_pressed(self):
     self.debugging("add primitive first")
@@ -953,7 +992,6 @@ class OntobuilderUI(QMainWindow):
     else:
       file_name = file_name.split(".")[0]
 
-
     for f_format in [FILE_FORMAT, FILE_FORMAT_]:
       fname = file_name + ".%s" % f_format
       self.project_file_spec = os.path.join(ONTOLOGY_REPOSITORY, fname)
@@ -1056,22 +1094,13 @@ class OntobuilderUI(QMainWindow):
       else:
         o = extract_name_from_class_uri(object)
 
-      # print("s,p,o is:", s,": ",self.dataModel.what_is_this(self.current_class,s),
-      #       "p: ", p,
-      #       "o: ",o , self.dataModel.what_is_this(self.current_class,o))
-
-      # if ((predicate == RDFSTerms["is_defined_by"]) or
-      #         (predicate == RDFSTerms["data_type"])):
-      if predicate in [RDFSTerms["is_defined_by"], RDFSTerms["value"],RDFSTerms["data_type"]]:
+      if predicate in [RDFSTerms["is_defined_by"], RDFSTerms["value"], RDFSTerms["data_type"]]:
         triple = o, p, s, -1
       else:
         triple = s, p, o, 1
 
       tuples_plus.append(triple)
-      # if p not in PRIMITIVES:
-      #   tuples_plus.append((s, p, o))
-      # else:
-      #   tuples_plus.append((o, p, s))
+
     self.debugging("tuples", tuples_plus)
 
     return tuples_plus
@@ -1139,6 +1168,7 @@ class OntobuilderUI(QMainWindow):
         if s != origin:
           if o in items:
             item = QTreeWidgetItem(items[o])
+            item.identifier = o
             item.predicate = p
             item.setForeground(0, QBRUSHES[p])
             stack.append(q)  # (s, p, o))
@@ -1259,7 +1289,7 @@ class OntobuilderUI(QMainWindow):
       #       "p: ", p,
       #       "o: ", o, object_type,
       #       "d: ", dir)
-      print("s: ",s,subject_type, "      p:",p,"     o: ", o,object_type, "     dir:", dir)
+      print("s: ", s, subject_type, "      p:", p, "     o: ", o, object_type, "     dir:", dir)
       if "class" in object_type:
         type = "Class"
       if "linked" in object_type:

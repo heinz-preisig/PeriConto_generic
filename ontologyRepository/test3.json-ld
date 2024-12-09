@@ -1,0 +1,19 @@
+@prefix GUGUS: <http://example.org/GUGUS> .
+@prefix ROOT: <http://example.org/ROOT> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+GUGUS: {
+    GUGUS: a rdfs:Class ;
+        rdf:value rdfs:comment .
+}
+
+ROOT: {
+    ROOT: a rdfs:Class ;
+        rdf:value rdfs:comment .
+
+    <http://example.org/ROOT#gugus> rdf:value rdfs:comment ;
+        rdfs:isDefinedBy <http://example.org/ROOT#GUGUS> ;
+        rdfs:member ROOT: .
+}
+

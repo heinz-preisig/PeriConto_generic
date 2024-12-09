@@ -1,0 +1,19 @@
+@prefix DATA: <http://example.org/DATA> .
+@prefix ROOT: <http://example.org/ROOT> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+DATA: {
+    DATA: a rdfs:Class ;
+        rdfs:Datatype <http://example.org/DATA#elucidation-1> .
+
+    <http://example.org/DATA#elucidation-1> rdf:value rdfs:comment .
+}
+
+ROOT: {
+    ROOT: a rdfs:Class ;
+        rdfs:Datatype <http://example.org/ROOT#elucidation-0> .
+
+    <http://example.org/ROOT#elucidation-0> rdf:value rdfs:comment .
+}
+

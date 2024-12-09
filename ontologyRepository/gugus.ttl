@@ -1,0 +1,107 @@
+@prefix ckg: <http://example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+ckg:Capacity rdfs:isDefinedBy ckg:CAPACITY ;
+    rdfs:member ckg:Nodes .
+
+ckg:Control rdfs:isDefinedBy ckg:CAPACITIVE_ENTITY ;
+    rdfs:member ckg:CAPACITY .
+
+ckg:InformationProcessing rdfs:isDefinedBy ckg:CAPACITY ;
+    rdfs:member ckg:CAPACITY .
+
+ckg:Mechanism rdf:value ckg:conduction,
+        ckg:convection,
+        ckg:diffusion ;
+    rdfs:member ckg:TRANSPORT .
+
+ckg:Physical rdfs:isDefinedBy ckg:CAPACITY ;
+    rdfs:member ckg:CAPACITY .
+
+ckg:Transport rdfs:isDefinedBy ckg:TRANSPORT ;
+    rdfs:member ckg:Arcs .
+
+ckg:avatar rdfs:member ckg:TRANSPORT .
+
+ckg:circle rdf:value ckg:radius ;
+    rdfs:member ckg:graph_object .
+
+ckg:line rdf:value ckg:dotted,
+        ckg:full ;
+    rdfs:member ckg:style .
+
+ckg:oval rdf:value ckg:long_axis,
+        ckg:short_axis ;
+    rdfs:member ckg:graph_object .
+
+ckg:rectangle rdf:value ckg:length,
+        ckg:width ;
+    rdfs:member ckg:graph_object .
+
+ckg:square rdf:value ckg:size ;
+    rdfs:member ckg:graph_object .
+
+ckg:temporal rdfs:isDefinedBy ckg:TIME_SCALE ;
+    rdfs:member ckg:CAPACITIVE_ENTITY .
+
+ckg:token rdfs:isDefinedBy ckg:TRANSPORT ;
+    rdfs:member ckg:TRANSPORT .
+
+ckg:tokens rdfs:isDefinedBy ckg:TOKEN ;
+    rdfs:member ckg:CAPACITIVE_ENTITY .
+
+ckg:Arcs rdfs:member ckg:Graph .
+
+ckg:Nodes rdfs:member ckg:Graph .
+
+ckg:TIME_SCALE rdf:value ckg:constant,
+        ckg:dynamic,
+        ckg:event .
+
+ckg:TOKEN rdf:value ckg:a_token .
+
+ckg:a_token rdfs:Datatype ckg:string .
+
+ckg:conduction rdfs:Datatype ckg:string .
+
+ckg:constant rdfs:Datatype ckg:boolean .
+
+ckg:convection rdfs:Datatype ckg:boolean .
+
+ckg:diffusion rdfs:Datatype ckg:boolean .
+
+ckg:dotted rdfs:Datatype ckg:boolean .
+
+ckg:dynamic rdfs:Datatype ckg:boolean .
+
+ckg:event rdfs:Datatype ckg:boolean .
+
+ckg:fill_colour rdfs:Datatype ckg:string .
+
+ckg:filled rdfs:Datatype ckg:boolean .
+
+ckg:full rdfs:Datatype ckg:boolean .
+
+ckg:length rdfs:Datatype ckg:decimal .
+
+ckg:long_axis rdfs:Datatype ckg:decimal .
+
+ckg:radius rdfs:Datatype ckg:decimal .
+
+ckg:short_axis rdfs:Datatype ckg:decimal .
+
+ckg:size rdfs:Datatype ckg:decimal .
+
+ckg:style rdf:value ckg:fill_colour,
+        ckg:filled ;
+    rdfs:member ckg:advatar .
+
+ckg:width rdfs:Datatype ckg:decimal .
+
+ckg:Graph rdfs:member ckg:ROOT .
+
+ckg:advatar rdfs:member ckg:CAPACITIVE_ENTITY .
+
+ckg:graph_object rdfs:member ckg:advatar .
+

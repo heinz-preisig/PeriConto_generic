@@ -122,13 +122,6 @@ def makeRDFCompatible(identifier):  # TODO remove
   return Literal(identifier)
 
 
-# def copyRDFGraph(G_original):
-#   G_copy = Graph()
-#   for triple in G_original:
-#     G_copy.add(triple)
-#   return G_copy
-
-
 def nodeTypeMembership(node_types, node_tag):
   node_original = getID(node_tag)
   is_root = node_original in node_types["ROOT"]
@@ -288,14 +281,17 @@ def plotQuads(graph, class_names=[""]):
 
 
     my_p = MYTerms[p]
-    if DIRECTION[my_p] == 1:
-      dot.edge(ss_, so_,
-               # label=my_p,
-               color=EDGE_COLOUR[my_p])
-    else:
-      dot.edge(ss_, so_,
-               # label=my_p,
-               color=EDGE_COLOUR[my_p])
+    dot.edge(ss_, so_,
+             # label=my_p,
+             color=EDGE_COLOUR[my_p])
+    # if DIRECTION[my_p] == 1:
+    #   dot.edge(ss_, so_,
+    #            # label=my_p,
+    #            color=EDGE_COLOUR[my_p])
+    # else:
+    #   dot.edge(ss_, so_,
+    #            # label=my_p,
+    #            color=EDGE_COLOUR[my_p])
 
   return dot
 
@@ -360,7 +356,7 @@ def convertRDFintoInternalMultiGraph(graph, graph_ID):
       quads.append((s, o, p, graph_ID))
     else:
       quads.append((o, s, p, graph_ID))
-  print('debugging.....', quads)
+  # print('debugging.....', quads)
   return quads
 
 
@@ -559,21 +555,6 @@ class SuperGraph():
     uris = URIRef(uid)
     return uid, uris
 
-  # def makeAllListsForAllGraphs(self):
-  #   # print("debugging")
-  #   for rdf_graph_ID in self.RDFGraphDictionary:
-  #     rdf_graph = self.RDFGraphDictionary[rdf_graph_ID]
-  #     self.makeAllListsForOneGraph(rdf_graph, rdf_graph_ID)
-  #   pass
-  #
-  # def makeAllListsForOneGraph(self, rdf_graph, rdf_graph_ID):
-  #   self.txt_member_names[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "is_a_subclass_of")
-  #   self.txt_is_linked[rdf_graph_ID] = makeLinkListBasedOnPredicates(rdf_graph, rdf_graph_ID, "link_to_class")
-  #   self.txt_value_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "value")
-  #   self.txt_integer_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "integer")
-  #   self.txt_string_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "string")
-  #   self.txt_comment_lists[rdf_graph_ID] = makeListBasedOnPredicates(rdf_graph, "comment")
-
   def addGraphGivenInInternalNotation(self, subject_internal, predicate_internal, object_internal, graph_ID):
     rdf_subject = makeRDFCompatible(subject_internal)
     rdf_object = makeRDFCompatible(object_internal)
@@ -615,59 +596,22 @@ class SuperGraph():
 
     return kg
 
-  # def isClass(self, ID):
-  #   return ID in self.txt_class_names
-  #
-  # def isSubClass(self, ID, graph_class):
-  #   # graph_class is the currently active class
-  #   if graph_class in self.txt_subclass_names:
-  #     return (ID in self.txt_subclass_names[graph_class]) and \
-  #       (ID not in self.txt_class_names)
-  #   else:
-  #     return False
-  #
-  # def isPrimitive(self, text_ID):
-  #   # print("debugging -- is primitive", text_ID)
-  #   return text_ID in PRIMITIVES
-  #
-  # def isValue(self, predicate):
-  #   return predicate == "value"
-  #
-  # def isInteger(self, predicate):
-  #   return predicate == "integer"
-  #
-  # def isComment(self, predicate):
-  #   return (predicate == "comment")
-  #
-  # def isString(self, predicate):
-  #   return (predicate == "string")
-  #
-  # def isLinked(self, ID, graph_class):
-  #   # graph_class is the currently active class
-  #   for cl in self.txt_link_lists:
-  #     for linked_class, linked_to_class, linked_to_subclass in self.txt_link_lists[cl]:
-  #       if linked_to_class == graph_class:
-  #         if linked_to_subclass == ID:
-  #           return True
-
-  # No, this does not work!
-  # It should be a rdflib's ConjunctiveGraph for serialization to work.
-  def rdfSerializer(self, format):
-    return self.RDFGraphDictionary.serialize(format)
+  # def rdfSerializer(self, format):
+  #   return self.RDFGraphDictionary.serialize(format)
 
 
-def makeListBasedOnPredicates(rdf_graph, rdf_predicate):
-  subclasslist = []
-  for s, p, o in rdf_graph.triples((None, RDFSTerms[rdf_predicate], None)):
-    subclasslist.append(str(s))  # (str(s), txt_class, str(o)))
-  return subclasslist
+# def makeListBasedOnPredicates(rdf_graph, rdf_predicate):
+#   subclasslist = []
+#   for s, p, o in rdf_graph.triples((None, RDFSTerms[rdf_predicate], None)):
+#     subclasslist.append(str(s))  # (str(s), txt_class, str(o)))
+#   return subclasslist
 
 
-def makeLinkListBasedOnPredicates(rdf_graph, txt_class, rdf_predicate):
-  subclasslist = []
-  for s, p, o in rdf_graph.triples((None, RDFSTerms[rdf_predicate], None)):
-    subclasslist.append((str(s), txt_class, str(o)))
-  return subclasslist
+# def makeLinkListBasedOnPredicates(rdf_graph, txt_class, rdf_predicate):
+#   subclasslist = []
+#   for s, p, o in rdf_graph.triples((None, RDFSTerms[rdf_predicate], None)):
+#     subclasslist.append((str(s), txt_class, str(o)))
+#   return subclasslist
 
 
 class ContainerGraph(SuperGraph):
@@ -1172,7 +1116,7 @@ class BackEnd:
     print('printing filepath to save ttl..', self.ttlFile)
     current_kg = self.ContainerGraph.to_rdflibConjunctiveGraph()
 
-    print("turtle serialised KG...", current_kg.serialize(format='turtle'))
+    print("turtle serialised KG...", current_kg.serialize(format='nquads'))
     # oops--- ttl format data written to the file is not in a newline format!
     # saveWithBackup dumps only json data, so it won't work here.
     # TODO: change putData method in PeriConto.py to enable ttl format
@@ -1180,7 +1124,7 @@ class BackEnd:
     # saveWithBackup(current_kg.serialize(format='turtle'), self.ttlFile)
 
     # a temporary fix
-    current_kg.serialize(format='turtle', destination=filename_save)
+    current_kg.serialize(format='nquads', destination=filename_save)
 
   def __askToQuit(self):
     pass
@@ -1212,13 +1156,14 @@ class BackEnd:
     self.__askForFileNameOpening()
     self.__loadOntology()
 
-    kg = self.ContainerGraph
+    kg = self.ContainerGraph.conjunctiveGraph
+
 
     g_kg = g + kg
     pass
-    # self.ContainerGraph = g
-    # self.working_tree = WorkingTree(self.ContainerGraph)
-    # self.txt_class_names = list(self.working_tree.container_graph.RDFConjunctiveGraph.keys())
+    self.ContainerGraph.conjunctiveGraph = g_kg
+    self.working_tree = WorkingTree(self.ContainerGraph)
+    # self.txt_class_names = list(self.txt_class_names) #working_tree.container_graph.RDFConjunctiveGraph.keys())
     #
     # self.current_class = self.root_class_container
 
@@ -1244,30 +1189,6 @@ class BackEnd:
         graph = node
         break
 
-    # is_root, \
-    # is_comment, \
-    # is_data_class, \
-    # is_instantiated_object, \
-    # is_integer, \
-    # is_primitive, \
-    # is_string, \
-    # is_sub_class, \
-    # is_value= nodeTypeMembership(self.working_tree.container_graph.node_types, node_tag)
-
-    # debugging = True
-    # if debugging:
-    #   txt = "selection has data: %s    " % current_event_data
-    #   if is_data_class: txt += " & class"
-    #   # if is_container_class: txt += " & container_class"
-    #   if is_sub_class: txt += " & subclass"
-    #   if is_primitive: txt += " & primitive"
-    #   if is_value: txt += " & value"
-    #   # if is_linked: txt += " & is_linked"
-    #   if is_instantiated_object: txt += " & instantiated"
-    #   if is_integer: txt += " & integer"
-    #   if is_comment: txt += " & comment"
-    #   if is_string: txt += " & string"
-    #   # print("selection : %s\n" % txt)
 
     if node_tag in PRIMITIVES:
       if not DELIMITERS["instantiated"] in node_tag:
@@ -1308,10 +1229,6 @@ class BackEnd:
         elif dialog == "NO":
           pass
 
-    # if is_linked:
-    #   self.current_class = subject
-    #   self.__makeWorkingTree()
-    #   self.__shiftClass()
 
   def __addBranch(self, node_ID):
     """
@@ -1487,7 +1404,7 @@ class BackEnd:
     global action
     # global data_container
 
-    show_automaton = True
+    show_automaton = False
 
     current_event_data = event_data
     print(">>>>>>>>>>>>>>>>>>>>", state, Event, event_data)
@@ -1515,8 +1432,9 @@ class BackEnd:
             "\n")
 
     for action in actions:
-      if action:
-        action()
+      action()
+      # if action:
+      #   action()
     self.ui_state(gui_state)
 
     return next_state
@@ -1588,9 +1506,15 @@ class BackEnd:
             # Automaton state transition logic to save a loaded ontology or Knowledge Graph
             "save_knowledgeGraph"   : {
                     "save": {
-                            "next_state": "saving_knowledgeGraph",
-                            "actions"   : [self.__askForFileNameSaving,
-                                           self.__saveKnowledgeGraph],
+                            "next_state": "do_saving_knowledgeGraph",
+                            "actions"   : [self.__askForFileNameSaving],
+                            "gui_state" : "show_tree"
+                            }
+                    },
+            "do_saving_knowledgeGraph": {
+                    "file_name": {
+                            "next_state": "show_tree",
+                            "actions"   : [self.__saveKnowledgeGraph],
                             "gui_state" : "show_tree"
                             }
                     },
