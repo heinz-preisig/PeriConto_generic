@@ -33,6 +33,9 @@ ICONS["update"] = "update_button_hap.svg"
 ICONS["next"] = "next_button_hap.svg"
 ICONS["expand"] ="expand_tree_button_hap.svg"
 ICONS["collaps"] = "collaps_tree_button_hap.svg"
+ICONS["bricks"] = "bricks_button_hap.svg"
+ICONS["build_tree"] = "build_tree_hap.svg"
+ICONS["instantiate_tree"] = "instantiate_tree_hap.svg"
 
 # size = 52
 # defaultsize = size
