@@ -51,11 +51,12 @@ PRIMITIVE_COLOUR = QtGui.QColor(255, 3, 23, 255)
 
 
 class GUIMessage(dict):
-  def __init__(self, event=None, name=None, type=None):
+  def __init__(self, event=None, name=None, type=None, parent=None):
     super().__init__()
     self["event"] = event
     self["name"] = name
     self["type"] = type
+    self["parent"] = parent
 
 
 class OntobuilderUI(QMainWindow):
@@ -99,7 +100,7 @@ class OntobuilderUI(QMainWindow):
             "brick_add_item"        : self.ui.pushBrickAddItem,
             "brick_remove_item"     : self.ui.pushBrickRemoveItem,
             "brick_add_primitive"   : self.ui.pushBrickAddPrimitive,
-            "brick_remove_primitive": self.ui.pushBrickRemovePrimitive,
+            # "brick_remove_primitive": self.ui.pushBrickRemovePrimitive,
             "brick_list"            : self.ui.listBricks,
             "brick_tree"            : self.ui.brickTree,
             "tree_control"          : self.ui.groupBoxTreesControl,
@@ -191,23 +192,43 @@ class OntobuilderUI(QMainWindow):
       event = "new brick"
     else:
       event = None
-    message = GUIMessage(event=event, name=name)
+    message = GUIMessage(event=event, name=name.upper())
     self.backend.processEvent(message)
 
   def on_pushBrickRemove_pressed(self):
+    message = GUIMessage()
     debugging("--pushBrickRemove")
 
-  def on_push_pushBrickAddItem_pressed(self):
+  def on_pushBrickAddItem_pressed(self):
     debugging("-- pushBrickAddItem")
+    dialog = UI_String("provide new item name", placeholdertext="item name")
+    dialog.exec()
+    name = dialog.text
+    if name:
+      event = "create ontology"
+    else:
+      event = "start"
+
+    message = GUIMessage(event=event, name=name)
+    self.backend.processEvent(message)
+
+
+    event = "add item to brick"
+    message = GUIMessage(event=event)
+    self.backend.processEvent(message)
 
   def on_pushBrickRemoveItem_pressed(self):
+    message = GUIMessage(event="remove item from brick tree")
     debugging("-- pushBrickRemoveItem")
+    self.backend.processEvent(message)
 
   def on_pushBrickAddPrimitive_pressed(self):
     debugging("-- pushBrickAddPrimitive")
 
-  def on_pushBrickRemovePrimitive_pressed(self):
-    debugging("-- pushBrickRemovePrimitive")
+  # def on_pushBrickRemovePrimitive_pressed(self):
+  #   message = GUIMessage(event="remove primitive from brick tree")
+  #   debugging("-- pushBrickRemovePrimitive")
+  #   self.backend.processEvent(message)
 
   def on_pushBrickRename_pressed(self):
     debugging("-- pushBrickRename")
@@ -255,8 +276,11 @@ class OntobuilderUI(QMainWindow):
     event = "selectedTree"
 
   def on_brickTree_itemClicked(self, item, column):
-    name = item.text()
+    name = item.text(column)
     debugging("-- brick tree item %s, column %s" % (name, column))
+    parent_name = item.parent_name
+    message = GUIMessage(event="item in brick tree selected", name=name, type=item.predicate, parent=parent_name)
+    self.backend.processEvent(message)
 
   def on_treeTree_itemClicked(self, item, column):
     name = item.text()
@@ -285,6 +309,7 @@ class OntobuilderUI(QMainWindow):
     rootItem.root = origin
     rootItem.setText(0, origin)
     rootItem.setSelected(False)
+    rootItem.parent_name = None
     rootItem.predicate = None
     widget.addTopLevelItem(rootItem)
     self.current_class = origin
@@ -296,15 +321,21 @@ class OntobuilderUI(QMainWindow):
     for q in tuples:
       if q not in stack:
         s, p, o, dir = q
+        # print("processing",s,p,o)
         if s != origin:
           if o in items:
+            # if s != "":
             item = QTreeWidgetItem(items[o])
-            item.identifier = o
+            item.parent_name = o
             item.predicate = p
             item.setForeground(0, QBRUSHES[p])
             stack.append(q)  # (s, p, o))
-            item.setText(0, s)
+            if s == "":
+              item.setText(0,p)
+            else:
+              item.setText(0, s)
             items[s] = item
+            print("items", s,p,o)
             self.__makeTree(tuples, origin=s, stack=stack, items=items)
 
   # enable moving the window --https://www.youtube.com/watch?v=R4jfg9mP_zo&t=152s

@@ -8,11 +8,11 @@ ROOT: {
 
     <http://example.org/ROOT#ROOT> rdf:value <http://example.org/ROOT#name> . 
     <http://example.org/ROOT#ROOT> rdf:value <http://example.org/ROOT#no> .
+     <http://example.org/ROOT#gugus> rdfs:member ROOT: .
 
-    <http://example.org/ROOT#name> xsd:string "gugus".
+    <http://example.org/ROOT#name> xsd:string "".
 
     <http://example.org/ROOT#no> xsd:integer "" .
-    <http://example.org/ROOT#no> xsd:integer 5 .
 }
 
 

@@ -43,7 +43,16 @@ RDFSTerms = {
 
 MYTerms = {v: k for k, v in RDFSTerms.items()}
 
-PRIMITIVES = ["integer", "comment", "string", "decimal", "uri", "boolean"]
+PRIMITIVES = ["integer",
+              "comment",
+              "string",
+              "decimal",
+              "uri",
+              "boolean"]
+
+
+RDF_PRIMITIVES = [RDFSTerms[i] for i in PRIMITIVES]
+
 ADD_ELUCIDATIONS = ["class", "is_member", "value"]
 
 

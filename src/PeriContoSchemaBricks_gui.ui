@@ -238,7 +238,7 @@
         <item>
          <widget class="QPushButton" name="pushBrickRemove">
           <property name="text">
-           <string>delete brick</string>
+           <string>remove brick</string>
           </property>
          </widget>
         </item>
@@ -292,13 +292,6 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushBrickRemoveItem">
-          <property name="text">
-           <string>remove item</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="pushBrickAddPrimitive">
           <property name="text">
            <string>add primitive</string>
@@ -306,9 +299,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushBrickRemovePrimitive">
+         <widget class="QPushButton" name="pushBrickRemoveItem">
           <property name="text">
-           <string>remove primitive</string>
+           <string>remove item|primitive</string>
           </property>
          </widget>
         </item>

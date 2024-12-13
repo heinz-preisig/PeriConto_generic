@@ -1,22 +1,26 @@
 import os
 import sys
 
-from PeriContoSemantics import DATA
-from PeriContoSemantics import DATACLASS
+from rdflib import ConjunctiveGraph
+from rdflib import Graph
+from rdflib import Namespace
+from rdflib import URIRef
+
+from PeriContoSemantics import CLASS_SEPARATOR
+from PeriContoSemantics import FILE_FORMAT
+from PeriContoSemantics import ITEM_SEPARATOR
 from PeriContoSemantics import MYTerms
 from PeriContoSemantics import ONTOLOGY_REPOSITORY
 from PeriContoSemantics import PERICONTO
 from PeriContoSemantics import PRIMITIVES
+from PeriContoSemantics import RDFSTerms
+from PeriContoSemantics import RDF_PRIMITIVES
 from PeriContoSemantics import ROOTCLASS
-
-
-from rdflib import Namespace, URIRef, ConjunctiveGraph,Graph
-from PeriContoSemantics import RDFSTerms, BASE, FILE_FORMAT, ITEM_SEPARATOR, CLASS_SEPARATOR
-from PeriContoSemantics import extract_class_name
 from PeriContoSemantics import extract_name_from_class_uri
-from resources.pop_up_message_box import makeMessageBox
 
 DEBUGG = True
+
+
 def debugging(*info):
   if DEBUGG:
     print("debugging", info)
@@ -43,6 +47,7 @@ def getFilesAndVersions(abs_name, ext):
         _s.append(n)
   return _s, ver
 
+
 def saveBackupFile(path):
   ver_temp = "(%s)"
   (abs_name, ext) = os.path.splitext(path)  # path : directory/<name>.<ext>
@@ -56,6 +61,7 @@ def saveBackupFile(path):
   else:
     print("Error -- no such file : %s" % path, file=sys.stderr)
     return
+
 
 class DataEnumerators:
   """
@@ -94,14 +100,14 @@ class DataModel:
     # for space in self.namespaces:
     #  self.addClass(space)
     if root:
-      self.addClass(root)
+      self.newBrick(root)
 
-  def loadFromFile(self,project_name):
+  def loadFromFile(self, project_name):
 
-    file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY,project_name)+"+bricks."+FILE_FORMAT
+    file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+bricks." + FILE_FORMAT
     self.BRICK_GRAPHS, self.namespaces = self.__loadFromFile(file_name_bricks)
 
-    file_name_trees = os.path.join(ONTOLOGY_REPOSITORY,project_name)+"+trees."+FILE_FORMAT
+    file_name_trees = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+trees." + FILE_FORMAT
     exists = os.path.exists(file_name_trees)
     if exists:
       self.TREE_GRAPHS, _ = self.__loadFromFile(file_name_trees)
@@ -121,7 +127,6 @@ class DataModel:
 
     return GRAPHS, namespaces
     pass
-
 
   def makeBrickDataTuples(self):
     dataTuples = {}
@@ -149,7 +154,10 @@ class DataModel:
       else:
         o = extract_name_from_class_uri(object)
 
-      if predicate in [RDFSTerms["is_defined_by"], RDFSTerms["value"], RDFSTerms["data_type"]]:
+      if predicate in [RDFSTerms["is_defined_by"],
+                       RDFSTerms["value"],
+                       RDFSTerms["data_type"],
+                       ] + RDF_PRIMITIVES:
         triple = o, p, s, -1
       else:
         triple = s, p, o, 1
@@ -163,6 +171,43 @@ class DataModel:
 
   def newBrick(self, brick_name):
     self.BRICK_GRAPHS[brick_name] = Graph()
+
+  def removeItem(self, brick, item):
+    subject = self.makeURI(brick, item)
+    triple = (subject, None, None)
+    for t in self.BRICK_GRAPHS[brick].triples(triple):
+      self.BRICK_GRAPHS[brick].remove(t)
+    triple = (None,None,subject)
+    for t in self.BRICK_GRAPHS[brick].triples(triple):
+      self.BRICK_GRAPHS[brick].remove(t)
+
+  def makeURI(self, Class, identifier):
+    uri = URIRef(self.namespaces[Class] + "#" + identifier)
+    return uri
+
+  def addItem(self, Class, ClassOrSubClass, name):
+    if Class == ClassOrSubClass:
+      _, o = self.makeClassURI(Class)
+    else:
+      o = self.makeURI(Class, ClassOrSubClass)
+    s = self.makeURI(Class, name)
+
+    triple = (s, RDFSTerms["is_member"], o)
+    self.addElucidation(Class, s)
+    self.GRAPHS[Class].add(triple)
+    pass
+
+
+
+  # def what_type_of_brick_item_is_this(self, brick_name, item_name):
+  #   if brick_name == item_name:
+  #     return "class"
+  #   s = URIRef(self.namespaces[brick_name]+"#", item_name)
+  #   triple = s,None,None
+  #   for s,p,o in self.BRICK_GRAPHS[brick_name].triples(triple):
+  #     print(s,p,o)
+
+
 
   def __makeURIForClass(self, name):
     return URIRef(PERICONTO + name)
