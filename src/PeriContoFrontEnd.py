@@ -144,10 +144,10 @@ class OntobuilderUI(QMainWindow):
     # self.previously_selected_item = None
     # self.load_elucidation = True
 
-  def setInterface(self, settings):
-    for show in settings["show"]:
+  def setInterface(self, shows, hides):
+    for show in shows:
       self.gui_objects[show].show()
-    for hide in settings["hide"]:
+    for hide in hides:
       self.gui_objects[hide].hide()
 
   def on_pushOntologyCreate_pressed(self):
@@ -205,18 +205,19 @@ class OntobuilderUI(QMainWindow):
     message = GUIMessage(event=event)
     self.backend.processEvent(message)
 
-  def askForNewItemName(self, existing_names):
+  def askForItemName(self, existing_names):
     dialog = UI_String("provide new item name",
                        placeholdertext="item name",
                        limiting_list=existing_names)
     dialog.exec()
     name = dialog.text
-    if name:
-      event = "got new item name"
-    else:
-      event = "failed"
-    message = GUIMessage(event=event, name=name)
-    self.backend.processEvent(message)
+    # if name:
+    #   event = "got new item name"
+    # else:
+    #   event = "failed"
+    # message = GUIMessage(event=event, name=name)
+    # self.backend.processEvent(message)
+    return name
 
   def on_pushBrickRemoveItem_pressed(self):
     message = GUIMessage(event="remove item from brick tree")

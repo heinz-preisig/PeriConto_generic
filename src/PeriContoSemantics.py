@@ -67,8 +67,14 @@ DIRECTION = {
         }
 
 
+def extractNameFromIRI(iri):
+  s_iri = str(iri)
+  if ITEM_SEPARATOR in s_iri:
+    return extract_item_name(s_iri)
+  else:
+    return extract_class_name(s_iri)
 
-def extract_name_from_class_uri(uri):
+def extract_item_name(uri):
   return uri.split(ITEM_SEPARATOR)[-1]
 
 

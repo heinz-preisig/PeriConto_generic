@@ -16,7 +16,8 @@ from PeriContoSemantics import PRIMITIVES
 from PeriContoSemantics import RDFSTerms
 from PeriContoSemantics import RDF_PRIMITIVES
 from PeriContoSemantics import ROOTCLASS
-from PeriContoSemantics import extract_name_from_class_uri
+from PeriContoSemantics import extractNameFromIRI
+from PeriContoSemantics import extract_item_name
 
 DEBUGG = True
 
@@ -128,11 +129,11 @@ class DataModel:
     return GRAPHS, namespaces
     pass
 
-  def makeBrickDataTuples(self):
-    dataTuples = {}
-    for graphName in self.BRICK_GRAPHS:
-      dataTuples[graphName] = self.makeDataTuplesForGraph(graphName, "bricks")
-    return dataTuples
+  # def makeBrickDataTuples(self):
+  #   dataTuples = {}
+  #   for graphName in self.BRICK_GRAPHS:
+  #     dataTuples[graphName] = self.makeDataTuplesForGraph(graphName, "bricks")
+  #   return dataTuples
 
   def makeDataTuplesForGraph(self, graphName, what):
     if what == "bricks":
@@ -144,16 +145,9 @@ class DataModel:
     tuples_plus = []
     for subject, predicate, object in graph.triples((None, None, None)):
       debugging("--", subject, predicate, object)
-      if not ITEM_SEPARATOR in subject:
-        s = str(subject).split(CLASS_SEPARATOR)[-1]
-      else:
-        s = extract_name_from_class_uri(subject)
+      s = extractNameFromIRI(subject)
       p = MYTerms[predicate]
-      if not ITEM_SEPARATOR in object:
-        o = str(object).split(CLASS_SEPARATOR)[-1]
-      else:
-        o = extract_name_from_class_uri(object)
-
+      o = extractNameFromIRI(object)
       if predicate in [RDFSTerms["is_defined_by"],
                        RDFSTerms["value"],
                        RDFSTerms["data_type"],
@@ -172,6 +166,21 @@ class DataModel:
   def newBrick(self, brick_name):
     self.BRICK_GRAPHS[brick_name] = Graph()
 
+  def getAllNamesInTheBrick(self, graphName, what):
+
+    names = set()
+    if what == "brick":
+      g = self.BRICK_GRAPHS[graphName]
+      triple = (None,None,None)
+      for subject,predicate,object in g.triples(triple):
+        s = extractNameFromIRI(subject)
+        o = extractNameFromIRI(object)
+        names.add(s)
+        names.add(o)
+
+      return names
+
+
   def removeItem(self, brick, item):
     subject = self.makeURI(brick, item)
     triple = (subject, None, None)
@@ -185,16 +194,19 @@ class DataModel:
     uri = URIRef(self.namespaces[Class] + "#" + identifier)
     return uri
 
+
+
   def addItem(self, Class, ClassOrSubClass, name):
     if Class == ClassOrSubClass:
-      _, o = self.makeClassURI(Class)
+      o = URIRef(self.namespaces[Class])
     else:
       o = self.makeURI(Class, ClassOrSubClass)
-    s = self.makeURI(Class, name)
-
+    s = self.makeURI(ClassOrSubClass, name)
+    # s = self.makeURI(Class,ClassOrSubClass)
+    # o = self.makeURI(ClassOrSubClass, name)
     triple = (s, RDFSTerms["is_member"], o)
-    self.addElucidation(Class, s)
-    self.GRAPHS[Class].add(triple)
+    # self.addElucidation(Class, s)
+    self.BRICK_GRAPHS[Class].add(triple)
     pass
 
 
