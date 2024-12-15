@@ -225,7 +225,9 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_pushBrickAddPrimitive_pressed(self):
+    message = GUIMessage(event="ask for primitive name")
     debugging("-- pushBrickAddPrimitive")
+    self.backend.processEvent(message)
 
   # def on_pushBrickRemovePrimitive_pressed(self):
   #   message = GUIMessage(event="remove primitive from brick tree")

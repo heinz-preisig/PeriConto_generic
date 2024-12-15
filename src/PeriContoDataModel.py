@@ -201,11 +201,8 @@ class DataModel:
       o = URIRef(self.namespaces[Class])
     else:
       o = self.makeURI(Class, ClassOrSubClass)
-    s = self.makeURI(ClassOrSubClass, name)
-    # s = self.makeURI(Class,ClassOrSubClass)
-    # o = self.makeURI(ClassOrSubClass, name)
+    s = self.makeURI(Class, name)
     triple = (s, RDFSTerms["is_member"], o)
-    # self.addElucidation(Class, s)
     self.BRICK_GRAPHS[Class].add(triple)
     pass
 

@@ -246,60 +246,20 @@ class BackEnd():
                  ],
         "action": ["selectedItemInBrickTree"],
       },
-      # "primitive in brick tree selected": {
-      #         "show"  : ["ontology_save",
-      #                    "ontology_save_as",
-      #                    "tab_lists_control",
-      #                    "brick_control",
-      #                    "brick_create",
-      #                    "brick_delete",
-      #                    "brick_rename",
-      #                    "tree_control",
-      #                    "Tree",
-      #                    "tree_select_brick",
-      #                    # "brick_remove_primitive",
-      #                    ],
-      #         "hide"  : ["ontology_create",
-      #                    "ontology_load",
-      #                    "brick_add_item",
-      #                    "brick_remove_item",
-      #                    "brick_add_primitive",
-      #                    ],
-      #         "action": [],
-      #         },
-      # "value in brick tree selected"    : {
-      #         "show": ["ontology_save",
-      #                  "ontology_save_as",
-      #                  "tab_lists_control",
-      #                  "brick_control",
-      #                  "brick_create",
-      #                  "brick_delete",
-      #                  "brick_rename",
-      #                  "tree_control",
-      #                  "Tree",
-      #                  "tree_select_brick",
-      #                  "brick_remove_item",
-      #                  ],
-      #         "hide": ["ontology_create",
-      #                  "ontology_load",
-      #                  "brick_add_item",
-      #                  "brick_add_primitive",
-      #                  # "brick_remove_primitive",
-      #                  ],
-      #         },
-      # "remove primitive from brick tree": {
-      #         "show": [],
-      #         "hide": [],
-      #         },
-      "askFroNewItemName": {
+      # "askFroNewItemName": {
+      #   "show": [],
+      #   "hide": [],
+      #   "action": ["getExistingItemNames"],
+      # },
+      # "add item to brick": {
+      #   "show": [],
+      #   "hide": [],
+      #   "action": ["addItemToBrickTree"],
+      # },
+      "add primitive to brick tree" :{
         "show": [],
         "hide": [],
-        "action": ["getExistingItemNames"],
-      },
-      "add item to brick": {
-        "show": [],
-        "hide": [],
-        "action": ["addItemToBrickTree"],
+        "action": ["addPrimitiveToBrickTree"],
       },
       "remove item from brick tree": {
         "show": [],
@@ -316,6 +276,11 @@ class BackEnd():
         "action": ["getExistingItemNames",
                    "markChanged",],
       },
+      "ask for adding a primitive":{
+        "show": [],
+        "hide": [],
+        "action": ["getExistingItemNames",
+                   "markChanged",],},
       "do nothing": {
         "show": [],
         "hide": [],
@@ -429,6 +394,11 @@ class BackEnd():
   def addItemToBrickTree(self, message):
     brick = self.memory["brick"]
     item = self.memory["item in brick tree"]
+
+  def addPrimitiveToBrickTree(self, message):
+    brick = self.memory["brick"]
+    item = self.memory["item in brick tree"]
+
 
   def removeItemFromBrickTree(self, message):
     name = self.memory["item in brick tree"]
