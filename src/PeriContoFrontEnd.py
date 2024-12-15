@@ -201,20 +201,21 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushBrickAddItem_pressed(self):
     debugging("-- pushBrickAddItem")
-    dialog = UI_String("provide new item name", placeholdertext="item name")
+    event = "asks for adding an item"
+    message = GUIMessage(event=event)
+    self.backend.processEvent(message)
+
+  def askForNewItemName(self, existing_names):
+    dialog = UI_String("provide new item name",
+                       placeholdertext="item name",
+                       limiting_list=existing_names)
     dialog.exec()
     name = dialog.text
     if name:
-      event = "create ontology"
+      event = "got new item name"
     else:
-      event = "start"
-
+      event = "failed"
     message = GUIMessage(event=event, name=name)
-    self.backend.processEvent(message)
-
-
-    event = "add item to brick"
-    message = GUIMessage(event=event)
     self.backend.processEvent(message)
 
   def on_pushBrickRemoveItem_pressed(self):
