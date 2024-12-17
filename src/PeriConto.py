@@ -1,24 +1,16 @@
-
-import copy
-import glob
 import os
 import sys
-
-from rdflib import Namespace
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 root = os.path.abspath(os.path.join("."))
 sys.path.extend([root, os.path.join(root, "resources")])
 
-from PyQt6 import QtGui, QtCore
+from PyQt6 import QtGui
 from PyQt6.QtWidgets import *
 
 from PeriContoFrontEnd import OntobuilderUI
-DEBUGG = True
-def debugging(*info):
-  if DEBUGG:
-    print("debugging", info)
+
 
 if __name__ == "__main__":
   import sys

@@ -5,6 +5,7 @@ from rdflib import ConjunctiveGraph
 from rdflib import Graph
 from rdflib import Namespace
 from rdflib import URIRef
+from rdflib import Literal
 
 from PeriContoSemantics import CLASS_SEPARATOR
 from PeriContoSemantics import FILE_FORMAT
@@ -194,8 +195,6 @@ class DataModel:
     uri = URIRef(self.namespaces[Class] + "#" + identifier)
     return uri
 
-
-
   def addItem(self, Class, ClassOrSubClass, name):
     if Class == ClassOrSubClass:
       o = URIRef(self.namespaces[Class])
@@ -205,8 +204,18 @@ class DataModel:
     triple = (s, RDFSTerms["is_member"], o)
     self.BRICK_GRAPHS[Class].add(triple)
     pass
-
-
+  def addPrimitive(self, Class, ClassOrSubClass, name, type):
+    if Class == ClassOrSubClass:
+      s = URIRef(self.namespaces[Class])
+    else:
+      s = self.makeURI(Class, ClassOrSubClass)
+    o = self.makeURI(Class, name)
+    triple = (s, RDFSTerms["value"], o)
+    self.BRICK_GRAPHS[Class].add(triple)
+    oo = Literal("")
+    triple = (o, RDFSTerms[type], oo)
+    self.BRICK_GRAPHS[Class].add(triple)
+    pass
 
   # def what_type_of_brick_item_is_this(self, brick_name, item_name):
   #   if brick_name == item_name:
@@ -218,8 +227,8 @@ class DataModel:
 
 
 
-  def __makeURIForClass(self, name):
-    return URIRef(PERICONTO + name)
+  # def __makeURIForClass(self, name):
+  #   return URIRef(PERICONTO + name)
   # 
   # def __removePrimitive(self, Class, predicate_ID, primitive):
   #   subject = self.makeURI(Class, primitive)

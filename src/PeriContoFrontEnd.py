@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import *
 # from graphHAP import Graph
 from PeriContoSchemaBricks_gui import Ui_MainWindow
 from resources.pop_up_message_box import makeMessageBox
+from resources.ui_combo_dialog_impl import UI_ComboDialog
 from resources.resources_icons import roundButton
 from resources.ui_string_dialog_impl import UI_String
 
@@ -130,19 +131,7 @@ class OntobuilderUI(QMainWindow):
 
     message = GUIMessage(event="start")
     self.backend.processEvent(message)
-    #
-    # self.ontology_graph = None
-    # self.ontology_root = None
     self.changed = False
-    #
-    # # self.__ui_state("start")
-    # self.current_class = None
-    # self.current_item_ID = None
-    # self.class_path = []
-    # self.elucidations = {}
-    # self.selected_item = None
-    # self.previously_selected_item = None
-    # self.load_elucidation = True
 
   def setInterface(self, shows, hides):
     for show in shows:
@@ -211,13 +200,17 @@ class OntobuilderUI(QMainWindow):
                        limiting_list=existing_names)
     dialog.exec()
     name = dialog.text
-    # if name:
-    #   event = "got new item name"
-    # else:
-    #   event = "failed"
-    # message = GUIMessage(event=event, name=name)
-    # self.backend.processEvent(message)
     return name
+
+  def askForPrimitiveType(self, primitives):
+    # self.ui.comboBoxPrimitives.show()
+    dialog = UI_ComboDialog("select primitive", primitives)
+    primitive = dialog.getSelection()
+    return primitive
+
+  def setPrimitives(self, PRIMITIVES):
+    self.ui.comboBoxPrimitives.clear()
+    self.ui.comboBoxPrimitives.addItems(PRIMITIVES)
 
   def on_pushBrickRemoveItem_pressed(self):
     message = GUIMessage(event="remove item from brick tree")
@@ -225,14 +218,16 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_pushBrickAddPrimitive_pressed(self):
-    message = GUIMessage(event="ask for primitive name")
+    item = self.ui.brickTree.currentItem()
+    name = item.text(0)
+    parent_name = item.parent_name
     debugging("-- pushBrickAddPrimitive")
+    event = "ask for adding a primitive"
+    message = GUIMessage(event=event,
+                         name=name,
+                         type=item.predicate,
+                         parent=parent_name)
     self.backend.processEvent(message)
-
-  # def on_pushBrickRemovePrimitive_pressed(self):
-  #   message = GUIMessage(event="remove primitive from brick tree")
-  #   debugging("-- pushBrickRemovePrimitive")
-  #   self.backend.processEvent(message)
 
   def on_pushBrickRename_pressed(self):
     debugging("-- pushBrickRename")
@@ -283,7 +278,11 @@ class OntobuilderUI(QMainWindow):
     name = item.text(column)
     debugging("-- brick tree item %s, column %s" % (name, column))
     parent_name = item.parent_name
-    message = GUIMessage(event="item in brick tree selected", name=name, type=item.predicate, parent=parent_name)
+    event = "item in brick tree selected"
+    message = GUIMessage(event=event,
+                         name=name,
+                         type=item.predicate,
+                         parent=parent_name)
     self.backend.processEvent(message)
 
   def on_treeTree_itemClicked(self, item, column):

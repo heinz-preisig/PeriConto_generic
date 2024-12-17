@@ -1,8 +1,7 @@
 import os
 import sys
 
-# from PeriConto import debugging
-# from PeriConto import debugging
+from PeriContoAutomaton import UI_state
 from PeriContoDataModel import DataModel
 from PeriContoSemantics import PRIMITIVES
 
@@ -14,7 +13,6 @@ sys.path.extend([root, os.path.join(root, "resources")])
 from graphviz import Digraph
 
 DEBUGG = True
-
 
 def debugging(*info):
   if DEBUGG:
@@ -119,202 +117,11 @@ class BackEnd():
 
     self.state = "start"
     self.previousEvent = "start"
-    self.UI_state = {
-      "start": {
-        "show": ["ontology_control",
-                 "ontology_load",
-                 "ontology_create"],
-        "hide": ["ontology_save",
-                 "ontology_save_as",
-                 "tab_lists_control",
-                 "primitives_control",
-                 ],
-        "action": [],
-      },
-      "create ontology": {
-        "show": ["ontology_save",
-                 "ontology_save_as",
-                 "tab_lists_control",
-                 "brick_control",
-                 "brick_create"],
-        "hide": ["ontology_load",
-                 "ontology_create",
-                 "brick_delete",
-                 "brick_add_item",
-                 "brick_remove_item",
-                 "brick_add_primitive",
-                 # "brick_remove_primitive",
-                 "brick_rename",
-                 "tree_control",
-                 "Tree",
-                 "tree_select_brick",
-                 ],
-        "action": ["createOntology",
-                   "markChanged",
-                   "putBrickList"],
-      },
-      "load ontology": {
-        "show": ["ontology_save",
-                 "ontology_save_as",
-                 "tab_lists_control",
-                 "brick_control",
-                 "brick_create",
-                 "tree_control",
-                 "Tree",
-                 "tree_select_brick"
-                 ],
-        "hide": ["ontology_create",
-                 "ontology_load",
-                 "brick_delete",
-                 "brick_add_item",
-                 "brick_remove_item",
-                 "brick_add_primitive",
-                 # "brick_remove_primitive",
-                 "brick_rename",
-                 ],
-        "action": ["loadOntology",
-                   # "getBrickDataTuples",
-                   "putBrickList",
-                   ],
-      },
-      "new brick": {
-        "show": ["ontology_save",
-                 "ontology_save_as",
-                 "tab_lists_control",
-                 "brick_control",
-                 "brick_create",
-                 "tree_control",
-                 "Tree",
-                 "tree_select_brick"
-                 ],
-        "hide": ["ontology_create",
-                 "ontology_load",
-                 "brick_delete",
-                 "brick_add_item",
-                 "brick_remove_item",
-                 "brick_add_primitive",
-                 # "brick_remove_primitive",
-                 "brick_rename",
-                 ],
-        "action": ["newBrick",
-                   "getBrickDataTuples",
-                   "putBrickList",
-                   "markChanged",
-                   ],
-      },
-      "selected brick": {
-        "show": ["ontology_save",
-                 "ontology_save_as",
-                 "tab_lists_control",
-                 "brick_control",
-                 "brick_create",
-                 "brick_delete",
-                 "brick_rename",
-                 "tree_control",
-                 "Tree",
-                 "tree_select_brick"
-                 ],
-        "hide": ["ontology_create",
-                 "ontology_load",
-                 "brick_add_item",
-                 "brick_remove_item",
-                 "brick_add_primitive",
-                 # "brick_remove_primitive",
-                 ],
-        "action": ["getBrickDataTuples",
-                   "putBrickDataTuples",
-                   ],
-      },
-      "item in brick tree selected": {
-        "show": ["ontology_save",
-                 "ontology_save_as",
-                 "tab_lists_control",
-                 "brick_control",
-                 "brick_create",
-                 "brick_delete",
-                 "brick_rename",
-                 "tree_control",
-                 "brick_add_item",
-                 "brick_remove_item",
-                 "brick_add_primitive",
-                 "Tree",
-                 "tree_select_brick"
-                 ],
-        "hide": ["ontology_create",
-                 "ontology_load",
-                 # "brick_remove_primitive",
-                 ],
-        "action": ["selectedItemInBrickTree"],
-      },
-      # "askFroNewItemName": {
-      #   "show": [],
-      #   "hide": [],
-      #   "action": ["getExistingItemNames"],
-      # },
-      # "add item to brick": {
-      #   "show": [],
-      #   "hide": [],
-      #   "action": ["addItemToBrickTree"],
-      # },
-      "add primitive to brick tree" :{
-        "show": [],
-        "hide": [],
-        "action": ["addPrimitiveToBrickTree"],
-      },
-      "remove item from brick tree": {
-        "show": [],
-        "hide": [],
-        "action": ["removeItemFromBrickTree",
-                   "markChanged",
-                   "getBrickDataTuples",
-                   "putBrickDataTuples",
-                   ],
-      },
-      "asks for adding an item": {
-        "show": [],
-        "hide": [],
-        "action": ["getExistingItemNames",
-                   "markChanged",],
-      },
-      "ask for adding a primitive":{
-        "show": [],
-        "hide": [],
-        "action": ["getExistingItemNames",
-                   "markChanged",],},
-      "do nothing": {
-        "show": [],
-        "hide": [],
-        "action": [],
-      },
-    }
-    # self.actions = {
-    #         "start"                      : [],
-    #         "create ontology"            : ["createOntology",
-    #                                         "markChanged",
-    #                                         "putBrickList"],
-    #         "load ontology"              : ["loadOntology",
-    #                                         # "getBrickDataTuples",
-    #                                         "putBrickList",
-    #                                         ],
-    #         "new brick"                  : ["newBrick",
-    #                                         "getBrickDataTuples",
-    #                                         "putBrickList",
-    #                                         "markChanged",
-    #                                         ],
-    #         "selected brick"             : ["getBrickDataTuples",
-    #                                         "putBrickDataTuples",
-    #                                         ],
-    #         "item in brick tree selected": ["selectedItemInBrickTree"],
-    #         "add item to brick"          : ["addItemToBrickTree"],
-    #         "remove item from brick tree": ["removeItemFromBrickTree",
-    #                                         "markChanged",
-    #                                         "getBrickDataTuples",
-    #                                         "putBrickDataTuples",
-    #                                         ],
-    #         }
-    pass
+
+    self.UI_state = UI_state
 
     self.frontEnd = frontEnd
+    self.frontEnd.setPrimitives(PRIMITIVES)
 
   def processEvent(self, message):
     event = message["event"]
@@ -350,8 +157,8 @@ class BackEnd():
     pass
 
   def putBrickList(self, message):
-    brick_list = self.dataModel.getBrickList()
-    self.frontEnd.showBrickList(brick_list)
+    self.brick_list = self.dataModel.getBrickList()
+    self.frontEnd.showBrickList(self.brick_list)
 
   def newBrick(self, message):
     name = message["name"]
@@ -363,19 +170,22 @@ class BackEnd():
     tuples = self.dataBrickTuples
     self.frontEnd.showBrickTree(tuples, name)
 
-  def selectedItemInBrickTree(self, message):
+  def selectedItemInBrickTree(self, message): # todo: interface reset?
     name = message["name"]
     self.memory["item in brick tree"] = name
-    # item_type = self.dataModel.what_type_of_brick_item_is_this(self.memory["brick"], name)
     type = message["type"]
     if type in PRIMITIVES:
       event = "primitive in brick tree selected"
       ui_state = self.UI_state[event]
-      self.frontEnd.setInterface(ui_state)
+      self.frontEnd.setInterface(ui_state["show"], ui_state["hide"])
     if type == "value":
       event = "value in brick tree selected"
       ui_state = self.UI_state[event]
-      self.frontEnd.setInterface(ui_state)
+      self.frontEnd.setInterface(ui_state["show"], ui_state["hide"])
+    if name in self.brick_list:
+      event = "brick root in brick tree selected"
+      ui_state = self.UI_state[event]
+      self.frontEnd.setInterface(ui_state["show"], ui_state["hide"])
 
     pass
 
@@ -385,19 +195,31 @@ class BackEnd():
     name = self.frontEnd.askForItemName(existing_names)
     if name:
       ClassOrSubClass = self.memory["item in brick tree"]
-      self.dataModel.addItem(brick, ClassOrSubClass, name)
+      if message["event"] == "ask for adding a primitive":
+        primitive = self.frontEnd.askForPrimitiveType(PRIMITIVES)
+        if primitive:
+          self.dataModel.addPrimitive(brick, ClassOrSubClass, name, primitive)
+        else:
+          return
+      if message["event"] == "asks for adding an item":
+        self.dataModel.addItem(brick, ClassOrSubClass, name)
       self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick, "bricks")
       self.frontEnd.showBrickTree(self.dataBrickTuples, brick)
     else:
       pass
 
-  def addItemToBrickTree(self, message):
-    brick = self.memory["brick"]
-    item = self.memory["item in brick tree"]
-
-  def addPrimitiveToBrickTree(self, message):
-    brick = self.memory["brick"]
-    item = self.memory["item in brick tree"]
+  # def getExistingPrimitiveNames(self, message):
+  #   brick = self.memory["brick"]
+  #   existing_names = self.dataModel.getAllNamesInTheBrick(brick, what="brick")
+  #   name = self.frontEnd.askForItemName(existing_names)
+  #   if name:
+  #     primitive = self.frontEnd.askForPrimitiveType(PRIMITIVES)
+  #     ClassOrSubClass = self.memory["item in brick tree"]
+  #     self.dataModel.addItem(brick, ClassOrSubClass, name)
+  #     self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick, "bricks")
+  #     self.frontEnd.showBrickTree(self.dataBrickTuples, brick)
+  #   else:
+  #     pass
 
 
   def removeItemFromBrickTree(self, message):
