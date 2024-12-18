@@ -3,22 +3,22 @@ import sys
 
 from rdflib import ConjunctiveGraph
 from rdflib import Graph
+from rdflib import Literal
 from rdflib import Namespace
 from rdflib import URIRef
-from rdflib import Literal
 
-from PeriContoSemantics import CLASS_SEPARATOR
+from PeriContoSemantics import BASE
+from PeriContoSemantics import CLASS_IDENTIFIERS
 from PeriContoSemantics import FILE_FORMAT
-from PeriContoSemantics import ITEM_SEPARATOR
+from PeriContoSemantics import ITEM_IDENTIFIERS
 from PeriContoSemantics import MYTerms
 from PeriContoSemantics import ONTOLOGY_REPOSITORY
-from PeriContoSemantics import PERICONTO
 from PeriContoSemantics import PRIMITIVES
 from PeriContoSemantics import RDFSTerms
 from PeriContoSemantics import RDF_PRIMITIVES
-from PeriContoSemantics import ROOTCLASS
 from PeriContoSemantics import extractNameFromIRI
-from PeriContoSemantics import extract_item_name
+from PeriContoSemantics import makeClassURI
+from PeriContoSemantics import makeItemURI
 
 DEBUGG = True
 
@@ -60,9 +60,9 @@ def saveBackupFile(path):
     next_path = abs_name + ver_temp % str(ver + 2) + ext
     os.rename(old_path, new_path)
     return old_path, new_path, next_path
-  else:
-    print("Error -- no such file : %s" % path, file=sys.stderr)
-    return
+  # else:
+  #   print("Error -- no such file : %s" % path, file=sys.stderr)
+  #   return
 
 
 class DataEnumerators:
@@ -91,28 +91,31 @@ class DataEnumerators:
 
 class DataModel:
   def __init__(self, root):
-    self.namespaces = {
-            ROOTCLASS: Namespace(PERICONTO),
-            # DATACLASS: Namespace(DATA),
-            }
+    self.namespaces = {}
+            # root: Namespace(CLASS_IDENTIFIERS),
+            # }
 
     self.data_counters = DataEnumerators()
     self.BRICK_GRAPHS = {}
     self.TREE_GRAPHS = {}
-    # for space in self.namespaces:
-    #  self.addClass(space)
     if root:
       self.newBrick(root)
+    self.file_name_bricks = self.__makeFileName(root,what="bricks")
+    self.file_name_trees = self.__makeFileName(root, what="trees")
 
   def loadFromFile(self, project_name):
 
-    file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+bricks." + FILE_FORMAT
-    self.BRICK_GRAPHS, self.namespaces = self.__loadFromFile(file_name_bricks)
+    self.file_name_bricks = self.__makeFileName(project_name, what="bricks")
+    self.BRICK_GRAPHS, self.namespaces = self.__loadFromFile(self.file_name_bricks)
 
-    file_name_trees = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+trees." + FILE_FORMAT
-    exists = os.path.exists(file_name_trees)
+    self.file_name_trees = self.__makeFileName(project_name, what="trees")
+    exists = os.path.exists(self.file_name_trees)
     if exists:
-      self.TREE_GRAPHS, _ = self.__loadFromFile(file_name_trees)
+      self.TREE_GRAPHS, _ = self.__loadFromFile(self.file_name_trees)
+
+  def __makeFileName(self, project_name, what=None):
+    file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s."%what + FILE_FORMAT
+    return file_name_bricks
 
   def __loadFromFile(self, file_name):
     data = ConjunctiveGraph("Memory")
@@ -129,12 +132,6 @@ class DataModel:
 
     return GRAPHS, namespaces
     pass
-
-  # def makeBrickDataTuples(self):
-  #   dataTuples = {}
-  #   for graphName in self.BRICK_GRAPHS:
-  #     dataTuples[graphName] = self.makeDataTuplesForGraph(graphName, "bricks")
-  #   return dataTuples
 
   def makeDataTuplesForGraph(self, graphName, what):
     if what == "bricks":
@@ -166,14 +163,21 @@ class DataModel:
 
   def newBrick(self, brick_name):
     self.BRICK_GRAPHS[brick_name] = Graph()
+    classURI = makeClassURI(brick_name)
+    # itemURI = makeItemURI(brick_name)
+    self.namespaces[brick_name] = classURI
+    # self.BRICK_GRAPHS[brick_name].bind(brick_name, self.namespaces[brick_name])
+    triple = (URIRef(classURI), RDFSTerms["is_class"],RDFSTerms["class"])
+    self.BRICK_GRAPHS[brick_name].add(triple)
+    pass
 
   def getAllNamesInTheBrick(self, graphName, what):
 
     names = set()
     if what == "brick":
       g = self.BRICK_GRAPHS[graphName]
-      triple = (None,None,None)
-      for subject,predicate,object in g.triples(triple):
+      triple = (None, None, None)
+      for subject, predicate, object in g.triples(triple):
         s = extractNameFromIRI(subject)
         o = extractNameFromIRI(object)
         names.add(s)
@@ -181,13 +185,12 @@ class DataModel:
 
       return names
 
-
   def removeItem(self, brick, item):
     subject = self.makeURI(brick, item)
     triple = (subject, None, None)
     for t in self.BRICK_GRAPHS[brick].triples(triple):
       self.BRICK_GRAPHS[brick].remove(t)
-    triple = (None,None,subject)
+    triple = (None, None, subject)
     for t in self.BRICK_GRAPHS[brick].triples(triple):
       self.BRICK_GRAPHS[brick].remove(t)
 
@@ -197,13 +200,15 @@ class DataModel:
 
   def addItem(self, Class, ClassOrSubClass, name):
     if Class == ClassOrSubClass:
-      o = URIRef(self.namespaces[Class])
+      # o = URIRef(self.namespaces[Class])
+      o = URIRef(makeClassURI(Class))
     else:
       o = self.makeURI(Class, ClassOrSubClass)
     s = self.makeURI(Class, name)
     triple = (s, RDFSTerms["is_member"], o)
     self.BRICK_GRAPHS[Class].add(triple)
     pass
+
   def addPrimitive(self, Class, ClassOrSubClass, name, type):
     if Class == ClassOrSubClass:
       s = URIRef(self.namespaces[Class])
@@ -217,6 +222,64 @@ class DataModel:
     self.BRICK_GRAPHS[Class].add(triple)
     pass
 
+  def renameBrick(self, oldName, newName):
+    self.copyBrick(oldName,newName)
+    del self.BRICK_GRAPHS[oldName]
+
+  def copyBrick(self, oldName, newName):
+    self.newBrick(newName)
+    graph = self.BRICK_GRAPHS[newName]
+    self.namespaces[newName] = Namespace(makeClassURI(newName))
+
+    for s,p,o in self.BRICK_GRAPHS[oldName].triples((None,None,None)):
+      if p != RDFSTerms["is_class"]:
+        s_new = s
+        o_new = o
+        if oldName in str(s) :
+          s_name = extractNameFromIRI(s)
+          s_new = URIRef(makeItemURI(s_name))
+        if oldName in str(o):
+          o_name = extractNameFromIRI(o)
+          if ITEM_IDENTIFIERS in o_name:
+            o_new = URIRef(makeItemURI(o_name))
+          else:
+            o_new = URIRef(makeClassURI(newName))
+        triple = s_new,p,o_new
+        print("new triple", triple)
+        graph.add(triple)
+    pass
+
+
+  def saveBricks(self):
+    graphs = self.BRICK_GRAPHS
+    conjunctiveGraph = self.__prepareConjunctiveGraph(graphs)
+    self.__writeQuadFile(conjunctiveGraph, self.file_name_bricks)
+    pass
+
+  def __prepareConjunctiveGraph(self, graphs):
+    conjunctiveGraph = ConjunctiveGraph("Memory")
+    namespaces = self.namespaces
+    for ns in namespaces:
+      conjunctiveGraph.bind(ns, namespaces[ns])
+    for cl in graphs:
+      for s, p, o in graphs[cl].triples((None, None, None)):
+        # print(s, p, o)
+        conjunctiveGraph.get_context(namespaces[cl]).add((s, p, o))
+    return conjunctiveGraph
+
+  def __writeQuadFile(self, conjunctiveGraph, f):
+    saveBackupFile(f)
+    inf = open(f, "w")
+    inf.write(conjunctiveGraph.serialize(format=FILE_FORMAT))
+    inf.close()
+    print("written to file ", f)
+
+
+  # def replaceURI(self, uri, oldName, newName):
+  #   name = extractNameFromIRI(uri)
+  #   if name == oldName:
+  #     new_uri = URIRef(self.namespaces[newName]
+
   # def what_type_of_brick_item_is_this(self, brick_name, item_name):
   #   if brick_name == item_name:
   #     return "class"
@@ -224,8 +287,6 @@ class DataModel:
   #   triple = s,None,None
   #   for s,p,o in self.BRICK_GRAPHS[brick_name].triples(triple):
   #     print(s,p,o)
-
-
 
   # def __makeURIForClass(self, name):
   #   return URIRef(PERICONTO + name)

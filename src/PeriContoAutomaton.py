@@ -235,10 +235,43 @@ UI_state = {
                 "action": ["getExistingItemNames",
                            "markChanged", ], 
                 },
+        "rename brick" : {
+                "show"  : ["ontology_save",
+                           "ontology_save_as",
+                           "tab_lists_control",
+                           "brick_control",
+                           "brick_delete",
+                           "brick_add_item",
+                           "brick_remove_item",
+                           "brick_add_primitive",
+                           "brick_rename",
+                           "brick_create",
+                           ],
+                "hide"  : ["ontology_create",
+                           "ontology_load",
+                           "primitives_line_edit",
+                           "primitives_text_edit",
+                           "Tree",
+                           "tree_control",
+                           "tree_select_brick"
+                           ],
+                "action": ["renameBrick",
+                           "markChanged", ], 
+                 },
+         "changed": {
+                "show"  : ["ontology_save",],
+                "hide"  : [],
+                "action": [],
+                },
         "do nothing"                      : {
                 "show"  : [],
                 "hide"  : [],
                 "action": [],
+                },
+        "save"                      : {
+                "show"  : [],
+                "hide"  : ["ontology_save",],
+                "action": ["saveBricks"],
                 },
         }
 

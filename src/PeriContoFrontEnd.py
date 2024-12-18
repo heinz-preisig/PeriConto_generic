@@ -36,9 +36,12 @@ COLOURS = {
         "is_defined_by": QtGui.QColor(255, 100, 5, 255),
         "value"        : QtGui.QColor(230, 165, 75),
         "data_type"    : QtGui.QColor(100, 100, 100),
-        "comment"      : QtGui.QColor(155, 155, 255),
         "integer"      : QtGui.QColor(155, 155, 255),
+        "decimal"      : QtGui.QColor(155, 155, 255),
         "string"       : QtGui.QColor(255, 200, 200, 255),
+        "comment"      : QtGui.QColor(155, 155, 255),
+        "uri"          : QtGui.QColor(255, 200, 200, 255),
+        "boolean"      : QtGui.QColor(255, 200, 200, 255),
         "selected"     : QtGui.QColor(252, 248, 192, 255),
         "unselect"     : QtGui.QColor(255, 255, 255, 255),
         }
@@ -150,7 +153,7 @@ class OntobuilderUI(QMainWindow):
     else:
       event = "start"
 
-    message = GUIMessage(event=event, name=name)
+    message = GUIMessage(event=event, name=name.upper())
     self.backend.processEvent(message)
 
   def on_pushOntologyLoad_pressed(self):
@@ -168,9 +171,14 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushOntologySave_pressed(self):
     debugging("-- pushOntologySave")
+    event = "save"
+    message = GUIMessage(event=event)
+    self.backend.processEvent(message)
 
   def on_pushOntologySaveAs_pressed(self):
     debugging("-- pushOntologySaveAs")
+    event = "save as"
+    message = GUIMessage(event=event)
 
   def on_pushBrickCreate_pressed(self):
     debugging("-- pushBrickCreate")
@@ -194,8 +202,8 @@ class OntobuilderUI(QMainWindow):
     message = GUIMessage(event=event)
     self.backend.processEvent(message)
 
-  def askForItemName(self, existing_names):
-    dialog = UI_String("provide new item name",
+  def askForItemName(self, prompt, existing_names):
+    dialog = UI_String(prompt,
                        placeholdertext="item name",
                        limiting_list=existing_names)
     dialog.exec()
@@ -230,6 +238,9 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_pushBrickRename_pressed(self):
+    event = "rename brick"
+    message = GUIMessage(event= event)
+    self.backend.processEvent(message)
     debugging("-- pushBrickRename")
 
   def on_pushTreeCreate_pressed(self):
@@ -354,6 +365,9 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushExit_pressed(self):
     self.closeMe()
+
+  def markSaved(self):
+    self.changed = False
 
   def closeMe(self):
     if self.changed:

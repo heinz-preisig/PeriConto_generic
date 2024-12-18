@@ -3,7 +3,7 @@
 
 from rdflib import RDF
 from rdflib import XSD
-from rdflib import namespace
+from rdflib import namespace, Namespace
 
 # https://www.w3.org/TR/rdf12-concepts/#dfn-rdf-dataset
 # https://www.w3.org/TR/rdf-schema/#ch_resource
@@ -12,15 +12,16 @@ RDFS = namespace.RDFS
 BASE = "http://example.org"
 ITEM_SEPARATOR = "#"
 CLASS_SEPARATOR = "/"
-PERICONTO = BASE + ITEM_SEPARATOR
-DATA = BASE + "data/" + ITEM_SEPARATOR
+CLASS_IDENTIFIERS = BASE + CLASS_SEPARATOR
+ITEM_IDENTIFIERS = BASE +  ITEM_SEPARATOR
+# DATA = BASE + "data/" + ITEM_SEPARATOR
 
 ONTOLOGY_REPOSITORY = "../ontologyRepository"
-ROOTCLASS = "ROOT"
-DATACLASS = "DATA"
+# ROOTCLASS = "ROOT"
+# DATACLASS = "DATA"
 
-COMMENT = "comment"
-ELUCIDATION = "elucidation"
+# COMMENT = "comment"
+# ELUCIDATION = "elucidation"
 
 FILE_FORMAT = "trig"
 FILE_FORMAT_ = "json-ld"
@@ -45,8 +46,8 @@ MYTerms = {v: k for k, v in RDFSTerms.items()}
 
 PRIMITIVES = ["integer",
               "comment",
-              "string",
               "decimal",
+              "string",
               "uri",
               "boolean"]
 
@@ -66,6 +67,12 @@ DIRECTION = {
         # "type"            : -1,
         }
 
+def makeClassURI(name):
+  ns = Namespace(CLASS_IDENTIFIERS + name)
+  return ns
+def makeItemURI(name):
+  ns = Namespace(ITEM_IDENTIFIERS + name)
+  return ns
 
 def extractNameFromIRI(iri):
   s_iri = str(iri)

@@ -143,12 +143,14 @@ class BackEnd():
 
   def loadOntology(self, message):
     name = message["name"]
-    self.dataModel = DataModel(None)
+    self.dataModel = DataModel(name)
     self.dataModel.loadFromFile(name)
     pass
 
   def markChanged(self, message):
     self.frontEnd.markChanged()
+    ui_state = self.UI_state["changed"]
+    self.frontEnd.setInterface(ui_state["show"], ui_state["hide"])
 
   def getBrickDataTuples(self, message):
     name = message["name"]
@@ -192,7 +194,7 @@ class BackEnd():
   def getExistingItemNames(self, message):
     brick = self.memory["brick"]
     existing_names = self.dataModel.getAllNamesInTheBrick(brick, what="brick")
-    name = self.frontEnd.askForItemName(existing_names)
+    name = self.frontEnd.askForItemName("provide new item name", existing_names)
     if name:
       ClassOrSubClass = self.memory["item in brick tree"]
       if message["event"] == "ask for adding a primitive":
@@ -207,6 +209,19 @@ class BackEnd():
       self.frontEnd.showBrickTree(self.dataBrickTuples, brick)
     else:
       pass
+
+  def renameBrick(self, message):
+    brick = self.memory["brick"]
+    brick_names = self.dataModel.getBrickList()
+    newName = self.frontEnd.askForItemName("provide new name for brick %s"%brick, brick_names)
+    if newName:
+      self.dataModel.renameBrick(brick, newName)
+      bricks = self.dataModel.getBrickList()
+      self.frontEnd.showBrickList(bricks)
+
+  def saveBricks(self, message):
+    self.dataModel.saveBricks()
+    self.frontEnd.markSaved()
 
   # def getExistingPrimitiveNames(self, message):
   #   brick = self.memory["brick"]
