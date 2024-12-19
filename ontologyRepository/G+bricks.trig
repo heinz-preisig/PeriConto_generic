@@ -1,0 +1,14 @@
+@prefix G: <http://example.org/G> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+G: {
+    G: a rdfs:Class ;
+        rdf:value <http://example.org/G#hello> .
+
+    <http://example.org/G#kk> rdfs:member G: .
+
+    <http://example.org/G#hello> xsd:string "" .
+}
+

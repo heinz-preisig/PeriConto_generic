@@ -1,0 +1,18 @@
+@prefix ROOT: <http://example.org/ROOT> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ROOT: {
+    ROOT: a rdfs:Class .
+
+    <http://example.org/ROOT> rdf:value <http://example.org/ROOT#name> . 
+    <http://example.org/ROOT> rdf:value <http://example.org/ROOT#no> .
+     <http://example.org/ROOT#gugus> rdfs:member ROOT: .
+
+    <http://example.org/ROOT#name> xsd:string "".
+
+    <http://example.org/ROOT#no> xsd:integer "" .
+}
+
+

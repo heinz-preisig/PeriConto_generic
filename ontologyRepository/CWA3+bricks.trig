@@ -1,0 +1,119 @@
+@prefix AVATAR: <http://example.org/AVATAR> .
+@prefix CAPACITIVE_ENTITY: <http://example.org/CAPACITIVE_ENTITY> .
+@prefix CAPACITY: <http://example.org/CAPACITY> .
+@prefix ROOT: <http://example.org/ROOT> .
+@prefix TIME_SCALE: <http://example.org/TIME_SCALE> .
+@prefix TOKEN: <http://example.org/TOKEN> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+CAPACITY: {
+    CAPACITY: a rdfs:Class .
+
+    <http://example.org/CAPACITY#Control> rdfs:member CAPACITY: .
+
+    <http://example.org/CAPACITY#InformationProcessing> rdfs:member CAPACITY: .
+
+    <http://example.org/CAPACITY#Physical> rdfs:isDefinedBy <http://example.org/CAPACITY#CAPACITIVE_ENTITY> ;
+        rdfs:member CAPACITY: .
+}
+
+CAPACITIVE_ENTITY: {
+    CAPACITIVE_ENTITY: a rdfs:Class .
+
+    <http://example.org/CAPACITIVE_ENTITY#Avatar> rdfs:isDefinedBy <http://example.org/CAPACITIVE_ENTITY#AVATAR> ;
+        rdfs:member CAPACITIVE_ENTITY: .
+
+    <http://example.org/CAPACITIVE_ENTITY#Temporal> rdfs:isDefinedBy <http://example.org/CAPACITIVE_ENTITY#TIME_SCALE> ;
+        rdfs:member CAPACITIVE_ENTITY: .
+
+    <http://example.org/CAPACITIVE_ENTITY#Tokens> rdfs:isDefinedBy <http://example.org/CAPACITIVE_ENTITY#TOKEN> ;
+        rdfs:member CAPACITIVE_ENTITY: .
+}
+
+ROOT: {
+    ROOT: a rdfs:Class .
+
+    <http://example.org/ROOT#Capacity> rdfs:isDefinedBy <http://example.org/ROOT#CAPACITY> ;
+        rdfs:member <http://example.org/ROOT#Nodes> .
+
+    <http://example.org/ROOT#Transport> rdfs:member <http://example.org/ROOT#Arcs> .
+
+    <http://example.org/ROOT#Arcs> rdfs:member <http://example.org/ROOT#Graph> .
+
+    <http://example.org/ROOT#Nodes> rdfs:member <http://example.org/ROOT#Graph> .
+
+    <http://example.org/ROOT#Graph> rdfs:member ROOT: .
+}
+
+TIME_SCALE: {
+    TIME_SCALE: a rdfs:Class .
+
+    <http://example.org/TIME_SCALE#TIME_SCALE> rdf:value <http://example.org/TIME_SCALE#Event>,
+            <http://example.org/TIME_SCALE#constant>,
+            <http://example.org/TIME_SCALE#dynamic> .
+
+    <http://example.org/TIME_SCALE#Event> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/TIME_SCALE#constant> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/TIME_SCALE#dynamic> rdfs:Datatype xsd:boolean .
+}
+
+AVATAR: {
+    AVATAR: a rdfs:Class .
+
+    <http://example.org/AVATAR#Circle> rdf:value <http://example.org/AVATAR#Radius> ;
+        rdfs:member <http://example.org/AVATAR#GraphObject> .
+
+    <http://example.org/AVATAR#Line> rdf:value <http://example.org/AVATAR#Full>,
+            <http://example.org/AVATAR#dotted> ;
+        rdfs:member <http://example.org/AVATAR#Style> .
+
+    <http://example.org/AVATAR#Oval> rdf:value <http://example.org/AVATAR#LongAxis>,
+            <http://example.org/AVATAR#ShortAxis> ;
+        rdfs:member <http://example.org/AVATAR#GraphObject> .
+
+    <http://example.org/AVATAR#Rectangle> rdf:value <http://example.org/AVATAR#Length>,
+            <http://example.org/AVATAR#Width> ;
+        rdfs:member <http://example.org/AVATAR#GraphObject> .
+
+    <http://example.org/AVATAR#Square> rdf:value <http://example.org/AVATAR#Size> ;
+        rdfs:member <http://example.org/AVATAR#GraphObject> .
+
+    <http://example.org/AVATAR#FillColour> rdfs:Datatype xsd:string .
+
+    <http://example.org/AVATAR#Filled> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/AVATAR#Full> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/AVATAR#Length> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/AVATAR#LongAxis> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/AVATAR#Radius> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/AVATAR#ShortAxis> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/AVATAR#Size> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/AVATAR#Style> rdf:value <http://example.org/AVATAR#FillColour>,
+            <http://example.org/AVATAR#Filled> ;
+        rdfs:member AVATAR: .
+
+    <http://example.org/AVATAR#Width> rdfs:Datatype xsd:decimal .
+
+    <http://example.org/AVATAR#dotted> rdfs:Datatype xsd:boolean .
+
+    <http://example.org/AVATAR#GraphObject> rdfs:member AVATAR: .
+}
+
+TOKEN: {
+    TOKEN: a rdfs:Class .
+
+    <http://example.org/TOKEN#TOKEN> rdf:value <http://example.org/TOKEN#Token> .
+
+    <http://example.org/TOKEN#Token> rdfs:Datatype xsd:string .
+}
+

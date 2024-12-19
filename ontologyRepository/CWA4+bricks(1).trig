@@ -1,0 +1,27 @@
+@prefix CAPACITY: <http://example.org/CAPACITY> .
+@prefix CAPACITY_ENTITY: <http://example.org/CAPACITY_ENTITY> .
+@prefix SIGN: <http://example.org/SIGN> .
+@prefix TIME_SCALE: <http://example.org/TIME_SCALE> .
+@prefix TOKEN: <http://example.org/TOKEN> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+CAPACITY: {
+    CAPACITY: a rdfs:Class .
+}
+
+SIGN: {
+    SIGN: a rdfs:Class .
+}
+
+TOKEN: {
+    TOKEN: a rdfs:Class .
+}
+
+TIME_SCALE: {
+    TIME_SCALE: a rdfs:Class .
+}
+
+CAPACITY_ENTITY: {
+    CAPACITY_ENTITY: a rdfs:Class .
+}
+

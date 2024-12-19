@@ -1,0 +1,7 @@
+@prefix H: <http://example.org/H> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+H: {
+    <http://example.org/H#jj> rdfs:member H: .
+}
+

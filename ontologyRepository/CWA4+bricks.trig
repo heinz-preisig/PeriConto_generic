@@ -1,0 +1,43 @@
+@prefix AVATAR: <http://example.org/AVATAR> .
+@prefix CAPACITY: <http://example.org/CAPACITY> .
+@prefix CAPACITY_ENTITY: <http://example.org/CAPACITY_ENTITY> .
+@prefix TIME_SCALE: <http://example.org/TIME_SCALE> .
+@prefix TOKEN: <http://example.org/TOKEN> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+TIME_SCALE: {
+    TIME_SCALE: a rdfs:Class .
+}
+
+AVATAR: {
+    AVATAR: a rdfs:Class .
+}
+
+CAPACITY: {
+    CAPACITY: a rdfs:Class .
+
+    <http://example.org/CAPACITY#Control> rdf:value <http://example.org/CAPACITY#commentControl> ;
+        rdfs:member CAPACITY: .
+
+    <http://example.org/CAPACITY#InformationProcessing> rdf:value <http://example.org/CAPACITY#commentInformationProcessing> ;
+        rdfs:member CAPACITY: .
+
+    <http://example.org/CAPACITY#Physical> rdf:value <http://example.org/CAPACITY#commentPhysical> ;
+        rdfs:member CAPACITY: .
+
+    <http://example.org/CAPACITY#commentControl> rdfs:comment "" .
+
+    <http://example.org/CAPACITY#commentInformationProcessing> rdfs:comment "" .
+
+    <http://example.org/CAPACITY#commentPhysical> rdfs:comment "" .
+}
+
+TOKEN: {
+    TOKEN: a rdfs:Class .
+}
+
+CAPACITY_ENTITY: {
+    CAPACITY_ENTITY: a rdfs:Class .
+}
+

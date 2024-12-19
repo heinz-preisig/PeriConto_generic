@@ -1,0 +1,16 @@
+@prefix HELLO: <http://example.org/HELLO> .
+@prefix kk: <http://example.org/kk> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+HELLO: {
+    HELLO: a rdfs:Class .
+
+    <http://example.org/HELLO#kk> rdfs:member HELLO: .
+}
+
+kk: {
+    kk: a rdfs:Class .
+
+    <http://example.org#jjj> rdfs:member kk: .
+}
+
