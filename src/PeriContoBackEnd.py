@@ -176,6 +176,7 @@ class BackEnd():
     name = message["name"]
     self.memory["item in brick tree"] = name
     type = message["type"]
+    self.memory["type"] = type
     if type in PRIMITIVES:
       event = "primitive in brick tree selected"
       ui_state = self.UI_state[event]
@@ -223,6 +224,26 @@ class BackEnd():
     self.dataModel.saveBricks()
     self.frontEnd.markSaved()
 
+  def renameItem(self, message):
+    brick = self.memory["brick"]
+    item_name = self.memory["item in brick tree"]
+    type = self.memory["type"]
+    item_names = self.dataModel.getAllNamesInTheBrick(brick,"brick")
+    newName = self.frontEnd.askForItemName("provide new name for item %s"%item_name, item_names)
+    if newName:
+      if type == "value":
+        self.dataModel.renamePrimitive(brick, item_name, newName)
+      if type  == "is_member":
+        self.dataModel.renameItem(brick, item_name,  newName)
+    
+
+  def removeItemFromBrickTree(self, message):
+    name = self.memory["item in brick tree"]
+    brick = self.memory["brick"]
+    self.dataModel.removeItem(brick, name)
+    message["name"] = brick
+    pass
+
   # def getExistingPrimitiveNames(self, message):
   #   brick = self.memory["brick"]
   #   existing_names = self.dataModel.getAllNamesInTheBrick(brick, what="brick")
@@ -235,11 +256,3 @@ class BackEnd():
   #     self.frontEnd.showBrickTree(self.dataBrickTuples, brick)
   #   else:
   #     pass
-
-
-  def removeItemFromBrickTree(self, message):
-    name = self.memory["item in brick tree"]
-    brick = self.memory["brick"]
-    self.dataModel.removeItem(brick, name)
-    message["name"] = brick
-    pass

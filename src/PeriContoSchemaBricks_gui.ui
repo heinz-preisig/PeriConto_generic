@@ -299,6 +299,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="pushBrickItemOrPrimitiveRename">
+          <property name="text">
+           <string>rename</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="pushBrickRemoveItem">
           <property name="text">
            <string>remove item|primitive</string>

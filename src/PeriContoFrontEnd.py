@@ -104,7 +104,7 @@ class OntobuilderUI(QMainWindow):
             "brick_add_item"        : self.ui.pushBrickAddItem,
             "brick_remove_item"     : self.ui.pushBrickRemoveItem,
             "brick_add_primitive"   : self.ui.pushBrickAddPrimitive,
-            # "brick_remove_primitive": self.ui.pushBrickRemovePrimitive,
+            "brick_rename_item":     self.ui.pushBrickItemOrPrimitiveRename,
             "brick_list"            : self.ui.listBricks,
             "brick_tree"            : self.ui.brickTree,
             "tree_control"          : self.ui.groupBoxTreesControl,
@@ -137,6 +137,7 @@ class OntobuilderUI(QMainWindow):
     self.changed = False
 
   def setInterface(self, shows, hides):
+    pass
     for show in shows:
       self.gui_objects[show].show()
     for hide in hides:
@@ -242,6 +243,11 @@ class OntobuilderUI(QMainWindow):
     message = GUIMessage(event= event)
     self.backend.processEvent(message)
     debugging("-- pushBrickRename")
+
+  def on_pushBrickItemOrPrimitiveRename_pressed(self):
+    event = "rename item/primitive"
+    message = GUIMessage(event=event)
+    self.backend.processEvent(message)
 
   def on_pushTreeCreate_pressed(self):
     debugging("-- pushTreeCreate")

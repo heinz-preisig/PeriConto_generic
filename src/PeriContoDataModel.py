@@ -98,8 +98,8 @@ class DataModel:
     self.data_counters = DataEnumerators()
     self.BRICK_GRAPHS = {}
     self.TREE_GRAPHS = {}
-    if root:
-      self.newBrick(root)
+    # if root:
+    #   self.newBrick(root)
     self.file_name_bricks = self.__makeFileName(root,what="bricks")
     self.file_name_trees = self.__makeFileName(root, what="trees")
 
@@ -247,6 +247,27 @@ class DataModel:
         triple = s_new,p,o_new
         print("new triple", triple)
         graph.add(triple)
+    pass
+
+  def renameItem(self, brick, item, newName):
+    item_uri = makeItemURI(item)
+    new_item_uri = makeItemURI(newName)
+    g = self.BRICK_GRAPHS[brick]
+    triple = (item_uri, RDFSTerms["is_member"], None)
+    for s,p,o in g.triples(triple):
+      g.remove((s,p,o))
+      new_triple = (new_item_uri, p, o)
+      g.add(new_triple)
+
+    triple = None, RDFSTerms["is_member"], item_uri
+    for s,p,o in g.triples(triple):
+      g.remove((s,p,o))
+      new_triple = (s, p, new_item_uri)
+      g.add(new_triple)
+    pass
+
+
+  def renamePrimitive(self, brick, item, newName):
     pass
 
 
