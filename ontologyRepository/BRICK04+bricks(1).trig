@@ -1,0 +1,9 @@
+@prefix FIRST: <http://example.org/FIRST> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+FIRST: {
+    FIRST: a rdfs:Class .
+
+    <http://example.org/FIRST#hello> rdfs:member FIRST: .
+}
+

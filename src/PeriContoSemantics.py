@@ -13,7 +13,7 @@ BASE = "http://example.org"
 ITEM_SEPARATOR = "#"
 CLASS_SEPARATOR = "/"
 CLASS_IDENTIFIERS = BASE + CLASS_SEPARATOR
-ITEM_IDENTIFIERS = BASE +  ITEM_SEPARATOR
+ITEM_IDENTIFIERS = BASE + CLASS_SEPARATOR + "%s" +  ITEM_SEPARATOR
 # DATA = BASE + "data/" + ITEM_SEPARATOR
 
 ONTOLOGY_REPOSITORY = "../ontologyRepository"
@@ -70,8 +70,8 @@ DIRECTION = {
 def makeClassURI(name):
   ns = Namespace(CLASS_IDENTIFIERS + name)
   return ns
-def makeItemURI(name):
-  ns = Namespace(ITEM_IDENTIFIERS + name)
+def makeItemURI(brick, name):
+  ns = Namespace(ITEM_IDENTIFIERS%brick + name)
   return ns
 
 def extractNameFromIRI(iri):

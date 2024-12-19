@@ -199,14 +199,14 @@ class DataModel:
     return uri
 
   def addItem(self, Class, ClassOrSubClass, name):
+    g = self.BRICK_GRAPHS[Class]
     if Class == ClassOrSubClass:
-      # o = URIRef(self.namespaces[Class])
       o = URIRef(makeClassURI(Class))
     else:
       o = self.makeURI(Class, ClassOrSubClass)
     s = self.makeURI(Class, name)
     triple = (s, RDFSTerms["is_member"], o)
-    self.BRICK_GRAPHS[Class].add(triple)
+    g.add(triple)
     pass
 
   def addPrimitive(self, Class, ClassOrSubClass, name, type):
@@ -237,7 +237,7 @@ class DataModel:
         o_new = o
         if oldName in str(s) :
           s_name = extractNameFromIRI(s)
-          s_new = URIRef(makeItemURI(s_name))
+          s_new = URIRef(makeItemURI(newName, s_name))
         if oldName in str(o):
           o_name = extractNameFromIRI(o)
           if ITEM_IDENTIFIERS in o_name:
@@ -250,24 +250,20 @@ class DataModel:
     pass
 
   def renameItem(self, brick, item, newName):
-    item_uri = makeItemURI(item)
-    new_item_uri = makeItemURI(newName)
+    item_uri = URIRef(makeItemURI(brick,item))
+    new_item_uri = URIRef(makeItemURI(brick, newName))
     g = self.BRICK_GRAPHS[brick]
-    triple = (item_uri, RDFSTerms["is_member"], None)
+    triple = (item_uri, None, None)
     for s,p,o in g.triples(triple):
       g.remove((s,p,o))
       new_triple = (new_item_uri, p, o)
       g.add(new_triple)
 
-    triple = None, RDFSTerms["is_member"], item_uri
+    triple = None, None , item_uri
     for s,p,o in g.triples(triple):
       g.remove((s,p,o))
       new_triple = (s, p, new_item_uri)
       g.add(new_triple)
-    pass
-
-
-  def renamePrimitive(self, brick, item, newName):
     pass
 
 

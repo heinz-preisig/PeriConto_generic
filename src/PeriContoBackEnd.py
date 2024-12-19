@@ -195,7 +195,8 @@ class BackEnd():
   def getExistingItemNames(self, message):
     brick = self.memory["brick"]
     existing_names = self.dataModel.getAllNamesInTheBrick(brick, what="brick")
-    name = self.frontEnd.askForItemName("provide new item name", existing_names)
+    name_ = self.frontEnd.askForItemName("provide new item name", existing_names)
+    name = str(name_).lower()  # rule items are lower case
     if name:
       ClassOrSubClass = self.memory["item in brick tree"]
       if message["event"] == "ask for adding a primitive":
@@ -214,7 +215,7 @@ class BackEnd():
   def renameBrick(self, message):
     brick = self.memory["brick"]
     brick_names = self.dataModel.getBrickList()
-    newName = self.frontEnd.askForItemName("provide new name for brick %s"%brick, brick_names)
+    newName = self.frontEnd.askForItemName("provide new name for brick %s"%brick, brick_names).upper()
     if newName:
       self.dataModel.renameBrick(brick, newName)
       bricks = self.dataModel.getBrickList()
@@ -231,10 +232,10 @@ class BackEnd():
     item_names = self.dataModel.getAllNamesInTheBrick(brick,"brick")
     newName = self.frontEnd.askForItemName("provide new name for item %s"%item_name, item_names)
     if newName:
-      if type == "value":
-        self.dataModel.renamePrimitive(brick, item_name, newName)
-      if type  == "is_member":
-        self.dataModel.renameItem(brick, item_name,  newName)
+      self.dataModel.renameItem(brick, item_name, newName)
+
+      self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick, "bricks")
+      self.frontEnd.showBrickTree(self.dataBrickTuples, brick)
     
 
   def removeItemFromBrickTree(self, message):
