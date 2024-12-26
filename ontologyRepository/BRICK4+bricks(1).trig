@@ -3,7 +3,5 @@
 
 FIRST: {
     FIRST: a rdfs:Class .
-
-    <http://example.org/FIRST#hello> rdfs:member FIRST: .
 }
 

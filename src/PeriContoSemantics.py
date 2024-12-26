@@ -42,6 +42,18 @@ RDFSTerms = {
         "boolean"      : XSD.boolean,
         }
 
+RULES = {
+        "is_class"     : "Class",
+        "is_member"    : "Item",
+        "is_defined_by": "LinkedClass",
+        "value"        : "Value",
+        "string"       : "string",
+        "integer"      : "integer",
+        "decimal"      : "decimal",
+        "uri"          : "uri",
+        "boolean"      : "boolean",
+        }
+
 MYTerms = {v: k for k, v in RDFSTerms.items()}
 
 PRIMITIVES = ["integer",

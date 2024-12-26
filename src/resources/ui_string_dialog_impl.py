@@ -54,6 +54,8 @@ class UI_String(QtWidgets.QDialog):
     QtWidgets.QDialog.__init__(self, parent=None)
     self.ui = Ui_Dialog()
     self.ui.setupUi(self)
+
+    self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
     # print(" <<<< show me")
     # self.hide()
     self.placeholdertext = placeholdertext
@@ -69,11 +71,13 @@ class UI_String(QtWidgets.QDialog):
     self.ui.pushAccept.clicked.connect(self.__accept)
     self.ui.pushReject.clicked.connect(self.closeMe)
     self.ui.lineEdit.textEdited.connect(self.__changedText)
+    self.ui.lineEdit.returnPressed.connect(self.returnPressed)
 
     self.ui.lineEdit.textChanged.connect(self.newText)
-    self.ui.pushReject.setFocus()
+    # self.ui.pushReject.setFocus()
+    self.ui.lineEdit.setFocus()
     self.ui.lineEdit.setPlaceholderText(placeholdertext)
-    # self.exec()
+    self.exec()
 
     # self.palette_red = QtGui.QPalette()
     # self.palette_red.setColor(QtGui.QPalette.Text, QtCore.Qt.red)
@@ -107,8 +111,18 @@ class UI_String(QtWidgets.QDialog):
     self.text = self.ui.lineEdit.text()
     self.close()
 
-  def on_lineEdit_returnPressed(self):
+
+  def __reject(self):
+    self.text = None
+    self.close()
+
+  # def on_lineEdit_returnPressed(self):
+  #   self.__accept()
+
+  def returnPressed(self):
+    print("return pressed")
     self.__accept()
+    return
 
   def getText(self):
     text = self.ui.lineEdit.text()
