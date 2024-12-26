@@ -151,10 +151,11 @@ class OntobuilderUI(QMainWindow):
     name = dialog.text
     if name:
       event = "create ontology"
+      name = name.upper()
     else:
       event = "start"
 
-    message = GUIMessage(event=event, name=name.upper())
+    message = GUIMessage(event=event, name=name)
     self.backend.processEvent(message)
 
   def on_pushOntologyLoad_pressed(self):

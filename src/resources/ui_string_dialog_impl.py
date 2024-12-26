@@ -54,6 +54,8 @@ class UI_String(QtWidgets.QDialog):
     QtWidgets.QDialog.__init__(self, parent=None)
     self.ui = Ui_Dialog()
     self.ui.setupUi(self)
+
+    self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
     # print(" <<<< show me")
     # self.hide()
     self.placeholdertext = placeholdertext
@@ -107,8 +109,13 @@ class UI_String(QtWidgets.QDialog):
     self.text = self.ui.lineEdit.text()
     self.close()
 
-  def on_lineEdit_returnPressed(self):
-    self.__accept()
+
+  def __reject(self):
+    self.text = None
+    self.close()
+
+  # def on_lineEdit_returnPressed(self):
+  #   self.__accept()
 
   def getText(self):
     text = self.ui.lineEdit.text()
