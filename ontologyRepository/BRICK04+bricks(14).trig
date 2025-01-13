@@ -1,0 +1,35 @@
+@prefix FIRST: <http://example.org/FIRST> .
+@prefix SECOND: <http://example.org/SECOND> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+FIRST: {
+    FIRST: a rdfs:Class ;
+        rdf:value <http://example.org/FIRST#no> .
+
+    <http://example.org/FIRST#item> rdf:value <http://example.org/FIRST#gugus> ;
+        rdfs:member <http://example.org/FIRST#item1> .
+
+    <http://example.org/FIRST#gugus> xsd:integer "" .
+
+    <http://example.org/FIRST#item1> rdf:value <http://example.org/FIRST#k> ;
+        rdfs:member FIRST: .
+
+    <http://example.org/FIRST#k> xsd:integer "" .
+
+    <http://example.org/FIRST#no> xsd:integer "" .
+}
+
+SECOND: {
+    SECOND: a rdfs:Class ;
+        rdf:value <http://example.org/SECOND#comment> .
+
+    <http://example.org/SECOND#item> rdf:value <http://example.org/SECOND#no> ;
+        rdfs:member SECOND: .
+
+    <http://example.org/SECOND#comment> rdfs:comment "" .
+
+    <http://example.org/SECOND#no> xsd:integer "" .
+}
+
