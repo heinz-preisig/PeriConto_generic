@@ -59,8 +59,8 @@ class GUIMessage(dict):
     super().__init__()
     self["event"] = event
     self["name"] = name
-    self["type"] = type
-    self["parent"] = parent
+    # self["type"] = type
+    # self["parent"] = parent
 
 
 class OntobuilderUI(QMainWindow):
@@ -107,16 +107,6 @@ class OntobuilderUI(QMainWindow):
             "normal"  : self.ui.pushNormal,
             }
 
-    # self.gui_groups = {
-    #         "group_bricks_control"       : self.ui.groupBoxBricksControl,
-    #         "group_brick_tree"           : self.ui.groupBoxBrikkTree,
-    #         "group_ontology_control"     : self.ui.groupBoxOntology,
-    #         "group_ontology_main"        : self.ui.groupOntologyMain,
-    #         "group_ontology_save_control": self.ui.groupBoxOntologySave,
-    #         "group_primitives"           : self.ui.groupBoxPrimitives,
-    #         "group_trees_control"        : self.ui.groupBoxTreesControl,
-    #         "group_ontology_save"        : self.ui.groupBoxOntologySave,
-    #         }
 
     self.gui_objects = {
             "exit"                          : self.ui.pushExit,
@@ -304,8 +294,12 @@ class OntobuilderUI(QMainWindow):
   def on_pushNormal_pressed(self):
     self.showNormal()
 
-  def on_tabWidgetLists_currentChanged(self, index):
-    debugging("-- tabWidgetLists -- index", index)
+  def on_tabsBrickTrees_currentChanged(self, index):
+    # debugging("-- tabWidgetLists -- index", index)
+    tab = self.ui.tabsBrickTrees.tabText(index)
+    event = "tab changed to %s"%tab
+    message = GUIMessage(event=event, name=tab)
+    debugging("tab message",message)
 
   def on_listBricks_itemClicked(self, item):
     name = item.text()
@@ -387,7 +381,7 @@ class OntobuilderUI(QMainWindow):
             else:
               item.setText(0, s)
             items[s] = item
-            print("items", s,p,o)
+            debugging("items", s,p,o)
             self.__makeTree(tuples, origin=s, stack=stack, items=items)
 
   # enable moving the window --https://www.youtube.com/watch?v=R4jfg9mP_zo&t=152s

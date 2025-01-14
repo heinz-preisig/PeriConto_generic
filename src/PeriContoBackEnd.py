@@ -146,13 +146,13 @@ class BackEnd():
     self.frontEnd.setRules(RULES)
 
   def processEvent(self, message):
-    print(">>>> message ", message)
+    debugging(">>>> message ", message)
     event = message["event"]
     self.fail = False
     for a in self.UI_state[event]["action"]:  # self.actions[event]:
       c = "self.%s(message)" % a
       r = exec(c)
-      print("execute:", c)
+      debugging("execute:", c)
 
     if len(self.UI_state[event]["show"]) > 0:
       if self.UI_state[event]["show"][0] == "do_nothing":
@@ -169,7 +169,7 @@ class BackEnd():
       for a in self.UI_state[event]["except"]:
         c = "self.%s(message)" % a
         r = exec(c)
-        print("execute:", c)
+        debugging("execute:", c)
 
   def createOntology(self, message):
     debugging("> action", message)
@@ -271,7 +271,6 @@ class BackEnd():
     name = self.memory["item"]
     brick = self.memory["brick"]
     self.dataModel.removeItem(brick, name)
-    message["name"] = brick
     pass
 
   def visualise(self, message):
