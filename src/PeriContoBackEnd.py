@@ -214,7 +214,7 @@ class BackEnd():
 
   def selectedClassInBrickTree(self, message):
     self.memory["item"] = message["name"]
-    type = message["type"]
+    # type = message["type"]
 
   def selectedValueInBrickTree(self, message):
     self.memory["item"] = message["name"]
