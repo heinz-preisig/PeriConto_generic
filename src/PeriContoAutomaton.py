@@ -1,13 +1,15 @@
 """
 automaton definition for PeriConto
 """
+from graphviz import Digraph
+
 UI_state = {
         "start"                         : {
                 "show"  : [
                         "exit",
                         "ontology_create",
                         "ontology_load",
-                        "ontology_create"],
+                        ],
                 "except": [],
                 "action": [],
                 },
@@ -17,7 +19,9 @@ UI_state = {
                            "ontology_save",
                            "ontology_save_as",
                            "tabs",
-                           "brick_create"],
+                        "ontology_create",
+                        "tree_create",
+                        "tree_list",],
                 "except": [],
                 "action": ["createOntology",
                            "markChanged",
@@ -28,6 +32,9 @@ UI_state = {
                            "tabs",
                            "brick_create",
                            "brick_list",
+                        "ontology_create",
+                        "tree_create",
+                        "tree_list",
                            ],
                 "except": [],
                 "action": ["loadOntology",
@@ -297,10 +304,22 @@ UI_state = {
                            "putBrickDataTuples",
                            ],
                 },
-        "changed"                       : {
-                "show"  : ["exit",
-                           "tree_visualise",
-                           "ontology_save", ],
+        # note: tab changes
+        "new tree"                       : {
+                "show"  : ["do_nothing",
+                           ],
+                "except": [],
+                "action": [],
+                },
+        "tab changed to bricks"                       : {
+                "show"  : ["do_nothing",
+                           ],
+                "except": [],
+                "action": [],
+                },
+        "tab changed to trees"                       : {
+                "show"  : ["do_nothing",
+                           ],
                 "except": [],
                 "action": [],
                 },
@@ -319,9 +338,83 @@ UI_state = {
                 },
         }
 
-# keys = sorted(UI_state.keys())
-# print("automaton keys")
-# for k in keys:
-#   print(k)
-# print("============================\n")
-# pass
+NODE_SPECS = {
+          "event"    : {
+                  "colour"   : "red",
+                  "shape"    : "rectangle",
+                  "fillcolor": "red",
+                  "style"    : "filled",
+                  },
+          "show"   : {
+                  "colour"   : "orange",
+                  "shape"    : "",
+                  "fillcolor": "white",
+                  "style"    : "filled",
+                  },
+          "action": {
+                  "colour"   : "blue",
+                  "shape"    : "rectangle",
+                  "fillcolor": "white",
+                  "style"    : "filled",
+                  },
+          }
+EDGE_COLOURS = {
+          "event"     : "red",
+          "show"    : "blue",
+          "action": "darkorange",
+        }
+class AutomatonPlot:
+
+  def __init__(self):
+    self.dot = Digraph("PeriConto automaton")
+    self.dot.graph_attr["rankdir"] = "LR"
+
+  def makeAutomatonPlot(self):
+
+    for n in sorted(UI_state):
+      dot = self.dot
+      specs = NODE_SPECS["event"]
+      dot.node(n,
+                  color=specs["colour"],
+                  shape=specs["shape"],
+                  fillcolor=specs["fillcolor"],
+                  style=specs["style"],
+               )
+      show_node = "%s show"%n
+      dot.node(show_node, style="filled", fillcolor="orange")
+      dot.edge(n, show_node,
+               color="green")
+      dot.edge(n,show_node,
+                  color="red",
+                  )
+      for s in UI_state[n]["show"]:
+        dot.node(s,
+                 color=specs["colour"],
+                 shape=specs["shape"],
+                 fillcolor=specs["fillcolor"],
+                 style=specs["style"],
+                 )
+        dot.edge(show_node,s,
+                 color="black")
+
+
+      action_node = "%s action"%n
+      dot.node(action_node,style="filled", fillcolor="green")
+      dot.edge(n, action_node)
+      for a in UI_state[n]["action"]:
+        dot.node(a,
+                 color=specs["colour"],
+                 shape=specs["shape"],
+                 fillcolor=specs["fillcolor"],
+                 style=specs["style"],
+                 )
+        dot.edge(action_node, a,
+                 color="blue")
+
+
+if __name__ == "__main__":
+  import sys
+  g = AutomatonPlot()
+  g.makeAutomatonPlot()
+  file_name="automaton"
+  g.dot.render(file_name, format="pdf")

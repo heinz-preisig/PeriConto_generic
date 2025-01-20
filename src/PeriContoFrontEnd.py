@@ -70,6 +70,7 @@ class OntobuilderUI(QMainWindow):
     self.ui.setupUi(self)
 
     self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
+    self.ui.tabsBrickTrees.setTabVisible(1,False)
 
     self.DEBUGG = True
 
@@ -138,6 +139,10 @@ class OntobuilderUI(QMainWindow):
   def setRules(self, rules):
     self.rules = rules
 
+  def setTabVisible(self):
+    debugging("enable taps")
+    self.ui.tabsBrickTrees.setTabVisible(1, True)
+
   def setInterface(self, shows):
     pass
 
@@ -197,10 +202,11 @@ class OntobuilderUI(QMainWindow):
     # dialog.exec()
     name = dialog.text
     if name:
-      event = "new brick"
+      event = "new tree"
+      name = name.upper()
     else:
       event = None
-    message = GUIMessage(event=event, name=name.upper())
+    message = GUIMessage(event=event, name=name)
     self.backend.processEvent(message)
 
   def on_pushBrickRemove_pressed(self):
@@ -265,6 +271,17 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushTreeCreate_pressed(self):
     debugging("-- pushTreeCreate")
+    dialog = UI_String("new tree",
+                       "tree name",
+                       self.brickList)
+    # dialog.exec()
+    name = dialog.text
+    if name:
+      event = "new brick"
+    else:
+      event = None
+    message = GUIMessage(event=event, name=name.upper())
+    self.backend.processEvent(message)
 
   def on_pushDeleteTree_pressed(self):
     debugging("-- pushDeleteTree")
@@ -334,6 +351,13 @@ class OntobuilderUI(QMainWindow):
     self.brickList = brickList
     self.ui.listBricks.clear()
     self.ui.listBricks.addItems(brickList)
+    self.ui.comboBoxTreeSelectBrick.clear()
+    self.ui.comboBoxTreeSelectBrick.addItems(brickList)
+
+  def showTreeList(self, treeList):
+    self.treeList = treeList
+    self.ui.listTrees.clear()
+    self.ui.listTrees.addItems(treeList)
 
   def showBrickTree(self, tuples, origin):
 

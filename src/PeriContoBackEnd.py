@@ -20,6 +20,8 @@ def debugging(*info):
   if DEBUGG:
     print("debugging", info)
 
+# class AutomatonPlot()
+
 
 class TreePlot:
   """
@@ -176,6 +178,7 @@ class BackEnd():
     name = message["name"]
     self.project_name = name
     self.dataModel = DataModel(name)
+    self.frontEnd.setTabVisible()
     pass
 
   def loadOntology(self, message):
@@ -183,6 +186,7 @@ class BackEnd():
     self.project_name = name
     self.dataModel = DataModel(name)
     self.dataModel.loadFromFile(name)
+    self.frontEnd.setTabVisible()
     pass
 
   def selectedBrick(self, message):
@@ -271,6 +275,9 @@ class BackEnd():
     name = self.memory["item"]
     brick = self.memory["brick"]
     self.dataModel.removeItem(brick, name)
+    pass
+
+  def createTree(self, message):
     pass
 
   def visualise(self, message):
