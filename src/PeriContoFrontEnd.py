@@ -127,6 +127,7 @@ class OntobuilderUI(QMainWindow):
             "ontology_save_as"              : self.ui.pushOntologySaveAs,
             "tree_create"                   : self.ui.pushTreeCreate,
             "tree_delete"                   : self.ui.pushDeleteTree,
+            "tree_combo_select_brick"       : self.ui.comboBoxTreeSelectBrick,
             "tree_instantiate"              : self.ui.pushTreeInstantiate,
             "tree_list"                     : self.ui.listTrees,
             "tree_link_existing_class"      : self.ui.pushTreeLinkExistingClass,
@@ -194,7 +195,11 @@ class OntobuilderUI(QMainWindow):
   def on_pushOntologySaveAs_pressed(self):
     debugging("-- pushOntologySaveAs")
     event = "save as"
-    message = GUIMessage(event=event)
+    dialog = UI_String("save as", "new name")
+    name = dialog.text
+    if name:
+      message = GUIMessage(event=event, name=name)
+      self.backend.processEvent(message)
 
   def on_pushBrickCreate_pressed(self):
     debugging("-- pushBrickCreate")
@@ -202,7 +207,7 @@ class OntobuilderUI(QMainWindow):
     # dialog.exec()
     name = dialog.text
     if name:
-      event = "new tree"
+      event = "new brick"
       name = name.upper()
     else:
       event = None
@@ -211,7 +216,7 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushBrickRemove_pressed(self):
     message = GUIMessage()
-    debugging("--pushBrickRemove")
+    debugging("--pushBrickRemove  -- not implemented")
 
   def on_pushBrickAddItem_pressed(self):
     debugging("-- pushBrickAddItem")
@@ -233,9 +238,9 @@ class OntobuilderUI(QMainWindow):
     primitive = dialog.getSelection()
     return primitive
 
-  def setPrimitives(self, PRIMITIVES):
-    self.ui.comboBoxPrimitives.clear()
-    # self.ui.comboBoxPrimitives.addItems(PRIMITIVES)
+  # def setPrimitives(self, PRIMITIVES):
+  #   self.ui.comboBoxPrimitives.clear()
+  #   # self.ui.comboBoxPrimitives.addItems(PRIMITIVES)
 
   def on_pushBrickRemoveItem_pressed(self):
     message = GUIMessage(event="remove item from brick tree")
@@ -277,7 +282,7 @@ class OntobuilderUI(QMainWindow):
     # dialog.exec()
     name = dialog.text
     if name:
-      event = "new brick"
+      event = "new tree"
     else:
       event = None
     message = GUIMessage(event=event, name=name.upper())
@@ -328,7 +333,17 @@ class OntobuilderUI(QMainWindow):
   def on_listTrees_itemClicked(self, item):
     name = item.text()
     debugging("-- listTrees -- item", name)
-    event = "selectedTree"
+    event = "selected tree"
+    message = GUIMessage(event = event, name=name)
+    debugging("message:", message)
+    self.backend.processEvent(message)
+
+  def on_treeTree_itemClicked(self, item):
+    name = item.text()
+    event= "selected node in treeTree"
+    message = GUIMessage(event=event, name=name)
+    debugging("--tree_tree_item:", message)
+    self.backend.processEvent(message)
 
   def on_brickTree_itemClicked(self, item, column):
     name = item.text(column)
@@ -344,8 +359,17 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_treeTree_itemClicked(self, item, column):
-    name = item.text()
+    name = item.text(column)
     debugging("-- tree item %s, column %s" % (name, column))
+    selected = item.type
+    event = "%s in treeTree selected"%selected
+    message = GUIMessage(event=event,
+                         name=name,
+                         # type=item.predicate,
+                         # parent=item.parent_name
+                         )
+    debugging("message:", message)
+    self.backend.processEvent(message)
 
   def showBrickList(self, brickList):
     self.brickList = brickList
@@ -407,6 +431,14 @@ class OntobuilderUI(QMainWindow):
             items[s] = item
             debugging("items", s,p,o)
             self.__makeTree(tuples, origin=s, stack=stack, items=items)
+
+  def putTreeList(self, tree_list):
+    self.ui.listTrees.clear()
+    self.ui.listTrees.addItems(tree_list)
+
+  def putBricksListForTree(self, brick_list):
+    self.ui.comboBoxTreeSelectBrick.clear()
+    self.ui.comboBoxTreeSelectBrick.addItems(brick_list)
 
   # enable moving the window --https://www.youtube.com/watch?v=R4jfg9mP_zo&t=152s
   def mousePressEvent(self, event, QMouseEvent=None):

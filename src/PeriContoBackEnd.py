@@ -152,9 +152,60 @@ class BackEnd():
     event = message["event"]
     self.fail = False
     for a in self.UI_state[event]["action"]:  # self.actions[event]:
-      c = "self.%s(message)" % a
-      r = exec(c)
-      debugging("execute:", c)
+      # c = "self.%s(message)" % a
+      # r = exec(c)
+      # debugging("execute:", c)
+      if a == "createOntology":
+        self.createOntology(message)
+      elif a == "putBrickList":
+        self.putBrickList(message)
+      elif a == "markChanged":
+        self.markChanged(message)
+      elif a == "loadOntology":
+        self.loadOntology(message)
+      elif a == "newBrick":
+        self.newBrick(message)
+      elif a == "selectedBrick":
+        self.selectedBrick(message)
+      elif a == "getBrickDataTuples":
+        self.getBrickDataTuples(message)
+      elif a == "putBrickDataTuples":
+        self.putBrickDataTuples(message)
+      elif a == "renameBrick":
+        self.renameBrick(message)
+      elif a == "selectedClassInBrickTree":
+        self.selectedClassInBrickTree(message)
+      elif a == "selectedItemInBrickTree":
+        self.selectedItemInBrickTree(message)
+      elif a == "selectedValueInBrickTree":
+        self.selectedValueInBrickTree(message)
+      elif a == "getExistingItemNames":
+        self.getExistingItemNames(message)
+      elif a == "renameItem":
+        self.renameItem(message)
+      elif a == "removeItemFromBrickTree":
+        self.removeItemFromBrickTree(message)
+      elif a == "putBricksListForTree":
+        self.putBricksListForTree(message)
+      elif a == "putTreeList":
+        self.putTreeList(message)
+      elif a == "tree_create":
+        self.tree_create(message)
+      elif a == "newTree":
+        self.newTree(message)
+      elif a == "getTreeDataTuples":
+        self.getTreeDataTuples(message)
+      elif a == "saveBricks":
+        self.saveBricks(message)
+      elif a == "saveBricksWithNewName":
+        self.saveBricksWithNewName(message)
+      elif a == "visualise":
+        self.visualise(message)
+
+
+
+
+
 
     if len(self.UI_state[event]["show"]) > 0:
       if self.UI_state[event]["show"][0] == "do_nothing":
@@ -191,11 +242,12 @@ class BackEnd():
 
   def selectedBrick(self, message):
     self.memory["brick"] = message["name"]
+    print("selected brick is ", message["name"])
 
   def markChanged(self, message):
     self.frontEnd.markChanged()
-    ui_state = self.UI_state["changed"]
-    self.frontEnd.setInterface(ui_state["show"])
+    # event = message["event"]
+    # self.frontEnd.setInterface(self.UI_state["event"]["show"])
 
   def getBrickDataTuples(self, message):
     name = self.memory["brick"]
@@ -260,6 +312,20 @@ class BackEnd():
     self.dataModel.saveBricks()
     self.frontEnd.markSaved()
 
+
+  def saveBricksWithNewName(self, message):
+    name = message["name"]
+    file_name = self.dataModel.makeFileName(name, what="bricks")
+    self.dataModel.saveBricks(file_name=file_name)
+    self.frontEnd.markSaved()
+
+
+  def saveTreeWithNewName(self, message):
+    name = message["name"]
+    file_name = self.dataModel.makeFileName(name, what="bricks")
+    self.dataModel.saveBricks(file_name=file_name)
+    self.frontEnd.markSaved()
+
   def renameItem(self, message):
     brick = self.memory["brick"]
     item_name = self.memory["item"]
@@ -278,7 +344,41 @@ class BackEnd():
     pass
 
   def createTree(self, message):
+    tree_name = message["name"]
+    self.dataModel.newTree(tree_name)
+    self.memory["tree"] = tree_name
     pass
+
+  def saveTrees(self, message):
+    self.dataModel.saveTrees()
+    self.frontEnd.markSaved()
+
+  def putTreeList(self, message):
+    tree_list = self.dataModel.getTreeList()
+    self.frontEnd.putTreeList(tree_list)
+
+  def getBrickDataTuples(self, message):
+    name = self.memory["brick"]
+    self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(name, "bricks")
+    self.frontEnd.showBrickTree(self.dataBrickTuples, name)
+    # self.putBrickDataTuples(self.dataBrickTuples)
+    pass
+
+  def getTreeDataTuples(self, message):
+    name = self.memory["tree"]
+    dataTreeTuples = self.dataModel.makeDataTuplesForGraph(name, "tree")
+    self.frontEnd.showTreeTree(dataTreeTuples, name)
+    pass
+
+  # ======================== trees
+  def newTree(self, message):
+    name = message["name"]
+    self.dataModel.newTree(name)
+    self.memory["tree"] = name
+
+  def putBricksListForTree(self, message):
+    brick_list = self.dataModel.getBrickList()
+    self.frontEnd.putBricksListForTree(brick_list)
 
   def visualise(self, message):
     tree = self.memory["brick"]

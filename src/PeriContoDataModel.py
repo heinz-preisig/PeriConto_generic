@@ -100,20 +100,20 @@ class DataModel:
     self.TREE_GRAPHS = {}
     # if root:
     #   self.newBrick(root)
-    self.file_name_bricks = self.__makeFileName(root,what="bricks")
-    self.file_name_trees = self.__makeFileName(root, what="trees")
+    self.file_name_bricks = self.makeFileName(root, what="bricks")
+    self.file_name_trees = self.makeFileName(root, what="trees")
 
   def loadFromFile(self, project_name):
 
-    self.file_name_bricks = self.__makeFileName(project_name, what="bricks")
+    self.file_name_bricks = self.makeFileName(project_name, what="bricks")
     self.BRICK_GRAPHS, self.namespaces = self.__loadFromFile(self.file_name_bricks)
 
-    self.file_name_trees = self.__makeFileName(project_name, what="trees")
+    self.file_name_trees = self.makeFileName(project_name, what="trees")
     exists = os.path.exists(self.file_name_trees)
     if exists:
       self.TREE_GRAPHS, _ = self.__loadFromFile(self.file_name_trees)
 
-  def __makeFileName(self, project_name, what=None):
+  def makeFileName(self, project_name, what=None):
     file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s."%what + FILE_FORMAT
     return file_name_bricks
 
@@ -228,6 +228,7 @@ class DataModel:
 
   def copyBrick(self, oldName, newName):
     self.newBrick(newName)
+    # self.BRICK_GRAPHS[newName] = Graph()
     graph = self.BRICK_GRAPHS[newName]
     self.namespaces[newName] = Namespace(makeClassURI(newName))
 
@@ -237,11 +238,14 @@ class DataModel:
         o_new = o
         if oldName in str(s) :
           s_name = extractNameFromIRI(s)
-          s_new = URIRef(makeItemURI(newName, s_name))
+          if (oldName in s) and ("#" in s):
+            s_new = URIRef(makeItemURI(newName, s_name))
+          else:
+            s_new = URIRef(makeClassURI(newName))
         if oldName in str(o):
           o_name = extractNameFromIRI(o)
-          if ITEM_IDENTIFIERS in o_name:
-            o_new = URIRef(makeItemURI(o_name))
+          if (oldName in o) and ("#" in o):
+            o_new = URIRef(makeItemURI(newName, o_name))
           else:
             o_new = URIRef(makeClassURI(newName))
         triple = s_new,p,o_new
@@ -267,10 +271,20 @@ class DataModel:
     pass
 
 
-  def saveBricks(self):
+  def saveBricks(self, file_name=None):
     graphs = self.BRICK_GRAPHS
     conjunctiveGraph = self.__prepareConjunctiveGraph(graphs)
-    self.__writeQuadFile(conjunctiveGraph, self.file_name_bricks)
+    if not file_name:
+      file_name = self.file_name_bricks
+    self.__writeQuadFile(conjunctiveGraph, file_name)
+    pass
+
+  def saveTrees(self, file_name=None):
+    graphs = self.TREE_GRAPHS
+    conjunctiveGraph = self.__prepareConjunctiveGraph(graphs)
+    if not file_name:
+      file_name = self.file_name_trees
+    self.__writeQuadFile(conjunctiveGraph, file_name)
     pass
 
   def __prepareConjunctiveGraph(self, graphs):
@@ -283,6 +297,19 @@ class DataModel:
         # print(s, p, o)
         conjunctiveGraph.get_context(namespaces[cl]).add((s, p, o))
     return conjunctiveGraph
+
+  def newTree(self, tree_name):
+    self.TREE_GRAPHS[tree_name] = Graph()
+    classURI = makeClassURI(tree_name)
+    self.namespaces[tree_name] = classURI
+    # self.BRICK_GRAPHS[brick_name].bind(brick_name, self.namespaces[brick_name])
+    triple = (URIRef(classURI), RDFSTerms["is_class"],RDFSTerms["class"])
+    self.TREE_GRAPHS[tree_name].add(triple)
+    pass
+
+  def getTreeList(self):
+    tree_list = sorted(self.TREE_GRAPHS.keys())
+    return tree_list
 
   def __writeQuadFile(self, conjunctiveGraph, f):
     saveBackupFile(f)
