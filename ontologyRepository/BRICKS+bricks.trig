@@ -1,0 +1,18 @@
+@prefix KK: <http://example.org/KK> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+KK: {
+    <http://example.org/KK#FIRST> rdf:value KK: .
+
+    <http://example.org/KK#i> xsd:integer "" .
+
+    <http://example.org/KK#item1> rdfs:member KK: .
+
+    <http://example.org/KK#item11> rdf:value KK: ;
+        rdfs:member KK: .
+
+    <http://example.org/KK#log> xsd:boolean "" .
+}
+
