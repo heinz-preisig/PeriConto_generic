@@ -1,3 +1,4 @@
+import copy
 import os
 import sys
 
@@ -7,18 +8,18 @@ from rdflib import Literal
 from rdflib import Namespace
 from rdflib import URIRef
 
-from PeriContoSemantics import BASE
-from PeriContoSemantics import CLASS_IDENTIFIERS
-from PeriContoSemantics import FILE_FORMAT
-from PeriContoSemantics import ITEM_IDENTIFIERS
-from PeriContoSemantics import MYTerms
-from PeriContoSemantics import ONTOLOGY_REPOSITORY
-from PeriContoSemantics import PRIMITIVES
-from PeriContoSemantics import RDFSTerms
-from PeriContoSemantics import RDF_PRIMITIVES
-from PeriContoSemantics import extractNameFromIRI
-from PeriContoSemantics import makeClassURI
-from PeriContoSemantics import makeItemURI
+from BricksAndTreeSemantics import BASE
+from BricksAndTreeSemantics import CLASS_IDENTIFIERS
+from BricksAndTreeSemantics import FILE_FORMAT
+from BricksAndTreeSemantics import ITEM_IDENTIFIERS
+from BricksAndTreeSemantics import MYTerms
+from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
+from BricksAndTreeSemantics import PRIMITIVES
+from BricksAndTreeSemantics import RDFSTerms
+from BricksAndTreeSemantics import RDF_PRIMITIVES
+from BricksAndTreeSemantics import extractNameFromIRI
+from BricksAndTreeSemantics import makeClassURI
+from BricksAndTreeSemantics import makeItemURI
 
 DEBUGG = True
 
@@ -298,13 +299,21 @@ class DataModel:
         conjunctiveGraph.get_context(namespaces[cl]).add((s, p, o))
     return conjunctiveGraph
 
-  def newTree(self, tree_name):
-    self.TREE_GRAPHS[tree_name] = Graph()
+  def newTree(self, tree_name, brick_name):
+    brick = self.BRICK_GRAPHS[brick_name]
+    copy_brick = copy.deepcopy(brick)
+
+    self.renameBrick(brick_name,tree_name)
+    named_brick = self.BRICK_GRAPHS[tree_name]
+    self.TREE_GRAPHS[tree_name] = copy.deepcopy(named_brick)
     classURI = makeClassURI(tree_name)
     self.namespaces[tree_name] = classURI
     # self.BRICK_GRAPHS[brick_name].bind(brick_name, self.namespaces[brick_name])
     triple = (URIRef(classURI), RDFSTerms["is_class"],RDFSTerms["class"])
     self.TREE_GRAPHS[tree_name].add(triple)
+
+    #clean up bricks
+    self.BRICK_GRAPHS[brick_name] = copy_brick
     pass
 
   def getTreeList(self):

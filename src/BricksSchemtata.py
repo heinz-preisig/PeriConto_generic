@@ -9,7 +9,7 @@ sys.path.extend([root, os.path.join(root, "resources")])
 from PyQt6 import QtGui
 from PyQt6.QtWidgets import *
 
-from PeriContoFrontEnd import OntobuilderUI
+from BricksSchemataFrontEnd import OntobuilderUI
 
 
 if __name__ == "__main__":

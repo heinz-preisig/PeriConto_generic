@@ -1,11 +1,11 @@
 import os
 import sys
 
-from PeriContoAutomaton import UI_state
-from PeriContoDataModel import DataModel
-from PeriContoSemantics import PRIMITIVES
-from PeriContoSemantics import RULES
-from PeriContoSemantics import ONTOLOGY_REPOSITORY
+from BricksAutomaton import UI_state
+from BricksAndTreesDataModel import DataModel
+from BricksAndTreeSemantics import PRIMITIVES
+from BricksAndTreeSemantics import RULES
+from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 root = os.path.abspath(os.path.join("."))
@@ -185,16 +185,16 @@ class BackEnd():
         self.renameItem(message)
       elif a == "removeItemFromBrickTree":
         self.removeItemFromBrickTree(message)
-      elif a == "putBricksListForTree":
-        self.putBricksListForTree(message)
-      elif a == "putTreeList":
-        self.putTreeList(message)
-      elif a == "tree_create":
-        self.tree_create(message)
-      elif a == "newTree":
-        self.newTree(message)
-      elif a == "getTreeDataTuples":
-        self.getTreeDataTuples(message)
+      # elif a == "putBricksListForTree":
+      #   self.putBricksListForTree(message)
+      # elif a == "putTreeList":
+      #   self.putTreeList(message)
+      # elif a == "tree_create":
+      #   self.tree_create(message)
+      # elif a == "newTree":
+      #   self.newTree(message)
+      # elif a == "getTreeDataTuples":
+      #   self.getTreeDataTuples(message)
       elif a == "saveBricks":
         self.saveBricks(message)
       elif a == "saveBricksWithNewName":
@@ -237,7 +237,6 @@ class BackEnd():
     self.project_name = name
     self.dataModel = DataModel(name)
     self.dataModel.loadFromFile(name)
-    self.frontEnd.setTabVisible()
     pass
 
   def selectedBrick(self, message):
@@ -312,19 +311,17 @@ class BackEnd():
     self.dataModel.saveBricks()
     self.frontEnd.markSaved()
 
-
   def saveBricksWithNewName(self, message):
     name = message["name"]
     file_name = self.dataModel.makeFileName(name, what="bricks")
     self.dataModel.saveBricks(file_name=file_name)
     self.frontEnd.markSaved()
 
-
-  def saveTreeWithNewName(self, message):
-    name = message["name"]
-    file_name = self.dataModel.makeFileName(name, what="bricks")
-    self.dataModel.saveBricks(file_name=file_name)
-    self.frontEnd.markSaved()
+  # def saveTreeWithNewName(self, message):
+  #   name = message["name"]
+  #   file_name = self.dataModel.makeFileName(name, what="bricks")
+  #   self.dataModel.saveBricks(file_name=file_name)
+  #   self.frontEnd.markSaved()
 
   def renameItem(self, message):
     brick = self.memory["brick"]
@@ -343,42 +340,42 @@ class BackEnd():
     self.dataModel.removeItem(brick, name)
     pass
 
-  def createTree(self, message):
-    tree_name = message["name"]
-    self.dataModel.newTree(tree_name)
-    self.memory["tree"] = tree_name
-    pass
+  # def createTree(self, message):
+  #   tree_name = message["name"]
+  #   self.dataModel.newTree(tree_name)
+  #   self.memory["tree"] = tree_name
+  #   pass
 
-  def saveTrees(self, message):
-    self.dataModel.saveTrees()
-    self.frontEnd.markSaved()
+  # def saveTrees(self, message):
+  #   self.dataModel.saveTrees()
+  #   self.frontEnd.markSaved()
 
-  def putTreeList(self, message):
-    tree_list = self.dataModel.getTreeList()
-    self.frontEnd.putTreeList(tree_list)
+  # def putTreeList(self, message):
+  #   tree_list = self.dataModel.getTreeList()
+  #   self.frontEnd.putTreeList(tree_list)
 
-  def getBrickDataTuples(self, message):
-    name = self.memory["brick"]
-    self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(name, "bricks")
-    self.frontEnd.showBrickTree(self.dataBrickTuples, name)
-    # self.putBrickDataTuples(self.dataBrickTuples)
-    pass
+  # def getBrickDataTuples(self, message):
+  #   name = self.memory["brick"]
+  #   self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(name, "bricks")
+  #   self.frontEnd.showBrickTree(self.dataBrickTuples, name)
+  #   # self.putBrickDataTuples(self.dataBrickTuples)
+  #   pass
 
-  def getTreeDataTuples(self, message):
-    name = self.memory["tree"]
-    dataTreeTuples = self.dataModel.makeDataTuplesForGraph(name, "tree")
-    self.frontEnd.showTreeTree(dataTreeTuples, name)
-    pass
+  # def getTreeDataTuples(self, message):
+  #   name = self.memory["tree"]
+  #   dataTreeTuples = self.dataModel.makeDataTuplesForGraph(name, "tree")
+  #   self.frontEnd.showTreeTree(dataTreeTuples, name)
+  #   pass
 
   # ======================== trees
-  def newTree(self, message):
-    name = message["name"]
-    self.dataModel.newTree(name)
-    self.memory["tree"] = name
+  # def newTree(self, message):
+  #   name = message["name"]
+  #   self.dataModel.newTree(name)
+  #   self.memory["tree"] = name
 
-  def putBricksListForTree(self, message):
-    brick_list = self.dataModel.getBrickList()
-    self.frontEnd.putBricksListForTree(brick_list)
+  # def putBricksListForTree(self, message):
+  #   brick_list = self.dataModel.getBrickList()
+  #   self.frontEnd.putBricksListForTree(brick_list)
 
   def visualise(self, message):
     tree = self.memory["brick"]
@@ -386,7 +383,7 @@ class BackEnd():
     class_names = sorted(self.dataModel.BRICK_GRAPHS.keys())
     graph = TreePlot(graph_name=tree,graph_tripples=dataBrickTuples,class_names=class_names)
     graph.makeMe(tree)
-    file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, self.project_name) + "+%s." % tree
+    file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, self.project_name) + "+%s" % tree
 
     graph.dot.render(file_name_bricks, format="pdf")
     pass

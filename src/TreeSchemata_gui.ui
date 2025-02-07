@@ -149,15 +149,15 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>50</y>
-      <width>151</width>
+      <x>20</x>
+      <y>10</y>
+      <width>201</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>20</pointsize>
      </font>
     </property>
     <property name="text">
@@ -221,6 +221,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="pushTreeRename">
+       <property name="text">
+        <string>rename</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushTreeLinkExistingClass">
        <property name="text">
         <string>link existing class</string>
@@ -240,9 +247,6 @@
         <string>instantiate</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBoxTreeSelectBrick"/>
      </item>
     </layout>
    </widget>
