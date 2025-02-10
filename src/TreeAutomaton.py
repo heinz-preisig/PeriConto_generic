@@ -74,7 +74,7 @@ UI_state = {
                         ],
                 },
 
-        "%s in treeTree selected" % RULES["is_class"]     : {
+        "%s in treeTree selected" % RULES["is_class"]     : {  # class in tree selected
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",

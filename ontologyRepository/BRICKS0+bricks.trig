@@ -4,23 +4,25 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+SECOND: {
+    SECOND: a rdfs:Class .
+
+    <http://example.org/SECOND#hello> rdfs:member SECOND: .
+}
+
 FIRST: {
     FIRST: a rdfs:Class ;
         rdf:value <http://example.org/FIRST#i> .
+
+    <http://example.org/FIRST#irem12> rdfs:member <http://example.org/FIRST#item1> .
 
     <http://example.org/FIRST#item11> rdf:value <http://example.org/FIRST#log> ;
         rdfs:member <http://example.org/FIRST#item1> .
 
     <http://example.org/FIRST#i> xsd:integer "" .
 
-    <http://example.org/FIRST#item1> rdfs:member FIRST: .
-
     <http://example.org/FIRST#log> xsd:boolean "" .
-}
 
-SECOND: {
-    SECOND: a rdfs:Class .
-
-    <http://example.org/SECOND#hello> rdfs:member SECOND: .
+    <http://example.org/FIRST#item1> rdfs:member FIRST: .
 }
 

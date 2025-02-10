@@ -168,9 +168,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>480</y>
+      <y>530</y>
       <width>171</width>
-      <height>351</height>
+      <height>301</height>
      </rect>
     </property>
    </widget>
@@ -201,8 +201,8 @@
      <rect>
       <x>20</x>
       <y>210</y>
-      <width>171</width>
-      <height>227</height>
+      <width>202</width>
+      <height>293</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -221,6 +221,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="pushCopyTree">
+       <property name="text">
+        <string>copy</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushTreeRename">
        <property name="text">
         <string>rename</string>
@@ -231,6 +238,20 @@
       <widget class="QPushButton" name="pushTreeLinkExistingClass">
        <property name="text">
         <string>link existing class</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushDuplicateILinkedtem">
+       <property name="text">
+        <string>duplicate linked item</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushDuplicateILinkedtem_2">
+       <property name="text">
+        <string>remove duplicatted item</string>
        </property>
       </widget>
      </item>

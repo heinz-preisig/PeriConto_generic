@@ -1,4 +1,0 @@
-digraph FIRST {
-	graph [rankdir=LR]
-	FIRST [color=red fillcolor=red shape=rectangle style=filled]
-}
