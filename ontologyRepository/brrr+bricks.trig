@@ -1,0 +1,37 @@
+@prefix FIRST: <http://example.org/FIRST> .
+@prefix SECOND: <http://example.org/SECOND> .
+@prefix g: <http://example.org/g> .
+@prefix gg: <http://example.org/gg> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gg: {
+    gg: a rdfs:Class .
+
+    <http://example.org/gg#item1> rdfs:member gg: .
+
+    <http://example.org/gg#log> xsd:boolean "" .
+}
+
+g: {
+    g: a rdfs:Class .
+
+    <http://example.org/g#item1> rdfs:member g: .
+
+    <http://example.org/g#log> xsd:boolean "" .
+}
+
+SECOND: {
+    SECOND: a rdfs:Class .
+
+    <http://example.org/SECOND#hello> rdfs:member SECOND: .
+}
+
+FIRST: {
+    FIRST: a rdfs:Class .
+
+    <http://example.org/FIRST#item1> rdfs:member FIRST: .
+
+    <http://example.org/FIRST#log> xsd:boolean "" .
+}
+

@@ -1,0 +1,22 @@
+digraph FIRST {
+	graph [rankdir=LR]
+	FIRST [color=red fillcolor=red shape=rectangle style=filled]
+	FIRST
+	item1 -> FIRST [label=is_member color=blue]
+	log
+	"" -> log [label=boolean color=orange]
+	Class [color=red fillcolor=red shape=rectangle style=filled]
+	FIRST -> Class [label=is_class color=red]
+	item11
+	kk -> item11 [label=value color=black]
+	FIRST
+	i -> FIRST [label=value color=black]
+	kk
+	"" -> kk [label=boolean color=orange]
+	item1
+	item11 -> item1 [label=is_member color=blue]
+	i
+	"" -> i [label=integer color=orange]
+	item11
+	log -> item11 [label=value color=black]
+}

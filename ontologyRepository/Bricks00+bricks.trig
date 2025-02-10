@@ -1,0 +1,19 @@
+@prefix FIRST: <http://example.org/FIRST> .
+@prefix SECOND: <http://example.org/SECOND> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+FIRST: {
+    FIRST: a rdfs:Class .
+
+    <http://example.org/FIRST#item1> rdfs:member FIRST: .
+
+    <http://example.org/FIRST#log> xsd:boolean "" .
+}
+
+SECOND: {
+    SECOND: a rdfs:Class .
+
+    <http://example.org/SECOND#hello> rdfs:member SECOND: .
+}
+
