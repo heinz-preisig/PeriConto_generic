@@ -1,9 +1,7 @@
-
-
-
+from rdflib import Namespace
 from rdflib import RDF
 from rdflib import XSD
-from rdflib import namespace, Namespace
+from rdflib import namespace
 
 # https://www.w3.org/TR/rdf12-concepts/#dfn-rdf-dataset
 # https://www.w3.org/TR/rdf-schema/#ch_resource
@@ -13,7 +11,7 @@ BASE = "http://example.org"
 ITEM_SEPARATOR = "#"
 CLASS_SEPARATOR = "/"
 CLASS_IDENTIFIERS = BASE + CLASS_SEPARATOR
-ITEM_IDENTIFIERS = BASE + CLASS_SEPARATOR + "%s" +  ITEM_SEPARATOR
+ITEM_IDENTIFIERS = BASE + CLASS_SEPARATOR + "%s" + ITEM_SEPARATOR
 # DATA = BASE + "data/" + ITEM_SEPARATOR
 
 ONTOLOGY_REPOSITORY = "../ontologyRepository"
@@ -63,11 +61,9 @@ PRIMITIVES = ["integer",
               "uri",
               "boolean"]
 
-
 RDF_PRIMITIVES = [RDFSTerms[i] for i in PRIMITIVES]
 
 ADD_ELUCIDATIONS = ["class", "is_member", "value"]
-
 
 DIRECTION = {
         "is_member"    : 1,
@@ -79,12 +75,16 @@ DIRECTION = {
         # "type"            : -1,
         }
 
+
 def makeClassURI(name):
   ns = Namespace(CLASS_IDENTIFIERS + name)
   return ns
+
+
 def makeItemURI(brick, name):
-  ns = Namespace(ITEM_IDENTIFIERS%brick + name)
+  ns = Namespace(ITEM_IDENTIFIERS % brick + name)
   return ns
+
 
 def extractNameFromIRI(iri):
   s_iri = str(iri)
@@ -92,6 +92,7 @@ def extractNameFromIRI(iri):
     return extract_item_name(s_iri)
   else:
     return extract_class_name(s_iri)
+
 
 def extract_item_name(uri):
   return uri.split(ITEM_SEPARATOR)[-1]

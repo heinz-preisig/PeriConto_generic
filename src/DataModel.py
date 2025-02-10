@@ -224,16 +224,21 @@ class DataModel:
     pass
 
   def renameBrick(self, oldName, newName):
-    self.copyBrick(oldName,newName)
+    self.copyBrick(self.BRICK_GRAPHS, oldName,newName)
     del self.BRICK_GRAPHS[oldName]
 
-  def copyBrick(self, oldName, newName):
+  def renameTree(self, oldName, newName):
+    self.TREE_GRAPHS[newName] = Graph()
+    self.copyBrick(self.TREE_GRAPHS, oldName,newName)
+    del self.TREE_GRAPHS[oldName]
+
+  def copyBrick(self, what_graphs, oldName, newName):
     self.newBrick(newName)
     # self.BRICK_GRAPHS[newName] = Graph()
-    graph = self.BRICK_GRAPHS[newName]
+    graph = what_graphs[newName]
     self.namespaces[newName] = Namespace(makeClassURI(newName))
 
-    for s,p,o in self.BRICK_GRAPHS[oldName].triples((None,None,None)):
+    for s,p,o in what_graphs[oldName].triples((None,None,None)):
       if p != RDFSTerms["is_class"]:
         s_new = s
         o_new = o
@@ -270,6 +275,10 @@ class DataModel:
       new_triple = (s, p, new_item_uri)
       g.add(new_triple)
     pass
+
+  def linkBrickToItem(self, item, brick_name ):
+    pass
+
 
 
   def saveBricks(self, file_name=None):

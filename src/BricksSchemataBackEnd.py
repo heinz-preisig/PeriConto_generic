@@ -2,7 +2,7 @@ import os
 import sys
 
 from BricksAutomaton import UI_state
-from BricksAndTreesDataModel import DataModel
+from DataModel import DataModel
 from BricksAndTreeSemantics import PRIMITIVES
 from BricksAndTreeSemantics import RULES
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
