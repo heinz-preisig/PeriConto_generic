@@ -249,7 +249,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushDuplicateILinkedtem_2">
+      <widget class="QPushButton" name="pushRemoveDuplicateILinkedtem">
        <property name="text">
         <string>remove duplicatted item</string>
        </property>

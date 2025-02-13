@@ -81,25 +81,26 @@ UI_state = {
                            "ontology_save_as",
                            "tree_list",
                            "tree_tree",
+                           "copy_tree",
                            ],
                 "except": [],
                 "action": [],
                 },
 
-        "%s in treeTree selected" % RULES["is_member"]    : {
+        "%s in treeTree selected" % RULES["is_member"]    : { # member selected
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
                            "tree_tree",
-
+                           "tree_link_existing_class"
                            ],
                 "except": [],
-                "action": ["rememberPosition"],
+                "action": [],
                 },
 
-        "%s in treeTree selected" % RULES["is_defined_by"]: {
+        "%s in treeTree selected" % RULES["is_defined_by"]: { # linked member selected
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -111,7 +112,7 @@ UI_state = {
                 "action": [],
                 },
 
-        "%s in treeTree selected" % RULES["value"]        : {
+        "%s in treeTree selected" % RULES["value"]        : { # value selected
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -167,13 +168,24 @@ UI_state = {
                 "except": [],
                 "action": [],
                 },
+        "link" : {
+                "show"  : ["exit",
+                           "tree_visualise",
+                           "ontology_save",
+                           "ontology_save_as",
+                           "tree_list",
+                           "tree_tree",
+                           ],
+                "except": [],
+                "action": ["addLink"],
+                },
         "save"                                            : {
                 "show"  : ["do_nothing"],
                 "action": ["saveTrees"],
                 },
         "save as"                                         : {
                 "show"  : ["do_nothing"],
-                "action": ["saveBricksWithNewName"],
+                "action": ["saveTreeWithNewName"],
                 },
         "visualise"                                       : {
                 "show"  : ["do_nothing"],

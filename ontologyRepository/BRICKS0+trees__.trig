@@ -1,0 +1,32 @@
+@prefix first: <http://example.org/first> .
+@prefix firstv: <http://example.org/first#> .
+@prefix second: <http://example.org/second> .
+@prefix secondv: <http://example.org/second#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+first: {
+    first: a rdfs:Class ;
+        rdf:value firstv:i .
+        
+    second: a rdfs:Class ;
+		rdf:value secondv:h .
+
+	secondv:h xsd:integer "" .
+
+    firstv:irem12 rdfs:member firstv:item1 ;
+		rdfs:isDefinedBy secondv:h .
+    
+    firstv:0-hello rdfs:member firstv:irem12 .
+
+    firstv:item11 rdf:value firstv:log ;
+        rdfs:member firstv:item1 .
+
+    first:i xsd:integer "" .
+
+    firstv:log xsd:boolean "" .
+
+    firstv:item1 rdfs:member first: .
+}
+
