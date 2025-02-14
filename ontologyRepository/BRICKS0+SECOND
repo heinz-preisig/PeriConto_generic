@@ -1,0 +1,8 @@
+digraph SECOND {
+	graph [rankdir=LR]
+	SECOND [color=red fillcolor=red shape=rectangle style=filled]
+	SECOND
+	hello -> SECOND [label=is_member color=blue]
+	Class [color=red fillcolor=red shape=rectangle style=filled]
+	SECOND -> Class [label=is_class color=red]
+}
