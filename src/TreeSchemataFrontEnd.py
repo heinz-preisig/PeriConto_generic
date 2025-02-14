@@ -12,14 +12,12 @@ sys.path.extend([root, os.path.join(root, "resources")])
 from PyQt6 import QtGui, QtCore
 from PyQt6.QtWidgets import *
 
-# from graphHAP import Graph
 from TreeSchemata_gui import Ui_MainWindow
 from resources.pop_up_message_box import makeMessageBox
 from resources.resources_icons import roundButton
 from resources.ui_string_dialog_impl import UI_String
 from resources.ui_single_list_selector_impl import UI_stringSelector
 
-# from PeriConto import debugging
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 
 DEBUGG = True
@@ -52,17 +50,6 @@ for c_hash in COLOURS.keys():
 
 LINK_COLOUR = QtGui.QColor(255, 100, 5, 255)
 PRIMITIVE_COLOUR = QtGui.QColor(255, 3, 23, 255)
-
-
-# class GUIMessage(dict):
-#   def __init__(self, event=None, project_name = None, tree_name=None, brick_name=None, tree_item_name=None, linkpoint=False):
-#     super().__init__()
-#     self["event"] = event
-#     self["project_name"] = project_name
-#     self["tree_name"] = tree_name
-#     self["brick_name"] = brick_name
-#     self["tree_item_name"] = tree_item_name
-#     self["linkpoint"] = linkpoint
 
 
 class OntobuilderUI(QMainWindow):
@@ -162,14 +149,12 @@ class OntobuilderUI(QMainWindow):
     if file_spec == "":
       return
     project_name = os.path.basename(file_spec).split(os.path.extsep)[0].split("+")[0]
-    # message = GUIMessage(event="load ontology", project_name=project_name)
-    message = {"event": "load ontology",
-               "project_name" : project_name}
+    message = {"event"       : "load ontology",
+               "project_name": project_name}
     self.backend.processEvent(message)
 
   def on_pushOntologySave_pressed(self):
     debugging("-- pushOntologySave")
-    # message = GUIMessage(event=event)
     message = {"event": "save"}
     self.backend.processEvent(message)
 
@@ -179,9 +164,8 @@ class OntobuilderUI(QMainWindow):
     dialog = UI_String("save as", "new name")
     name = dialog.text
     if name:
-      # message = GUIMessage(event=event, project_name=name)
-      message = {"event":event,
-                 "project_name":name}
+      message = {"event"       : event,
+                 "project_name": name}
       self.backend.processEvent(message)
 
   def on_pushTreeCreate_pressed(self):
@@ -197,10 +181,9 @@ class OntobuilderUI(QMainWindow):
         return
     else:
       return
-    # message = GUIMessage(event=event, tree_name=tree_name, brick_name=brick_name)
-    message = {"event" : "new tree",
-               "tree_name": tree_name,
-               "brick_name":brick_name}
+    message = {"event"     : "new tree",
+               "tree_name" : tree_name,
+               "brick_name": brick_name}
     self.backend.processEvent(message)
 
   def on_pushTreeRename_pressed(self):
@@ -210,11 +193,9 @@ class OntobuilderUI(QMainWindow):
       return
     else:
       event = "rename tree"
-      # message = GUIMessage(event=event, tree_name=tree_name)
-      message = {"event":event,
-                 "tree_name":tree_name}
+      message = {"event"    : event,
+                 "tree_name": tree_name}
       self.backend.processEvent(message)
-
 
   def on_pushDeleteTree_pressed(self):
     debugging("-- pushDeleteTree")
@@ -231,10 +212,9 @@ class OntobuilderUI(QMainWindow):
       if not link_item_new_name:
         return
     event = "link"
-    # message = GUIMessage(event = event, brick_name=brick_name, )
-    message = {"event" : event,
-               "brick_name": brick_name,
-            "link_item_new_name": link_item_new_name}
+    message = {"event"             : event,
+               "brick_name"        : brick_name,
+               "link_item_new_name": link_item_new_name}
     self.backend.processEvent(message)
 
   def on_pushTreeRemoveClassLink_pressed(self):
@@ -242,16 +222,18 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushTreeInstantiate_pressed(self):
     debugging("-- pushTreeInstantiate")
+
   def on_pushCopyTree_pressed(self):
     debugging("-- pushCopyTree")
+
   def on_pushDuplicateILinkedtem_pressed(self):
     debugging("-- pushDuplicateILinkedtem")
+
   def on_pushRemoveDuplicateILinkedtem_pressed(self):
     debugging("-- pushRemoveDuplicateILinkedtem")
 
   def on_pushTreeVisualise_pressed(self):
-    # message = GUIMessage(event=event)
-    message = {"event":"visualise"}
+    message = {"event": "visualise"}
     self.backend.processEvent(message)
 
     debugging("-- pushTreeVisualise")
@@ -265,16 +247,13 @@ class OntobuilderUI(QMainWindow):
   def on_pushNormal_pressed(self):
     self.showNormal()
 
-
   def on_listTrees_itemClicked(self, item):
     tree_name = item.text()
     debugging("-- listTrees -- item", tree_name)
-    # message = GUIMessage(event=event, tree_name=tree_name)
-    message = {"event":"selected tree",
-               "tree_name":tree_name}
+    message = {"event"    : "selected tree",
+               "tree_name": tree_name}
     debugging("message:", message)
     self.backend.processEvent(message)
-
 
   def on_treeTree_itemClicked(self, item, column):
     name = item.text(column)
@@ -283,23 +262,17 @@ class OntobuilderUI(QMainWindow):
     debugging("item count", item.count, linkpoint)
     debugging("-- tree item %s, column %s" % (name, column))
     event = "%s in treeTree selected" % type
-    # message = GUIMessage(event=event,
-    #                      tree_item_name=name,
-    #                      linkpoint=linkpoint,
-    #                      )
-    message = {"event":event,
-               "tree_item_name":name,
-               "linkpoint":linkpoint,
+    message = {"event"         : event,
+               "tree_item_name": name,
+               "linkpoint"     : linkpoint,
                }
     debugging("message:", message)
     self.backend.processEvent(message)
-
 
   def showTreeList(self, treeList):
     self.treeList = treeList
     self.ui.listTrees.clear()
     self.ui.listTrees.addItems(treeList)
-
 
   def showTreeTree(self, tuples, origin):
     widget = self.ui.treeTree
@@ -314,8 +287,6 @@ class OntobuilderUI(QMainWindow):
     rootItem.setSelected(False)
     rootItem.type = self.rules["is_class"]
     rootItem.count = 0
-    # rootItem.parent_name = "Class"
-    # rootItem.predicate = "is_class"
     widget.addTopLevelItem(rootItem)
     self.current_class = origin
     self.__makeTree(tuples, origin=origin, stack=[], items={origin: rootItem})
@@ -326,7 +297,6 @@ class OntobuilderUI(QMainWindow):
     for q in tuples:
       if q not in stack:
         s, p, o, dir = q
-        # print("processing",s,p,o)
         if s != origin:
           if o in items:
             # if s != "":
@@ -334,7 +304,6 @@ class OntobuilderUI(QMainWindow):
             item.count = 0
             item.type = self.rules[p]
             item.parent_name = o
-            # item.predicate = p
             item.setForeground(0, QBRUSHES[p])
             stack.append(q)  # (s, p, o))
             if s == "":

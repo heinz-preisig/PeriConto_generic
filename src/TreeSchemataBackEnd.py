@@ -118,10 +118,7 @@ class TreePlot:
     for q in self.triples:
       if q not in stack:
         s, p, o, dir = q
-        # print("processing",s,p,o)
         if s != origin:
-          # if o in items:
-          # if s != "":
           type = RULES[p]
           self.addNode(o, type)
           self.addEdge(s, o, p)
@@ -152,10 +149,7 @@ class BackEnd():
     debugging(">>>> message ", message)
     event = message["event"]
     self.fail = False
-    for a in self.UI_state[event]["action"]:  # self.actions[event]:
-      # c = "self.%s(message)" % a
-      # r = exec(c)
-      # debugging("execute:", c)
+    for a in self.UI_state[event]["action"]:
       if a == "loadOntology":
         self.loadOntology(message)
       elif a == "putBricksListForTree":
@@ -180,14 +174,10 @@ class BackEnd():
         self.visualise(message)
       elif a == "markChanged":
         self.markChanged(message)
-      # elif a == "rememberPosition":
-      #   self.rememberLeaveMemberSelection(message)
       elif a == "addLink":
         self.addLink(message)
       else:
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> oops no such command",a)
-
-    self.memory.update(message)
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> oops no such command", a)
 
     if len(self.UI_state[event]["show"]) > 0:
       if self.UI_state[event]["show"][0] == "do_nothing":
@@ -206,6 +196,8 @@ class BackEnd():
         r = exec(c)
         debugging("execute:", c)
 
+    self.memory.update(message)
+
   def loadOntology(self, message):
     name = message["project_name"]
     self.project_name = name
@@ -215,7 +207,6 @@ class BackEnd():
 
   def markChanged(self, message):
     self.frontEnd.markChanged()
-
 
   def saveTreeWithNewName(self, message):
     name = message["tree_name"]
@@ -229,7 +220,6 @@ class BackEnd():
     self.memory["tree_name"] = tree_name
     pass
 
-
   def addLink(self, message):
     link_position = self.memory["linkpoint"]
     if link_position:
@@ -237,10 +227,12 @@ class BackEnd():
       brick_name = message["brick_name"]
       tree_name = self.memory["tree_name"]
       link_item_new_name = message["link_item_new_name"]
-      self.dataModel.linkBrickToItem(tree_name, tree_item_name, link_item_new_name, brick_name)
+      self.dataModel.linkBrickToItem(tree_name,
+                                     tree_item_name,
+                                     link_item_new_name,
+                                     brick_name)
 
   def saveTrees(self, message):
-
     self.dataModel.saveTrees()
     self.frontEnd.markSaved()
 
@@ -263,14 +255,11 @@ class BackEnd():
     brick_name = message["brick_name"]
     tree_name = message["tree_name"]
     self.dataModel.newTree(tree_name, brick_name)
-    # self.memory["tree"] = tree_name
 
   def renameTree(self, message):
     old_name = self.memory["tree_name"]
     new_name = message["tree_name"]
     self.dataModel.renameTree(old_name, new_name)
-    # self.memory["tree"] = new_name
-
     pass
 
   def putBricksListForTree(self, message):
@@ -279,7 +268,8 @@ class BackEnd():
 
   def visualise(self, message):
     tree = self.memory["tree_name"]
-    dataBrickTuples = self.dataModel.makeDataTuplesForGraph(tree, "tree_name")
+    dataBrickTuples = self.dataModel.makeDataTuplesForGraph(tree,
+                                                            "tree_name")
     class_names = sorted(self.dataModel.BRICK_GRAPHS.keys())
     graph = TreePlot(graph_name=tree, graph_tripples=dataBrickTuples, class_names=class_names)
     graph.makeMe(tree)
@@ -287,111 +277,3 @@ class BackEnd():
 
     graph.dot.render(file_name_bricks, format="pdf")
     pass
-
-  # def selectedBrick(self, message):
-  #   self.memory["brick"] = message["name"]
-  #   print("selected brick is ", message["name"])
-
-  # def getBrickDataTuples(self, message):
-  #   name = self.memory["brick"]
-  #   self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(name, "bricks")
-  #   pass
-
-  # def putBrickList(self, message):
-  #   self.brick_list = self.dataModel.getBrickList()
-  #   self.frontEnd.showBrickList(self.brick_list)
-
-  # def newBrick(self, message):
-  #   name = message["name"]
-  #   self.dataModel.newBrick(name)
-  #   self.memory["brick"] = name
-
-  # def putBrickDataTuples(self, message):
-  #   name = self.memory["brick"] #message["name"]
-  #   tuples = self.dataBrickTuples
-  #   self.frontEnd.showBrickTree(tuples, name)
-
-  # def selectedClassInBrickTree(self, message):
-  #   self.memory["item"] = message["name"]
-  #   # type = message["type"]
-
-  # def selectedValueInBrickTree(self, message):
-  #   self.memory["item"] = message["name"]
-
-  # def selectedItemInBrickTree(self, message):
-  #   self.memory["item"] = message["name"]
-  #   pass
-
-  # def getExistingItemNames(self, message):
-  #   brick = self.memory["brick"]
-  #   existing_names = self.dataModel.getAllNamesInTheBrick(brick, what="brick")
-  #   name_ = self.frontEnd.askForItemName("provide new item name", existing_names)
-  #   name = str(name_).lower()  # rule items are lower case
-  #   if name:
-  #     ClassOrSubClass = self.memory["item"]
-  #     if message["event"] == "ask for adding a primitive":
-  #       primitive = self.frontEnd.askForPrimitiveType(PRIMITIVES)
-  #       if primitive:
-  #         self.dataModel.addPrimitive(brick, ClassOrSubClass, name, primitive)
-  #       else:
-  #         return
-  #     if message["event"] == "asks for adding an item":
-  #       self.dataModel.addItem(brick, ClassOrSubClass, name)
-  #     self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick, "bricks")
-  #     self.frontEnd.showBrickTree(self.dataBrickTuples, brick)
-  #   else:
-  #     pass
-
-  # def renameBrick(self, message):
-  #   brick = self.memory["brick"]
-  #   brick_names = self.dataModel.getBrickList()
-  #   newName = self.frontEnd.askForItemName("provide new name for brick %s" % brick, brick_names)
-  #   if newName:
-  #     self.dataModel.renameBrick(brick, newName.upper())
-  #     bricks = self.dataModel.getBrickList()
-  #     self.frontEnd.showBrickList(bricks)
-
-  # def saveBricks(self, message):
-  #   self.dataModel.saveBricks()
-  #   self.frontEnd.markSaved()
-
-  # def saveBricksWithNewName(self, message):
-  #   name = message["name"]
-  #   file_name = self.dataModel.makeFileName(name, what="bricks")
-  #   self.dataModel.saveBricks(file_name=file_name)
-  #   self.frontEnd.markSaved()
-
-  # def renameItem(self, message):
-  #   brick = self.memory["brick"]
-  #   item_name = self.memory["item"]
-  #   item_names = self.dataModel.getAllNamesInTheBrick(brick, "brick")
-  #   newName = self.frontEnd.askForItemName("provide new name for item %s" % item_name, item_names)
-  #   if newName:
-  #     self.dataModel.renameItem(brick, item_name, newName)
-  #
-  #     self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick, "bricks")
-  #     self.frontEnd.showBrickTree(self.dataBrickTuples, brick)
-
-  # def removeItemFromBrickTree(self, message):
-  #   name = self.memory["item"]
-  #   brick = self.memory["brick"]
-  #   self.dataModel.removeItem(brick, name)
-  #   pass
-
-
-  # def getBrickDataTuples(self, message):
-  #   name = self.memory["brick"]
-  #   self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(name, "bricks")
-  #   self.frontEnd.showBrickTree(self.dataBrickTuples, name)
-  #   # self.putBrickDataTuples(self.dataBrickTuples)
-  #   pass
-
-
-  # def rememberLeaveMemberSelection(self, message):
-  #   if message["linkpoint"]:
-  #     self.memory["linkPosition"] = message["name"]
-  #   else:
-  #     self.memory["linkPosition"] = None
-
-      # self.dataModel.
-
