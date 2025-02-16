@@ -53,7 +53,7 @@ UI_state = {
                            ],
                 "except": [],
                 "action": [  # "newTree",
-                        "rememberTreeSelection",
+                        # "rememberTreeSelection",
                         "getTreeDataTuples",
                         ],
                 },

@@ -81,9 +81,9 @@ class TreePlot:
           }
   NODE_SPECS["linked"] = NODE_SPECS["Class"]
 
-  def __init__(self, graph_name, graph_tripples, class_names):
+  def __init__(self, graph_name, graph_triples, class_names):
     self.classes = class_names
-    self.triples = graph_tripples
+    self.triples = graph_triples
     self.dot = Digraph(graph_name)
     self.dot.graph_attr["rankdir"] = "LR"
 
@@ -160,8 +160,8 @@ class BackEnd():
         self.createTree(message)
       elif a == "newTree":
         self.newTree(message)
-      elif a == "rememberTreeSelection":
-        self.rememberTreeSelection(message)
+      # elif a == "rememberTreeSelection":
+      #   self.rememberTreeSelection(message)
       elif a == "renameTree":
         self.renameTree(message)
       elif a == "getTreeDataTuples":
@@ -209,10 +209,15 @@ class BackEnd():
     self.frontEnd.markChanged()
 
   def saveTreeWithNewName(self, message):
-    name = message["tree_name"]
-    file_name = self.dataModel.makeFileName(name, what="bricks")
+    project_name = message["project_name"]
+    file_name = self.dataModel.makeFileName(project_name,
+                                            what="bricks")
     self.dataModel.saveBricks(file_name=file_name)
+    file_name = self.dataModel.makeFileName(project_name,
+                                            what="trees")
+    self.dataModel.saveTrees(file_name=file_name)
     self.frontEnd.markSaved()
+    self.project_name = project_name
 
   def createTree(self, message):
     tree_name = message["tree_name"]
@@ -221,15 +226,14 @@ class BackEnd():
     pass
 
   def addLink(self, message):
-    link_position = self.memory["linkpoint"]
+    link_position = self.memory["tree_item_name"]
     if link_position:
       tree_item_name = self.memory["tree_item_name"]
       brick_name = message["brick_name"]
       tree_name = self.memory["tree_name"]
-      link_item_new_name = message["link_item_new_name"]
+      # link_item_new_name = message["link_item_new_name"]
       self.dataModel.linkBrickToItem(tree_name,
                                      tree_item_name,
-                                     link_item_new_name,
                                      brick_name)
 
   def saveTrees(self, message):
@@ -271,9 +275,10 @@ class BackEnd():
     dataBrickTuples = self.dataModel.makeDataTuplesForGraph(tree,
                                                             "tree_name")
     class_names = sorted(self.dataModel.BRICK_GRAPHS.keys())
-    graph = TreePlot(graph_name=tree, graph_tripples=dataBrickTuples, class_names=class_names)
+    graph = TreePlot(graph_name=tree, graph_triples=dataBrickTuples, class_names=class_names)
     graph.makeMe(tree)
-    file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, self.project_name) + "+%s." % tree
+    file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, self.project_name) + "+%s_tree" % tree
 
     graph.dot.render(file_name_bricks, format="pdf")
+    os.remove(file_name_bricks)
     pass

@@ -78,6 +78,7 @@ class DataModel:
     exists = os.path.exists(self.file_name_trees)
     if exists:
       self.TREE_GRAPHS, _ = self.__loadFromFile(self.file_name_trees)
+    pass
 
   def makeFileName(self, project_name, what=None):
     file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s." % what + FILE_FORMAT
@@ -238,22 +239,25 @@ class DataModel:
     pass
 
   def __attachBrick(self, brick_name, link_point, s_or_o, tree_name):
-    brick_name_space = makeBrickNameSpace(brick_name, self.brick_counter[tree_name])
+    counter = self.brick_counter[tree_name]
+    brick_name_space = makeBrickNameSpace(brick_name, counter)
     s_or_o_new = s_or_o
     if brick_name in str(s_or_o):
       s_name = extractNameFromIRI(s_or_o)
-      s_or_o_new = URIRef(brick_name_space + s_name)
+      s_or_o_new = URIRef(brick_name_space + "%s_%s"%(counter,s_name))
     return s_or_o_new
 
-  def linkBrickToItem(self, tree_name, tree_item_name, link_item_new_name, brick_name):
+  def linkBrickToItem(self, tree_name, tree_item_name, brick_name):
     tree_graph = self.TREE_GRAPHS[tree_name]
     brick_graph = self.BRICK_GRAPHS[brick_name]
+    counter = self.brick_counter[tree_name]
 
     for s, p, o in brick_graph.triples((None, RDFSTerms["is_class"], None)):
       # rule: keep brick name
-      brick_name_space = makeBrickNameSpace(brick_name, self.brick_counter[tree_name])
+      brick_name_space = makeBrickNameSpace(brick_name,
+                                            self.brick_counter[tree_name])
       tree_graph.bind(brick_name + "_%s" % self.brick_counter[tree_name], brick_name_space)
-      triple = (URIRef(brick_name_space + brick_name),
+      triple = (URIRef(brick_name_space + "%s_%s"%(counter,brick_name)),
                 RDFSTerms["is_defined_by"],
                 URIRef(makeItemURI(tree_name, tree_item_name)))
       triple_ = triple[2], triple[1], triple[0]
@@ -261,7 +265,7 @@ class DataModel:
       pass
 
     for s, p, o in brick_graph.triples((None, None, None)):
-      link_point = link_item_new_name
+      link_point = tree_item_name # link_item_new_name
       if p != RDFSTerms["is_class"]:
         s_new = self.__attachBrick(brick_name,
                                    link_point,
@@ -273,9 +277,11 @@ class DataModel:
                                    tree_name)
 
         triple = s_new, p, o_new
+        print("old triple", s,p,o)
         print("new triple", triple)
         tree_graph.add(triple)
       else:
+        print("class found s,p,o", s,p,o)
         pass
     self.brick_counter[tree_name] += 1
     pass
@@ -297,13 +303,23 @@ class DataModel:
     pass
 
   def __prepareConjunctiveGraph(self, graphs):
+    namespaces = set()
+    n = []
+    for g in graphs:
+      n = set()
+      for i in graphs[g].namespaces():
+        n.add(i)
+
+    namespaces = list(n)
     conjunctiveGraph = ConjunctiveGraph("Memory")
-    namespaces = self.namespaces
-    for ns in namespaces:
-      conjunctiveGraph.bind(ns, namespaces[ns])
+    # namespaces = self.namespaces
+    name_spaces = {}
+    for pre, ns in namespaces:
+      conjunctiveGraph.bind(pre, ns )#ns, namespaces[ns])
+      name_spaces[pre] = ns
     for cl in graphs:
       for s, p, o in graphs[cl].triples((None, None, None)):
-        conjunctiveGraph.get_context(namespaces[cl]).add((s, p, o))
+        conjunctiveGraph.get_context(name_spaces[cl]).add((s, p, o))
     return conjunctiveGraph
 
   def newTree(self, tree_name, brick_name):
@@ -313,15 +329,28 @@ class DataModel:
     self.renameBrick(brick_name, tree_name)
     named_brick = self.BRICK_GRAPHS[tree_name]
     self.TREE_GRAPHS[tree_name] = copy.deepcopy(named_brick)
+
     classURI = makeClassURI(tree_name)
     self.namespaces[tree_name] = classURI
     triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
     self.TREE_GRAPHS[tree_name].add(triple)
 
+    brick_name_space = makeItemURI(brick_name,"")
+    tree_name_space = makeClassURI(tree_name)
+    tree_name_space_item = makeItemURI(tree_name, "")
+
     self.brick_counter[tree_name] = 0
+    self.TREE_GRAPHS[tree_name].bind(tree_name + "_%s" % self.brick_counter[tree_name],
+                                     brick_name_space)
+    self.TREE_GRAPHS[tree_name].bind(tree_name ,
+                                     tree_name_space)
+    self.TREE_GRAPHS[tree_name].bind(tree_name ,
+                                     tree_name_space_item)
+
 
     # clean up bricks
     self.BRICK_GRAPHS[brick_name] = copy_brick
+    del self.BRICK_GRAPHS[tree_name]
     pass
 
   def getTreeList(self):

@@ -206,15 +206,16 @@ class OntobuilderUI(QMainWindow):
                                self.brickList)
     # dialog.exec()
     brick_name = dialog.selection
-    if brick_name:
-      dialog = UI_String("tree name", limiting_list=self.treeList)
-      link_item_new_name = dialog.text
-      if not link_item_new_name:
-        return
+    # if brick_name:
+    #   dialog = UI_String("tree name", limiting_list=self.treeList)
+    #   link_item_new_name = dialog.text
+    #   if not link_item_new_name:
+    #     return
     event = "link"
     message = {"event"             : event,
                "brick_name"        : brick_name,
-               "link_item_new_name": link_item_new_name}
+               # "link_item_new_name": link_item_new_name
+               }
     self.backend.processEvent(message)
 
   def on_pushTreeRemoveClassLink_pressed(self):

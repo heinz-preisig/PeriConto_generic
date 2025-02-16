@@ -229,7 +229,7 @@ class BackEnd():
     name = message["name"]
     self.project_name = name
     self.dataModel = DataModel(name)
-    self.frontEnd.setTabVisible()
+    # self.frontEnd.setTabVisible()
     pass
 
   def loadOntology(self, message):
@@ -386,4 +386,5 @@ class BackEnd():
     file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, self.project_name) + "+%s" % tree
 
     graph.dot.render(file_name_bricks, format="pdf")
+    os.remove(file_name_bricks)
     pass
