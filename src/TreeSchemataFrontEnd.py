@@ -107,6 +107,7 @@ class OntobuilderUI(QMainWindow):
             "tree_create"             : self.ui.pushTreeCreate,
             "tree_delete"             : self.ui.pushDeleteTree,
             "tree_rename"             : self.ui.pushTreeRename,
+            "item_insert"             : self.ui.pushBrickAddItem,
             "tree_instantiate"        : self.ui.pushTreeInstantiate,
             "tree_list"               : self.ui.listTrees,
             "tree_link_existing_class": self.ui.pushTreeLinkExistingClass,
@@ -200,21 +201,25 @@ class OntobuilderUI(QMainWindow):
   def on_pushDeleteTree_pressed(self):
     debugging("-- pushDeleteTree")
 
+  def on_pushBrickAddItem_pressed(self):
+    debugging("-- pushBrickAddItem")
+    item_name = self.askForItemName("item name", [])
+    if not item_name:
+      return
+    event = "asks for adding an item"
+    message = {"event" : event,
+               "item_name": item_name}
+    self.backend.processEvent(message)
+
+
   def on_pushTreeLinkExistingClass_pressed(self):
     debugging("-- pushTreeLinkExistingClass")
     dialog = UI_stringSelector("select brick",
                                self.brickList)
-    # dialog.exec()
     brick_name = dialog.selection
-    # if brick_name:
-    #   dialog = UI_String("tree name", limiting_list=self.treeList)
-    #   link_item_new_name = dialog.text
-    #   if not link_item_new_name:
-    #     return
     event = "link"
     message = {"event"             : event,
                "brick_name"        : brick_name,
-               # "link_item_new_name": link_item_new_name
                }
     self.backend.processEvent(message)
 
@@ -262,10 +267,12 @@ class OntobuilderUI(QMainWindow):
     linkpoint = (item.count == 0) and (type == self.rules["is_member"])
     debugging("item count", item.count, linkpoint)
     debugging("-- tree item %s, column %s" % (name, column))
-    event = "%s in treeTree selected" % type
+    if not linkpoint:
+      event = "%s in treeTree selected" % type
+    else:
+      event = "item in treeTree selected can be linked"
     message = {"event"         : event,
                "tree_item_name": name,
-               "linkpoint"     : linkpoint,
                }
     debugging("message:", message)
     self.backend.processEvent(message)

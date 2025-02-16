@@ -176,6 +176,8 @@ class BackEnd():
         self.markChanged(message)
       elif a == "addLink":
         self.addLink(message)
+      elif a == "addItem":
+        self.addItem(message)
       else:
         print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> oops no such command", a)
 
@@ -189,6 +191,7 @@ class BackEnd():
     if not self.fail:
       ui_state = self.UI_state[event]
       self.frontEnd.setInterface(ui_state["show"])
+      debugging("show what", ui_state["show"])
       self.previousEvent = event
     else:
       for a in self.UI_state[event]["except"]:
@@ -225,13 +228,18 @@ class BackEnd():
     self.memory["tree_name"] = tree_name
     pass
 
+  def addItem(self, message):
+    item_name = message["item_name"]
+    tree_item_name = self.memory["tree_item_name"]
+    # self.dataModel.addItem(brick, ClassOrSubClass, name)
+    pass
+
   def addLink(self, message):
     link_position = self.memory["tree_item_name"]
     if link_position:
       tree_item_name = self.memory["tree_item_name"]
       brick_name = message["brick_name"]
       tree_name = self.memory["tree_name"]
-      # link_item_new_name = message["link_item_new_name"]
       self.dataModel.linkBrickToItem(tree_name,
                                      tree_item_name,
                                      brick_name)

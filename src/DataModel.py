@@ -171,6 +171,10 @@ class DataModel:
     g.add(triple)
     pass
 
+  def addItemToTree(self, tree_name, name):
+    g = self.TREE_GRAPHS[tree_name]
+
+
   def addPrimitive(self, Class, ClassOrSubClass, name, type):
     if Class == ClassOrSubClass:
       s = URIRef(self.namespaces[Class])
@@ -192,6 +196,8 @@ class DataModel:
     self.TREE_GRAPHS[newName] = Graph()
     self.copyBrick(self.TREE_GRAPHS, oldName, newName)
     del self.TREE_GRAPHS[oldName]
+    self.brick_counter[newName] = self.brick_counter[oldName]
+    del self.brick_counter[oldName]
 
   def copyBrick(self, what_graphs, oldName, newName):
     self.newBrick(newName)

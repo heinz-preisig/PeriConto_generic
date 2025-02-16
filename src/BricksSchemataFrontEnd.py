@@ -232,15 +232,11 @@ class OntobuilderUI(QMainWindow):
     name = dialog.text
     return name
 
-  def askForPrimitiveType(self, primitives):
-    # self.ui.comboBoxPrimitives.show()
-    dialog = UI_ComboDialog("select primitive", primitives)
-    primitive = dialog.getSelection()
-    return primitive
-
-  # def setPrimitives(self, PRIMITIVES):
-  #   self.ui.comboBoxPrimitives.clear()
-  #   # self.ui.comboBoxPrimitives.addItems(PRIMITIVES)
+  # def askForPrimitiveType(self, primitives):
+  #   # self.ui.comboBoxPrimitives.show()
+  #   dialog = UI_ComboDialog("select primitive", primitives)
+  #   primitive = dialog.getSelection()
+  #   return primitive
 
   def on_pushBrickRemoveItem_pressed(self):
     message = GUIMessage(event="remove item from brick tree")
@@ -273,33 +269,6 @@ class OntobuilderUI(QMainWindow):
     event = "%s rename"%type
     message = GUIMessage(event=event)
     self.backend.processEvent(message)
-
-  # def on_pushTreeCreate_pressed(self):
-  #   debugging("-- pushTreeCreate")
-  #   dialog = UI_String("new tree",
-  #                      "tree name",
-  #                      self.brickList)
-  #   # dialog.exec()
-  #   name = dialog.text
-  #   if name:
-  #     event = "new tree"
-  #   else:
-  #     event = None
-  #   message = GUIMessage(event=event, name=name.upper())
-  #   self.backend.processEvent(message)
-
-  # def on_pushDeleteTree_pressed(self):
-  #   debugging("-- pushDeleteTree")
-
-  # def on_pushTreeLinkExistingClass_pressed(self):
-  #   debugging("-- pushTreeLinkExistingClass")
-
-  # def on_pushTreeRemoveClassLink_pressed(self):
-  #   debugging("-- pushTreeRemoveClassLink")
-
-  # def on_pushTreeInstantiate_pressed(self):
-  #   debugging("-- pushTreeInstantiate")
-
   def on_pushTreeVisualise_pressed(self):
     event = "visualise"
     message = GUIMessage(event=event)
