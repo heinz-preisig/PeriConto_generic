@@ -232,11 +232,11 @@ class OntobuilderUI(QMainWindow):
     name = dialog.text
     return name
 
-  # def askForPrimitiveType(self, primitives):
-  #   # self.ui.comboBoxPrimitives.show()
-  #   dialog = UI_ComboDialog("select primitive", primitives)
-  #   primitive = dialog.getSelection()
-  #   return primitive
+  def askForPrimitiveType(self, primitives):
+    # self.ui.comboBoxPrimitives.show()
+    dialog = UI_ComboDialog("select primitive", primitives)
+    primitive = dialog.getSelection()
+    return primitive
 
   def on_pushBrickRemoveItem_pressed(self):
     message = GUIMessage(event="remove item from brick tree")

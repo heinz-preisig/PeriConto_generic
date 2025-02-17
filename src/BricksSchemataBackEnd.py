@@ -23,7 +23,7 @@ def debugging(*info):
 # class AutomatonPlot()
 
 
-class TreePlot:
+class TreePlot():
   """
     Create Digraph plot
   """
@@ -80,9 +80,9 @@ class TreePlot:
           }
   NODE_SPECS["linked"] = NODE_SPECS["Class"]
 
-  def __init__(self, graph_name, graph_tripples, class_names):
+  def __init__(self, graph_name, graph_triples, class_names):
     self.classes = class_names
-    self.triples = graph_tripples
+    self.triples = graph_triples
     self.dot = Digraph(graph_name)
     self.dot.graph_attr["rankdir"] = "LR"
 
@@ -110,7 +110,7 @@ class TreePlot:
                   )
   def makeMe(self, root):
     self.addNode(root,"Class")
-    self.__makeGraph(origin=root)
+    self.__makeGraph(origin=[root], stack=[])
 
 
   def __makeGraph(self, origin=[], stack=[]):
@@ -126,6 +126,7 @@ class TreePlot:
             self.addEdge(s,o, p)
             stack.append(q)  # (s, p, o))
             self.__makeGraph(origin=s, stack=stack)
+    return
 
 
 class BackEnd():
@@ -282,6 +283,8 @@ class BackEnd():
     brick = self.memory["brick"]
     existing_names = self.dataModel.getAllNamesInTheBrick(brick, what="brick")
     name_ = self.frontEnd.askForItemName("provide new item name", existing_names)
+    if not name_:
+      return
     name = str(name_).lower()  # rule items are lower case
     if name:
       ClassOrSubClass = self.memory["item"]
@@ -381,10 +384,11 @@ class BackEnd():
     tree = self.memory["brick"]
     dataBrickTuples = self.dataModel.makeDataTuplesForGraph(tree, "bricks")
     class_names = sorted(self.dataModel.BRICK_GRAPHS.keys())
-    graph = TreePlot(graph_name=tree,graph_tripples=dataBrickTuples,class_names=class_names)
+    graph = TreePlot(graph_name=tree,graph_triples=dataBrickTuples,class_names=class_names)
     graph.makeMe(tree)
     file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, self.project_name) + "+%s" % tree
 
     graph.dot.render(file_name_bricks, format="pdf")
     os.remove(file_name_bricks)
+    del graph
     pass

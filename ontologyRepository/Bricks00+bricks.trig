@@ -1,19 +1,23 @@
 @prefix FIRST: <http://example.org/FIRST> .
+@prefix FIRST_I: <http://example.org/FIRST#> .
 @prefix SECOND: <http://example.org/SECOND> .
+@prefix SECOND_I: <http://example.org/SECOND#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-FIRST: {
-    FIRST: a rdfs:Class .
-
-    <http://example.org/FIRST#item1> rdfs:member FIRST: .
-
-    <http://example.org/FIRST#log> xsd:boolean "" .
-}
 
 SECOND: {
     SECOND: a rdfs:Class .
 
-    <http://example.org/SECOND#hello> rdfs:member SECOND: .
+    SECOND_I:h rdfs:member SECOND_I:hello .
+
+    SECOND_I:hello rdfs:member SECOND: .
+}
+
+FIRST: {
+    FIRST: a rdfs:Class .
+
+    FIRST_I:item1 rdfs:member FIRST: .
+
+    FIRST_I:log xsd:boolean "" .
 }
 
