@@ -278,7 +278,8 @@ class DataModel:
       tree_name_space = makeClassURI(tree_name)
       tree_name_space_item = makeItemURI(tree_name, "")
       # triple = (URIRef(brick_name_space + "%s_%s"%(counter,brick_name)),
-      triple = (URIRef(self.tree_name_space_item + brick_name),
+      # URIRef(self.tree_name_space_item + "%s_%s" % (counter, s_name))
+      triple = (URIRef(self.tree_name_space_item + "%s_%s"%(counter,brick_name)), #URIRef(self.tree_name_space_item + "%s"%self.brick_counter[tree_name],brick_name),
                 RDFSTerms["is_defined_by"],
                 URIRef(self.tree_name_space_item + tree_item_name)) #makeItemURI(tree_name, tree_item_name)))
       triple_ = triple[2], triple[1], triple[0]

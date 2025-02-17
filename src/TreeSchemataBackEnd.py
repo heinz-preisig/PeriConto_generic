@@ -100,19 +100,27 @@ class TreePlot:
                   style=specs["style"],
                   )
 
-  def addEdge(self, From, To, type):
+  def addEdge(self, From, To, type, dir):
     try:
       colour = self.EDGE_COLOURS[type]
     except:
       colour = self.EDGE_COLOURS["other"]
-    self.dot.edge(From, To,
-                  color=colour,
-                  label=type
-                  )
+    if dir == -1:
+      self.dot.edge(From, To,
+                    color=colour,
+                    label=type
+                    )
+    elif dir == 1:
+      self.dot.edge(To, From,
+                    color=colour,
+                    label=type
+                    )
+    else:
+      print(">>>>>>>>>>>>>>>> should not come here")
 
   def makeMe(self, root):
     self.addNode(root, "Class")
-    self.__makeGraph(origin=root)
+    self.__makeGraph(origin=[root], stack=[])
 
   def __makeGraph(self, origin=[], stack=[]):
     for q in self.triples:
@@ -121,7 +129,7 @@ class TreePlot:
         if s != origin:
           type = RULES[p]
           self.addNode(o, type)
-          self.addEdge(s, o, p)
+          self.addEdge(s, o, p, dir)
           stack.append(q)  # (s, p, o))
           self.__makeGraph(origin=s, stack=stack)
 
