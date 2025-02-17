@@ -238,8 +238,11 @@ class BackEnd():
 
   def addItem(self, message):
     item_name = message["item_name"]
+    tree_name = self.memory["tree_name"]
     tree_item_name = self.memory["tree_item_name"]
-    # self.dataModel.addItem(brick, ClassOrSubClass, name)
+    self.dataModel.addItemToTree(tree_name,
+                                 tree_item_name,
+                                 item_name)
     pass
 
   def addLink(self, message):
@@ -266,7 +269,10 @@ class BackEnd():
   def getTreeDataTuples(self, message):
     tree_name = message["tree_name"]
     dataTreeTuples = self.dataModel.makeDataTuplesForGraph(tree_name, "tree_name")
-    self.frontEnd.showTreeTree(dataTreeTuples, tree_name)
+
+    existing_item_names = self.dataModel.getAllNamesInTheBrick(tree_name,
+                                                               "tree")
+    self.frontEnd.showTreeTree(dataTreeTuples, tree_name, existing_item_names)
     pass
 
     # ======================== trees

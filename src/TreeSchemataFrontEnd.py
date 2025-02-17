@@ -203,7 +203,7 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushBrickAddItem_pressed(self):
     debugging("-- pushBrickAddItem")
-    item_name = self.askForItemName("item name", [])
+    item_name = self.askForItemName("item name", self.existing_item_names)
     if not item_name:
       return
     event = "asks for adding an item"
@@ -282,7 +282,8 @@ class OntobuilderUI(QMainWindow):
     self.ui.listTrees.clear()
     self.ui.listTrees.addItems(treeList)
 
-  def showTreeTree(self, tuples, origin):
+  def showTreeTree(self, tuples, origin, existing_item_names):
+    self.existing_item_names = existing_item_names
     widget = self.ui.treeTree
     self.__instantiateTree(origin, tuples, widget)
 

@@ -1,11 +1,13 @@
 import copy
 import os
+import re
 
 from rdflib import ConjunctiveGraph
 from rdflib import Graph
 from rdflib import Literal
 from rdflib import Namespace
 from rdflib import URIRef
+
 
 from BricksAndTreeSemantics import FILE_FORMAT
 from BricksAndTreeSemantics import MYTerms
@@ -70,6 +72,9 @@ class DataModel:
     self.brick_counter = {}
 
   def loadFromFile(self, project_name):
+    """
+    that's a bit tricky. We need the brick numbers for each tree
+    """
 
     self.file_name_bricks = self.makeFileName(project_name, what="bricks")
     self.BRICK_GRAPHS, self.namespaces = self.__loadFromFile(self.file_name_bricks)
@@ -78,7 +83,42 @@ class DataModel:
     exists = os.path.exists(self.file_name_trees)
     if exists:
       self.TREE_GRAPHS, _ = self.__loadFromFile(self.file_name_trees)
+
+      for g in self.TREE_GRAPHS:
+        i = -1
+        graph = self.TREE_GRAPHS[g]
+        for s,p,o in graph.triples((None,None,None)):
+          print(s,o)
+          n = self.__extractNumber(s)
+          m = self.__extractNumber(o)
+          if n > i:
+            i = n
+          if m > i:
+            i = m
+        self.brick_counter[g] = i +1
+        debugging("max integer", g, i)
     pass
+
+  def __extractNumber(self, s):
+    """
+    that's a bit tricky. We need the brick numbers for each tree
+    """
+    n = "0"
+    s = str(s)
+    try:
+      ss = s.split("#")[-1].split("_")[0]
+      print(ss)
+    except:
+      ss = None
+    if ss.isnumeric():
+      no = int(ss)
+    else:
+      no = -1
+    # for i in str(ss):
+    #   if i.isnumeric():
+    #     n += i
+    print(n, int(n))
+    return no
 
   def makeFileName(self, project_name, what=None):
     file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s." % what + FILE_FORMAT
@@ -143,13 +183,18 @@ class DataModel:
     names = set()
     if what == "brick":
       g = self.BRICK_GRAPHS[graphName]
-      triple = (None, None, None)
-      for subject, predicate, object in g.triples(triple):
-        s = extractNameFromIRI(subject)
-        o = extractNameFromIRI(object)
-        names.add(s)
-        names.add(o)
-      return names
+    elif what == "tree":
+      g = self.TREE_GRAPHS[graphName]
+    else:
+      print(">>>>>>>>>>>> should not come here")
+      return
+    triple = (None, None, None)
+    for subject, predicate, object in g.triples(triple):
+      s = extractNameFromIRI(subject)
+      o = extractNameFromIRI(object)
+      names.add(s)
+      names.add(o)
+    return names
 
   def removeItem(self, brick, item):
     subject = self.makeURI(brick, item)
@@ -165,22 +210,24 @@ class DataModel:
     return uri
 
   def addItem(self, Class, ClassOrSubClass, name):
-
-    self.classURI = makeClassURI(Class)
-    self.itemURI = makeItemURI(Class,"")
     g = self.BRICK_GRAPHS[Class]
+    self.__addItemToGraph(Class, ClassOrSubClass, g, name)
+
+  def __addItemToGraph(self, Class, ClassOrSubClass, g, name):
+    self.classURI = makeClassURI(Class)
+    self.itemURI = makeItemURI(Class, "")
     if Class == ClassOrSubClass:
-      o = URIRef(self.classURI)  #makeClassURI(Class))
+      o = URIRef(self.classURI)  # makeClassURI(Class))
     else:
-      o = URIRef(self.itemURI+ClassOrSubClass) #self.makeURI(Class, ClassOrSubClass)
-    s = URIRef(self.itemURI + name) #self.makeURI(Class, name)
+      o = URIRef(self.itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
+    s = URIRef(self.itemURI + name)  # self.makeURI(Class, name)
     triple = (s, RDFSTerms["is_member"], o)
     g.add(triple)
     pass
 
-  def addItemToTree(self, tree_name, name):
-    g = self.TREE_GRAPHS[tree_name]
-
+  def addItemToTree(self, Class, ClassOrSubClass, name):
+    g = self.TREE_GRAPHS[Class]
+    self.__addItemToGraph(Class, ClassOrSubClass, g, name)
 
   def addPrimitive(self, Class, ClassOrSubClass, name, type):
 
@@ -275,8 +322,8 @@ class DataModel:
       #                                       self.brick_counter[tree_name])
       # tree_graph.bind(brick_name + "_%s" % self.brick_counter[tree_name], brick_name_space)
 
-      tree_name_space = makeClassURI(tree_name)
-      tree_name_space_item = makeItemURI(tree_name, "")
+      self.tree_name_space = makeClassURI(tree_name)
+      self.tree_name_space_item = makeItemURI(tree_name, "")
       # triple = (URIRef(brick_name_space + "%s_%s"%(counter,brick_name)),
       # URIRef(self.tree_name_space_item + "%s_%s" % (counter, s_name))
       triple = (URIRef(self.tree_name_space_item + "%s_%s"%(counter,brick_name)), #URIRef(self.tree_name_space_item + "%s"%self.brick_counter[tree_name],brick_name),
