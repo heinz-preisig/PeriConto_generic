@@ -16,16 +16,17 @@ __copyright__ = "Copyright 2015, PREISIG, Heinz A"
 __since__ = "2017. 09. 25"
 __license__ = "GPL planned -- until further notice for Bio4Fuel & MarketPlace internal use only"
 __version__ = "6.00"
+__modified__ = "2025-02-18 added validation"
 __email__ = "heinz.preisig@chemeng.ntnu.no"
 __status__ = "beta"
 
 from PyQt6 import QtCore
+from PyQt6 import QtGui
 from PyQt6 import QtWidgets
 
-
+from resources_icons import roundButton
 # from ui_string_dialog import  Ui_Dialog
 from ui_string_dialog import Ui_Dialog
-from resources_icons import roundButton
 
 
 class UI_String(QtWidgets.QDialog):
@@ -42,13 +43,14 @@ class UI_String(QtWidgets.QDialog):
   # aborted = QtCore.pyqtSignal()
   accepted = QtCore.pyqtSignal(str)
 
-  def __init__(self, prompt, placeholdertext="", limiting_list=[], fokus=True):
+  def __init__(self, prompt, value=None, placeholdertext="", limiting_list=[], fokus=True, validator=None):
     """
     Serves the purpose of defining a string allowing for accepting or rejecting the result
     :param prompt: displayed in the window title
     :param placeholdertext: place holder shown in the line edit
     :param accept: method/function reference
     :param reject: method/function reference
+    :param validator in [integer, decimal, readl, bool]
     """
     # TODO: add validator
     QtWidgets.QDialog.__init__(self, parent=None)
@@ -56,13 +58,9 @@ class UI_String(QtWidgets.QDialog):
     self.ui.setupUi(self)
 
     self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
-    # print(" <<<< show me")
-    # self.hide()
     self.placeholdertext = placeholdertext
     self.limiting_list = limiting_list
-    # self.setWindowTitle(prompt)
     self.text = None
-
 
     roundButton(self.ui.pushAccept, "accept", tooltip="accept")
     roundButton(self.ui.pushReject, "reject", tooltip="reject")
@@ -76,14 +74,29 @@ class UI_String(QtWidgets.QDialog):
     self.ui.lineEdit.textChanged.connect(self.newText)
     # self.ui.pushReject.setFocus()
     self.ui.lineEdit.setFocus()
-    self.ui.lineEdit.setPlaceholderText(placeholdertext)
-    self.exec()
 
-    # self.palette_red = QtGui.QPalette()
-    # self.palette_red.setColor(QtGui.QPalette.Text, QtCore.Qt.red)
-    #
-    # self.palette_black = QtGui.QPalette()
-    # self.palette_black.setColor(QtGui.QPalette.Text, QtCore.Qt.black)
+    if validator:
+      self.ui.lineEdit.setPlaceholderText(validator)
+    elif placeholdertext:
+      self.ui.lineEdit.setPlaceholderText(placeholdertext)
+    if validator:
+      if validator == "integer":
+        val = r"^[-+]?\d+$"
+      elif validator == "decimal":
+        val = r"-?(\d*\.\d+|\d+\.\d*)"
+      elif validator == "real":
+        val = r"^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$"
+      elif validator == "boolean":
+        val = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
+      else:
+        print(">>>> schould not come here, wrong validator", validator)
+
+
+      v = QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(val))
+      self.ui.lineEdit.setValidator(v)
+      if value:
+        self.ui.lineEdit.setText(value)
+    self.exec()
 
     if fokus:
       self.ui.lineEdit.setFocus()
@@ -92,17 +105,15 @@ class UI_String(QtWidgets.QDialog):
     self.ui.lineEdit.setText(str(txt))
 
   def __changedText(self, Qtext):
-    # print("debugging -- changed text", Qtext)
     text = Qtext
+    self.text = self.ui.lineEdit.text()
     if len(text) == 0:
       return
 
     if (text in self.limiting_list) or (text[0] == " "):
-      # self.ui.lineEdit.setPalette(self.palette_red)
       self.ui.lineEdit.setStyleSheet("color: red; background-color: white")
       self.ui.pushAccept.hide()
     else:
-      # self.ui.lineEdit.setPalette(self.palette_black)
       self.ui.lineEdit.setStyleSheet("color: black; background-color: white")
       self.ui.pushAccept.show()
 
@@ -110,7 +121,6 @@ class UI_String(QtWidgets.QDialog):
     self.accepted.emit(self.ui.lineEdit.text())
     self.text = self.ui.lineEdit.text()
     self.close()
-
 
   def __reject(self):
     self.text = None
@@ -148,23 +158,22 @@ class UI_String(QtWidgets.QDialog):
 # ============================ testing ======================
 #
 #
-# def changing(txt):
-#   print("changing:", txt)
-#
-#
-# if __name__ == '__main__':
-#
-#   from resource.resource_initialisation import DIRECTORIES
-#   import os
-#
-#   JOIN = os.path.join
-#
-#   DIRECTORIES["packages"] = JOIN(os.path.abspath(".."))
-#   DIRECTORIES["common"] = JOIN(DIRECTORIES["packages"], "Common")
-#   DIRECTORIES["icon_location"] = JOIN(DIRECTORIES["common"], "icons")
-#   a = QtWidgets.QApplication([])
-#
-#   w = UI_String("give name", "name")
-#   w.show()
-#   w.accepted.connect(changing)
-#   a.exec_()
+def changing(txt):
+  print("changing:", txt)
+
+
+if __name__ == '__main__':
+  # from resource.resource_initialisation import DIRECTORIES
+
+  from PyQt6 import QtCore
+  from PyQt6 import QtWidgets
+
+  a = QtWidgets.QApplication([])
+  # val_int = r"^[-+]?\d+$"
+  # val_real = r"-?(\d*\.\d+|\d+\.\d*)"
+  # var_exp = r"^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$"
+  # var_bool = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
+  # var_url = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
+  w = UI_String("give name", placeholdertext="name", limiting_list=["1"], validator="integer")
+  w.show()
+  print((w.text))

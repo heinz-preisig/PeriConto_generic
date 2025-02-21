@@ -2,136 +2,23 @@ import os
 import sys
 
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
+from BricksAndTreeSemantics import PRIMITIVES
 from BricksAndTreeSemantics import RULES
 from DataModel import DataModel
 from TreeAutomaton import UI_state
+from Utilities import debugging, TreePlot
 
+from graphviz import Digraph
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 root = os.path.abspath(os.path.join("."))
 sys.path.extend([root, os.path.join(root, "resources")])
 
-from graphviz import Digraph
 
 DEBUGG = True
 
 
-def debugging(*info):
-  if DEBUGG:
-    print("debugging", info)
 
-
-# class AutomatonPlot()
-
-
-class TreePlot:
-  """
-    Create Digraph plot
-  """
-
-  EDGE_COLOURS = {
-          "is_class"     : "red",
-          "is_member"    : "blue",
-          "is_defined_by": "darkorange",
-          "value"        : "black",
-          "data_type"    : "green",
-          # "comment"         : "green",
-          # "integer"         : "darkorange",
-          # "string"          : "cyan",
-          "other"        : "orange",
-          }
-
-  NODE_SPECS = {
-          "Class"    : {
-                  "colour"   : "red",
-                  "shape"    : "rectangle",
-                  "fillcolor": "red",
-                  "style"    : "filled",
-                  },
-          "member"   : {
-                  "colour"   : "orange",
-                  "shape"    : "",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "primitive": {
-                  "colour"   : "blue",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "ROOT"     : {
-                  "colour"   : "red",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "linked"   : {
-                  "colour"   : "green",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "other"    : {
-                  "colour"   : None,
-                  "shape"    : None,
-                  "fillcolor": None,
-                  "style"    : None,
-                  },
-          }
-  NODE_SPECS["linked"] = NODE_SPECS["Class"]
-
-  def __init__(self, graph_name, graph_triples, class_names):
-    self.classes = class_names
-    self.triples = graph_triples
-    self.dot = Digraph(graph_name)
-    self.dot.graph_attr["rankdir"] = "LR"
-
-  def addNode(self, node, type):
-    try:
-      specs = self.NODE_SPECS[type]
-    except:
-      specs = self.NODE_SPECS["other"]
-
-    self.dot.node(node,
-                  color=specs["colour"],
-                  shape=specs["shape"],
-                  fillcolor=specs["fillcolor"],
-                  style=specs["style"],
-                  )
-
-  def addEdge(self, From, To, type, dir):
-    try:
-      colour = self.EDGE_COLOURS[type]
-    except:
-      colour = self.EDGE_COLOURS["other"]
-    if dir == -1:
-      self.dot.edge(From, To,
-                    color=colour,
-                    label=type
-                    )
-    elif dir == 1:
-      self.dot.edge(To, From,
-                    color=colour,
-                    label=type
-                    )
-    else:
-      print(">>>>>>>>>>>>>>>> should not come here")
-
-  def makeMe(self, root):
-    self.addNode(root, "Class")
-    self.__makeGraph(origin=[root], stack=[])
-
-  def __makeGraph(self, origin=[], stack=[]):
-    for q in self.triples:
-      if q not in stack:
-        s, p, o, dir = q
-        if s != origin:
-          type = RULES[p]
-          self.addNode(o, type)
-          self.addEdge(s, o, p, dir)
-          stack.append(q)  # (s, p, o))
-          self.__makeGraph(origin=s, stack=stack)
 
 
 class BackEnd():
@@ -151,7 +38,7 @@ class BackEnd():
 
     self.frontEnd = frontEnd
     self.rules = RULES
-    self.frontEnd.setRules(RULES)
+    self.frontEnd.setRules(RULES, PRIMITIVES)
 
   def processEvent(self, message):
     debugging(">>>> message ", message)
@@ -186,6 +73,10 @@ class BackEnd():
         self.addLink(message)
       elif a == "addItem":
         self.addItem(message)
+      elif a == "instantiatePrimitive":
+        self.instantiatePrimitive(message)
+      elif a == "extractInstance":
+        self.extractInstance(message)
       else:
         print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> oops no such command", a)
 
@@ -199,7 +90,7 @@ class BackEnd():
     if not self.fail:
       ui_state = self.UI_state[event]
       self.frontEnd.setInterface(ui_state["show"])
-      debugging("show what", ui_state["show"])
+      # debugging("show what", ui_state["show"])
       self.previousEvent = event
     else:
       for a in self.UI_state[event]["except"]:
@@ -245,6 +136,17 @@ class BackEnd():
                                  item_name)
     pass
 
+  def instantiatePrimitive(self, message):
+    pass
+    primitive_name = message["parent_name"]
+    tree_name = self.memory["tree_name"]
+    primitive_type = message["type"]
+    value = message["value"]
+    self.dataModel.modifyPrimitiveValue(tree_name, primitive_name, primitive_type, value)
+
+    pass
+
+
   def addLink(self, message):
     link_position = self.memory["tree_item_name"]
     if link_position:
@@ -259,6 +161,11 @@ class BackEnd():
     self.dataModel.saveTrees()
     self.frontEnd.markSaved()
 
+  def extractInstance(self, message):
+    tree_name = self.memory["tree_name"]
+    self.dataModel.extractInstance(tree_name)
+
+
   def putTreeList(self, message):
     tree_list = self.dataModel.getTreeList()
     self.frontEnd.putTreeList(tree_list)
@@ -267,7 +174,10 @@ class BackEnd():
     self.memory["tree_name"] = message["tree_name"]
 
   def getTreeDataTuples(self, message):
-    tree_name = message["tree_name"]
+    try:
+      tree_name = message["tree_name"]
+    except:
+      tree_name = self.memory["tree_name"]
     dataTreeTuples = self.dataModel.makeDataTuplesForGraph(tree_name, "tree_name")
 
     existing_item_names = self.dataModel.getAllNamesInTheBrick(tree_name,

@@ -203,7 +203,7 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushBrickCreate_pressed(self):
     debugging("-- pushBrickCreate")
-    dialog = UI_String("new brick", "brick name", self.brickList)
+    dialog = UI_String("new brick", None,"brick name", self.brickList)
     # dialog.exec()
     name = dialog.text
     if name:

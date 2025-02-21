@@ -1,3 +1,18 @@
+"""
+front end for tree construction
+
+messages:
+"event"
+"project_name"
+"tree_name"
+"tree_item_name"
+"brick_name"
+"item_name"
+"value"
+"type"
+"parent_name"
+
+"""
 import os
 import sys
 
@@ -21,6 +36,8 @@ from resources.ui_single_list_selector_impl import UI_stringSelector
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 
 DEBUGG = True
+
+
 
 
 def debugging(*info):
@@ -108,7 +125,7 @@ class OntobuilderUI(QMainWindow):
             "tree_delete"             : self.ui.pushDeleteTree,
             "tree_rename"             : self.ui.pushTreeRename,
             "item_insert"             : self.ui.pushBrickAddItem,
-            "tree_instantiate"        : self.ui.pushTreeInstantiate,
+            "tree_reduce"             : self.ui.pushTreeReduce,
             "tree_list"               : self.ui.listTrees,
             "tree_link_existing_class": self.ui.pushTreeLinkExistingClass,
             "tree_remove_class_link"  : self.ui.pushTreeRemoveClassLink,
@@ -119,8 +136,9 @@ class OntobuilderUI(QMainWindow):
             "remove_duplicated_item"  : self.ui.pushRemoveDuplicateILinkedtem,
             }
 
-  def setRules(self, rules):
+  def setRules(self, rules, primitives):
     self.rules = rules
+    self.primitives = primitives
 
   def setInterface(self, shows):
     pass
@@ -226,8 +244,10 @@ class OntobuilderUI(QMainWindow):
   def on_pushTreeRemoveClassLink_pressed(self):
     debugging("-- pushTreeRemoveClassLink")
 
-  def on_pushTreeInstantiate_pressed(self):
+  def on_pushTreeReduce_pressed(self):
     debugging("-- pushTreeInstantiate")
+    message = {"event" : "reduce"}
+    self.backend.processEvent(message)
 
   def on_pushCopyTree_pressed(self):
     debugging("-- pushCopyTree")
@@ -264,15 +284,35 @@ class OntobuilderUI(QMainWindow):
   def on_treeTree_itemClicked(self, item, column):
     name = item.text(column)
     type = item.type
+    parent_name = item.parent().text(0)
     linkpoint = (item.count == 0) and (type == self.rules["is_member"])
     debugging("item count", item.count, linkpoint)
     debugging("-- tree item %s, column %s" % (name, column))
     if not linkpoint:
-      event = "%s in treeTree selected" % type
+      if type in self.primitives:
+        value=None
+        if name not in self.primitives:
+          value = name
+        dialog = UI_String("provide %s"%type,
+                           value=value,
+                           placeholdertext= type,
+                           validator=type)
+        primitive = dialog.text
+        if primitive:
+          message ={"event": "got primitive",
+                    "value": primitive,
+                    "type": type,
+                    "parent_name": parent_name,
+                  }
+          self.backend.processEvent(message)
+          return
+      else:
+        event = "%s in treeTree selected" % type
     else:
       event = "item in treeTree selected can be linked"
     message = {"event"         : event,
                "tree_item_name": name,
+               "item_type": type
                }
     debugging("message:", message)
     self.backend.processEvent(message)

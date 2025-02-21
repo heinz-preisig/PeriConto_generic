@@ -268,7 +268,7 @@ class BackEnd():
 
   def newBrick(self, message):
     name = message["name"]
-    self.dataModel.newBrick(name)
+    self.dataModel.newBrickOrTreeGraph("bricks", name )
     self.memory["brick"] = name
 
   def putBrickDataTuples(self, message):
