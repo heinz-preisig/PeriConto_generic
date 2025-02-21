@@ -38,8 +38,6 @@ from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 DEBUGG = True
 
 
-
-
 def debugging(*info):
   if DEBUGG:
     print("debugging", info)
@@ -225,10 +223,9 @@ class OntobuilderUI(QMainWindow):
     if not item_name:
       return
     event = "asks for adding an item"
-    message = {"event" : event,
+    message = {"event"    : event,
                "item_name": item_name}
     self.backend.processEvent(message)
-
 
   def on_pushTreeLinkExistingClass_pressed(self):
     debugging("-- pushTreeLinkExistingClass")
@@ -236,8 +233,8 @@ class OntobuilderUI(QMainWindow):
                                self.brickList)
     brick_name = dialog.selection
     event = "link"
-    message = {"event"             : event,
-               "brick_name"        : brick_name,
+    message = {"event"     : event,
+               "brick_name": brick_name,
                }
     self.backend.processEvent(message)
 
@@ -246,7 +243,7 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushTreeReduce_pressed(self):
     debugging("-- pushTreeInstantiate")
-    message = {"event" : "reduce"}
+    message = {"event": "reduce"}
     self.backend.processEvent(message)
 
   def on_pushCopyTree_pressed(self):
@@ -290,20 +287,20 @@ class OntobuilderUI(QMainWindow):
     debugging("-- tree item %s, column %s" % (name, column))
     if not linkpoint:
       if type in self.primitives:
-        value=None
+        value = None
         if name not in self.primitives:
           value = name
-        dialog = UI_String("provide %s"%type,
+        dialog = UI_String("provide %s" % type,
                            value=value,
-                           placeholdertext= type,
+                           placeholdertext=type,
                            validator=type)
         primitive = dialog.text
         if primitive:
-          message ={"event": "got primitive",
-                    "value": primitive,
-                    "type": type,
-                    "parent_name": parent_name,
-                  }
+          message = {"event"      : "got primitive",
+                     "value"      : primitive,
+                     "type"       : type,
+                     "parent_name": parent_name,
+                     }
           self.backend.processEvent(message)
           return
       else:
@@ -312,7 +309,7 @@ class OntobuilderUI(QMainWindow):
       event = "item in treeTree selected can be linked"
     message = {"event"         : event,
                "tree_item_name": name,
-               "item_type": type
+               "item_type"     : type
                }
     debugging("message:", message)
     self.backend.processEvent(message)

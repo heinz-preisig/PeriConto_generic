@@ -6,19 +6,15 @@ from BricksAndTreeSemantics import PRIMITIVES
 from BricksAndTreeSemantics import RULES
 from DataModel import DataModel
 from TreeAutomaton import UI_state
-from Utilities import debugging, TreePlot
+from Utilities import TreePlot
+from Utilities import debugging
 
-from graphviz import Digraph
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 root = os.path.abspath(os.path.join("."))
 sys.path.extend([root, os.path.join(root, "resources")])
 
-
 DEBUGG = True
-
-
-
 
 
 class BackEnd():
@@ -146,7 +142,6 @@ class BackEnd():
 
     pass
 
-
   def addLink(self, message):
     link_position = self.memory["tree_item_name"]
     if link_position:
@@ -164,7 +159,6 @@ class BackEnd():
   def extractInstance(self, message):
     tree_name = self.memory["tree_name"]
     self.dataModel.extractInstance(tree_name)
-
 
   def putTreeList(self, message):
     tree_list = self.dataModel.getTreeList()

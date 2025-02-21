@@ -58,7 +58,7 @@ UI_state = {
                         "getTreeDataTuples",
                         ],
                 },
-        "rename tree"                                   : {
+        "rename tree"                                     : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -71,7 +71,7 @@ UI_state = {
                 "action": [
                         "renameTree",
                         "putTreeList",
-                           "markChanged",
+                        "markChanged",
                         ],
                 },
 
@@ -88,7 +88,7 @@ UI_state = {
                 "action": [],
                 },
 
-        "%s in treeTree selected" % RULES["is_member"]    : { # member selected
+        "%s in treeTree selected" % RULES["is_member"]    : {  # member selected
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -101,7 +101,7 @@ UI_state = {
                 "action": [],
                 },
 
-        "item in treeTree selected can be linked"    : { # linkable member selected
+        "item in treeTree selected can be linked"         : {  # linkable member selected
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -115,7 +115,7 @@ UI_state = {
                 "action": [],
                 },
 
-        "%s in treeTree selected" % RULES["is_defined_by"]: { # linked member selected
+        "%s in treeTree selected" % RULES["is_defined_by"]: {  # linked member selected
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -128,7 +128,7 @@ UI_state = {
                 "action": [],
                 },
 
-        "%s in treeTree selected" % RULES["value"]        : { # value selected
+        "%s in treeTree selected" % RULES["value"]        : {  # value selected
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -189,7 +189,7 @@ UI_state = {
                 "except": [],
                 "action": [],
                 },
-        "asks for adding an item"    : {
+        "asks for adding an item"                         : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -200,10 +200,10 @@ UI_state = {
                 "except": [],
                 "action": ["addItem",
                            "markChanged",
-                        "getTreeDataTuples"
+                           "getTreeDataTuples"
                            ],
                 },
-        "got primitive"    : {
+        "got primitive"                                   : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -214,10 +214,10 @@ UI_state = {
                 "except": [],
                 "action": ["instantiatePrimitive",
                            "markChanged",
-                        "getTreeDataTuples"
+                           "getTreeDataTuples"
                            ],
                 },
-        "link" : {
+        "link"                                            : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -229,7 +229,7 @@ UI_state = {
                 "action": ["addLink",
                            "markChanged"],
                 },
-        "reduce" : {
+        "reduce"                                          : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",

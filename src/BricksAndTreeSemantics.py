@@ -11,8 +11,8 @@ BASE = "http://example.org"
 ITEM_SEPARATOR = "#"
 CLASS_SEPARATOR = "/"
 CLASS_IDENTIFIERS = BASE + CLASS_SEPARATOR
-ITEM_IDENTIFIERS = BASE + CLASS_SEPARATOR + "%s" +  ITEM_SEPARATOR
-ITEM_IDENTIFIERS_COUNTED = BASE + CLASS_SEPARATOR + "%s_%s" +  ITEM_SEPARATOR
+ITEM_IDENTIFIERS = BASE + CLASS_SEPARATOR + "%s" + ITEM_SEPARATOR
+ITEM_IDENTIFIERS_COUNTED = BASE + CLASS_SEPARATOR + "%s_%s" + ITEM_SEPARATOR
 # DATA = BASE + "data/" + ITEM_SEPARATOR
 
 ONTOLOGY_REPOSITORY = "../ontologyRepository"
@@ -86,8 +86,9 @@ def makeItemURI(brick, name):
   ns = Namespace(ITEM_IDENTIFIERS % (brick) + name)
   return ns
 
+
 def makeBrickNameSpace(brick, counter):
-  ns = Namespace(ITEM_IDENTIFIERS_COUNTED % (brick,counter))
+  ns = Namespace(ITEM_IDENTIFIERS_COUNTED % (brick, counter))
   return ns
 
 

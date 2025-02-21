@@ -47,32 +47,6 @@ def saveBackupFile(path):
     return old_path, new_path, next_path
 
 
-def find_path_back(graph, leave, neighbour, root):
-  """
-  Find a path from a primitive, which is a leave to the root.
-  It's a straight walk back to the root, as it is a tree, but
-  one has to watch out for multiple equal leave values.
-  Remedy: take the neighbour along, because he is uniquely named.
-  """
-  path = [leave]
-
-  now = neighbour
-
-  while not now == root:
-    triple = (now, None, None)
-    for s, p, o in graph.triples(triple):
-      if not p in RDF_PRIMITIVES:
-        now = o
-        path.append(now)
-    triple = (None, None, now)
-    for s, p, o in graph.triples(triple):
-      if not p in RDF_PRIMITIVES:
-        now = s
-        path.append(now)
-
-  return path
-
-
 def find_path_back_triples(graph, leave_triple, root):
   """
   Find a path from a primitive, which is a leave to the root.
@@ -92,13 +66,6 @@ def find_path_back_triples(graph, leave_triple, root):
         if not p in RDF_PRIMITIVES:
           now = o
           path.append(t)
-    # triple = (None, None, now)
-    # for s, p, o in graph.triples(triple):
-    #   t = (s, p, o)
-    #   if t not in path:
-    #     if not p in RDF_PRIMITIVES:
-    #       now = s
-    #       path.append(t)
 
   return path
 
@@ -230,60 +197,6 @@ if __name__ == "__main__":
   # start_node = URIRef("http://example.org/A")
   # end_node = URIRef("http://example.org/D")
 
-  data = '''  
-  @prefix first: <http://example.org/first> .
-  @prefix first_I: <http://example.org/first#> .
-  @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-  @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-  @prefix s: <http://example.org/s> .
-  @prefix s_I: <http://example.org/s#> .
-  @prefix second: <http://example.org/second> .
-  @prefix second_I: <http://example.org/second#> .
-  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-  
-  first: a rdfs:Class ;
-      rdf:value first_I:i .  
-  s: a rdfs:Class .  
-  second: a rdfs:Class .  
-  first_I:irem12 rdfs:member first_I:item1 .  
-  first_I:item11 rdf:value first_I:log ;
-      rdfs:member first_I:item1 .  
-  s_I:hello rdf:value s_I:b ;
-      rdfs:member s: .  
-  s_I:item1 rdf:value s_I:i ;
-      rdfs:member s: .  
-  s_I:item2 rdf:value s_I:l ;
-      rdfs:member s: .  
-  second_I:hello rdfs:member second: .  
-  first_I:i xsd:integer "123" .  
-  first_I:log xsd:boolean "" .  
-  s_I:b xsd:boolean "t" .  
-  s_I:i xsd:integer "123" .  
-  s_I:l xsd:decimal "12.5" .  
-  first_I:item1 rdfs:member first: .
-  '''
-
-  data2 = '''  
-   @prefix first: <http://example.org/first> .
-   @prefix first_I: <http://example.org/first#> .
-   @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-   @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-   @prefix s: <http://example.org/s> .
-   @prefix s_I: <http://example.org/s#> .
-   @prefix second: <http://example.org/second> .
-   @prefix second_I: <http://example.org/second#> .
-   @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-   first: a rdfs:Class ;
-       rdf:value first_I:i .  
-   first_I:irem12 rdfs:member first_I:item1 .  
-   first_I:item11 rdf:value first_I:log ;
-       rdfs:member first_I:item1 .   
-   first_I:i xsd:integer "123" .  
-   first_I:log xsd:boolean "o" .  
-   first_I:item1 rdfs:member first: .
-   '''
-
   data3 = """
   @prefix k: <http://example.org/k> .
   @prefix k_I: <http://example.org/k#> .
@@ -291,90 +204,14 @@ if __name__ == "__main__":
   @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
   @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
   
-  k: a rdfs:Class .
-  
-  "" xsd:boolean k_I:b .
-  
-  "123" xsd:integer k_I:i .
-  
-  k_I:b rdf:value k: .
-  
-  k_I:i rdf:value k_I:item11 .
-  
-  k_I:item1 rdfs:member k: .
-  
-  k_I:item11 rdfs:member k_I:item1 .
-  
+  k: a rdfs:Class .  
+  "" xsd:boolean k_I:b .  
+  "123" xsd:integer k_I:i .  
+  k_I:b rdf:value k: .  
+  k_I:i rdf:value k_I:item11 .  
+  k_I:item1 rdfs:member k: .  
+  k_I:item11 rdfs:member k_I:item1 .  
   """
-
-#   data2 = '''  @prefix first: <http://example.org/first> .
-# @prefix first_I: <http://example.org/first#> .
-# @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-# @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-# @prefix s: <http://example.org/s> .
-# @prefix s_I: <http://example.org/s#> .
-# @prefix second: <http://example.org/second> .
-# @prefix second_I: <http://example.org/second#> .
-# @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-#
-# first: a rdfs:Class ;
-#     rdf:value first_I:i .
-#
-# s: a rdfs:Class .
-#
-# second: a rdfs:Class .
-#
-# first_I:irem12 rdfs:member first_I:item1 .
-#
-# first_I:item11 rdf:value first_I:log ;
-#     rdfs:member first_I:item1 .
-#
-# s_I:hello rdf:value s_I:b ;
-#     rdfs:member s: .
-#
-# s_I:item1 rdf:value s_I:i ;
-#     rdfs:member s: .
-#
-# s_I:item2 rdf:value s_I:l ;
-#     rdfs:member s: .
-#
-# second_I:hello rdfs:member second: .
-#
-# first_I:i xsd:integer "123" .
-#
-# first_I:log xsd:boolean "o" .
-#
-# s_I:b xsd:boolean "t" .
-#
-# s_I:i xsd:integer "123" .
-#
-# s_I:l xsd:decimal "12.5" .
-#
-# first_I:item1 rdfs:member first: .
-#    '''
-
-
-  g = Graph()
-  g.parse(data=data, format="turtle")
-
-
-  root = URIRef("http://example.org/first")
-  neighbour = URIRef("http://example.org/first#i")
-  leave = Literal("123")
-
-  path = find_path_back(g, leave, neighbour, root)
-  if path:
-    print("Path found:", " -> ".join(str(node) for node in path))
-  else:
-    print("No path found")
-
-  # print("=========================")
-  #
-  # triple = (neighbour, RDFSTerms["integer"], leave)
-  #
-  # path = find_path_back_triples(g, triple, root)
-  # for t in path:
-  #   print(t)
 
   print("============================================================")
   g2 = Graph()
@@ -386,7 +223,6 @@ if __name__ == "__main__":
 
   triple = (neighbour, RDFSTerms["integer"], leave)
   triple_ = (leave, RDFSTerms["integer"], neighbour)
-
 
   path = find_path_back_triples(g2, triple_, root)
   for t in path:
