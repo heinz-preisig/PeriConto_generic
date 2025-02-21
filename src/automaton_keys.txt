@@ -1,0 +1,10 @@
+ask for adding a primitive
+asks for adding an item
+create ontology
+do nothing
+item in brick tree selected
+load ontology
+new brick
+remove item from brick tree
+selected brick
+start

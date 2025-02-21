@@ -1,9 +1,0 @@
-<http://example.org/product> <http://www.w3.org/2000/01/rdf-schema#member> <http://example.org/ROOT> <ROOT> .
-<http://example.org/ROOT> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> <http://example.org/name> <ROOT> .
-<http://example.org/name> <http://www.w3.org/2000/01/rdf-schema#Datatype> <http://example.org/integer> <ROOT> .
-<http://example.org/product> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://example.org/PRODUCT> <ROOT> .
-<http://example.org/PRODUCT> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> <http://example.org/no> <PRODUCT> .
-<http://example.org/url> <http://www.w3.org/2000/01/rdf-schema#Datatype> <http://example.org/anyURI> <PRODUCT> .
-<http://example.org/PRODUCT> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> <http://example.org/url> <PRODUCT> .
-<http://example.org/no> <http://www.w3.org/2000/01/rdf-schema#Datatype> <http://example.org/integer> <PRODUCT> .
-
