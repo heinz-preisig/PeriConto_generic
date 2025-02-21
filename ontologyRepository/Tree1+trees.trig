@@ -1,0 +1,51 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix second: <http://example.org/second> .
+@prefix second_I: <http://example.org/second#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+second: {
+    second: a rdfs:Class .
+
+    second_I:2_item2 rdfs:member second_I:2_FIRST .
+
+    "" xsd:boolean second_I:1_l1 ;
+        xsd:integer second_I:1_i1 .
+
+    "123" xsd:integer second_I:2_i1 .
+
+    "true" xsd:boolean second_I:2_l1 .
+
+    second_I:0_SECOND rdfs:isDefinedBy second_I:item11 .
+
+    second_I:0_item1 rdfs:member second_I:0_SECOND .
+
+    second_I:0_item11 rdfs:member second_I:0_item1 .
+
+    second_I:1_i1 rdf:value second_I:1_item11 .
+
+    second_I:1_item1 rdfs:member second_I:1_FIRST .
+
+    second_I:1_item11 rdfs:member second_I:1_item1 .
+
+    second_I:1_item2 rdfs:member second_I:1_FIRST .
+
+    second_I:1_l1 rdf:value second_I:1_FIRST .
+
+    second_I:2_i1 rdf:value second_I:2_item11 .
+
+    second_I:2_item1 rdfs:member second_I:2_FIRST .
+
+    second_I:2_item11 rdfs:member second_I:2_item1 .
+
+    second_I:2_l1 rdf:value second_I:2_FIRST .
+
+    second_I:item1 rdfs:member second: .
+
+    second_I:item11 rdfs:member second_I:item1 .
+
+    second_I:1_FIRST rdfs:isDefinedBy second_I:0_item11 .
+
+    second_I:2_FIRST rdfs:isDefinedBy second_I:1_item2 .
+}
+
