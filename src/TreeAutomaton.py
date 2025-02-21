@@ -239,6 +239,7 @@ UI_state = {
                            ],
                 "except": [],
                 "action": ["extractInstance",
+                           "putTreeList",
                            "markChanged"],
                 },
         "save"                                            : {

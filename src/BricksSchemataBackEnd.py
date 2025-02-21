@@ -6,6 +6,7 @@ from DataModel import DataModel
 from BricksAndTreeSemantics import PRIMITIVES
 from BricksAndTreeSemantics import RULES
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
+from Utilities import debugging, TreePlot
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 root = os.path.abspath(os.path.join("."))
@@ -16,125 +17,121 @@ from graphviz import Digraph
 DEBUGG = True
 
 
-def debugging(*info):
-  if DEBUGG:
-    print("debugging", info)
-
-# class AutomatonPlot()
 
 
-class TreePlot():
-  """
-    Create Digraph plot
-  """
 
-  EDGE_COLOURS = {
-          "is_class"     : "red",
-          "is_member"    : "blue",
-          "is_defined_by": "darkorange",
-          "value"        : "black",
-          "data_type"    : "green",
-          # "comment"         : "green",
-          # "integer"         : "darkorange",
-          # "string"          : "cyan",
-          "other"        : "orange",
-          }
-
-  NODE_SPECS = {
-          "Class"    : {
-                  "colour"   : "red",
-                  "shape"    : "rectangle",
-                  "fillcolor": "red",
-                  "style"    : "filled",
-                  },
-          "member"   : {
-                  "colour"   : "orange",
-                  "shape"    : "",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "primitive": {
-                  "colour"   : "blue",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "ROOT"     : {
-                  "colour"   : "red",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "linked"   : {
-                  "colour"   : "green",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "other"    : {
-                  "colour"   : None,
-                  "shape"    : None,
-                  "fillcolor": None,
-                  "style"    : None,
-                  },
-          }
-  NODE_SPECS["linked"] = NODE_SPECS["Class"]
-
-  def __init__(self, graph_name, graph_triples, class_names):
-    self.classes = class_names
-    self.triples = graph_triples
-    self.dot = Digraph(graph_name)
-    self.dot.graph_attr["rankdir"] = "LR"
-
-  def addNode(self, node, type):
-    try:
-      specs = self.NODE_SPECS[type]
-    except:
-      specs = self.NODE_SPECS["other"]
-
-    self.dot.node(node,
-                  color=specs["colour"],
-                  shape=specs["shape"],
-                  fillcolor=specs["fillcolor"],
-                  style=specs["style"],
-                  )
-
-  def addEdge(self, From, To, type, dir):
-    pass
-    try:
-      colour = self.EDGE_COLOURS[type]
-    except:
-      colour = self.EDGE_COLOURS["other"]
-    if dir == -1:
-      self.dot.edge(From, To,
-                    color=colour,
-                    label=type
-                    )
-    elif dir == 1:
-        self.dot.edge(To, From,
-                      color=colour,
-                      label=type
-                      )
-
-  def makeMe(self, root):
-    self.addNode(root,"Class")
-    self.__makeGraph(origin=[root], stack=[])
-
-
-  def __makeGraph(self, origin=[], stack=[]):
-    for q in self.triples:
-      if q not in stack:
-        s, p, o, dir = q
-        # print("processing",s,p,o)
-        if s != origin:
-          # if o in items:
-            # if s != "":
-            type = RULES[p]
-            self.addNode(o, type)
-            self.addEdge(s,o, p, dir)
-            stack.append(q)  # (s, p, o))
-            self.__makeGraph(origin=s, stack=stack)
-    return
+# class TreePlot():
+#   """
+#     Create Digraph plot
+#   """
+#
+#   EDGE_COLOURS = {
+#           "is_class"     : "red",
+#           "is_member"    : "blue",
+#           "is_defined_by": "darkorange",
+#           "value"        : "black",
+#           "data_type"    : "green",
+#           # "comment"         : "green",
+#           # "integer"         : "darkorange",
+#           # "string"          : "cyan",
+#           "other"        : "orange",
+#           }
+#
+#   NODE_SPECS = {
+#           "Class"    : {
+#                   "colour"   : "red",
+#                   "shape"    : "rectangle",
+#                   "fillcolor": "red",
+#                   "style"    : "filled",
+#                   },
+#           "member"   : {
+#                   "colour"   : "orange",
+#                   "shape"    : "",
+#                   "fillcolor": "white",
+#                   "style"    : "filled",
+#                   },
+#           "primitive": {
+#                   "colour"   : "blue",
+#                   "shape"    : "rectangle",
+#                   "fillcolor": "white",
+#                   "style"    : "filled",
+#                   },
+#           "ROOT"     : {
+#                   "colour"   : "red",
+#                   "shape"    : "rectangle",
+#                   "fillcolor": "white",
+#                   "style"    : "filled",
+#                   },
+#           "linked"   : {
+#                   "colour"   : "green",
+#                   "shape"    : "rectangle",
+#                   "fillcolor": "white",
+#                   "style"    : "filled",
+#                   },
+#           "other"    : {
+#                   "colour"   : None,
+#                   "shape"    : None,
+#                   "fillcolor": None,
+#                   "style"    : None,
+#                   },
+#           }
+#   NODE_SPECS["linked"] = NODE_SPECS["Class"]
+#
+#   def __init__(self, graph_name, graph_triples, class_names):
+#     self.classes = class_names
+#     self.triples = graph_triples
+#     self.dot = Digraph(graph_name)
+#     self.dot.graph_attr["rankdir"] = "LR"
+#
+#   def addNode(self, node, type):
+#     try:
+#       specs = self.NODE_SPECS[type]
+#     except:
+#       specs = self.NODE_SPECS["other"]
+#
+#     self.dot.node(node,
+#                   color=specs["colour"],
+#                   shape=specs["shape"],
+#                   fillcolor=specs["fillcolor"],
+#                   style=specs["style"],
+#                   )
+#
+#   def addEdge(self, From, To, type, dir):
+#     pass
+#     try:
+#       colour = self.EDGE_COLOURS[type]
+#     except:
+#       colour = self.EDGE_COLOURS["other"]
+#     if dir == -1:
+#       self.dot.edge(From, To,
+#                     color=colour,
+#                     label=type
+#                     )
+#     elif dir == 1:
+#         self.dot.edge(To, From,
+#                       color=colour,
+#                       label=type
+#                       )
+#
+#   def makeMe(self, root):
+#     self.addNode(root,"Class")
+#     self.__makeGraph(origin=[root], stack=[])
+#
+#
+#   def __makeGraph(self, origin=[], stack=[]):
+#     for q in self.triples:
+#       if q not in stack:
+#         s, p, o, dir = q
+#         # print("processing",s,p,o)
+#         if s != origin:
+#           # if o in items:
+#             # if s != "":
+#             type = RULES[p]
+#             self.addNode(o, type)
+#             self.addEdge(s,o, p, dir)
+#             stack.append(q)  # (s, p, o))
+#             self.__makeGraph(origin=s, stack=stack)
+#     return
 
 
 class BackEnd():

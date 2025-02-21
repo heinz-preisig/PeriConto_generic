@@ -1,5 +1,5 @@
 """
-automaton definition for PeriConto
+automaton definition for BrickSchema
 """
 from graphviz import Digraph
 
@@ -19,21 +19,21 @@ UI_state = {
                            "ontology_save",
                            "ontology_save_as",
                            # "tabs",
-                        "brick_create",
+                           "brick_create",
                            ],
                 "except": [],
                 "action": ["createOntology",
                            "putBrickList",
-                           "markChanged",],
+                           "markChanged", ],
                 },
         "load ontology"                 : {
                 "show"  : ["exit",
                            # "tabs",
                            "brick_create",
                            "brick_list",
-                        "ontology_create",
-                        # "tree_create",
-                        # "tree_list",
+                           "ontology_create",
+                           # "tree_create",
+                           # "tree_list",
                            ],
                 "except": [],
                 "action": ["loadOntology",
@@ -225,7 +225,7 @@ UI_state = {
                 },
         "asks for adding an item"       : {
                 "show": ["exit",
-                           "tree_visualise",
+                         "tree_visualise",
                          "ontology_save",
                          "ontology_save_as",
                          # "tabs",
@@ -248,7 +248,7 @@ UI_state = {
                 "action": ["getExistingItemNames",
                            "markChanged", ],
                 },
-        "Value rename"         : {
+        "Value rename"                  : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -267,7 +267,7 @@ UI_state = {
                            "putBrickDataTuples",
                            ],
                 },
-        "Item rename"         : {
+        "Item rename"                   : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -376,7 +376,7 @@ UI_state = {
                 "show"  : ["do_nothing"],
                 "action": ["saveBricks"],
                 },
-        "save as"                          : {
+        "save as"                       : {
                 "show"  : ["do_nothing"],
                 "action": ["saveBricksWithNewName"],
                 },
@@ -387,30 +387,32 @@ UI_state = {
         }
 
 NODE_SPECS = {
-          "event"    : {
-                  "colour"   : "red",
-                  "shape"    : "rectangle",
-                  "fillcolor": "red",
-                  "style"    : "filled",
-                  },
-          "show"   : {
-                  "colour"   : "orange",
-                  "shape"    : "",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "action": {
-                  "colour"   : "blue",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          }
-EDGE_COLOURS = {
-          "event"     : "red",
-          "show"    : "blue",
-          "action": "darkorange",
+        "event" : {
+                "colour"   : "red",
+                "shape"    : "rectangle",
+                "fillcolor": "red",
+                "style"    : "filled",
+                },
+        "show"  : {
+                "colour"   : "orange",
+                "shape"    : "",
+                "fillcolor": "white",
+                "style"    : "filled",
+                },
+        "action": {
+                "colour"   : "blue",
+                "shape"    : "rectangle",
+                "fillcolor": "white",
+                "style"    : "filled",
+                },
         }
+EDGE_COLOURS = {
+        "event" : "red",
+        "show"  : "blue",
+        "action": "darkorange",
+        }
+
+
 class AutomatonPlot:
 
   def __init__(self):
@@ -423,18 +425,18 @@ class AutomatonPlot:
       dot = self.dot
       specs = NODE_SPECS["event"]
       dot.node(n,
-                  color=specs["colour"],
-                  shape=specs["shape"],
-                  fillcolor=specs["fillcolor"],
-                  style=specs["style"],
+               color=specs["colour"],
+               shape=specs["shape"],
+               fillcolor=specs["fillcolor"],
+               style=specs["style"],
                )
-      show_node = "%s show"%n
+      show_node = "%s show" % n
       dot.node(show_node, style="filled", fillcolor="orange")
       dot.edge(n, show_node,
                color="green")
-      dot.edge(n,show_node,
-                  color="red",
-                  )
+      dot.edge(n, show_node,
+               color="red",
+               )
       for s in UI_state[n]["show"]:
         dot.node(s,
                  color=specs["colour"],
@@ -442,12 +444,11 @@ class AutomatonPlot:
                  fillcolor=specs["fillcolor"],
                  style=specs["style"],
                  )
-        dot.edge(show_node,s,
+        dot.edge(show_node, s,
                  color="black")
 
-
-      action_node = "%s action"%n
-      dot.node(action_node,style="filled", fillcolor="green")
+      action_node = "%s action" % n
+      dot.node(action_node, style="filled", fillcolor="green")
       dot.edge(n, action_node)
       for a in UI_state[n]["action"]:
         dot.node(a,
@@ -461,8 +462,7 @@ class AutomatonPlot:
 
 
 if __name__ == "__main__":
-  import sys
   g = AutomatonPlot()
   g.makeAutomatonPlot()
-  file_name="automaton"
+  file_name = "automaton"
   g.dot.render(file_name, format="pdf")
