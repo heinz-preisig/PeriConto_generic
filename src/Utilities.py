@@ -284,6 +284,29 @@ if __name__ == "__main__":
    first_I:item1 rdfs:member first: .
    '''
 
+  data3 = """
+  @prefix k: <http://example.org/k> .
+  @prefix k_I: <http://example.org/k#> .
+  @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+  @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+  
+  k: a rdfs:Class .
+  
+  "" xsd:boolean k_I:b .
+  
+  "123" xsd:integer k_I:i .
+  
+  k_I:b rdf:value k: .
+  
+  k_I:i rdf:value k_I:item11 .
+  
+  k_I:item1 rdfs:member k: .
+  
+  k_I:item11 rdfs:member k_I:item1 .
+  
+  """
+
 #   data2 = '''  @prefix first: <http://example.org/first> .
 # @prefix first_I: <http://example.org/first#> .
 # @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -355,15 +378,16 @@ if __name__ == "__main__":
 
   print("============================================================")
   g2 = Graph()
-  g2.parse(data=data2, format="turtle")
+  g2.parse(data=data3, format="turtle")
 
-  root = URIRef("http://example.org/first")
-  neighbour = URIRef("http://example.org/first#log")
-  leave = Literal("o")
+  root = URIRef("http://example.org/k")
+  neighbour = URIRef("http://example.org/k#i")
+  leave = Literal("123")
 
-  triple = (neighbour, RDFSTerms["boolean"], leave)
+  triple = (neighbour, RDFSTerms["integer"], leave)
+  triple_ = (leave, RDFSTerms["integer"], neighbour)
 
 
-  path = find_path_back_triples(g2, triple, root)
+  path = find_path_back_triples(g2, triple_, root)
   for t in path:
     print(t)

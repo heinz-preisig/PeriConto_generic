@@ -1,6 +1,7 @@
 import copy
 import os
 
+import rdflib
 from rdflib import ConjunctiveGraph
 from rdflib import Graph
 from rdflib import Literal
@@ -261,11 +262,13 @@ class DataModel:
     pass
 
   def __renameURI(self, newName, oldName, uri):
+    if uri.__class__ == rdflib.term.Literal:  # handle Literals
+      return uri
     uri_name = extractNameFromIRI(uri)
-    if (oldName in uri) and ("#" in uri):
+    if (oldName in uri) and ("#" in uri):     # handle instances
       uri_new = URIRef(makeItemURI(newName, uri_name))
     else:
-      uri_new = URIRef(makeClassURI(newName))
+      uri_new = URIRef(makeClassURI(newName)) # handle classes
     return uri_new
 
   def renameItem(self, brick, item, newName):
@@ -364,7 +367,7 @@ class DataModel:
     for primitive in RDF_PRIMITIVES:
       triple = None, primitive, None
       for s,p,o in graph.triples(triple):
-        if o != Literal(""):
+        if s != Literal(""):
           keep_target.append((s,p,o))
 
     root = URIRef(makeClassURI(tree_name))
@@ -379,28 +382,29 @@ class DataModel:
 
     if paths != set():
       tree_name_instantiated = tree_name+"_i"
-      tree_name = tree_name_instantiated
 
-      self.tree_name_space = makeClassURI(tree_name)
-      self.tree_name_space_item = makeItemURI(tree_name, "")
+      self.tree_name_space = makeClassURI(tree_name_instantiated)
+      self.tree_name_space_item = makeItemURI(tree_name_instantiated, "")
 
-      self.brick_counter[tree_name] = 0
-      g = self.TREE_GRAPHS[tree_name] = Graph("Memory")
+      self.brick_counter[tree_name_instantiated] = 0
+      g = self.TREE_GRAPHS[tree_name_instantiated] = Graph("Memory")
 
-      classURI = makeClassURI(tree_name)
-      self.namespaces[tree_name] = classURI
+      classURI = makeClassURI(tree_name_instantiated)
+      self.namespaces[tree_name_instantiated] = classURI
       triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
-      self.TREE_GRAPHS[tree_name].add(triple)
+      self.TREE_GRAPHS[tree_name_instantiated].add(triple)
 
       # self.TREE_GRAPHS[tree_name].bind(tree_name + "_%s" % self.brick_counter[tree_name],
       #                                  brick_name_space)
-      self.TREE_GRAPHS[tree_name].bind(tree_name,
+      self.TREE_GRAPHS[tree_name_instantiated].bind(tree_name_instantiated,
                                        self.tree_name_space)
-      self.TREE_GRAPHS[tree_name].bind(tree_name,
+      self.TREE_GRAPHS[tree_name_instantiated].bind(tree_name_instantiated,
                                        self.tree_name_space_item)
       pass
-      for t in paths:
-        g.add(t)
+      for s,p,o in paths:
+        s_new = self.__renameURI(tree_name_instantiated, tree_name, s)
+        o_new = self.__renameURI(tree_name_instantiated, tree_name, o)
+        g.add((s_new, p, o_new))
 
 
 
