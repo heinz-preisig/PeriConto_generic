@@ -40,7 +40,7 @@ class BackEnd():
   def processEvent(self, message):
     debugging(">>>> message ", message)
     event = message["event"]
-    self.fail = False
+    # self.fail = False
     for a in self.UI_state[event]["action"]:
       if a == "loadOntology":
         self.loadOntology(message)
@@ -81,19 +81,19 @@ class BackEnd():
       if self.UI_state[event]["show"][0] == "do_nothing":
         return
 
-    if (not event) or self.fail:
-      event = self.previousEvent
+    # if (not event) or self.fail:
+    #   event = self.previousEvent
 
-    if not self.fail:
-      ui_state = self.UI_state[event]
-      self.frontEnd.setInterface(ui_state["show"])
-      # debugging("show what", ui_state["show"])
-      self.previousEvent = event
-    else:
-      for a in self.UI_state[event]["except"]:
-        c = "self.%s(message)" % a
-        r = exec(c)
-        debugging("execute:", c)
+    # if not self.fail:
+    ui_state = self.UI_state[event]
+    self.frontEnd.setInterface(ui_state["show"])
+    self.previousEvent = event
+    # else:
+    #   print(" process event ????????????????????   should not come here")
+      # for a in self.UI_state[event]["except"]:
+      #   c = "self.%s(message)" % a
+      #   r = exec(c)
+      #   debugging("execute:", c)
 
     self.memory.update(message)
 

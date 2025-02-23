@@ -70,17 +70,12 @@ class DataModel:
     s = str(s)
     try:
       ss = s.split("#")[-1].split("_")[0]
-      # print(ss)
     except:
       ss = None
     if ss.isnumeric():
       no = int(ss)
     else:
       no = -1
-    # for i in str(ss):
-    #   if i.isnumeric():
-    #     n += i
-    # print(n, int(n))
     return no
 
   def makeFileName(self, project_name, what=None):
@@ -93,7 +88,7 @@ class DataModel:
 
     GRAPHS = {}
     for i in data.contexts():
-      Class = str(i.identifier).split("/")[-1]
+      Class = str(i.identifier).split("#")[-1]
       GRAPHS[Class] = data._graph(i.identifier)
 
     namespaces = {}
@@ -135,13 +130,14 @@ class DataModel:
     else:
       graphs = self.TREE_GRAPHS
     graphs[brick_name] = Graph()
-    self.classURI = makeClassURI(brick_name)
-    self.itemURI = makeItemURI(brick_name, "")
-    triple = (URIRef(self.classURI), RDFSTerms["is_class"], RDFSTerms["class"])
+    # self.classURI = makeClassURI(brick_name)
+    classURI = makeItemURI(brick_name, brick_name)
+    itemURI = makeItemURI(brick_name, "")
+    triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
     graphs[brick_name].add(triple)
-    graphs[brick_name].bind(brick_name, self.classURI)
-    self.namespaces[brick_name] = self.classURI
-    graphs[brick_name].bind(brick_name, self.itemURI)
+    graphs[brick_name].bind(brick_name, classURI)
+    self.namespaces[brick_name] = classURI
+    graphs[brick_name].bind(brick_name, itemURI)
     pass
 
   def getAllNamesInTheBrick(self, graphName, what):
@@ -163,17 +159,13 @@ class DataModel:
     return names
 
   def removeItem(self, brick, item):
-    subject = self.makeURI(brick, item)
+    subject = URIRef(makeItemURI(brick, item))
     triple = (subject, None, None)
     for t in self.BRICK_GRAPHS[brick].triples(triple):
       self.BRICK_GRAPHS[brick].remove(t)
     triple = (None, None, subject)
     for t in self.BRICK_GRAPHS[brick].triples(triple):
       self.BRICK_GRAPHS[brick].remove(t)
-
-  def makeURI(self, Class, identifier):
-    uri = URIRef(self.namespaces[Class] + "#" + identifier)
-    return uri
 
   def addItem(self, Class, ClassOrSubClass, name):
     g = self.BRICK_GRAPHS[Class]
@@ -244,7 +236,7 @@ class DataModel:
     self.newBrickOrTreeGraph(brickORtrees, newName)
     # self.BRICK_GRAPHS[newName] = Graph()
     new_graph = what_graphs[newName]
-    self.namespaces[newName] = Namespace(makeClassURI(newName))
+    self.namespaces[newName] = Namespace(makeItemURI(newName, newName))  # Namespace(makeClassURI(newName))
     old_graph = what_graphs[oldName]
 
     for s, p, o in old_graph.triples((None, None, None)):
@@ -263,10 +255,10 @@ class DataModel:
     if uri.__class__ == rdflib.term.Literal:  # handle Literals
       return uri
     uri_name = extractNameFromIRI(uri)
-    if (oldName in uri) and ("#" in uri):  # handle instances
-      uri_new = URIRef(makeItemURI(newName, uri_name))
-    else:
-      uri_new = URIRef(makeClassURI(newName))  # handle classes
+    if uri_name == oldName:  # handle classes
+      uri_name = newName
+
+    uri_new = URIRef(makeItemURI(newName, uri_name))
     return uri_new
 
   def renameItem(self, brick, item, newName):
@@ -401,8 +393,9 @@ class DataModel:
       for s, p, o in graphs[cl].triples((None, None, None)):
         itemURI = makeItemURI(cl, "")
         classURI = makeClassURI(cl)
-        conjunctiveGraph.bind(cl + "_I", itemURI)
-        conjunctiveGraph.bind(cl, classURI)
+        # conjunctiveGraph.bind(cl + "_I", itemURI)
+        conjunctiveGraph.bind(cl, itemURI)
+        # conjunctiveGraph.bind(cl, classURI)
         conjunctiveGraph.get_context(classURI).add((s, p, o))
     return conjunctiveGraph
 
