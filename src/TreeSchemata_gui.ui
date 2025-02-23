@@ -77,13 +77,6 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QPushButton" name="pushOntologyCreate">
-       <property name="text">
-        <string>create</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="pushOntologyLoad">
        <property name="text">
         <string>load</string>
@@ -221,13 +214,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushCopyTree">
-       <property name="text">
-        <string>copy</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="pushTreeRename">
        <property name="text">
         <string>rename</string>
@@ -249,23 +235,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushDuplicateILinkedtem">
+      <widget class="QPushButton" name="pushRemoveItem">
        <property name="text">
-        <string>duplicate linked item</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushRemoveDuplicateILinkedtem">
-       <property name="text">
-        <string>remove duplicatted item</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushTreeRemoveClassLink">
-       <property name="text">
-        <string>remove class link</string>
+        <string>remove item</string>
        </property>
       </widget>
      </item>

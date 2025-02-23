@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
@@ -207,4 +208,11 @@ class BackEnd():
 
     graph.dot.render(file_name_bricks, format="pdf")
     os.remove(file_name_bricks)
+
+
+    path = file_name_bricks+".pdf"
+    if sys.platform.startswith('linux'):
+      subprocess.Popen(['xdg-open', str(path)])
+    elif sys.platform.startswith('win32'):
+      subprocess.Popen(['start', str(path)], shell=True)
     pass

@@ -70,62 +70,64 @@ def find_path_back_triples(graph, leave_triple, root):
   return path
 
 
+
+EDGE_COLOURS = {
+        "is_class"     : "red",
+        "is_member"    : "blue",
+        "is_defined_by": "darkorange",
+        "value"        : "black",
+        "data_type"    : "green",
+        # "comment"         : "green",
+        # "integer"         : "darkorange",
+        # "string"          : "cyan",
+        "other"        : "orange",
+        }
+
+NODE_SPECS = {
+        "Class"    : {
+                "colour"   : "red",
+                "shape"    : "rectangle",
+                "fillcolor": "red",
+                "style"    : "filled",
+                },
+        "member"   : {
+                "colour"   : "orange",
+                "shape"    : "",
+                "fillcolor": "white",
+                "style"    : "filled",
+                },
+        "primitive": {
+                "colour"   : "blue",
+                "shape"    : "rectangle",
+                "fillcolor": "white",
+                "style"    : "filled",
+                },
+        "ROOT"     : {
+                "colour"   : "red",
+                "shape"    : "rectangle",
+                "fillcolor": "white",
+                "style"    : "filled",
+                },
+        "linked"   : {
+                "colour"   : "green",
+                "shape"    : "rectangle",
+                "fillcolor": "white",
+                "style"    : "filled",
+                },
+        "other"    : {
+                "colour"   : None,
+                "shape"    : None,
+                "fillcolor": None,
+                "style"    : None,
+                },
+        }
+NODE_SPECS["linked"] = NODE_SPECS["Class"]
+
 class TreePlot:
   """
     Create Digraph plot
   """
 
-  EDGE_COLOURS = {
-          "is_class"     : "red",
-          "is_member"    : "blue",
-          "is_defined_by": "darkorange",
-          "value"        : "black",
-          "data_type"    : "green",
-          # "comment"         : "green",
-          # "integer"         : "darkorange",
-          # "string"          : "cyan",
-          "other"        : "orange",
-          }
-
-  NODE_SPECS = {
-          "Class"    : {
-                  "colour"   : "red",
-                  "shape"    : "rectangle",
-                  "fillcolor": "red",
-                  "style"    : "filled",
-                  },
-          "member"   : {
-                  "colour"   : "orange",
-                  "shape"    : "",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "primitive": {
-                  "colour"   : "blue",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "ROOT"     : {
-                  "colour"   : "red",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "linked"   : {
-                  "colour"   : "green",
-                  "shape"    : "rectangle",
-                  "fillcolor": "white",
-                  "style"    : "filled",
-                  },
-          "other"    : {
-                  "colour"   : None,
-                  "shape"    : None,
-                  "fillcolor": None,
-                  "style"    : None,
-                  },
-          }
-  NODE_SPECS["linked"] = NODE_SPECS["Class"]
 
   def __init__(self, graph_name, graph_triples, class_names):
     self.classes = class_names
@@ -135,9 +137,9 @@ class TreePlot:
 
   def addNode(self, node, type):
     try:
-      specs = self.NODE_SPECS[type]
+      specs = NODE_SPECS[type]
     except:
-      specs = self.NODE_SPECS["other"]
+      specs = NODE_SPECS["other"]
 
     self.dot.node(node,
                   color=specs["colour"],
@@ -148,9 +150,9 @@ class TreePlot:
 
   def addEdge(self, From, To, type, dir):
     try:
-      colour = self.EDGE_COLOURS[type]
+      colour = EDGE_COLOURS[type]
     except:
-      colour = self.EDGE_COLOURS["other"]
+      colour = EDGE_COLOURS["other"]
     if dir == -1:
       self.dot.edge(From, To,
                     color=colour,

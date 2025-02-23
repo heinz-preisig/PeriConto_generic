@@ -78,12 +78,12 @@ class OntobuilderUI(QMainWindow):
 
     self.DEBUGG = True
 
-    # roundButton(self.ui.pushLoad, "load", tooltip="load ontology")
-    # roundButton(self.ui.pushCreate, "plus", tooltip="create")
-    # roundButton(self.ui.pushVisualise, "dot_graph", tooltip="visualise ontology")
-    # roundButton(self.ui.pushSave, "save", tooltip="save ontology")
-    # # roundButton(self.ui.pushExit, "exit", tooltip="exit")
-    # roundButton(self.ui.pushSaveAs, "save_as", tooltip="save with new name")
+    roundButton(self.ui.pushOntologyLoad, "load", tooltip="load ontology")
+    # roundButton(self.ui.pushOntologyCreate, "plus", tooltip="create")
+    roundButton(self.ui.pushTreeVisualise, "dot_graph", tooltip="visualise ontology")
+    roundButton(self.ui.pushOntologySave, "save", tooltip="save ontology")
+    roundButton(self.ui.pushExit, "exit", tooltip="exit")
+    roundButton(self.ui.pushOntologySaveAs, "save_as", tooltip="save with new name")
     # roundButton(self.ui.pushBricks, "bricks", tooltip="building bricks mode")
     # roundButton(self.ui.pushTree, "build_tree", tooltip="building tree mode")
     # roundButton(self.ui.pushInstantiate, "instantiate_tree", tooltip="instantiate tree mode")
@@ -115,7 +115,6 @@ class OntobuilderUI(QMainWindow):
 
     self.gui_objects = {
             "exit"                    : self.ui.pushExit,
-            "ontology_create"         : self.ui.pushOntologyCreate,
             "ontology_load"           : self.ui.pushOntologyLoad,
             "ontology_save"           : self.ui.pushOntologySave,
             "ontology_save_as"        : self.ui.pushOntologySaveAs,
@@ -123,15 +122,12 @@ class OntobuilderUI(QMainWindow):
             "tree_delete"             : self.ui.pushDeleteTree,
             "tree_rename"             : self.ui.pushTreeRename,
             "item_insert"             : self.ui.pushBrickAddItem,
+            "remove_item"             : self.ui.pushRemoveItem,
             "tree_reduce"             : self.ui.pushTreeReduce,
             "tree_list"               : self.ui.listTrees,
             "tree_link_existing_class": self.ui.pushTreeLinkExistingClass,
-            "tree_remove_class_link"  : self.ui.pushTreeRemoveClassLink,
             "tree_visualise"          : self.ui.pushTreeVisualise,
             "tree_tree"               : self.ui.treeTree,
-            "copy_tree"               : self.ui.pushCopyTree,
-            "duplicate_item"          : self.ui.pushDuplicateILinkedtem,
-            "remove_duplicated_item"  : self.ui.pushRemoveDuplicateILinkedtem,
             }
 
   def setRules(self, rules, primitives):
@@ -227,6 +223,14 @@ class OntobuilderUI(QMainWindow):
                "item_name": item_name}
     self.backend.processEvent(message)
 
+
+  def on_pushRemoveItem_pressed(self):
+    debugging("-- pushRemoveItem")
+    event = "asks for adding an item"
+    message = {"event"    : "remove item",
+               }
+    self.backend.processEvent(message)
+
   def on_pushTreeLinkExistingClass_pressed(self):
     debugging("-- pushTreeLinkExistingClass")
     dialog = UI_stringSelector("select brick",
@@ -238,22 +242,10 @@ class OntobuilderUI(QMainWindow):
                }
     self.backend.processEvent(message)
 
-  def on_pushTreeRemoveClassLink_pressed(self):
-    debugging("-- pushTreeRemoveClassLink")
-
   def on_pushTreeReduce_pressed(self):
     debugging("-- pushTreeInstantiate")
     message = {"event": "reduce"}
     self.backend.processEvent(message)
-
-  def on_pushCopyTree_pressed(self):
-    debugging("-- pushCopyTree")
-
-  def on_pushDuplicateILinkedtem_pressed(self):
-    debugging("-- pushDuplicateILinkedtem")
-
-  def on_pushRemoveDuplicateILinkedtem_pressed(self):
-    debugging("-- pushRemoveDuplicateILinkedtem")
 
   def on_pushTreeVisualise_pressed(self):
     message = {"event": "visualise"}
