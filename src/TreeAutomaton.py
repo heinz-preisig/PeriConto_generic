@@ -74,7 +74,6 @@ UI_state = {
                         "markChanged",
                         ],
                 },
-
         "%s in treeTree selected" % RULES["is_class"]     : {  # class in tree selected
                 "show"  : ["exit",
                            "tree_visualise",
@@ -87,7 +86,6 @@ UI_state = {
                 "except": [],
                 "action": [],
                 },
-
         "%s in treeTree selected" % RULES["is_member"]    : {  # member selected
                 "show"  : ["exit",
                            "tree_visualise",
@@ -96,11 +94,11 @@ UI_state = {
                            "tree_list",
                            "tree_tree",
                            "item_insert",
+                           "remove_item",
                            ],
                 "except": [],
                 "action": [],
                 },
-
         "item in treeTree selected can be linked"         : {  # linkable member selected
                 "show"  : ["exit",
                            "tree_visualise",
@@ -114,7 +112,6 @@ UI_state = {
                 "except": [],
                 "action": [],
                 },
-
         "%s in treeTree selected" % RULES["is_defined_by"]: {  # linked member selected
                 "show"  : ["exit",
                            "tree_visualise",
@@ -127,7 +124,6 @@ UI_state = {
                 "except": [],
                 "action": [],
                 },
-
         "%s in treeTree selected" % RULES["value"]        : {  # value selected
                 "show"  : ["exit",
                            "tree_visualise",
@@ -140,7 +136,6 @@ UI_state = {
                 "except": [],
                 "action": [],
                 },
-
         "%s in treeTree selected" % RULES["integer"]      : {
                 "show"  : ["exit",
                            "tree_visualise",
@@ -203,6 +198,20 @@ UI_state = {
                            "getTreeDataTuples"
                            ],
                 },
+        "remove item"                         : {
+                "show"  : ["exit",
+                           "tree_visualise",
+                           "ontology_save",
+                           "ontology_save_as",
+                           "tree_list",
+                           "tree_tree",
+                           ],
+                "except": [],
+                "action": ["removeItem",
+                           "markChanged",
+                           "getTreeDataTuples"
+                           ],
+                },
         "got primitive"                                   : {
                 "show"  : ["exit",
                            "tree_visualise",
@@ -223,10 +232,11 @@ UI_state = {
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
-                           # "tree_tree",
+                           "tree_tree",
                            ],
                 "except": [],
                 "action": ["addLink",
+                           "getTreeDataTuples",
                            "markChanged"],
                 },
         "reduce"                                          : {

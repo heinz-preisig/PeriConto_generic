@@ -68,7 +68,9 @@ class BackEnd():
         self.markChanged(message)
       elif a == "addLink":
         self.addLink(message)
-      elif a == "addItem":
+      elif a == "removeItem":
+        self.removeItem(message)
+      elif a == "removeItem":
         self.addItem(message)
       elif a == "instantiatePrimitive":
         self.instantiatePrimitive(message)
@@ -125,12 +127,23 @@ class BackEnd():
     pass
 
   def addItem(self, message):
-    item_name = message["item_name"]
-    tree_name = self.memory["tree_name"]
     tree_item_name = self.memory["tree_item_name"]
+    item_name = message["item_name"]
+    if "_" in tree_item_name:
+      no,_ = tree_item_name.split("_")
+      item_name_ = "%s_"%no + item_name
+    else:
+      item_name_ = item_name
+    tree_name = self.memory["tree_name"]
     self.dataModel.addItemToTree(tree_name,
                                  tree_item_name,
-                                 item_name)
+                                 item_name_)
+    pass
+
+  def removeItem(self, message):
+    tree_item_name = self.memory["tree_item_name"]
+    tree_name = self.memory["tree_name"]
+    self.dataModel.removeItem("trees", tree_name, tree_item_name)
     pass
 
   def instantiatePrimitive(self, message):

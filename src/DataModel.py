@@ -158,14 +158,22 @@ class DataModel:
       names.add(o)
     return names
 
-  def removeItem(self, brick, item):
+  def removeItem(self, what_type_of_graph, brick, item):
     subject = URIRef(makeItemURI(brick, item))
     triple = (subject, None, None)
-    for t in self.BRICK_GRAPHS[brick].triples(triple):
-      self.BRICK_GRAPHS[brick].remove(t)
+    self.__removeItemFromGraph(what_type_of_graph, brick, subject, triple)
+
+  def __removeItemFromGraph(self, what_type_of_graph, name, subject, triple):
+    if what_type_of_graph == "bricks":
+      graph = self.BRICK_GRAPHS[name]
+    else:
+      graph = self.TREE_GRAPHS[name]
+    for t in graph.triples(triple):
+      graph.remove(t)
+
     triple = (None, None, subject)
-    for t in self.BRICK_GRAPHS[brick].triples(triple):
-      self.BRICK_GRAPHS[brick].remove(t)
+    for t in graph.triples(triple):
+      graph.remove(t)
 
   def addItem(self, Class, ClassOrSubClass, name):
     g = self.BRICK_GRAPHS[Class]

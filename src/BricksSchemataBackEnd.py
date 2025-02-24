@@ -194,7 +194,7 @@ class BackEnd():
   def removeItemFromBrickTree(self, message):
     name = self.memory["item"]
     brick = self.memory["brick"]
-    self.dataModel.removeItem(brick, name)
+    self.dataModel.removeItem("bricks",brick, name)
     pass
 
   def visualise(self, message):
