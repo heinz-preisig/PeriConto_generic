@@ -273,10 +273,14 @@ class OntobuilderUI(QMainWindow):
   def on_treeTree_itemClicked(self, item, column):
     name = item.text(column)
     type = item.type
-    parent_name = item.parent().text(0)
+    if type != "Class":
+      parent_name = item.parent().text(0)
+    else:
+      parent_name = None
     linkpoint = (item.count == 0) and (type == self.rules["is_member"])
     debugging("item count", item.count, linkpoint)
     debugging("-- tree item %s, column %s" % (name, column))
+    event = "do_nothing"
     if not linkpoint:
       if type in self.primitives:
         value = None
