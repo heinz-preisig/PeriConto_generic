@@ -70,8 +70,10 @@ class BackEnd():
         self.addLink(message)
       elif a == "removeItem":
         self.removeItem(message)
-      elif a == "removeItem":
+      elif a == "addItem":
         self.addItem(message)
+      elif a == "renameItem":
+        self.renameItem(message)
       elif a == "instantiatePrimitive":
         self.instantiatePrimitive(message)
       elif a == "extractInstance":
@@ -129,15 +131,29 @@ class BackEnd():
   def addItem(self, message):
     tree_item_name = self.memory["tree_item_name"]
     item_name = message["item_name"]
-    if "_" in tree_item_name:
-      no,_ = tree_item_name.split("_")
-      item_name_ = "%s_"%no + item_name
-    else:
-      item_name_ = item_name
+    item_name_with_number = self.__getNameWithBrickNumber(item_name, tree_item_name)
     tree_name = self.memory["tree_name"]
     self.dataModel.addItemToTree(tree_name,
                                  tree_item_name,
-                                 item_name_)
+                                 item_name_with_number)
+    pass
+
+  def __getNameWithBrickNumber(self, item_name, tree_item_name):
+    if "_" in tree_item_name:
+      no, _ = tree_item_name.split("_")
+      item_name_ = "%s_" % no + item_name
+    else:
+      item_name_ = item_name
+    return item_name_
+
+  def renameItem(self, message):
+    tree_item_name = self.memory["tree_item_name"]
+    item_name = message["item_name"]
+    item_name_with_number = self.__getNameWithBrickNumber(item_name, tree_item_name)
+    tree_name = self.memory["tree_name"]
+    self.dataModel.renameItemInTree(tree_name,
+                                 tree_item_name,
+                                 item_name_with_number)
     pass
 
   def removeItem(self, message):
@@ -161,6 +177,9 @@ class BackEnd():
     if link_position:
       tree_item_name = self.memory["tree_item_name"]
       brick_name = message["brick_name"]
+      if not brick_name:
+        return
+
       tree_name = self.memory["tree_name"]
       self.dataModel.linkBrickToItem(tree_name,
                                      tree_item_name,

@@ -16,16 +16,28 @@ Global:Global {
 
     Global:2_node rdfs:member Global:2_GRAPH .
 
-    Global:control rdfs:member Global:Global .
+    Global:3_TOKENS rdfs:isDefinedBy Global:informationTokens .
 
-    Global:information_processing rdfs:member Global:Global .
+    Global:4_TOKENS rdfs:isDefinedBy Global:physicalTokens .
 
-    Global:physical rdfs:member Global:Global .
+    Global:5_TOKENS rdfs:isDefinedBy Global:controlTokens .
+
+    Global:controlTokens rdfs:member Global:control .
+
+    Global:informationTokens rdfs:member Global:information .
+
+    Global:physicalTokens rdfs:member Global:physical .
 
     Global:0_GRAPH rdfs:isDefinedBy Global:control .
 
-    Global:1_GRAPH rdfs:isDefinedBy Global:information_processing .
+    Global:1_GRAPH rdfs:isDefinedBy Global:information .
 
     Global:2_GRAPH rdfs:isDefinedBy Global:physical .
+
+    Global:control rdfs:member Global:Global .
+
+    Global:information rdfs:member Global:Global .
+
+    Global:physical rdfs:member Global:Global .
 }
 

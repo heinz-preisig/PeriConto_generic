@@ -209,7 +209,7 @@ class OntobuilderUI(QMainWindow):
   def askForItemName(self, prompt, existing_names):
     dialog = UI_String(prompt,
                        placeholdertext="item name",
-                       limiting_list=existing_names)
+                       limiting_list=existing_names, validator="name")
     name = dialog.text
     return name
 
@@ -346,7 +346,7 @@ class OntobuilderUI(QMainWindow):
             else:
               item.setText(0, s)
             items[s] = item
-            debugging("items", s, p, o)
+            # debugging("items", s, p, o)
             self.__makeTree(tuples, origin=s, stack=stack, items=items)
 
 

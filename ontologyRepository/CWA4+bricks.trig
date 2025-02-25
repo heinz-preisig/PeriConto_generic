@@ -10,7 +10,7 @@ DOMAIN:DOMAIN {
 
     DOMAIN:control rdfs:member DOMAIN:DOMAIN .
 
-    DOMAIN:information_processing rdfs:member DOMAIN:DOMAIN .
+    DOMAIN:information rdfs:member DOMAIN:DOMAIN .
 
     DOMAIN:physical rdfs:member DOMAIN:DOMAIN .
 }

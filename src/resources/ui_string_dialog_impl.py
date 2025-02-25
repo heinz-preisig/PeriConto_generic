@@ -88,6 +88,8 @@ class UI_String(QtWidgets.QDialog):
         val = r"^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$"
       elif validator == "boolean":
         val = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
+      elif validator == "name":
+        val = r"^[a-zA-Z][a-zA-Z0-9]*$"
       else:
         print(">>>> schould not come here, wrong validator", validator)
 
@@ -174,6 +176,6 @@ if __name__ == '__main__':
   # var_exp = r"^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$"
   # var_bool = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
   # var_url = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
-  w = UI_String("give name", placeholdertext="name", limiting_list=["1"], validator="integer")
+  w = UI_String("give name", placeholdertext="name", limiting_list=["1"], validator="name")
   w.show()
   print((w.text))

@@ -270,21 +270,28 @@ class DataModel:
     return uri_new
 
   def renameItem(self, brick, item, newName):
+    g = self.BRICK_GRAPHS[brick]
+    self.__renameItem(brick, g, item, newName)
+    pass
+
+  def renameItemInTree(self, brick, item, newName):
+    g = self.TREE_GRAPHS[brick]
+    self.__renameItem(brick, g, item, newName)
+    pass
+
+  def __renameItem(self, brick, g, item, newName):
     item_uri = URIRef(makeItemURI(brick, item))
     new_item_uri = URIRef(makeItemURI(brick, newName))
-    g = self.BRICK_GRAPHS[brick]
     triple = (item_uri, None, None)
     for s, p, o in g.triples(triple):
       g.remove((s, p, o))
       new_triple = (new_item_uri, p, o)
       g.add(new_triple)
-
     triple = None, None, item_uri
     for s, p, o in g.triples(triple):
       g.remove((s, p, o))
       new_triple = (s, p, new_item_uri)
       g.add(new_triple)
-    pass
 
   def __attachBrick(self, brick_name, link_point, s_or_o, tree_name):
     counter = self.brick_counter[tree_name]
