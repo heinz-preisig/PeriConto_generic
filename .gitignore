@@ -1,8 +1,91 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Sphinx documentation
+docs/_build/
+
+# Environments
+.env
 .venv
-.vscode
-**/__pycache__/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm-project.org/#use-with-ide
+.pdm.toml
+.pdm-python
+.pdm-build/
+
+# compiled resource files
+resource_rc.py
+resource.py
+
+# Parser files
+packages/Common/classes/parser.out
+packages/Common/classes/parsetab.py
+
+# Vscode settings
+.vscode/
+
+# Latex and others
+*.dvi
+*.ps
+*.aux
+*.bbl
+*.blg
+*.log
+*.pyc
 .idea
-../base_ontology.*
-../coatedProduct.*
-../periconto_instantiated.*
-../notes
+
