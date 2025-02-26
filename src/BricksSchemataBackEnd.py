@@ -77,6 +77,8 @@ class BackEnd():
         self.saveBricksWithNewName(message)
       elif a == "visualise":
         self.visualise(message)
+      else:
+        print("oooops -- no such command: ",a)
 
     if len(self.UI_state[event]["show"]) > 0:
       if self.UI_state[event]["show"][0] == "do_nothing":
@@ -145,7 +147,7 @@ class BackEnd():
     name_ = self.frontEnd.askForItemName("provide new item name", existing_names)
     if not name_:
       return
-    name = str(name_).lower()  # rule items are lower case
+    name = str(name_).title().replace(" ","")  # rule items are camel case
     if name:
       ClassOrSubClass = self.memory["item"]
       if message["event"] == "ask for adding a primitive":
@@ -166,7 +168,7 @@ class BackEnd():
     brick_names = self.dataModel.getBrickList()
     newName = self.frontEnd.askForItemName("provide new name for brick %s" % brick, brick_names)
     if newName:
-      self.dataModel.renameBrick(brick, newName.upper())
+      self.dataModel.renameBrick(brick, newName.upper())  #RULE: brick names are in capitals
       bricks = self.dataModel.getBrickList()
       self.frontEnd.showBrickList(bricks)
 
@@ -186,7 +188,7 @@ class BackEnd():
     item_names = self.dataModel.getAllNamesInTheBrick(brick, "brick")
     newName = self.frontEnd.askForItemName("provide new name for item %s" % item_name, item_names)
     if newName:
-      self.dataModel.renameItem(brick, item_name, newName)
+      self.dataModel.renameItem(brick, item_name, newName.title())
 
       self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick, "bricks")
       self.frontEnd.showBrickTree(self.dataBrickTuples, brick)

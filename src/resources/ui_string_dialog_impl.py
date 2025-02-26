@@ -75,6 +75,7 @@ class UI_String(QtWidgets.QDialog):
     # self.ui.pushReject.setFocus()
     self.ui.lineEdit.setFocus()
 
+    val=None
     if validator:
       self.ui.lineEdit.setPlaceholderText(validator)
     elif placeholdertext:
@@ -89,7 +90,7 @@ class UI_String(QtWidgets.QDialog):
       elif validator == "boolean":
         val = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
       elif validator == "name":
-        val = r"^[a-zA-Z][a-zA-Z0-9]*$"
+        val = r"^([a-zA-Z][a-zA-Z0-9]+\s)*$"
       else:
         print(">>>> schould not come here, wrong validator", validator)
 
@@ -178,4 +179,7 @@ if __name__ == '__main__':
   # var_url = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
   w = UI_String("give name", placeholdertext="name", limiting_list=["1"], validator="name")
   w.show()
-  print((w.text))
+  s = w.text
+  print(s)
+  z = s.title().replace(" ","")
+  print(z)

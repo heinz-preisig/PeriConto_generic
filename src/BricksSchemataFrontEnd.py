@@ -74,12 +74,12 @@ class OntobuilderUI(QMainWindow):
 
     self.DEBUGG = True
 
-    # roundButton(self.ui.pushLoad, "load", tooltip="load ontology")
-    # roundButton(self.ui.pushCreate, "plus", tooltip="create")
-    # roundButton(self.ui.pushVisualise, "dot_graph", tooltip="visualise ontology")
-    # roundButton(self.ui.pushSave, "save", tooltip="save ontology")
-    # # roundButton(self.ui.pushExit, "exit", tooltip="exit")
-    # roundButton(self.ui.pushSaveAs, "save_as", tooltip="save with new name")
+    roundButton(self.ui.pushOntologyLoad, "load", tooltip="load ontology")
+    roundButton(self.ui.pushOntologyCreate, "plus", tooltip="create")
+    roundButton(self.ui.pushTreeVisualise, "dot_graph", tooltip="visualise ontology")
+    roundButton(self.ui.pushOntologySave, "save", tooltip="save ontology")
+    roundButton(self.ui.pushExit, "exit", tooltip="exit")
+    roundButton(self.ui.pushOntologySaveAs, "save_as", tooltip="save with new name")
     # roundButton(self.ui.pushBricks, "bricks", tooltip="building bricks mode")
     # roundButton(self.ui.pushTree, "build_tree", tooltip="building tree mode")
     # roundButton(self.ui.pushInstantiate, "instantiate_tree", tooltip="instantiate tree mode")

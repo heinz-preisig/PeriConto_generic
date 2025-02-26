@@ -175,18 +175,22 @@ class DataModel:
     for t in graph.triples(triple):
       graph.remove(t)
 
+    triple = (subject, None, None)
+    for t in graph.triples(triple):
+      graph.remove(t)
+
   def addItem(self, Class, ClassOrSubClass, name):
     g = self.BRICK_GRAPHS[Class]
     self.__addItemToGraph(Class, ClassOrSubClass, g, name)
 
   def __addItemToGraph(self, Class, ClassOrSubClass, g, name):
-    self.classURI = makeClassURI(Class)
-    self.itemURI = makeItemURI(Class, "")
+    classURI = makeClassURI(Class)
+    itemURI = makeItemURI(Class, "")
     if Class == ClassOrSubClass:
-      o = URIRef(self.classURI)  # makeClassURI(Class))
+      o = URIRef(classURI)  # makeClassURI(Class))
     else:
-      o = URIRef(self.itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
-    s = URIRef(self.itemURI + name)  # self.makeURI(Class, name)
+      o = URIRef(itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
+    s = URIRef(itemURI + name)  # self.makeURI(Class, name)
     triple = (s, RDFSTerms["is_member"], o)
     g.add(triple)
     pass
@@ -197,13 +201,13 @@ class DataModel:
 
   def addPrimitive(self, Class, ClassOrSubClass, name, type):
 
-    self.classURI = makeClassURI(Class)
-    self.itemURI = makeItemURI(Class, "")
+    classURI = makeClassURI(Class)
+    itemURI = makeItemURI(Class, "")
     if Class == ClassOrSubClass:
-      s = URIRef(self.namespaces[Class])
+      s = URIRef(classURI) #URIRef(self.namespaces[Class])
     else:
-      s = URIRef(self.itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
-    o = URIRef(self.itemURI + name)  # self.makeURI(Class, name)
+      s = URIRef(itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
+    o = URIRef(itemURI + name)  # self.makeURI(Class, name)
     triple = (o, RDFSTerms["value"], s)
     self.BRICK_GRAPHS[Class].add(triple)
     oo = Literal("")
@@ -311,9 +315,11 @@ class DataModel:
       # rule: keep brick name
       self.tree_name_space = makeClassURI(tree_name)
       self.tree_name_space_item = makeItemURI(tree_name, "")
-      triple = (URIRef(self.tree_name_space_item + "%s_%s" % (counter, brick_name)),  # URIRef(self.tree_name_space_item + "%s"%self.brick_counter[tree_name],brick_name),
+      s_ = URIRef(self.tree_name_space_item + "%s_%s" % (counter, brick_name))
+      o_ = URIRef(self.tree_name_space_item + tree_item_name)
+      triple = (s_,  # URIRef(self.tree_name_space_item + "%s"%self.brick_counter[tree_name],brick_name),
                 RDFSTerms["is_defined_by"],
-                URIRef(self.tree_name_space_item + tree_item_name))  # makeItemURI(tree_name, tree_item_name)))
+                o_)  # makeItemURI(tree_name, tree_item_name)))
       triple_ = triple[2], triple[1], triple[0]
       tree_graph.add(triple)
       pass
@@ -333,7 +339,9 @@ class DataModel:
         triple = s_new, p, o_new
         tree_graph.add(triple)
       else:
-        # print("class found s,p,o", s,p,o)
+        print("class found s,p,o", s,p,o)   # note: adding linked node as class
+        triple = s_, RDFSTerms["is_class"], RDFSTerms["class"]
+        tree_graph.add(triple)
         pass
     self.brick_counter[tree_name] += 1
     pass

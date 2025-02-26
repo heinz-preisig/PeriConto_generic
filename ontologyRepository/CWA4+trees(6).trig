@@ -1,4 +1,3 @@
-@prefix GLOBAL: <http://example.org/GLOBAL#> .
 @prefix Global: <http://example.org/Global#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
@@ -40,42 +39,5 @@ Global:Global {
     Global:information rdfs:member Global:Global .
 
     Global:physical rdfs:member Global:Global .
-}
-
-GLOBAL:GLOBAL {
-    GLOBAL:0_GRAPH a rdfs:Class ;
-        rdfs:isDefinedBy GLOBAL:information .
-
-    GLOBAL:1_GRAPH a rdfs:Class ;
-        rdfs:isDefinedBy GLOBAL:physical .
-
-    GLOBAL:2_GRAPH a rdfs:Class ;
-        rdfs:isDefinedBy GLOBAL:control .
-
-    GLOBAL:GLOBAL a rdfs:Class .
-
-    GLOBAL:0_arc rdfs:member GLOBAL:0_GRAPH .
-
-    GLOBAL:0_node rdfs:member GLOBAL:0_GRAPH .
-
-    GLOBAL:1_arc rdfs:member GLOBAL:1_GRAPH .
-
-    GLOBAL:1_node rdfs:member GLOBAL:1_GRAPH .
-
-    GLOBAL:2_arc rdfs:member GLOBAL:2_GRAPH .
-
-    GLOBAL:2_node rdfs:member GLOBAL:2_GRAPH .
-
-    GLOBAL:controlTokens rdfs:member GLOBAL:control .
-
-    GLOBAL:informationTokens rdfs:member GLOBAL:information .
-
-    GLOBAL:physicalTokens rdfs:member GLOBAL:physical .
-
-    GLOBAL:control rdfs:member GLOBAL:GLOBAL .
-
-    GLOBAL:information rdfs:member GLOBAL:GLOBAL .
-
-    GLOBAL:physical rdfs:member GLOBAL:GLOBAL .
 }
 
