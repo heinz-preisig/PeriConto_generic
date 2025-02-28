@@ -188,7 +188,7 @@ class BackEnd():
     item_names = self.dataModel.getAllNamesInTheBrick(brick, "brick")
     newName = self.frontEnd.askForItemName("provide new name for item %s" % item_name, item_names)
     if newName:
-      self.dataModel.renameItem(brick, item_name, newName.title())
+      self.dataModel.renameItem(brick, item_name, newName.title().replace(" ",""))
 
       self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick, "bricks")
       self.frontEnd.showBrickTree(self.dataBrickTuples, brick)

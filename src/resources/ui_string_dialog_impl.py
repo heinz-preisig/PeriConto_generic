@@ -60,6 +60,7 @@ class UI_String(QtWidgets.QDialog):
     self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
     self.placeholdertext = placeholdertext
     self.limiting_list = limiting_list
+    self.validator = validator
     self.text = None
 
     roundButton(self.ui.pushAccept, "accept", tooltip="accept")
@@ -92,7 +93,7 @@ class UI_String(QtWidgets.QDialog):
       elif validator == "name":
         val = r"^([a-zA-Z][a-zA-Z0-9]+\s)*$"
       else:
-        print(">>>> schould not come here, wrong validator", validator)
+        print(">>>> should not come here, wrong validator", validator)
 
 
       v = QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(val))
@@ -112,6 +113,9 @@ class UI_String(QtWidgets.QDialog):
     self.text = self.ui.lineEdit.text()
     if len(text) == 0:
       return
+
+    if self.validator == "name":
+      text = text.title().replace(" ","")
 
     if (text in self.limiting_list) or (text[0] == " "):
       self.ui.lineEdit.setStyleSheet("color: red; background-color: white")

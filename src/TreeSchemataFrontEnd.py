@@ -119,7 +119,7 @@ class OntobuilderUI(QMainWindow):
             "ontology_save"           : self.ui.pushOntologySave,
             "ontology_save_as"        : self.ui.pushOntologySaveAs,
             "tree_create"             : self.ui.pushTreeCreate,
-            "tree_delete"             : self.ui.pushDeleteTree,
+            "tree_delete"             : self.ui.pushTreeDelete,
             "tree_rename"             : self.ui.pushTreeRename,
             "item_insert"             : self.ui.pushTreeAddItem,
             "item_rename"             : self.ui.pushItemRename,
@@ -196,7 +196,7 @@ class OntobuilderUI(QMainWindow):
     else:
       return
     message = {"event"     : "new tree",
-               "tree_name" : tree_name,
+               "tree_name" : tree_name.upper(),
                "brick_name": brick_name}
     self.backend.processEvent(message)
 
@@ -208,11 +208,13 @@ class OntobuilderUI(QMainWindow):
     else:
       event = "rename tree"
       message = {"event"    : event,
-                 "tree_name": tree_name}
+                 "tree_name": tree_name.upper()}
       self.backend.processEvent(message)
 
-  def on_pushDeleteTree_pressed(self):
+  def on_pushTreeDelete_pressed(self):
     debugging("-- pushDeleteTree")
+    message = {"event" : "delete tree"}
+    self.backend.processEvent(message)
 
   def on_pushTreeAddItem_pressed(self):
     debugging("-- pushBrickAddItem")

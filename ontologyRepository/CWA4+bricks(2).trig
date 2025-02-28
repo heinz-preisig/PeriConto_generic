@@ -3,28 +3,7 @@
 @prefix FRAME: <http://example.org/FRAME#> .
 @prefix GRAPH: <http://example.org/GRAPH#> .
 @prefix TOKENS: <http://example.org/TOKENS#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-FRAME:FRAME {
-    FRAME:FRAME a rdfs:Class .
-
-    FRAME:spatialcoordinate rdfs:member FRAME:FRAME .
-
-    FRAME:time rdfs:member FRAME:FRAME .
-}
-
-TOKENS:TOKENS {
-    TOKENS:TOKENS a rdfs:Class .
-
-    "" xsd:boolean TOKENS:Energy,
-            TOKENS:Mass .
-
-    TOKENS:Energy rdf:value TOKENS:TOKENS .
-
-    TOKENS:Mass rdf:value TOKENS:TOKENS .
-}
 
 DOMAIN:DOMAIN {
     DOMAIN:DOMAIN a rdfs:Class .
@@ -46,5 +25,17 @@ GRAPH:GRAPH {
 
 CAPACITY:CAPACITY {
     CAPACITY:CAPACITY a rdfs:Class .
+}
+
+TOKENS:TOKENS {
+    TOKENS:TOKENS a rdfs:Class .
+}
+
+FRAME:FRAME {
+    FRAME:FRAME a rdfs:Class .
+
+    FRAME:spatialcoordinate rdfs:member FRAME:FRAME .
+
+    FRAME:time rdfs:member FRAME:FRAME .
 }
 

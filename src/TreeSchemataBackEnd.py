@@ -52,10 +52,10 @@ class BackEnd():
         self.createTree(message)
       elif a == "newTree":
         self.newTree(message)
-      # elif a == "rememberTreeSelection":
-      #   self.rememberTreeSelection(message)
       elif a == "renameTree":
         self.renameTree(message)
+      elif a == "deleteTree":
+        self.deleteTree(message)
       elif a == "getTreeDataTuples":
         self.getTreeDataTuples(message)
       elif a == "saveTrees":
@@ -224,6 +224,10 @@ class BackEnd():
     new_name = message["tree_name"]
     self.dataModel.renameTree(old_name, new_name)
     pass
+
+  def deleteTree(self, message):
+    tree_name = self.memory["tree_name"]
+    self.dataModel.deleteTree(tree_name)
 
   def putBricksListForTree(self, message):
     brick_list = self.dataModel.getBrickList()
