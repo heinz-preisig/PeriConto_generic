@@ -3,6 +3,7 @@ import sys
 
 from BricksAndTreeSemantics import FILE_FORMAT
 from BricksSchemataBackEnd import BackEnd
+from resources.radioButtonDialog import RadioButtonDialog
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -215,9 +216,14 @@ class OntobuilderUI(QMainWindow):
 
   def askForPrimitiveType(self, primitives):
     # self.ui.comboBoxPrimitives.show()
-    dialog = UI_ComboDialog("select primitive", primitives)
-    primitive = dialog.getSelection()
-    return primitive
+    # dialog = UI_ComboDialog("select primitive", primitives)
+    dialog = RadioButtonDialog(primitives)
+    # return primitive
+    if dialog.exec():
+      primitive = dialog.get_selected_option()
+      return str(primitive)
+    else:
+      return None
 
   def on_pushBrickRemoveItem_pressed(self):
     message = {"event": "remove item from brick tree"}  # GUIMessage(event="remove item from brick tree")

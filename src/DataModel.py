@@ -243,9 +243,10 @@ class DataModel:
   def copyBrick(self, brickORtrees, oldName, newName):
     if brickORtrees == "bricks":
       what_graphs = self.BRICK_GRAPHS
-    else:# brickORtrees == "trees":
+    elif brickORtrees == "trees":
       what_graphs = self.TREE_GRAPHS
     self.newBrickOrTreeGraph(brickORtrees, newName)
+    # self.BRICK_GRAPHS[newName] = Graph()
     new_graph = what_graphs[newName]
     self.namespaces[newName] = Namespace(makeItemURI(newName, newName))  # Namespace(makeClassURI(newName))
     old_graph = what_graphs[oldName]
