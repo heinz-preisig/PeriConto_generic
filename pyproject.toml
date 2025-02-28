@@ -1,0 +1,20 @@
+[project]
+name = "PeriConto"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Heinz A Preisig", email = "heinz.preisig@chemeng.ntnu.no"},
+]
+dependencies = [
+    "babel>=2.17.0",
+    "graphviz~=0.20.3",
+    "pyqt6>=6.8.1",
+    "rdflib~=7.0.0",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
