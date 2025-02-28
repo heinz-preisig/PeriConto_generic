@@ -1,0 +1,31 @@
+@prefix CAPACITY: <http://example.org/CAPACITY#> .
+@prefix DOMAIN: <http://example.org/DOMAIN#> .
+@prefix FRAME: <http://example.org/FRAME#> .
+@prefix GRAPH: <http://example.org/GRAPH#> .
+@prefix TOKENS: <http://example.org/TOKENS#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+CAPACITY:CAPACITY a rdfs:Class .
+
+DOMAIN:DOMAIN a rdfs:Class .
+
+FRAME:FRAME a rdfs:Class .
+
+GRAPH:GRAPH a rdfs:Class .
+
+TOKENS:TOKENS a rdfs:Class .
+
+DOMAIN:control rdfs:member DOMAIN:DOMAIN .
+
+DOMAIN:information_processing rdfs:member DOMAIN:DOMAIN .
+
+DOMAIN:physical rdfs:member DOMAIN:DOMAIN .
+
+FRAME:spatialcoordinate rdfs:member FRAME:FRAME .
+
+FRAME:time rdfs:member FRAME:FRAME .
+
+GRAPH:arc rdfs:member GRAPH:GRAPH .
+
+GRAPH:node rdfs:member GRAPH:GRAPH .
+

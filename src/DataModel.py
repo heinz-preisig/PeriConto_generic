@@ -70,17 +70,12 @@ class DataModel:
     s = str(s)
     try:
       ss = s.split("#")[-1].split("_")[0]
-      # print(ss)
     except:
       ss = None
     if ss.isnumeric():
       no = int(ss)
     else:
       no = -1
-    # for i in str(ss):
-    #   if i.isnumeric():
-    #     n += i
-    # print(n, int(n))
     return no
 
   def makeFileName(self, project_name, what=None):
@@ -93,7 +88,7 @@ class DataModel:
 
     GRAPHS = {}
     for i in data.contexts():
-      Class = str(i.identifier).split("/")[-1]
+      Class = str(i.identifier).split("#")[-1]
       GRAPHS[Class] = data._graph(i.identifier)
 
     namespaces = {}
@@ -135,13 +130,14 @@ class DataModel:
     else:
       graphs = self.TREE_GRAPHS
     graphs[brick_name] = Graph()
-    self.classURI = makeClassURI(brick_name)
-    self.itemURI = makeItemURI(brick_name, "")
-    triple = (URIRef(self.classURI), RDFSTerms["is_class"], RDFSTerms["class"])
+    # self.classURI = makeClassURI(brick_name)
+    classURI = makeItemURI(brick_name, brick_name)
+    itemURI = makeItemURI(brick_name, "")
+    triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
     graphs[brick_name].add(triple)
-    graphs[brick_name].bind(brick_name, self.classURI)
-    self.namespaces[brick_name] = self.classURI
-    graphs[brick_name].bind(brick_name, self.itemURI)
+    graphs[brick_name].bind(brick_name, classURI)
+    self.namespaces[brick_name] = classURI
+    graphs[brick_name].bind(brick_name, itemURI)
     pass
 
   def getAllNamesInTheBrick(self, graphName, what):
@@ -162,31 +158,39 @@ class DataModel:
       names.add(o)
     return names
 
-  def removeItem(self, brick, item):
-    subject = self.makeURI(brick, item)
+  def removeItem(self, what_type_of_graph, brick, item):
+    subject = URIRef(makeItemURI(brick, item))
     triple = (subject, None, None)
-    for t in self.BRICK_GRAPHS[brick].triples(triple):
-      self.BRICK_GRAPHS[brick].remove(t)
-    triple = (None, None, subject)
-    for t in self.BRICK_GRAPHS[brick].triples(triple):
-      self.BRICK_GRAPHS[brick].remove(t)
+    self.__removeItemFromGraph(what_type_of_graph, brick, subject, triple)
 
-  def makeURI(self, Class, identifier):
-    uri = URIRef(self.namespaces[Class] + "#" + identifier)
-    return uri
+  def __removeItemFromGraph(self, what_type_of_graph, name, subject, triple):
+    if what_type_of_graph == "bricks":
+      graph = self.BRICK_GRAPHS[name]
+    else:
+      graph = self.TREE_GRAPHS[name]
+    for t in graph.triples(triple):
+      graph.remove(t)
+
+    triple = (None, None, subject)
+    for t in graph.triples(triple):
+      graph.remove(t)
+
+    triple = (subject, None, None)
+    for t in graph.triples(triple):
+      graph.remove(t)
 
   def addItem(self, Class, ClassOrSubClass, name):
     g = self.BRICK_GRAPHS[Class]
     self.__addItemToGraph(Class, ClassOrSubClass, g, name)
 
   def __addItemToGraph(self, Class, ClassOrSubClass, g, name):
-    self.classURI = makeClassURI(Class)
-    self.itemURI = makeItemURI(Class, "")
+    classURI = makeClassURI(Class)
+    itemURI = makeItemURI(Class, "")
     if Class == ClassOrSubClass:
-      o = URIRef(self.classURI)  # makeClassURI(Class))
+      o = URIRef(classURI)  # makeClassURI(Class))
     else:
-      o = URIRef(self.itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
-    s = URIRef(self.itemURI + name)  # self.makeURI(Class, name)
+      o = URIRef(itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
+    s = URIRef(itemURI + name)  # self.makeURI(Class, name)
     triple = (s, RDFSTerms["is_member"], o)
     g.add(triple)
     pass
@@ -197,13 +201,13 @@ class DataModel:
 
   def addPrimitive(self, Class, ClassOrSubClass, name, type):
 
-    self.classURI = makeClassURI(Class)
-    self.itemURI = makeItemURI(Class, "")
+    classURI = makeClassURI(Class)
+    itemURI = makeItemURI(Class, "")
     if Class == ClassOrSubClass:
-      s = URIRef(self.namespaces[Class])
+      s = URIRef(classURI) #URIRef(self.namespaces[Class])
     else:
-      s = URIRef(self.itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
-    o = URIRef(self.itemURI + name)  # self.makeURI(Class, name)
+      s = URIRef(itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
+    o = URIRef(itemURI + name)  # self.makeURI(Class, name)
     triple = (o, RDFSTerms["value"], s)
     self.BRICK_GRAPHS[Class].add(triple)
     oo = Literal("")
@@ -244,7 +248,7 @@ class DataModel:
     self.newBrickOrTreeGraph(brickORtrees, newName)
     # self.BRICK_GRAPHS[newName] = Graph()
     new_graph = what_graphs[newName]
-    self.namespaces[newName] = Namespace(makeClassURI(newName))
+    self.namespaces[newName] = Namespace(makeItemURI(newName, newName))  # Namespace(makeClassURI(newName))
     old_graph = what_graphs[oldName]
 
     for s, p, o in old_graph.triples((None, None, None)):
@@ -263,28 +267,35 @@ class DataModel:
     if uri.__class__ == rdflib.term.Literal:  # handle Literals
       return uri
     uri_name = extractNameFromIRI(uri)
-    if (oldName in uri) and ("#" in uri):  # handle instances
-      uri_new = URIRef(makeItemURI(newName, uri_name))
-    else:
-      uri_new = URIRef(makeClassURI(newName))  # handle classes
+    if uri_name == oldName:  # handle classes
+      uri_name = newName
+
+    uri_new = URIRef(makeItemURI(newName, uri_name))
     return uri_new
 
   def renameItem(self, brick, item, newName):
+    g = self.BRICK_GRAPHS[brick]
+    self.__renameItem(brick, g, item, newName)
+    pass
+
+  def renameItemInTree(self, brick, item, newName):
+    g = self.TREE_GRAPHS[brick]
+    self.__renameItem(brick, g, item, newName)
+    pass
+
+  def __renameItem(self, brick, g, item, newName):
     item_uri = URIRef(makeItemURI(brick, item))
     new_item_uri = URIRef(makeItemURI(brick, newName))
-    g = self.BRICK_GRAPHS[brick]
     triple = (item_uri, None, None)
     for s, p, o in g.triples(triple):
       g.remove((s, p, o))
       new_triple = (new_item_uri, p, o)
       g.add(new_triple)
-
     triple = None, None, item_uri
     for s, p, o in g.triples(triple):
       g.remove((s, p, o))
       new_triple = (s, p, new_item_uri)
       g.add(new_triple)
-    pass
 
   def __attachBrick(self, brick_name, link_point, s_or_o, tree_name):
     counter = self.brick_counter[tree_name]
@@ -304,9 +315,11 @@ class DataModel:
       # rule: keep brick name
       self.tree_name_space = makeClassURI(tree_name)
       self.tree_name_space_item = makeItemURI(tree_name, "")
-      triple = (URIRef(self.tree_name_space_item + "%s_%s" % (counter, brick_name)),  # URIRef(self.tree_name_space_item + "%s"%self.brick_counter[tree_name],brick_name),
+      s_ = URIRef(self.tree_name_space_item + "%s_%s" % (counter, brick_name))
+      o_ = URIRef(self.tree_name_space_item + tree_item_name)
+      triple = (s_,  # URIRef(self.tree_name_space_item + "%s"%self.brick_counter[tree_name],brick_name),
                 RDFSTerms["is_defined_by"],
-                URIRef(self.tree_name_space_item + tree_item_name))  # makeItemURI(tree_name, tree_item_name)))
+                o_)  # makeItemURI(tree_name, tree_item_name)))
       triple_ = triple[2], triple[1], triple[0]
       tree_graph.add(triple)
       pass
@@ -326,7 +339,9 @@ class DataModel:
         triple = s_new, p, o_new
         tree_graph.add(triple)
       else:
-        # print("class found s,p,o", s,p,o)
+        print("class found s,p,o", s,p,o)   # note: adding linked node as class
+        triple = s_, RDFSTerms["is_class"], RDFSTerms["class"]
+        tree_graph.add(triple)
         pass
     self.brick_counter[tree_name] += 1
     pass
@@ -401,8 +416,9 @@ class DataModel:
       for s, p, o in graphs[cl].triples((None, None, None)):
         itemURI = makeItemURI(cl, "")
         classURI = makeClassURI(cl)
-        conjunctiveGraph.bind(cl + "_I", itemURI)
-        conjunctiveGraph.bind(cl, classURI)
+        # conjunctiveGraph.bind(cl + "_I", itemURI)
+        conjunctiveGraph.bind(cl, itemURI)
+        # conjunctiveGraph.bind(cl, classURI)
         conjunctiveGraph.get_context(classURI).add((s, p, o))
     return conjunctiveGraph
 

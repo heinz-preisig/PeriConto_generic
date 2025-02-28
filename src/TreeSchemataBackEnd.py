@@ -40,7 +40,7 @@ class BackEnd():
   def processEvent(self, message):
     debugging(">>>> message ", message)
     event = message["event"]
-    self.fail = False
+    # self.fail = False
     for a in self.UI_state[event]["action"]:
       if a == "loadOntology":
         self.loadOntology(message)
@@ -68,8 +68,12 @@ class BackEnd():
         self.markChanged(message)
       elif a == "addLink":
         self.addLink(message)
+      elif a == "removeItem":
+        self.removeItem(message)
       elif a == "addItem":
         self.addItem(message)
+      elif a == "renameItem":
+        self.renameItem(message)
       elif a == "instantiatePrimitive":
         self.instantiatePrimitive(message)
       elif a == "extractInstance":
@@ -81,19 +85,19 @@ class BackEnd():
       if self.UI_state[event]["show"][0] == "do_nothing":
         return
 
-    if (not event) or self.fail:
-      event = self.previousEvent
+    # if (not event) or self.fail:
+    #   event = self.previousEvent
 
-    if not self.fail:
-      ui_state = self.UI_state[event]
-      self.frontEnd.setInterface(ui_state["show"])
-      # debugging("show what", ui_state["show"])
-      self.previousEvent = event
-    else:
-      for a in self.UI_state[event]["except"]:
-        c = "self.%s(message)" % a
-        r = exec(c)
-        debugging("execute:", c)
+    # if not self.fail:
+    ui_state = self.UI_state[event]
+    self.frontEnd.setInterface(ui_state["show"])
+    self.previousEvent = event
+    # else:
+    #   print(" process event ????????????????????   should not come here")
+      # for a in self.UI_state[event]["except"]:
+      #   c = "self.%s(message)" % a
+      #   r = exec(c)
+      #   debugging("execute:", c)
 
     self.memory.update(message)
 
@@ -125,12 +129,37 @@ class BackEnd():
     pass
 
   def addItem(self, message):
-    item_name = message["item_name"]
-    tree_name = self.memory["tree_name"]
     tree_item_name = self.memory["tree_item_name"]
+    item_name = message["item_name"]
+    item_name_with_number = self.__getNameWithBrickNumber(item_name, tree_item_name)
+    tree_name = self.memory["tree_name"]
     self.dataModel.addItemToTree(tree_name,
                                  tree_item_name,
-                                 item_name)
+                                 item_name_with_number)
+    pass
+
+  def __getNameWithBrickNumber(self, item_name, tree_item_name):
+    if "_" in tree_item_name:
+      no, _ = tree_item_name.split("_")
+      item_name_ = "%s_" % no + item_name
+    else:
+      item_name_ = item_name
+    return item_name_
+
+  def renameItem(self, message):
+    tree_item_name = self.memory["tree_item_name"]
+    item_name = message["item_name"]
+    item_name_with_number = self.__getNameWithBrickNumber(item_name, tree_item_name)
+    tree_name = self.memory["tree_name"]
+    self.dataModel.renameItemInTree(tree_name,
+                                 tree_item_name,
+                                 item_name_with_number)
+    pass
+
+  def removeItem(self, message):
+    tree_item_name = self.memory["tree_item_name"]
+    tree_name = self.memory["tree_name"]
+    self.dataModel.removeItem("trees", tree_name, tree_item_name)
     pass
 
   def instantiatePrimitive(self, message):
@@ -148,6 +177,9 @@ class BackEnd():
     if link_position:
       tree_item_name = self.memory["tree_item_name"]
       brick_name = message["brick_name"]
+      if not brick_name:
+        return
+
       tree_name = self.memory["tree_name"]
       self.dataModel.linkBrickToItem(tree_name,
                                      tree_item_name,

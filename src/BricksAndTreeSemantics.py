@@ -73,6 +73,7 @@ DIRECTION = {
 
 def makeClassURI(name):
   ns = Namespace(CLASS_IDENTIFIERS + name)
+  ns = Namespace(ITEM_IDENTIFIERS % (name) + name)
   return ns
 
 

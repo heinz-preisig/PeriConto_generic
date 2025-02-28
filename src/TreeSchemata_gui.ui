@@ -194,7 +194,7 @@
      <rect>
       <x>20</x>
       <y>210</y>
-      <width>202</width>
+      <width>174</width>
       <height>337</height>
      </rect>
     </property>
@@ -216,14 +216,21 @@
      <item>
       <widget class="QPushButton" name="pushTreeRename">
        <property name="text">
-        <string>rename</string>
+        <string>tree rename</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushBrickAddItem">
+      <widget class="QPushButton" name="pushTreeAddItem">
        <property name="text">
         <string>add item</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushItemRename">
+       <property name="text">
+        <string>item rename</string>
        </property>
       </widget>
      </item>

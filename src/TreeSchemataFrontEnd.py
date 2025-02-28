@@ -121,7 +121,8 @@ class OntobuilderUI(QMainWindow):
             "tree_create"             : self.ui.pushTreeCreate,
             "tree_delete"             : self.ui.pushDeleteTree,
             "tree_rename"             : self.ui.pushTreeRename,
-            "item_insert"             : self.ui.pushBrickAddItem,
+            "item_insert"             : self.ui.pushTreeAddItem,
+            "item_rename"             : self.ui.pushItemRename,
             "remove_item"             : self.ui.pushRemoveItem,
             "tree_reduce"             : self.ui.pushTreeReduce,
             "tree_list"               : self.ui.listTrees,
@@ -147,7 +148,7 @@ class OntobuilderUI(QMainWindow):
   def askForItemName(self, prompt, existing_names):
     dialog = UI_String(prompt,
                        placeholdertext="item name",
-                       limiting_list=existing_names)
+                       limiting_list=existing_names, validator="name")
     # dialog.exec()
     name = dialog.text
     return name
@@ -213,7 +214,7 @@ class OntobuilderUI(QMainWindow):
   def on_pushDeleteTree_pressed(self):
     debugging("-- pushDeleteTree")
 
-  def on_pushBrickAddItem_pressed(self):
+  def on_pushTreeAddItem_pressed(self):
     debugging("-- pushBrickAddItem")
     item_name = self.askForItemName("item name", self.existing_item_names)
     if not item_name:
@@ -222,6 +223,17 @@ class OntobuilderUI(QMainWindow):
     message = {"event"    : event,
                "item_name": item_name}
     self.backend.processEvent(message)
+
+  def on_pushItemRename_pressed(self):
+    debugging("-- pushItemRename")
+    item_name = self.askForItemName("item name", self.existing_item_names)
+    if not item_name:
+      return
+    event = "rename item"
+    message = {"event"    : event,
+               "item_name": item_name}
+    self.backend.processEvent(message)
+
 
 
   def on_pushRemoveItem_pressed(self):
@@ -273,10 +285,14 @@ class OntobuilderUI(QMainWindow):
   def on_treeTree_itemClicked(self, item, column):
     name = item.text(column)
     type = item.type
-    parent_name = item.parent().text(0)
+    if type != "Class":
+      parent_name = item.parent().text(0)
+    else:
+      parent_name = None
     linkpoint = (item.count == 0) and (type == self.rules["is_member"])
     debugging("item count", item.count, linkpoint)
     debugging("-- tree item %s, column %s" % (name, column))
+    event = "do_nothing"
     if not linkpoint:
       if type in self.primitives:
         value = None
