@@ -147,7 +147,7 @@ class BackEnd():
     name_ = self.frontEnd.askForItemName("provide new item name", existing_names)
     if not name_:
       return
-    name = str(name_).title()  # rule items are lower case
+    name = str(name_).title().replace(" ","")  # rule items are lower case
     if name:
       ClassOrSubClass = self.memory["item"]
       if message["event"] == "ask for adding a primitive":

@@ -103,7 +103,7 @@ class DataModel:
       graph = self.BRICK_GRAPHS[graphName]
     else:
       graph = self.TREE_GRAPHS[graphName]
-    debugging(graph.serialize(format="trig"))
+    # debugging(graph.serialize(format="trig"))
     tuples_plus = []
     for subject, predicate, object in graph.triples((None, None, None)):
       debugging("--", subject, predicate, object)
