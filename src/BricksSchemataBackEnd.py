@@ -8,6 +8,7 @@ from BricksAndTreeSemantics import RULES
 from BricksAutomaton import UI_state
 from DataModel import DataModel
 from Utilities import TreePlot
+from Utilities import camelCase
 from Utilities import debugging
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -147,7 +148,7 @@ class BackEnd():
     name_ = self.frontEnd.askForItemName("provide new item name", existing_names)
     if not name_:
       return
-    name = str(name_).title().replace(" ","")  # rule items are lower case
+    name = camelCase(name_) # str(name_).title().replace(" ","")  # rule items are lower case
     if name:
       ClassOrSubClass = self.memory["item"]
       if message["event"] == "ask for adding a primitive":
@@ -188,7 +189,7 @@ class BackEnd():
     item_names = self.dataModel.getAllNamesInTheBrick(brick, "brick")
     newName = self.frontEnd.askForItemName("provide new name for item %s" % item_name, item_names)
     if newName:
-      self.dataModel.renameItem(brick, item_name, newName.title().replace(" ",""))
+      self.dataModel.renameItem(brick, item_name, camelCase(newName)) #newName.title().replace(" ",""))
 
       self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick, "bricks")
       self.frontEnd.showBrickTree(self.dataBrickTuples, brick)

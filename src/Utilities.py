@@ -7,6 +7,9 @@ from BricksAndTreeSemantics import RULES
 
 DEBUGG = False
 
+def camelCase(sentence):
+  camel = sentence.title().replace(" ","")
+  return camel
 
 def debugging(*info):
   if DEBUGG:
@@ -66,6 +69,11 @@ def find_path_back_triples(graph, leave_triple, root):
         if not p in RDF_PRIMITIVES:
           now = o
           path.append(t)
+
+    # try:
+    #   now == root
+    # except:
+    #   pass
 
   return path
 

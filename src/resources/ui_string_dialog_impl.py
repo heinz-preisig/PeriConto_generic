@@ -24,6 +24,7 @@ from PyQt6 import QtCore
 from PyQt6 import QtGui
 from PyQt6 import QtWidgets
 
+from Utilities import camelCase
 from resources_icons import roundButton
 # from ui_string_dialog import  Ui_Dialog
 from ui_string_dialog import Ui_Dialog
@@ -115,7 +116,7 @@ class UI_String(QtWidgets.QDialog):
       return
 
     if self.validator == "name":
-      text = text.title().replace(" ","")
+      text = camelCase(text) #text.title().replace(" ","")
 
     if (text in self.limiting_list) or (text[0] == " "):
       self.ui.lineEdit.setStyleSheet("color: red; background-color: white")
@@ -185,5 +186,5 @@ if __name__ == '__main__':
   w.show()
   s = w.text
   print(s)
-  z = s.title().replace(" ","")
+  z = camelCase(s) # s.title().replace(" ","")
   print(z)

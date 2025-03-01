@@ -1,37 +1,42 @@
-@prefix GLOBAL: <http://example.org/GLOBAL#> .
+@prefix BASE: <http://example.org/BASE#> .
 @prefix Global: <http://example.org/Global#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-GLOBAL:0_GRAPH a rdfs:Class ;
-    rdfs:isDefinedBy GLOBAL:information .
+BASE:0_GRAPH a rdfs:Class ;
+    rdfs:isDefinedBy BASE:Physical .
 
-GLOBAL:1_GRAPH a rdfs:Class ;
-    rdfs:isDefinedBy GLOBAL:physical .
+BASE:1_GRAPH a rdfs:Class ;
+    rdfs:isDefinedBy BASE:Information .
 
-GLOBAL:2_GRAPH a rdfs:Class ;
-    rdfs:isDefinedBy GLOBAL:control .
+BASE:2_GRAPH a rdfs:Class ;
+    rdfs:isDefinedBy BASE:Control .
 
-GLOBAL:GLOBAL a rdfs:Class .
+BASE:3_TOKENS a rdfs:Class ;
+    rdfs:isDefinedBy BASE:PhysicalTokens .
+
+BASE:4_TOKENS a rdfs:Class ;
+    rdfs:isDefinedBy BASE:ControlTokens .
+
+BASE:5_TOKENS a rdfs:Class ;
+    rdfs:isDefinedBy BASE:InformationTokens .
+
+BASE:BASE a rdfs:Class .
 
 Global:Global a rdfs:Class .
 
-GLOBAL:0_arc rdfs:member GLOBAL:0_GRAPH .
+BASE:0_Arc rdfs:member BASE:0_GRAPH .
 
-GLOBAL:0_node rdfs:member GLOBAL:0_GRAPH .
+BASE:0_Node rdfs:member BASE:0_GRAPH .
 
-GLOBAL:1_arc rdfs:member GLOBAL:1_GRAPH .
+BASE:1_Arc rdfs:member BASE:1_GRAPH .
 
-GLOBAL:1_node rdfs:member GLOBAL:1_GRAPH .
+BASE:1_Node rdfs:member BASE:1_GRAPH .
 
-GLOBAL:2_arc rdfs:member GLOBAL:2_GRAPH .
+BASE:2_Arc rdfs:member BASE:2_GRAPH .
 
-GLOBAL:2_node rdfs:member GLOBAL:2_GRAPH .
-
-GLOBAL:controlTokens rdfs:member GLOBAL:control .
-
-GLOBAL:informationTokens rdfs:member GLOBAL:information .
-
-GLOBAL:physicalTokens rdfs:member GLOBAL:physical .
+BASE:2_Node rdfs:member BASE:2_GRAPH .
 
 Global:0_arc rdfs:member Global:0_GRAPH .
 
@@ -51,17 +56,42 @@ Global:4_TOKENS rdfs:isDefinedBy Global:physicalTokens .
 
 Global:5_TOKENS rdfs:isDefinedBy Global:controlTokens .
 
+"" xsd:boolean BASE:3_Energy,
+        BASE:3_Mass,
+        BASE:4_Energy,
+        BASE:4_Mass,
+        BASE:5_Energy,
+        BASE:5_Mass .
+
+BASE:3_Energy rdf:value BASE:3_TOKENS .
+
+BASE:3_Mass rdf:value BASE:3_TOKENS .
+
+BASE:4_Energy rdf:value BASE:4_TOKENS .
+
+BASE:4_Mass rdf:value BASE:4_TOKENS .
+
+BASE:5_Energy rdf:value BASE:5_TOKENS .
+
+BASE:5_Mass rdf:value BASE:5_TOKENS .
+
+BASE:ControlTokens rdfs:member BASE:Control .
+
+BASE:InformationTokens rdfs:member BASE:Information .
+
+BASE:PhysicalTokens rdfs:member BASE:Physical .
+
 Global:controlTokens rdfs:member Global:control .
 
 Global:informationTokens rdfs:member Global:information .
 
 Global:physicalTokens rdfs:member Global:physical .
 
-GLOBAL:control rdfs:member GLOBAL:GLOBAL .
+BASE:Control rdfs:member BASE:BASE .
 
-GLOBAL:information rdfs:member GLOBAL:GLOBAL .
+BASE:Information rdfs:member BASE:BASE .
 
-GLOBAL:physical rdfs:member GLOBAL:GLOBAL .
+BASE:Physical rdfs:member BASE:BASE .
 
 Global:0_GRAPH rdfs:isDefinedBy Global:control .
 

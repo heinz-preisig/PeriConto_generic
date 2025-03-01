@@ -300,6 +300,10 @@ UI_state = {
                 "show"  : ["do_nothing"],
                 "action": ["visualise"],
                 },
+        "do_nothing"                                       : {
+                "show"  : ["do_nothing"],
+                "action": [],
+                },
         }
 
 NODE_SPECS = {

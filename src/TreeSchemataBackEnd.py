@@ -8,6 +8,7 @@ from BricksAndTreeSemantics import RULES
 from DataModel import DataModel
 from TreeAutomaton import UI_state
 from Utilities import TreePlot
+from Utilities import camelCase
 from Utilities import debugging
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -130,7 +131,7 @@ class BackEnd():
 
   def addItem(self, message):
     tree_item_name = self.memory["tree_item_name"]
-    item_name = message["item_name"]
+    item_name = camelCase(message["item_name"])  #.title().replace(" ","")
     item_name_with_number = self.__getNameWithBrickNumber(item_name, tree_item_name)
     tree_name = self.memory["tree_name"]
     self.dataModel.addItemToTree(tree_name,
