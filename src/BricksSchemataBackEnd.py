@@ -169,7 +169,7 @@ class BackEnd():
     brick_names = self.dataModel.getBrickList()
     newName = self.frontEnd.askForItemName("provide new name for brick %s" % brick, brick_names)
     if newName:
-      self.dataModel.renameBrick(brick, newName.upper())  #RULE: brick names are in capitals
+      self.dataModel.renameBrick(brick, classCase(newName)) #.upper())  #RULE: brick names are in capitals
       bricks = self.dataModel.getBrickList()
       self.frontEnd.showBrickList(bricks)
 

@@ -18,6 +18,7 @@ import sys
 
 from BricksAndTreeSemantics import FILE_FORMAT
 from TreeSchemataBackEnd import BackEnd
+from Utilities import classCase
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -120,6 +121,7 @@ class OntobuilderUI(QMainWindow):
             "ontology_save_as"        : self.ui.pushOntologySaveAs,
             "tree_create"             : self.ui.pushTreeCreate,
             "tree_delete"             : self.ui.pushTreeDelete,
+            "tree_copy"               : self.ui.pushTreeCopy,
             "tree_rename"             : self.ui.pushTreeRename,
             "item_insert"             : self.ui.pushTreeAddItem,
             "item_rename"             : self.ui.pushItemRename,
@@ -196,19 +198,30 @@ class OntobuilderUI(QMainWindow):
     else:
       return
     message = {"event"     : "new tree",
-               "tree_name" : tree_name.upper(),
+               "tree_name" : classCase(tree_name), #.upper(),
                "brick_name": brick_name}
     self.backend.processEvent(message)
 
   def on_pushTreeRename_pressed(self):
-    dialog = UI_String("new_tree name", limiting_list=self.treeList)
+    dialog = UI_String("new_tree name", limiting_list=self.treeList, validator="name")
     tree_name = dialog.text
     if not tree_name:
       return
     else:
       event = "rename tree"
       message = {"event"    : event,
-                 "tree_name": tree_name.upper()}
+                 "tree_name": classCase(tree_name)} #.upper()}
+      self.backend.processEvent(message)
+
+  def on_pushTreeCopy_pressed(self):
+    dialog = UI_String("name for the copy", limiting_list=self.treeList, validator="name")
+    tree_name = dialog.text
+    if not tree_name:
+      return
+    else:
+      event = "copy tree"
+      message = {"event"    : event,
+                 "tree_name": classCase(tree_name)} #.upper()}
       self.backend.processEvent(message)
 
   def on_pushTreeDelete_pressed(self):

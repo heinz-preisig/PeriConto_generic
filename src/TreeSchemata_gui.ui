@@ -202,14 +202,14 @@
      <item>
       <widget class="QPushButton" name="pushTreeCreate">
        <property name="text">
-        <string>create</string>
+        <string>create tree</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushTreeDelete">
        <property name="text">
-        <string>delete</string>
+        <string>delete tree</string>
        </property>
       </widget>
      </item>
@@ -221,9 +221,23 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="pushTreeCopy">
+       <property name="text">
+        <string>tree copy</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushTreeAddItem">
        <property name="text">
         <string>add item</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushRemoveItem">
+       <property name="text">
+        <string>remove item</string>
        </property>
       </widget>
      </item>
@@ -238,13 +252,6 @@
       <widget class="QPushButton" name="pushTreeLinkExistingClass">
        <property name="text">
         <string>link existing class</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushRemoveItem">
-       <property name="text">
-        <string>remove item</string>
        </property>
       </widget>
      </item>

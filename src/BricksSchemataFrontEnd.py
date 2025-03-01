@@ -3,6 +3,7 @@ import sys
 
 from BricksAndTreeSemantics import FILE_FORMAT
 from BricksSchemataBackEnd import BackEnd
+from Utilities import classCase
 from resources.radioButtonDialog import RadioButtonDialog
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -148,7 +149,7 @@ class OntobuilderUI(QMainWindow):
     name = dialog.text
     if name:
       event = "create ontology"
-      name = name.upper()
+      name = classCase(name) #.upper()
     else:
       event = "start"
 
@@ -190,7 +191,7 @@ class OntobuilderUI(QMainWindow):
     name = dialog.text
     if name:
       event = "new brick"
-      name = name.upper()
+      name = classCase(name) #name.upper()
     else:
       event = None
     message = {"event": event,

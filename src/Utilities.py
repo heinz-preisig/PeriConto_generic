@@ -11,6 +11,10 @@ def camelCase(sentence):
   camel = sentence.title().replace(" ","")
   return camel
 
+def classCase(word):
+  classCase = word.upper()
+  return classCase
+
 def debugging(*info):
   if DEBUGG:
     print("debugging", info)

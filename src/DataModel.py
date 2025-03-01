@@ -240,6 +240,10 @@ class DataModel:
     self.brick_counter[newName] = self.brick_counter[oldName]
     del self.brick_counter[oldName]
 
+  def copyTree(self, from_name, to_name):
+    self.copyBrick("trees", from_name,to_name)
+    pass
+
   def deleteTree(self, tree_name):
     del self.TREE_GRAPHS[tree_name]
     return

@@ -55,6 +55,8 @@ class BackEnd():
         self.newTree(message)
       elif a == "renameTree":
         self.renameTree(message)
+      elif a == "copyTree":
+        self.copyTree(message)
       elif a == "deleteTree":
         self.deleteTree(message)
       elif a == "getTreeDataTuples":
@@ -85,20 +87,9 @@ class BackEnd():
     if len(self.UI_state[event]["show"]) > 0:
       if self.UI_state[event]["show"][0] == "do_nothing":
         return
-
-    # if (not event) or self.fail:
-    #   event = self.previousEvent
-
-    # if not self.fail:
     ui_state = self.UI_state[event]
     self.frontEnd.setInterface(ui_state["show"])
     self.previousEvent = event
-    # else:
-    #   print(" process event ????????????????????   should not come here")
-      # for a in self.UI_state[event]["except"]:
-      #   c = "self.%s(message)" % a
-      #   r = exec(c)
-      #   debugging("execute:", c)
 
     self.memory.update(message)
 
@@ -126,6 +117,14 @@ class BackEnd():
   def createTree(self, message):
     tree_name = message["tree_name"]
     self.dataModel.newTree(tree_name)
+    self.memory["tree_name"] = tree_name
+    pass
+
+
+  def copyTree(self, message):
+    tree_to_be_copied_name = self.memory["tree_name"]
+    tree_name = message["tree_name"]
+    self.dataModel.copyTree(tree_to_be_copied_name, tree_name)
     self.memory["tree_name"] = tree_name
     pass
 
