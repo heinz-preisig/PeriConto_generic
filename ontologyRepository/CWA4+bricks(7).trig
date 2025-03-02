@@ -1,0 +1,82 @@
+@prefix CAPACITY: <http://example.org/CAPACITY#> .
+@prefix DOMAIN: <http://example.org/DOMAIN#> .
+@prefix FRAME: <http://example.org/FRAME#> .
+@prefix GRAPH: <http://example.org/GRAPH#> .
+@prefix TOKENS: <http://example.org/TOKENS#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+TOKENS:TOKENS {
+    TOKENS:TOKENS a rdfs:Class .
+
+    "" xsd:boolean TOKENS:Energy,
+            TOKENS:Mass .
+
+    TOKENS:Energy rdf:value TOKENS:TOKENS .
+
+    TOKENS:Mass rdf:value TOKENS:TOKENS .
+}
+
+CAPACITY:CAPACITY {
+    CAPACITY:CAPACITY a rdfs:Class .
+
+    CAPACITY:Tokens rdfs:member CAPACITY:CAPACITY .
+
+    CAPACITY:Constant rdf:value CAPACITY:Temporal .
+
+    CAPACITY:D1 rdf:value CAPACITY:Distributed .
+
+    CAPACITY:D2 rdf:value CAPACITY:Distributed .
+
+    CAPACITY:D3 rdf:value CAPACITY:Distributed .
+
+    CAPACITY:Dynamic rdf:value CAPACITY:Temporal .
+
+    CAPACITY:Event rdf:value CAPACITY:Temporal .
+
+    CAPACITY:Lumped rdf:value CAPACITY:Distribution .
+
+    "" xsd:boolean CAPACITY:Constant,
+            CAPACITY:D1,
+            CAPACITY:D2,
+            CAPACITY:D3,
+            CAPACITY:Dynamic,
+            CAPACITY:Event,
+            CAPACITY:Lumped .
+
+    CAPACITY:Characteristics rdfs:member CAPACITY:CAPACITY .
+
+    CAPACITY:Distribution rdfs:member CAPACITY:Characteristics .
+
+    CAPACITY:Distributed rdfs:member CAPACITY:Distribution .
+
+    CAPACITY:Temporal rdfs:member CAPACITY:Characteristics .
+}
+
+GRAPH:GRAPH {
+    GRAPH:GRAPH a rdfs:Class .
+
+    GRAPH:Arc rdfs:member GRAPH:GRAPH .
+
+    GRAPH:Node rdfs:member GRAPH:GRAPH .
+}
+
+DOMAIN:DOMAIN {
+    DOMAIN:DOMAIN a rdfs:Class .
+
+    DOMAIN:Control rdfs:member DOMAIN:DOMAIN .
+
+    DOMAIN:Information rdfs:member DOMAIN:DOMAIN .
+
+    DOMAIN:Physical rdfs:member DOMAIN:DOMAIN .
+}
+
+FRAME:FRAME {
+    FRAME:FRAME a rdfs:Class .
+
+    FRAME:SpatialCoordinate rdfs:member FRAME:FRAME .
+
+    FRAME:Time rdfs:member FRAME:FRAME .
+}
+

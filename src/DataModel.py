@@ -140,6 +140,10 @@ class DataModel:
     graphs[brick_name].bind(brick_name, itemURI)
     pass
 
+  def removeBrick(self, name):
+    del self.BRICK_GRAPHS[name]
+
+
   def getAllNamesInTheBrick(self, graphName, what):
 
     names = set()

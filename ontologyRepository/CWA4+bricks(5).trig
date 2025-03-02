@@ -1,0 +1,65 @@
+@prefix CAPACITY: <http://example.org/CAPACITY#> .
+@prefix DOMAIN: <http://example.org/DOMAIN#> .
+@prefix FRAME: <http://example.org/FRAME#> .
+@prefix GRAPH: <http://example.org/GRAPH#> .
+@prefix TIMESCALE: <http://example.org/TIMESCALE#> .
+@prefix TOKENS: <http://example.org/TOKENS#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+GRAPH:GRAPH {
+    GRAPH:GRAPH a rdfs:Class .
+
+    GRAPH:Arc rdfs:member GRAPH:GRAPH .
+
+    GRAPH:Node rdfs:member GRAPH:GRAPH .
+}
+
+FRAME:FRAME {
+    FRAME:FRAME a rdfs:Class .
+
+    FRAME:SpatialCoordinate rdfs:member FRAME:FRAME .
+
+    FRAME:Time rdfs:member FRAME:FRAME .
+}
+
+CAPACITY:CAPACITY {
+    CAPACITY:CAPACITY a rdfs:Class .
+}
+
+TIMESCALE:TIMESCALE {
+    TIMESCALE:TIMESCALE a rdfs:Class .
+
+    "" xsd:boolean TIMESCALE:Constant,
+            TIMESCALE:Dynamic,
+            TIMESCALE:Event .
+
+    TIMESCALE:Constant rdf:value TIMESCALE:TIMESCALE .
+
+    TIMESCALE:Dynamic rdf:value TIMESCALE:TIMESCALE .
+
+    TIMESCALE:Event rdf:value TIMESCALE:TIMESCALE .
+}
+
+TOKENS:TOKENS {
+    TOKENS:TOKENS a rdfs:Class .
+
+    TOKENS:Energy rdf:value TOKENS:TOKENS .
+
+    TOKENS:Mass rdf:value TOKENS:TOKENS .
+
+    "" xsd:boolean TOKENS:Energy,
+            TOKENS:Mass .
+}
+
+DOMAIN:DOMAIN {
+    DOMAIN:DOMAIN a rdfs:Class .
+
+    DOMAIN:Control rdfs:member DOMAIN:DOMAIN .
+
+    DOMAIN:Information rdfs:member DOMAIN:DOMAIN .
+
+    DOMAIN:Physical rdfs:member DOMAIN:DOMAIN .
+}
+

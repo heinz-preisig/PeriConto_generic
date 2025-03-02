@@ -199,8 +199,9 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_pushBrickRemove_pressed(self):
-    message = {}  # GUIMessage()
-    debugging("--pushBrickRemove  -- not implemented")
+    debugging("--pushBrickRemove")
+    message = {"event" : "remove brick"}  # GUIMessage()
+    self.backend.processEvent(message)
 
   def on_pushBrickAddItem_pressed(self):
     debugging("-- pushBrickAddItem")

@@ -60,6 +60,8 @@ class BackEnd():
         self.putBrickDataTuples(message)
       elif a == "renameBrick":
         self.renameBrick(message)
+      elif a == "removeBrick":
+        self.removeBrick(message)
       elif a == "selectedClassInBrickTree":
         self.selectedClassInBrickTree(message)
       elif a == "selectedItemInBrickTree":
@@ -125,6 +127,10 @@ class BackEnd():
     name = message["name"]
     self.dataModel.newBrickOrTreeGraph("bricks", name)
     self.memory["brick"] = name
+
+  def removeBrick(self, message):
+    name = self.memory["name"]
+    self.dataModel.removeBrick(name)
 
   def putBrickDataTuples(self, message):
     name = self.memory["brick"]  # message["name"]
