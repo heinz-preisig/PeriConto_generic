@@ -150,7 +150,7 @@ class OntobuilderUI(QMainWindow):
   def askForItemName(self, prompt, existing_names):
     dialog = UI_String(prompt,
                        placeholdertext="item name",
-                       limiting_list=existing_names, validator="name")
+                       limiting_list=existing_names, validator="camel")
     # dialog.exec()
     name = dialog.text
     return name

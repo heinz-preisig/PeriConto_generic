@@ -91,8 +91,10 @@ class UI_String(QtWidgets.QDialog):
         val = r"^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$"
       elif validator == "boolean":
         val = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
-      elif validator == "name":
+      elif validator == "camel":
         val = r"^([a-zA-Z][a-zA-Z0-9]+\s)*$"
+      elif validator == "name":
+        val = r"^[a-zA-Z][a-zA-Z0-9]*$"
       else:
         print(">>>> should not come here, wrong validator", validator)
 
@@ -115,7 +117,7 @@ class UI_String(QtWidgets.QDialog):
     if len(text) == 0:
       return
 
-    if self.validator == "name":
+    if self.validator == "camel":
       text = camelCase(text) #text.title().replace(" ","")
 
     if (text in self.limiting_list) or (text[0] == " "):

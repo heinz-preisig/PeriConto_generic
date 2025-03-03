@@ -9,6 +9,7 @@ from BricksAutomaton import UI_state
 from DataModel import DataModel
 from Utilities import TreePlot
 from Utilities import camelCase
+from Utilities import classCase
 from Utilities import debugging
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -171,11 +172,10 @@ class BackEnd():
       pass
 
   def renameBrick(self, message):
-    brick = self.memory["brick"]
-    brick_names = self.dataModel.getBrickList()
-    newName = self.frontEnd.askForItemName("provide new name for brick %s" % brick, brick_names)
-    if newName:
-      self.dataModel.renameBrick(brick, classCase(newName)) #.upper())  #RULE: brick names are in capitals
+    old_name = self.memory["brick"]
+    new_name = message["name"]
+    if new_name:
+      self.dataModel.renameBrick(old_name, classCase(new_name)) #.upper())  #RULE: brick names are in capitals
       bricks = self.dataModel.getBrickList()
       self.frontEnd.showBrickList(bricks)
 
@@ -190,15 +190,15 @@ class BackEnd():
     self.frontEnd.markSaved()
 
   def renameItem(self, message):
-    brick = self.memory["brick"]
+    old_name = self.memory["brick"]
     item_name = self.memory["item"]
-    item_names = self.dataModel.getAllNamesInTheBrick(brick, "brick")
+    item_names = self.dataModel.getAllNamesInTheBrick(old_name, "brick")
     newName = self.frontEnd.askForItemName("provide new name for item %s" % item_name, item_names)
     if newName:
-      self.dataModel.renameItem(brick, item_name, camelCase(newName)) #newName.title().replace(" ",""))
+      self.dataModel.renameItem(old_name, item_name, camelCase(newName)) #newName.title().replace(" ",""))
 
-      self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick, "bricks")
-      self.frontEnd.showBrickTree(self.dataBrickTuples, brick)
+      self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(old_name, "bricks")
+      self.frontEnd.showBrickTree(self.dataBrickTuples, old_name)
 
   def removeItemFromBrickTree(self, message):
     name = self.memory["item"]

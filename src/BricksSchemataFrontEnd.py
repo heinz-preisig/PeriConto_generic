@@ -187,7 +187,7 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushBrickCreate_pressed(self):
     debugging("-- pushBrickCreate")
-    dialog = UI_String("new brick", None, "brick name", self.brickList)
+    dialog = UI_String("new brick", None, "brick name", self.brickList, validator="name")
     name = dialog.text
     if name:
       event = "new brick"
@@ -212,7 +212,7 @@ class OntobuilderUI(QMainWindow):
   def askForItemName(self, prompt, existing_names):
     dialog = UI_String(prompt,
                        placeholdertext="item name",
-                       limiting_list=existing_names, validator="name")
+                       limiting_list=existing_names, validator="camel")
     name = dialog.text
     return name
 
@@ -244,7 +244,15 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushBrickRename_pressed(self):
     event = "rename brick"
-    message = {"event": event}  # GUIMessage(event= event)
+    dialog = UI_String("new brick name", None, "brick name", self.brickList, validator="name")
+    new_name = dialog.text
+    if new_name:
+      event = "rename brick"
+      new_name = classCase(new_name)
+    else:
+      event = None
+    message = {"event": event,
+               "name" : new_name}
     self.backend.processEvent(message)
     debugging("-- pushBrickRename")
 

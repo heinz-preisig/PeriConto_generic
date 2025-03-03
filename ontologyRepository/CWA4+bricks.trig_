@@ -3,6 +3,7 @@
 @prefix DOMAIN: <http://example.org/DOMAIN#> .
 @prefix FRAME: <http://example.org/FRAME#> .
 @prefix GRAPH: <http://example.org/GRAPH#> .
+@prefix ICON: <http://example.org/ICON#> .
 @prefix TEMPORAL: <http://example.org/TEMPORAL#> .
 @prefix TOKENS: <http://example.org/TOKENS#> .
 @prefix TRANSPORT: <http://example.org/TRANSPORT#> .
@@ -20,6 +21,8 @@ FRAME:FRAME a rdfs:Class .
 
 GRAPH:GRAPH a rdfs:Class .
 
+ICON:ICON a rdfs:Class .
+
 TEMPORAL:TEMPORAL a rdfs:Class .
 
 TOKENS:TOKENS a rdfs:Class .
@@ -27,6 +30,8 @@ TOKENS:TOKENS a rdfs:Class .
 TRANSPORT:TRANSPORT a rdfs:Class .
 
 CAPACITY:Distribution rdfs:member CAPACITY:Characteristics .
+
+CAPACITY:Temporal rdfs:member CAPACITY:Characteristics .
 
 CAPACITY:Tokens rdfs:member CAPACITY:CAPACITY .
 
@@ -46,12 +51,9 @@ GRAPH:Node rdfs:member GRAPH:GRAPH .
 
 TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
 
-"" xsd:boolean CAPACITY:Constant,
-        CAPACITY:D1,
+"" xsd:boolean CAPACITY:D1,
         CAPACITY:D2,
         CAPACITY:D3,
-        CAPACITY:Dynamic,
-        CAPACITY:Event,
         DISTRIBUTION:D1,
         DISTRIBUTION:D2,
         DISTRIBUTION:D3,
@@ -67,12 +69,6 @@ TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
         TRANSPORT:Diffusion,
         TRANSPORT:Direct,
         TRANSPORT:Radiation .
-
-CAPACITY:Constant rdf:value CAPACITY:Temporal .
-
-CAPACITY:Dynamic rdf:value CAPACITY:Temporal .
-
-CAPACITY:Event rdf:value CAPACITY:Temporal .
 
 DISTRIBUTION:D1 rdf:value DISTRIBUTION:DISTRIBUTION .
 
@@ -105,6 +101,4 @@ TRANSPORT:Direct rdf:value TRANSPORT:TRANSPORT .
 TRANSPORT:Radiation rdf:value TRANSPORT:TRANSPORT .
 
 CAPACITY:Characteristics rdfs:member CAPACITY:CAPACITY .
-
-CAPACITY:Temporal rdfs:member CAPACITY:Characteristics .
 
