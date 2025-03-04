@@ -1,111 +1,15 @@
 @prefix BASE: <http://example.org/BASE#> .
-@prefix Global: <http://example.org/Global#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 BASE:BASE {
-    BASE:0_GRAPH a rdfs:Class ;
-        rdfs:isDefinedBy BASE:Physical .
-
-    BASE:1_GRAPH a rdfs:Class ;
-        rdfs:isDefinedBy BASE:Information .
-
-    BASE:2_GRAPH a rdfs:Class ;
-        rdfs:isDefinedBy BASE:Control .
-
-    BASE:3_TOKENS a rdfs:Class ;
-        rdfs:isDefinedBy BASE:PhysicalTokens .
-
-    BASE:4_TOKENS a rdfs:Class ;
-        rdfs:isDefinedBy BASE:ControlTokens .
-
-    BASE:5_TOKENS a rdfs:Class ;
-        rdfs:isDefinedBy BASE:InformationTokens .
-
     BASE:BASE a rdfs:Class .
 
-    BASE:0_Arc rdfs:member BASE:0_GRAPH .
-
-    BASE:0_Node rdfs:member BASE:0_GRAPH .
-
-    BASE:1_Arc rdfs:member BASE:1_GRAPH .
-
-    BASE:1_Node rdfs:member BASE:1_GRAPH .
-
-    BASE:2_Arc rdfs:member BASE:2_GRAPH .
-
-    BASE:2_Node rdfs:member BASE:2_GRAPH .
-
-    "" xsd:boolean BASE:3_Energy,
-            BASE:3_Mass,
-            BASE:4_Energy,
-            BASE:4_Mass,
-            BASE:5_Energy,
-            BASE:5_Mass .
-
-    BASE:3_Energy rdf:value BASE:3_TOKENS .
-
-    BASE:3_Mass rdf:value BASE:3_TOKENS .
-
-    BASE:4_Energy rdf:value BASE:4_TOKENS .
-
-    BASE:4_Mass rdf:value BASE:4_TOKENS .
-
-    BASE:5_Energy rdf:value BASE:5_TOKENS .
-
-    BASE:5_Mass rdf:value BASE:5_TOKENS .
-
-    BASE:ControlTokens rdfs:member BASE:Control .
-
-    BASE:InformationTokens rdfs:member BASE:Information .
-
-    BASE:PhysicalTokens rdfs:member BASE:Physical .
-
     BASE:Control rdfs:member BASE:BASE .
+
+    BASE:Frame rdfs:member BASE:Physical .
 
     BASE:Information rdfs:member BASE:BASE .
 
     BASE:Physical rdfs:member BASE:BASE .
-}
-
-Global:Global {
-    Global:Global a rdfs:Class .
-
-    Global:0_arc rdfs:member Global:0_GRAPH .
-
-    Global:0_node rdfs:member Global:0_GRAPH .
-
-    Global:1_arc rdfs:member Global:1_GRAPH .
-
-    Global:1_node rdfs:member Global:1_GRAPH .
-
-    Global:2_arc rdfs:member Global:2_GRAPH .
-
-    Global:2_node rdfs:member Global:2_GRAPH .
-
-    Global:3_TOKENS rdfs:isDefinedBy Global:informationTokens .
-
-    Global:4_TOKENS rdfs:isDefinedBy Global:physicalTokens .
-
-    Global:5_TOKENS rdfs:isDefinedBy Global:controlTokens .
-
-    Global:controlTokens rdfs:member Global:control .
-
-    Global:informationTokens rdfs:member Global:information .
-
-    Global:physicalTokens rdfs:member Global:physical .
-
-    Global:0_GRAPH rdfs:isDefinedBy Global:control .
-
-    Global:1_GRAPH rdfs:isDefinedBy Global:information .
-
-    Global:2_GRAPH rdfs:isDefinedBy Global:physical .
-
-    Global:control rdfs:member Global:Global .
-
-    Global:information rdfs:member Global:Global .
-
-    Global:physical rdfs:member Global:Global .
 }
 

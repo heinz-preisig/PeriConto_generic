@@ -1,0 +1,190 @@
+@prefix CAPACITY: <http://example.org/CAPACITY#> .
+@prefix COLOUR: <http://example.org/COLOUR#> .
+@prefix DISTRIBUTION: <http://example.org/DISTRIBUTION#> .
+@prefix DOMAIN: <http://example.org/DOMAIN#> .
+@prefix FRAME: <http://example.org/FRAME#> .
+@prefix GRAPH: <http://example.org/GRAPH#> .
+@prefix ICON: <http://example.org/ICON#> .
+@prefix TEMPORAL: <http://example.org/TEMPORAL#> .
+@prefix TOKENS: <http://example.org/TOKENS#> .
+@prefix TRANSPORT: <http://example.org/TRANSPORT#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+CAPACITY:CAPACITY {
+    CAPACITY:CAPACITY a rdfs:Class .
+
+    CAPACITY:Distribution rdfs:member CAPACITY:Characteristics .
+
+    CAPACITY:Temporal rdfs:member CAPACITY:Characteristics .
+
+    CAPACITY:Tokens rdfs:member CAPACITY:CAPACITY .
+
+    "" xsd:boolean CAPACITY:D1,
+            CAPACITY:D2,
+            CAPACITY:D3 .
+
+    CAPACITY:Characteristics rdfs:member CAPACITY:CAPACITY .
+}
+
+TOKENS:TOKENS {
+    TOKENS:TOKENS a rdfs:Class .
+
+    TOKENS:Energy rdf:value TOKENS:TOKENS .
+
+    TOKENS:LinearMomentum rdf:value TOKENS:TOKENS .
+
+    TOKENS:Mass rdf:value TOKENS:TOKENS .
+
+    TOKENS:RotationalMomentum rdf:value TOKENS:TOKENS .
+
+    "" xsd:boolean TOKENS:Energy,
+            TOKENS:LinearMomentum,
+            TOKENS:Mass,
+            TOKENS:RotationalMomentum .
+}
+
+TRANSPORT:TRANSPORT {
+    TRANSPORT:TRANSPORT a rdfs:Class .
+
+    TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
+
+    TRANSPORT:Convection rdf:value TRANSPORT:TRANSPORT .
+
+    TRANSPORT:Diffusion rdf:value TRANSPORT:TRANSPORT .
+
+    TRANSPORT:Direct rdf:value TRANSPORT:TRANSPORT .
+
+    TRANSPORT:Radiation rdf:value TRANSPORT:TRANSPORT .
+
+    "" xsd:boolean TRANSPORT:Convection,
+            TRANSPORT:Diffusion,
+            TRANSPORT:Direct,
+            TRANSPORT:Radiation .
+}
+
+TEMPORAL:TEMPORAL {
+    TEMPORAL:TEMPORAL a rdfs:Class .
+
+    TEMPORAL:Constant rdf:value TEMPORAL:TEMPORAL .
+
+    TEMPORAL:Dynamic rdf:value TEMPORAL:TEMPORAL .
+
+    TEMPORAL:Event rdf:value TEMPORAL:TEMPORAL .
+
+    "" xsd:boolean TEMPORAL:Constant,
+            TEMPORAL:Dynamic,
+            TEMPORAL:Event .
+}
+
+FRAME:FRAME {
+    FRAME:FRAME a rdfs:Class .
+
+    FRAME:SpatialCoordinate rdfs:member FRAME:FRAME .
+
+    FRAME:Time rdfs:member FRAME:FRAME .
+}
+
+DOMAIN:DOMAIN {
+    DOMAIN:DOMAIN a rdfs:Class .
+
+    DOMAIN:Control rdfs:member DOMAIN:DOMAIN .
+
+    DOMAIN:Information rdfs:member DOMAIN:DOMAIN .
+
+    DOMAIN:Physical rdfs:member DOMAIN:DOMAIN .
+}
+
+DISTRIBUTION:DISTRIBUTION {
+    DISTRIBUTION:DISTRIBUTION a rdfs:Class .
+
+    DISTRIBUTION:D1 rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    DISTRIBUTION:D2 rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    DISTRIBUTION:D3 rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    DISTRIBUTION:Lumped rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    "" xsd:boolean DISTRIBUTION:D1,
+            DISTRIBUTION:D2,
+            DISTRIBUTION:D3,
+            DISTRIBUTION:Lumped .
+}
+
+GRAPH:GRAPH {
+    GRAPH:GRAPH a rdfs:Class .
+
+    GRAPH:Arc rdfs:member GRAPH:GRAPH .
+
+    GRAPH:Node rdfs:member GRAPH:GRAPH .
+}
+
+ICON:ICON {
+    ICON:ICON a rdfs:Class .
+
+    ICON:Circle rdfs:member ICON:Shape .
+
+    ICON:Dot rdfs:member ICON:Shape .
+
+    ICON:Ellipse rdfs:member ICON:Shape .
+
+    ICON:LineColour rdfs:member ICON:Line .
+
+    ICON:Rectangle rdfs:member ICON:Shape .
+
+    ICON:ShapeColour rdfs:member ICON:Shape .
+
+    ICON:Square rdfs:member ICON:Shape .
+
+    ICON:Triangle rdfs:member ICON:Shape .
+
+    ICON:Dashed rdf:value ICON:Line .
+
+    ICON:Dotted rdf:value ICON:Line .
+
+    ICON:DottedFine rdf:value ICON:Line .
+
+    ICON:Full rdf:value ICON:Line .
+
+    ICON:GraphicalObject rdfs:member ICON:ICON .
+
+    ICON:Line rdfs:member ICON:GraphicalObject .
+
+    "" xsd:boolean ICON:Dashed,
+            ICON:Dotted,
+            ICON:DottedFine,
+            ICON:Full .
+
+    ICON:Shape rdfs:member ICON:GraphicalObject .
+}
+
+COLOUR:COLOUR {
+    COLOUR:COLOUR a rdfs:Class .
+
+    COLOUR:Blue rdf:value COLOUR:COLOUR .
+
+    COLOUR:Green rdf:value COLOUR:COLOUR .
+
+    COLOUR:Red rdf:value COLOUR:COLOUR .
+
+    COLOUR:UserBlue rdf:value COLOUR:UserColour .
+
+    COLOUR:UserGreen rdf:value COLOUR:UserColour .
+
+    COLOUR:UserRed rdf:value COLOUR:UserColour .
+
+    COLOUR:Yellow rdf:value COLOUR:COLOUR .
+
+    COLOUR:UserColour rdfs:member COLOUR:COLOUR .
+
+    "" xsd:boolean COLOUR:Blue,
+            COLOUR:Green,
+            COLOUR:Red,
+            COLOUR:Yellow ;
+        xsd:integer COLOUR:UserBlue,
+            COLOUR:UserGreen,
+            COLOUR:UserRed .
+}
+

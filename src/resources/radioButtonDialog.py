@@ -48,8 +48,11 @@ class RadioButtonDialog(QDialog):
     button_accept.clicked.connect(self.accept)
     button_reject.clicked.connect(self.reject)
 
+    self.resize(self.sizeHint())
+
 
   def get_selected_option(self):
+    selected = None
     for radio_button in self.radio_buttons:
       if radio_button.isChecked():
         return radio_button.text()
