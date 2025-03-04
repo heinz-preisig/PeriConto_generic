@@ -193,7 +193,7 @@ class OntobuilderUI(QMainWindow):
       event = "new brick"
       name = classCase(name) #name.upper()
     else:
-      event = None
+      return
     message = {"event": event,
                "name" : name}  # GUIMessage(event=event, name=name)
     self.backend.processEvent(message)
@@ -215,7 +215,7 @@ class OntobuilderUI(QMainWindow):
       event = "add item"
       name = camelCase(name) # rule items are camel case
     else:
-      event = None
+      return
     message = {"event": event,
                "name" : name}  # GUIMessage(event=event, name=name)
     self.backend.processEvent(message)
@@ -251,7 +251,7 @@ class OntobuilderUI(QMainWindow):
                        limiting_list=self.allNames,
                        validator="camel")
     primitive_name = dialog.text
-    message = {"event": None}
+    event = None
     if primitive_name:
       primitive_name = camelCase(primitive_name) # rule items are camel case
       dialog = RadioButtonDialog(self.primitives)
@@ -263,9 +263,11 @@ class OntobuilderUI(QMainWindow):
                    "name" : primitive_name,
                    "type": primitive_type,
                    }
-    self.backend.processEvent(message)
+    if event:
+      self.backend.processEvent(message)
 
   def on_pushBrickRename_pressed(self):
+    debugging("-- pushBrickRename")
     event = "rename brick"
     dialog = UI_String(prompt="new brick name",
                        value=None,
@@ -277,11 +279,10 @@ class OntobuilderUI(QMainWindow):
       event = "rename brick"
       new_name = classCase(new_name)
     else:
-      event = None
+      return
     message = {"event": event,
                "name" : new_name}
     self.backend.processEvent(message)
-    debugging("-- pushBrickRename")
 
   def on_pushBrickItemOrPrimitiveRename_pressed(self):
     item = self.ui.brickTree.currentItem()

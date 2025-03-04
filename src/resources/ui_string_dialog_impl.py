@@ -78,10 +78,10 @@ class UI_String(QtWidgets.QDialog):
     self.ui.lineEdit.setFocus()
 
     val=None
-    if validator:
-      self.ui.lineEdit.setPlaceholderText(validator)
-    elif placeholdertext:
+    if placeholdertext:
       self.ui.lineEdit.setPlaceholderText(placeholdertext)
+    elif validator:
+      self.ui.lineEdit.setPlaceholderText(validator)
     if validator:
       if validator == "integer":
         val = r"^[-+]?\d+$"
@@ -184,7 +184,7 @@ if __name__ == '__main__':
   # var_exp = r"^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$"
   # var_bool = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
   # var_url = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
-  w = UI_String("give name", placeholdertext="name", limiting_list=["1"], validator="name")
+  w = UI_String("give name", placeholdertext="name", limiting_list=["1"])#, validator="name")
   w.show()
   s = w.text
   print(s)
