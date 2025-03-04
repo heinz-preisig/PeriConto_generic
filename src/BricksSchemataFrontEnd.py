@@ -109,6 +109,7 @@ class OntobuilderUI(QMainWindow):
             "brick_list"                    : self.ui.listBricks,
             "brick_add_item"                : self.ui.pushBrickAddItem,
             "brick_add_primitive"           : self.ui.pushBrickAddPrimitive,
+            "brick_change_primitive"        : self.ui.pushBrickChangePrimitive,
             "brick_create"                  : self.ui.pushBrickCreate,
             "brick_item_or_primitive_rename": self.ui.pushBrickItemOrPrimitiveRename,
             "brick_remove"                  : self.ui.pushBrickRemove,
@@ -265,6 +266,12 @@ class OntobuilderUI(QMainWindow):
                    }
     if event:
       self.backend.processEvent(message)
+
+  def on_pushBrickChangePrimitive_pressed(self):
+    debugging("-- pushBrickChangePrimitive")
+    message = {"event" : "change primitive"}
+    self.backend.processEvent(message)
+
 
   def on_pushBrickRename_pressed(self):
     debugging("-- pushBrickRename")

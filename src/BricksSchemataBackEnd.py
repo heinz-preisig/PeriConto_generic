@@ -71,6 +71,8 @@ class BackEnd():
         self.selectedItemInBrickTree(message)
       elif a == "selectedValueInBrickTree":
         self.selectedValueInBrickTree(message)
+      elif a == "changePrimitive":
+        self.changePrimitive(message)
       elif a == "putAllNames":
         self.putAllNames(message)
       # elif a == "getExistingItemNames":
@@ -181,6 +183,9 @@ class BackEnd():
     self.dataModel.addPrimitive(brick_name,
                                 ClassOrSubClass,
                                 name, primitive)
+
+  def changePrimitive(self, message):
+    debugging("-- changePrimitive")
 
   # def getExistingItemNames(self, message):
   #   old_brick_name = self.memory["brick"]

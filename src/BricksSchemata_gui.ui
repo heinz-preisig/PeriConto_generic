@@ -168,7 +168,7 @@
     <property name="geometry">
      <rect>
       <x>250</x>
-      <y>330</y>
+      <y>400</y>
       <width>341</width>
       <height>411</height>
      </rect>
@@ -192,7 +192,7 @@
       <x>250</x>
       <y>200</y>
       <width>160</width>
-      <height>128</height>
+      <height>151</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -214,6 +214,13 @@
       <widget class="QPushButton" name="pushBrickItemOrPrimitiveRename">
        <property name="text">
         <string>rename</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushBrickChangePrimitive">
+       <property name="text">
+        <string>change primitive</string>
        </property>
       </widget>
      </item>
@@ -263,7 +270,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>330</y>
+      <y>400</y>
       <width>171</width>
       <height>411</height>
      </rect>
