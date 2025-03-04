@@ -3,6 +3,7 @@ import sys
 
 from BricksAndTreeSemantics import FILE_FORMAT
 from BricksSchemataBackEnd import BackEnd
+from Utilities import camelCase
 from Utilities import classCase
 from resources.radioButtonDialog import RadioButtonDialog
 
@@ -54,15 +55,6 @@ for c_hash in COLOURS.keys():
 
 LINK_COLOUR = QtGui.QColor(255, 100, 5, 255)
 PRIMITIVE_COLOUR = QtGui.QColor(255, 3, 23, 255)
-
-
-# class GUIMessage(dict):
-#   def __init__(self, event=None, name=None, type=None, parent=None):
-#     super().__init__()
-#     self["event"] = event
-#     self["name"] = name
-#     # self["type"] = type
-#     # self["parent"] = parent
 
 
 class OntobuilderUI(QMainWindow):
@@ -129,8 +121,12 @@ class OntobuilderUI(QMainWindow):
             "tree_visualise"                : self.ui.pushTreeVisualise,
             }
 
-  def setRules(self, rules):
+  def setRules(self, rules, primitives):
     self.rules = rules
+    self.primitives = primitives
+
+  def setAllNames(self, names):
+    self.allNames = names
 
   def setInterface(self, shows):
     pass
@@ -187,7 +183,11 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushBrickCreate_pressed(self):
     debugging("-- pushBrickCreate")
-    dialog = UI_String("new brick", None, "brick name", self.brickList, validator="name")
+    dialog = UI_String("new brick",
+                       value=None,
+                       placeholdertext="brick name",
+                       limiting_list=self.brickList,
+                       validator="name")
     name = dialog.text
     if name:
       event = "new brick"
@@ -205,8 +205,19 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushBrickAddItem_pressed(self):
     debugging("-- pushBrickAddItem")
-    event = "asks for adding an item"
-    message = {"event": event}  # GUIMessage(event=event)
+
+    dialog = UI_String("name for the new item",
+                       placeholdertext="name -- will be camelised",
+                       limiting_list=self.allNames,
+                       validator="camel")
+    name = dialog.text
+    if name:
+      event = "add item"
+      name = camelCase(name) # rule items are camel case
+    else:
+      event = None
+    message = {"event": event,
+               "name" : name}  # GUIMessage(event=event, name=name)
     self.backend.processEvent(message)
 
   def askForItemName(self, prompt, existing_names):
@@ -216,16 +227,16 @@ class OntobuilderUI(QMainWindow):
     name = dialog.text
     return name
 
-  def askForPrimitiveType(self, primitives):
-    # self.ui.comboBoxPrimitives.show()
-    # dialog = UI_ComboDialog("select primitive", primitives)
-    dialog = RadioButtonDialog(primitives)
-    # return primitive
-    if dialog.exec():
-      primitive = dialog.get_selected_option()
-      return str(primitive)
-    else:
-      return None
+  # def askForPrimitiveType(self, primitives):
+  #   # self.ui.comboBoxPrimitives.show()
+  #   # dialog = UI_ComboDialog("select primitive", primitives)
+  #   dialog = RadioButtonDialog(primitives)
+  #   # return primitive
+  #   if dialog.exec():
+  #     primitive = dialog.get_selected_option()
+  #     return str(primitive)
+  #   else:
+  #     return None
 
   def on_pushBrickRemoveItem_pressed(self):
     message = {"event": "remove item from brick tree"}  # GUIMessage(event="remove item from brick tree")
@@ -234,17 +245,33 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushBrickAddPrimitive_pressed(self):
     item = self.ui.brickTree.currentItem()
-    name = item.text(0)
-    # parent_name = item.parent_name
-    debugging("-- pushBrickAddPrimitive")
-    event = "ask for adding a primitive"
-    message = {"event": event,
-               "name" : name}
+    parent_name = item.text(0)
+    dialog = UI_String("name for the new primitive",
+                       placeholdertext="name -- will be camelised",
+                       limiting_list=self.allNames,
+                       validator="camel")
+    primitive_name = dialog.text
+    message = {"event": None}
+    if primitive_name:
+      primitive_name = camelCase(primitive_name) # rule items are camel case
+      dialog = RadioButtonDialog(self.primitives)
+      if dialog.exec():
+        primitive = dialog.get_selected_option()
+        primitive_type = str(primitive)
+        event = "add primitive"
+        message = {"event": event,
+                   "name" : primitive_name,
+                   "type": primitive_type,
+                   }
     self.backend.processEvent(message)
 
   def on_pushBrickRename_pressed(self):
     event = "rename brick"
-    dialog = UI_String("new brick name", None, "brick name", self.brickList, validator="name")
+    dialog = UI_String(prompt="new brick name",
+                       value=None,
+                       placeholdertext="brick name",
+                       limiting_list=self.brickList,
+                       validator="name")
     new_name = dialog.text
     if new_name:
       event = "rename brick"

@@ -49,6 +49,10 @@ GRAPH:Arc rdfs:member GRAPH:GRAPH .
 
 GRAPH:Node rdfs:member GRAPH:GRAPH .
 
+ICON:Line rdfs:member ICON:GraphicalObject .
+
+ICON:Shape rdfs:member ICON:GraphicalObject .
+
 TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
 
 "" xsd:boolean CAPACITY:D1,
@@ -101,4 +105,6 @@ TRANSPORT:Direct rdf:value TRANSPORT:TRANSPORT .
 TRANSPORT:Radiation rdf:value TRANSPORT:TRANSPORT .
 
 CAPACITY:Characteristics rdfs:member CAPACITY:CAPACITY .
+
+ICON:GraphicalObject rdfs:member ICON:ICON .
 
