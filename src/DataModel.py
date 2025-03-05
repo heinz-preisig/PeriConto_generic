@@ -233,6 +233,28 @@ class DataModel:
     else:
       print(">>>>> should not come here")
 
+  def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
+    graph = self.BRICK_GRAPHS[brick_name]
+    primitive_uri = URIRef(makeItemURI(brick_name, primitive_name))
+    triple = (None,None,primitive_uri)
+    selected_triples = []
+    for t in graph.triples(triple):
+      selected_triples.append(t)
+    if not t:
+      print(">>>>>>>>>>  should not come here")
+      return
+    if len(selected_triples) > 1:
+      print(">>>>>>>>>>  oops found more than one triple -- should only be one")
+      return
+
+    t = selected_triples[0]
+    new_triple = Literal(""), RDFSTerms[new_type], primitive_uri
+    graph.add(new_triple)
+    graph.remove(t)
+
+
+
+
   def renameBrick(self, oldName, newName):
     self.copyBrick("bricks", oldName, newName)
     del self.BRICK_GRAPHS[oldName]

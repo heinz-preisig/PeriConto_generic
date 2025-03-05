@@ -57,12 +57,6 @@ class BackEnd():
         self.selectedBrick(message)
       elif a == "showBrickTree":
         self.showBrickTree(message)
-      # elif a == "getBrickDataTuples":
-      #   self.getBrickDataTuples(message)
-      # elif a == "putBrickDataTuples":
-      #   self.putBrickDataTuples(message)
-      # elif a == "renameBrick":
-      #   self.renameBrick(message)
       elif a == "removeBrick":
         self.removeBrick(message)
       elif a == "selectedClassInBrickTree":
@@ -75,8 +69,6 @@ class BackEnd():
         self.changePrimitive(message)
       elif a == "putAllNames":
         self.putAllNames(message)
-      # elif a == "getExistingItemNames":
-      #   self.getExistingItemNames(message)
       elif a == "renameItem":
         self.renameItem(message)
       elif a == "addItem":
@@ -92,7 +84,7 @@ class BackEnd():
       elif a == "visualise":
         self.visualise(message)
       else:
-        print("oooops -- no such command: ",a)
+        print("oooops -- no such command: ", a)
 
     if len(self.UI_state[event]["show"]) > 0:
       if self.UI_state[event]["show"][0] == "do_nothing":
@@ -130,18 +122,13 @@ class BackEnd():
     self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick_name, "bricks")
     self.frontEnd.showBrickTree(self.dataBrickTuples, brick_name)
 
-  # def getBrickDataTuples(self, message):
-  #   name = self.memory["brick"]
-  #   self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(name, "bricks")
-  #   pass
-
   def putBrickList(self, message):
     self.brick_list = self.dataModel.getBrickList()
     self.frontEnd.showBrickList(self.brick_list)
 
   def putAllNames(self, message):
     brick_name = self.memory["brick"]
-    names = self.dataModel.getAllNamesInTheBrick(brick_name,"brick")
+    names = self.dataModel.getAllNamesInTheBrick(brick_name, "brick")
     self.frontEnd.setAllNames(names)
 
   def newBrick(self, message):
@@ -152,11 +139,6 @@ class BackEnd():
   def removeBrick(self, message):
     name = self.memory["name"]
     self.dataModel.removeBrick(name)
-
-  # def putBrickDataTuples(self, message):
-  #   name = self.memory["brick"]  # message["name"]
-  #   tuples = self.dataBrickTuples
-  #   self.frontEnd.showBrickTree(tuples, name)
 
   def selectedClassInBrickTree(self, message):
     self.memory["item"] = message["name"]
@@ -186,36 +168,16 @@ class BackEnd():
 
   def changePrimitive(self, message):
     debugging("-- changePrimitive")
-
-  # def getExistingItemNames(self, message):
-  #   old_brick_name = self.memory["brick"]
-  #   existing_names = self.dataModel.getAllNamesInTheBrick(old_brick_name, what="brick")
-  #   name_ = self.frontEnd.askForItemName("provide new item name", existing_names)
-  #   if not name_:
-  #     return
-  #   name = camelCase(name_) # str(name_).title().replace(" ","")  # rule items are lower case
-  #   if name:
-  #     ClassOrSubClass = self.memory["item"]
-  #     if message["event"] == "ask for adding a primitive":
-  #       primitive = self.frontEnd.askForPrimitiveType(PRIMITIVES)
-  #       if primitive:
-  #         self.dataModel.addPrimitive(old_brick_name, ClassOrSubClass, name, primitive)
-  #       else:
-  #         return
-  #     if message["event"] == "asks for adding an item":
-  #       self.dataModel.addItem(old_brick_name, ClassOrSubClass, name)
-  #     self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(old_brick_name, "bricks")
-  #     self.frontEnd.showBrickTree(self.dataBrickTuples, old_brick_name)
-  #   else:
-  #     pass
+    parent_name = self.memory["name"]
+    brick_name = self.memory["brick"]
+    new_type = message["type"]
+    self.dataModel.modifyPrimitiveType(brick_name, parent_name, new_type)
 
   def renameBrick(self, message):
     old_name = self.memory["brick"]
     new_name = message["name"]
     if new_name:
-      self.dataModel.renameBrick(old_name, classCase(new_name)) #.upper())  #RULE: brick names are in capitals
-      # bricks = self.dataModel.getBrickList()
-      # self.frontEnd.showBrickList(bricks)
+      self.dataModel.renameBrick(old_name, classCase(new_name))
 
   def saveBricks(self, message):
     self.dataModel.saveBricks()
@@ -233,7 +195,7 @@ class BackEnd():
     item_names = self.dataModel.getAllNamesInTheBrick(old_name, "brick")
     newName = self.frontEnd.askForItemName("provide new name for item %s" % item_name, item_names)
     if newName:
-      self.dataModel.renameItem(old_name, item_name, camelCase(newName)) #newName.title().replace(" ",""))
+      self.dataModel.renameItem(old_name, item_name, camelCase(newName))  # newName.title().replace(" ",""))
 
       self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(old_name, "bricks")
       self.frontEnd.showBrickTree(self.dataBrickTuples, old_name)
@@ -241,7 +203,7 @@ class BackEnd():
   def removeItemFromBrickTree(self, message):
     name = self.memory["item"]
     brick = self.memory["brick"]
-    self.dataModel.removeItem("bricks",brick, name)
+    self.dataModel.removeItem("bricks", brick, name)
     pass
 
   def visualise(self, message):
