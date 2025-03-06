@@ -16,8 +16,6 @@ from Utilities import debugging
 root = os.path.abspath(os.path.join("."))
 sys.path.extend([root, os.path.join(root, "resources")])
 
-DEBUGG = True
-
 
 class BackEnd():
   def __init__(self, frontEnd):
@@ -120,7 +118,6 @@ class BackEnd():
     self.memory["tree_name"] = tree_name
     pass
 
-
   def copyTree(self, message):
     tree_to_be_copied_name = self.memory["tree_name"]
     tree_name = message["tree_name"]
@@ -130,7 +127,7 @@ class BackEnd():
 
   def addItem(self, message):
     tree_item_name = self.memory["tree_item_name"]
-    item_name = camelCase(message["item_name"])  #.title().replace(" ","")
+    item_name = camelCase(message["item_name"])  # .title().replace(" ","")
     item_name_with_number = self.__getNameWithBrickNumber(item_name, tree_item_name)
     tree_name = self.memory["tree_name"]
     self.dataModel.addItemToTree(tree_name,
@@ -152,8 +149,8 @@ class BackEnd():
     item_name_with_number = self.__getNameWithBrickNumber(item_name, tree_item_name)
     tree_name = self.memory["tree_name"]
     self.dataModel.renameItemInTree(tree_name,
-                                 tree_item_name,
-                                 item_name_with_number)
+                                    tree_item_name,
+                                    item_name_with_number)
     pass
 
   def removeItem(self, message):
@@ -245,8 +242,7 @@ class BackEnd():
     graph.dot.render(file_name_bricks, format="pdf")
     os.remove(file_name_bricks)
 
-
-    path = file_name_bricks+".pdf"
+    path = file_name_bricks + ".pdf"
     if sys.platform.startswith('linux'):
       subprocess.Popen(['xdg-open', str(path)])
     elif sys.platform.startswith('win32'):

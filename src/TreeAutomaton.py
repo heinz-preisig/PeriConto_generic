@@ -76,7 +76,7 @@ UI_state = {
                         "markChanged",
                         ],
                 },
-        "copy tree"                                     : {
+        "copy tree"                                       : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -222,7 +222,7 @@ UI_state = {
                 "except": [],
                 "action": [],
                 },
-        "asks for adding an item"                         : {
+        "add item"                                        : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -236,7 +236,7 @@ UI_state = {
                            "getTreeDataTuples"
                            ],
                 },
-        "rename item"                         : {
+        "rename item"                                     : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -250,7 +250,7 @@ UI_state = {
                            "getTreeDataTuples"
                            ],
                 },
-        "remove item"                         : {
+        "remove item"                                     : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -317,7 +317,7 @@ UI_state = {
                 "show"  : ["do_nothing"],
                 "action": ["visualise"],
                 },
-        "do_nothing"                                       : {
+        "do_nothing"                                      : {
                 "show"  : ["do_nothing"],
                 "action": [],
                 },
@@ -401,5 +401,5 @@ class AutomatonPlot:
 if __name__ == "__main__":
   g = AutomatonPlot()
   g.makeAutomatonPlot()
-  file_name = "automaton"
+  file_name = "tree_automaton"
   g.dot.render(file_name, format="pdf")

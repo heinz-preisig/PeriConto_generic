@@ -14,14 +14,15 @@ from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 from BricksAndTreeSemantics import RDFSTerms
 from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
-from BricksAndTreeSemantics import makeBrickNameSpace
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
 from Utilities import debugging
 from Utilities import find_path_back_triples
 from Utilities import saveBackupFile
+from resources.pop_up_message_box import makeMessageBox
 
-DEBUGG = True
+
+# DEBUGG = False
 
 
 class DataModel:
@@ -51,7 +52,6 @@ class DataModel:
         i = -1
         graph = self.TREE_GRAPHS[g]
         for s, p, o in graph.triples((None, None, None)):
-          # print(s,o)
           n = self.__extractNumber(s)
           m = self.__extractNumber(o)
           if n > i:
@@ -59,7 +59,6 @@ class DataModel:
           if m > i:
             i = m
         self.brick_counter[g] = i + 1
-        # debugging("max integer", g, i)
     pass
 
   def __extractNumber(self, s):
@@ -143,7 +142,6 @@ class DataModel:
   def removeBrick(self, name):
     del self.BRICK_GRAPHS[name]
 
-
   def getAllNamesInTheBrick(self, graphName, what):
 
     names = set()
@@ -191,10 +189,10 @@ class DataModel:
     classURI = makeClassURI(Class)
     itemURI = makeItemURI(Class, "")
     if Class == ClassOrSubClass:
-      o = URIRef(classURI)  # makeClassURI(Class))
+      o = URIRef(classURI)
     else:
-      o = URIRef(itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
-    s = URIRef(itemURI + name)  # self.makeURI(Class, name)
+      o = URIRef(itemURI + ClassOrSubClass)
+    s = URIRef(itemURI + name)
     triple = (s, RDFSTerms["is_member"], o)
     g.add(triple)
     pass
@@ -208,10 +206,10 @@ class DataModel:
     classURI = makeClassURI(Class)
     itemURI = makeItemURI(Class, "")
     if Class == ClassOrSubClass:
-      s = URIRef(classURI) #URIRef(self.namespaces[Class])
+      s = URIRef(classURI)
     else:
-      s = URIRef(itemURI + ClassOrSubClass)  # self.makeURI(Class, ClassOrSubClass)
-    o = URIRef(itemURI + name)  # self.makeURI(Class, name)
+      s = URIRef(itemURI + ClassOrSubClass)
+    o = URIRef(itemURI + name)
     triple = (o, RDFSTerms["value"], s)
     self.BRICK_GRAPHS[Class].add(triple)
     oo = Literal("")
@@ -226,7 +224,7 @@ class DataModel:
     triple = Literal(value), RDFSTerms[primitive_type], primitive_uri
     triple_search = None, RDFSTerms[primitive_type], primitive_uri
     for t in graph.triples(triple_search):
-      print(t)
+      debugging("modifyPrimitiveValue -- found triple: ", t)
     if t:
       graph.remove(t)
       graph.add(triple)
@@ -236,7 +234,7 @@ class DataModel:
   def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
     graph = self.BRICK_GRAPHS[brick_name]
     primitive_uri = URIRef(makeItemURI(brick_name, primitive_name))
-    triple = (None,None,primitive_uri)
+    triple = (None, None, primitive_uri)
     selected_triples = []
     for t in graph.triples(triple):
       selected_triples.append(t)
@@ -252,9 +250,6 @@ class DataModel:
     graph.add(new_triple)
     graph.remove(t)
 
-
-
-
   def renameBrick(self, oldName, newName):
     self.copyBrick("bricks", oldName, newName)
     del self.BRICK_GRAPHS[oldName]
@@ -267,7 +262,7 @@ class DataModel:
     del self.brick_counter[oldName]
 
   def copyTree(self, from_name, to_name):
-    self.copyBrick("trees", from_name,to_name)
+    self.copyBrick("trees", from_name, to_name)
     pass
 
   def deleteTree(self, tree_name):
@@ -280,9 +275,8 @@ class DataModel:
     elif brickORtrees == "trees":
       what_graphs = self.TREE_GRAPHS
     self.newBrickOrTreeGraph(brickORtrees, newName)
-    # self.BRICK_GRAPHS[newName] = Graph()
     new_graph = what_graphs[newName]
-    self.namespaces[newName] = Namespace(makeItemURI(newName, newName))  # Namespace(makeClassURI(newName))
+    self.namespaces[newName] = Namespace(makeItemURI(newName, newName))
     old_graph = what_graphs[oldName]
 
     for s, p, o in old_graph.triples((None, None, None)):
@@ -331,9 +325,8 @@ class DataModel:
       new_triple = (s, p, new_item_uri)
       g.add(new_triple)
 
-  def __attachBrick(self, brick_name, link_point, s_or_o, tree_name):
+  def __attachBrick(self, brick_name, s_or_o, tree_name):
     counter = self.brick_counter[tree_name]
-    brick_name_space = makeBrickNameSpace(brick_name, counter)
     s_or_o_new = s_or_o
     if brick_name in str(s_or_o):
       s_name = extractNameFromIRI(s_or_o)
@@ -351,29 +344,26 @@ class DataModel:
       self.tree_name_space_item = makeItemURI(tree_name, "")
       s_ = URIRef(self.tree_name_space_item + "%s_%s" % (counter, brick_name))
       o_ = URIRef(self.tree_name_space_item + tree_item_name)
-      triple = (s_,  # URIRef(self.tree_name_space_item + "%s"%self.brick_counter[tree_name],brick_name),
+      triple = (s_,
                 RDFSTerms["is_defined_by"],
-                o_)  # makeItemURI(tree_name, tree_item_name)))
-      triple_ = triple[2], triple[1], triple[0]
+                o_)
+      # triple_ = triple[2], triple[1], triple[0]
       tree_graph.add(triple)
       pass
 
     for s, p, o in brick_graph.triples((None, None, None)):
-      link_point = tree_item_name  # link_item_new_name
-      if (p != RDFSTerms["is_class"]):  # or (brick_name in s):
+      if (p != RDFSTerms["is_class"]):
         s_new = self.__attachBrick(brick_name,
-                                   link_point,
                                    s,
                                    tree_name)
         o_new = self.__attachBrick(brick_name,
-                                   link_point,
                                    o,
                                    tree_name)
 
         triple = s_new, p, o_new
         tree_graph.add(triple)
       else:
-        print("class found s,p,o", s,p,o)   # note: adding linked node as class
+        debugging("class found s,p,o", s, p, o)  # note: adding linked node as class
         triple = s_, RDFSTerms["is_class"], RDFSTerms["class"]
         tree_graph.add(triple)
         pass
@@ -411,9 +401,8 @@ class DataModel:
     for t in keep_target:
       path = find_path_back_triples(graph, t, root)
 
-      print("found path")
+      debugging("found path")
       for triple in path:
-        # print(triple)
         paths.add(triple)
 
     if paths != set():
@@ -450,9 +439,7 @@ class DataModel:
       for s, p, o in graphs[cl].triples((None, None, None)):
         itemURI = makeItemURI(cl, "")
         classURI = makeClassURI(cl)
-        # conjunctiveGraph.bind(cl + "_I", itemURI)
         conjunctiveGraph.bind(cl, itemURI)
-        # conjunctiveGraph.bind(cl, classURI)
         conjunctiveGraph.get_context(classURI).add((s, p, o))
     return conjunctiveGraph
 
@@ -492,7 +479,8 @@ class DataModel:
     inf = open(f, "w")
     inf.write(conjunctiveGraph.serialize(format=FILE_FORMAT))
     inf.close()
-    print("written to file ", f)
+
+    makeMessageBox("saved to file:\n   %s" % f, buttons=["OK"])
 
     fs = f + "_"
     inf = open(fs, "w")

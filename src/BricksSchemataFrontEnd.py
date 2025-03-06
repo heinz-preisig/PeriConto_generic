@@ -15,22 +15,16 @@ sys.path.extend([root, os.path.join(root, "resources")])
 from PyQt6 import QtGui, QtCore
 from PyQt6.QtWidgets import *
 
-# from graphHAP import Graph
 from BricksSchemata_gui import Ui_MainWindow
 from resources.pop_up_message_box import makeMessageBox
-from resources.ui_combo_dialog_impl import UI_ComboDialog
 from resources.resources_icons import roundButton
 from resources.ui_string_dialog_impl import UI_String
 
 # from PeriConto import debugging
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
+from Utilities import debugging
 
-DEBUGG = True
-
-
-def debugging(*info):
-  if DEBUGG:
-    print("debugging", info)
+# DEBUGG = False
 
 
 COLOURS = {
@@ -66,7 +60,7 @@ class OntobuilderUI(QMainWindow):
     self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
     # self.ui.tabsBrickTrees.setTabVisible(1,False)
 
-    self.DEBUGG = True
+    # self.DEBUGG = True
 
     roundButton(self.ui.pushOntologyLoad, "load", tooltip="load ontology")
     roundButton(self.ui.pushOntologyCreate, "plus", tooltip="create")
@@ -136,12 +130,14 @@ class OntobuilderUI(QMainWindow):
     name = dialog.text
     if name:
       event = "create ontology"
-      name = classCase(name) # rule: class names are upper case
+      name = classCase(name)  # rule: class names are upper case
     else:
       event = "start"
 
-    message = {"event": event,
-               "name" : name}
+    message = {
+            "event": event,
+            "name" : name
+            }
     self.backend.processEvent(message)
 
   def on_pushOntologyLoad_pressed(self):
@@ -154,8 +150,10 @@ class OntobuilderUI(QMainWindow):
     if file_spec == "":
       return
     project_name = os.path.basename(file_spec).split(os.path.extsep)[0].split("+")[0]
-    message = {"event": "load ontology",
-               "name" : project_name}
+    message = {
+            "event": "load ontology",
+            "name" : project_name
+            }
     self.backend.processEvent(message)
 
   def on_pushOntologySave_pressed(self):
@@ -168,8 +166,10 @@ class OntobuilderUI(QMainWindow):
     dialog = UI_String("save as", "new name")
     name = dialog.text
     if name:
-      message = {"event": "save as",
-                 "name" : name}
+      message = {
+              "event": "save as",
+              "name" : name
+              }
       self.backend.processEvent(message)
 
   def on_pushBrickCreate_pressed(self):
@@ -182,16 +182,18 @@ class OntobuilderUI(QMainWindow):
     name = dialog.text
     if name:
       event = "new brick"
-      name = classCase(name) #rule: class names are upper
+      name = classCase(name)  # rule: class names are upper
     else:
       return
-    message = {"event": event,
-               "name" : name}
+    message = {
+            "event": event,
+            "name" : name
+            }
     self.backend.processEvent(message)
 
   def on_pushBrickRemove_pressed(self):
     debugging("--pushBrickRemove")
-    message = {"event" : "remove brick"}
+    message = {"event": "remove brick"}
     self.backend.processEvent(message)
 
   def on_pushBrickAddItem_pressed(self):
@@ -204,11 +206,13 @@ class OntobuilderUI(QMainWindow):
     name = dialog.text
     if name:
       event = "add item"
-      name = camelCase(name) # rule items are camel case
+      name = camelCase(name)  # rule items are camel case
     else:
       return
-    message = {"event": event,
-               "name" : name}
+    message = {
+            "event": event,
+            "name" : name
+            }
     self.backend.processEvent(message)
 
   def askForItemName(self, prompt, existing_names):
@@ -217,7 +221,6 @@ class OntobuilderUI(QMainWindow):
                        limiting_list=existing_names, validator="camel")
     name = dialog.text
     return name
-
 
   def on_pushBrickRemoveItem_pressed(self):
     message = {"event": "remove item from brick tree"}  # GUIMessage(event="remove item from brick tree")
@@ -234,16 +237,17 @@ class OntobuilderUI(QMainWindow):
     primitive_name = dialog.text
     event = None
     if primitive_name:
-      primitive_name = camelCase(primitive_name) # rule items are camel case
+      primitive_name = camelCase(primitive_name)  # rule items are camel case
       dialog = RadioButtonDialog(self.primitives)
       if dialog.exec():
         primitive = dialog.get_selected_option()
         primitive_type = str(primitive)
         event = "add primitive"
-        message = {"event": event,
-                   "name" : primitive_name,
-                   "type": primitive_type,
-                   }
+        message = {
+                "event": event,
+                "name" : primitive_name,
+                "type" : primitive_type,
+                }
     if event:
       self.backend.processEvent(message)
 
@@ -253,14 +257,14 @@ class OntobuilderUI(QMainWindow):
     if dialog.exec():
       primitive = dialog.get_selected_option()
       primitive_type = str(primitive)
-    message = {"event" : "change primitive",
-                   "type": primitive_type,}
+    message = {
+            "event": "change primitive",
+            "type" : primitive_type,
+            }
     self.backend.processEvent(message)
-
 
   def on_pushBrickRename_pressed(self):
     debugging("-- pushBrickRename")
-    event = "rename brick"
     dialog = UI_String(prompt="new brick name",
                        value=None,
                        placeholdertext="brick name",
@@ -272,21 +276,22 @@ class OntobuilderUI(QMainWindow):
       new_name = classCase(new_name)
     else:
       return
-    message = {"event": event,
-               "name" : new_name}
+    message = {
+            "event": event,
+            "name" : new_name
+            }
     self.backend.processEvent(message)
 
   def on_pushBrickItemOrPrimitiveRename_pressed(self):
     item = self.ui.brickTree.currentItem()
     type = item.type
-    name = item.text(0)
     event = "%s rename" % type
-    message = {"event": event}  # GUIMessage(event=event)
+    message = {"event": event}
     self.backend.processEvent(message)
 
   def on_pushTreeVisualise_pressed(self):
     event = "visualise"
-    message = {"event": event}  # GUIMessage(event=event)
+    message = {"event": event}
     self.backend.processEvent(message)
 
     debugging("-- pushTreeVisualise")
@@ -304,16 +309,20 @@ class OntobuilderUI(QMainWindow):
     name = item.text()
     debugging("-- listBricks -- item", name)
     event = "selected brick"
-    message = {"event": event,
-               "name" : name}
+    message = {
+            "event": event,
+            "name" : name
+            }
     self.backend.processEvent(message)
 
   def on_listTrees_itemClicked(self, item):
     name = item.text()
     debugging("-- listTrees -- item", name)
     event = "selected tree"
-    message = {"event": event,
-               "name" : name}
+    message = {
+            "event": event,
+            "name" : name
+            }
     debugging("message:", message)
     self.backend.processEvent(message)
 
@@ -322,8 +331,10 @@ class OntobuilderUI(QMainWindow):
     debugging("-- brick tree item %s, column %s" % (name, column))
     selected = item.type
     event = "%s in brick tree selected" % selected
-    message = {"event": event,
-               "name" : name}
+    message = {
+            "event": event,
+            "name" : name
+            }
     debugging("message:", message)
     self.backend.processEvent(message)
 
@@ -332,8 +343,10 @@ class OntobuilderUI(QMainWindow):
     debugging("-- tree item %s, column %s" % (name, column))
     selected = item.type
     event = "%s in treeTree selected" % selected
-    message = {"event": event,
-               "name" : name}
+    message = {
+            "event": event,
+            "name" : name
+            }
     self.backend.processEvent(message)
 
   def showBrickList(self, brickList):
@@ -369,11 +382,9 @@ class OntobuilderUI(QMainWindow):
         # print("processing",s,p,o)
         if s != origin:
           if o in items:
-            # if s != "":
             item = QTreeWidgetItem(items[o])
             item.type = self.rules[p]
             item.parent_name = o
-            # item.predicate = p
             item.setForeground(0, QBRUSHES[p])
             stack.append(q)  # (s, p, o))
             if s == "":
@@ -383,7 +394,6 @@ class OntobuilderUI(QMainWindow):
             items[s] = item
             # debugging("items", s, p, o)
             self.__makeTree(tuples, origin=s, stack=stack, items=items)
-
 
   # enable moving the window --https://www.youtube.com/watch?v=R4jfg9mP_zo&t=152s
   def mousePressEvent(self, event, QMouseEvent=None):

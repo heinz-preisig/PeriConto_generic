@@ -56,7 +56,7 @@ class UI_ComboDialog(QtWidgets.QDialog):
     self.show()
 
   def on_comboBox_currentTextChanged(self, v):
-    print("debugging", v)
+    # print("debugging", v)
     self.selection = v
     self.ui.pushAccept.show()
 

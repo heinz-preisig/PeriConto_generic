@@ -61,7 +61,7 @@ class UI_stringSelector(QtWidgets.QDialog):
     # self.ui.pushReject.clicked.connect(self.closeMe)
 
   def on_listWidget_itemClicked(self, v):
-    print("debugging", v.text())
+    # print("debugging", v.text())
     self.selection = v.text()
     self.ui.pushAccept.show()
 

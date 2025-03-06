@@ -17,7 +17,8 @@ from Utilities import debugging
 root = os.path.abspath(os.path.join("."))
 sys.path.extend([root, os.path.join(root, "resources")])
 
-DEBUGG = True
+
+# DEBUGG = False
 
 
 class BackEnd():
@@ -84,7 +85,7 @@ class BackEnd():
       elif a == "visualise":
         self.visualise(message)
       else:
-        print("oooops -- no such command: ", a)
+        print(">>>>>>>>>>> -- no such command: ", a)
 
     if len(self.UI_state[event]["show"]) > 0:
       if self.UI_state[event]["show"][0] == "do_nothing":
@@ -112,7 +113,7 @@ class BackEnd():
 
   def selectedBrick(self, message):
     self.memory["brick"] = message["name"]
-    print("selected brick is ", message["name"])
+    debugging("selected brick is ", message["name"])
 
   def markChanged(self, message):
     self.frontEnd.markChanged()
@@ -195,7 +196,7 @@ class BackEnd():
     item_names = self.dataModel.getAllNamesInTheBrick(old_name, "brick")
     newName = self.frontEnd.askForItemName("provide new name for item %s" % item_name, item_names)
     if newName:
-      self.dataModel.renameItem(old_name, item_name, camelCase(newName))  # newName.title().replace(" ",""))
+      self.dataModel.renameItem(old_name, item_name, camelCase(newName))
 
       self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(old_name, "bricks")
       self.frontEnd.showBrickTree(self.dataBrickTuples, old_name)

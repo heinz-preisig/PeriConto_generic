@@ -40,15 +40,15 @@ CAPACITY:Tokens rdfs:member CAPACITY:CAPACITY .
 
 DOMAIN:Control rdfs:member DOMAIN:DOMAIN .
 
-DOMAIN:Frame rdfs:member DOMAIN:Physical .
+DOMAIN:Frame rdfs:member DOMAIN:DOMAIN .
 
 DOMAIN:Information rdfs:member DOMAIN:DOMAIN .
 
-FRAME:Time rdfs:member FRAME:FRAME .
+DOMAIN:Physical rdfs:member DOMAIN:DOMAIN .
 
-GRAPH:Arc rdfs:member GRAPH:GRAPH .
+GRAPH:ArcIcon rdfs:member GRAPH:Arc .
 
-GRAPH:Node rdfs:member GRAPH:GRAPH .
+GRAPH:NodeIcon rdfs:member GRAPH:Node .
 
 ICON:Dot rdfs:member ICON:Shape .
 
@@ -69,6 +69,8 @@ TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
         DISTRIBUTION:D2,
         DISTRIBUTION:D3,
         DISTRIBUTION:Lumped,
+        FRAME:Continuous,
+        FRAME:Discrete,
         FRAME:X,
         FRAME:Y,
         FRAME:Z,
@@ -120,7 +122,9 @@ DISTRIBUTION:D3 rdf:value DISTRIBUTION:DISTRIBUTION .
 
 DISTRIBUTION:Lumped rdf:value DISTRIBUTION:DISTRIBUTION .
 
-DOMAIN:Physical rdfs:member DOMAIN:DOMAIN .
+FRAME:Continuous rdf:value FRAME:Time .
+
+FRAME:Discrete rdf:value FRAME:Time .
 
 FRAME:SpatialCoordinate rdfs:member FRAME:FRAME .
 
@@ -129,6 +133,10 @@ FRAME:X rdf:value FRAME:Cartesian .
 FRAME:Y rdf:value FRAME:Cartesian .
 
 FRAME:Z rdf:value FRAME:Cartesian .
+
+GRAPH:Arc rdfs:member GRAPH:GRAPH .
+
+GRAPH:Node rdfs:member GRAPH:GRAPH .
 
 ICON:Circle rdfs:member ICON:Shape .
 
@@ -181,6 +189,8 @@ TRANSPORT:Direct rdf:value TRANSPORT:TRANSPORT .
 TRANSPORT:Radiation rdf:value TRANSPORT:TRANSPORT .
 
 CAPACITY:Characteristics rdfs:member CAPACITY:CAPACITY .
+
+FRAME:Time rdfs:member FRAME:FRAME .
 
 ICON:Ellipse rdfs:member ICON:Shape .
 

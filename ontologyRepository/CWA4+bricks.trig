@@ -12,73 +12,6 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-COLOUR:COLOUR {
-    COLOUR:COLOUR a rdfs:Class .
-
-    "" xsd:boolean COLOUR:Blue,
-            COLOUR:Green,
-            COLOUR:Red,
-            COLOUR:Yellow ;
-        xsd:integer COLOUR:UserBlue,
-            COLOUR:UserGreen,
-            COLOUR:UserRed .
-
-    COLOUR:Blue rdf:value COLOUR:COLOUR .
-
-    COLOUR:Green rdf:value COLOUR:COLOUR .
-
-    COLOUR:Red rdf:value COLOUR:COLOUR .
-
-    COLOUR:UserBlue rdf:value COLOUR:UserColour .
-
-    COLOUR:UserGreen rdf:value COLOUR:UserColour .
-
-    COLOUR:UserRed rdf:value COLOUR:UserColour .
-
-    COLOUR:Yellow rdf:value COLOUR:COLOUR .
-
-    COLOUR:UserColour rdfs:member COLOUR:COLOUR .
-}
-
-TRANSPORT:TRANSPORT {
-    TRANSPORT:TRANSPORT a rdfs:Class .
-
-    TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
-
-    TRANSPORT:Convection rdf:value TRANSPORT:TRANSPORT .
-
-    TRANSPORT:Diffusion rdf:value TRANSPORT:TRANSPORT .
-
-    TRANSPORT:Direct rdf:value TRANSPORT:TRANSPORT .
-
-    TRANSPORT:Radiation rdf:value TRANSPORT:TRANSPORT .
-
-    "" xsd:boolean TRANSPORT:Convection,
-            TRANSPORT:Diffusion,
-            TRANSPORT:Direct,
-            TRANSPORT:Radiation .
-}
-
-FRAME:FRAME {
-    FRAME:FRAME a rdfs:Class .
-
-    FRAME:Time rdfs:member FRAME:FRAME .
-
-    FRAME:SpatialCoordinate rdfs:member FRAME:FRAME .
-
-    FRAME:X rdf:value FRAME:Cartesian .
-
-    FRAME:Y rdf:value FRAME:Cartesian .
-
-    FRAME:Z rdf:value FRAME:Cartesian .
-
-    "" xsd:boolean FRAME:X,
-            FRAME:Y,
-            FRAME:Z .
-
-    FRAME:Cartesian rdfs:member FRAME:SpatialCoordinate .
-}
-
 CAPACITY:CAPACITY {
     CAPACITY:CAPACITY a rdfs:Class .
 
@@ -88,28 +21,11 @@ CAPACITY:CAPACITY {
 
     CAPACITY:Tokens rdfs:member CAPACITY:CAPACITY .
 
-    CAPACITY:Characteristics rdfs:member CAPACITY:CAPACITY .
-
     "" xsd:boolean CAPACITY:D1,
             CAPACITY:D2,
             CAPACITY:D3 .
-}
 
-DISTRIBUTION:DISTRIBUTION {
-    DISTRIBUTION:DISTRIBUTION a rdfs:Class .
-
-    DISTRIBUTION:D1 rdf:value DISTRIBUTION:DISTRIBUTION .
-
-    DISTRIBUTION:D2 rdf:value DISTRIBUTION:DISTRIBUTION .
-
-    DISTRIBUTION:D3 rdf:value DISTRIBUTION:DISTRIBUTION .
-
-    DISTRIBUTION:Lumped rdf:value DISTRIBUTION:DISTRIBUTION .
-
-    "" xsd:boolean DISTRIBUTION:D1,
-            DISTRIBUTION:D2,
-            DISTRIBUTION:D3,
-            DISTRIBUTION:Lumped .
+    CAPACITY:Characteristics rdfs:member CAPACITY:CAPACITY .
 }
 
 TOKENS:TOKENS {
@@ -129,18 +45,6 @@ TOKENS:TOKENS {
             TOKENS:RotationalMomentum .
 }
 
-DOMAIN:DOMAIN {
-    DOMAIN:DOMAIN a rdfs:Class .
-
-    DOMAIN:Control rdfs:member DOMAIN:DOMAIN .
-
-    DOMAIN:Frame rdfs:member DOMAIN:Physical .
-
-    DOMAIN:Information rdfs:member DOMAIN:DOMAIN .
-
-    DOMAIN:Physical rdfs:member DOMAIN:DOMAIN .
-}
-
 TEMPORAL:TEMPORAL {
     TEMPORAL:TEMPORAL a rdfs:Class .
 
@@ -155,12 +59,33 @@ TEMPORAL:TEMPORAL {
             TEMPORAL:Event .
 }
 
-GRAPH:GRAPH {
-    GRAPH:GRAPH a rdfs:Class .
+DISTRIBUTION:DISTRIBUTION {
+    DISTRIBUTION:DISTRIBUTION a rdfs:Class .
 
-    GRAPH:Arc rdfs:member GRAPH:GRAPH .
+    DISTRIBUTION:D1 rdf:value DISTRIBUTION:DISTRIBUTION .
 
-    GRAPH:Node rdfs:member GRAPH:GRAPH .
+    DISTRIBUTION:D2 rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    DISTRIBUTION:D3 rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    DISTRIBUTION:Lumped rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    "" xsd:boolean DISTRIBUTION:D1,
+            DISTRIBUTION:D2,
+            DISTRIBUTION:D3,
+            DISTRIBUTION:Lumped .
+}
+
+DOMAIN:DOMAIN {
+    DOMAIN:DOMAIN a rdfs:Class .
+
+    DOMAIN:Control rdfs:member DOMAIN:DOMAIN .
+
+    DOMAIN:Frame rdfs:member DOMAIN:DOMAIN .
+
+    DOMAIN:Information rdfs:member DOMAIN:DOMAIN .
+
+    DOMAIN:Physical rdfs:member DOMAIN:DOMAIN .
 }
 
 ICON:ICON {
@@ -206,10 +131,6 @@ ICON:ICON {
 
     ICON:Rectangle rdfs:member ICON:Shape .
 
-    ICON:Line rdfs:member ICON:GraphicalObject .
-
-    ICON:Shape rdfs:member ICON:GraphicalObject .
-
     "" xsd:boolean ICON:Dashed,
             ICON:Dotted,
             ICON:DottedFine,
@@ -221,5 +142,94 @@ ICON:ICON {
             ICON:RectangleWidth,
             ICON:SideLength,
             ICON:SquareSize .
+
+    ICON:Line rdfs:member ICON:GraphicalObject .
+
+    ICON:Shape rdfs:member ICON:GraphicalObject .
+}
+
+TRANSPORT:TRANSPORT {
+    TRANSPORT:TRANSPORT a rdfs:Class .
+
+    TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
+
+    TRANSPORT:Convection rdf:value TRANSPORT:TRANSPORT .
+
+    TRANSPORT:Diffusion rdf:value TRANSPORT:TRANSPORT .
+
+    TRANSPORT:Direct rdf:value TRANSPORT:TRANSPORT .
+
+    TRANSPORT:Radiation rdf:value TRANSPORT:TRANSPORT .
+
+    "" xsd:boolean TRANSPORT:Convection,
+            TRANSPORT:Diffusion,
+            TRANSPORT:Direct,
+            TRANSPORT:Radiation .
+}
+
+GRAPH:GRAPH {
+    GRAPH:GRAPH a rdfs:Class .
+
+    GRAPH:ArcIcon rdfs:member GRAPH:Arc .
+
+    GRAPH:NodeIcon rdfs:member GRAPH:Node .
+
+    GRAPH:Arc rdfs:member GRAPH:GRAPH .
+
+    GRAPH:Node rdfs:member GRAPH:GRAPH .
+}
+
+FRAME:FRAME {
+    FRAME:FRAME a rdfs:Class .
+
+    FRAME:Continuous rdf:value FRAME:Time .
+
+    FRAME:Discrete rdf:value FRAME:Time .
+
+    FRAME:SpatialCoordinate rdfs:member FRAME:FRAME .
+
+    FRAME:X rdf:value FRAME:Cartesian .
+
+    FRAME:Y rdf:value FRAME:Cartesian .
+
+    FRAME:Z rdf:value FRAME:Cartesian .
+
+    FRAME:Time rdfs:member FRAME:FRAME .
+
+    FRAME:Cartesian rdfs:member FRAME:SpatialCoordinate .
+
+    "" xsd:boolean FRAME:Continuous,
+            FRAME:Discrete,
+            FRAME:X,
+            FRAME:Y,
+            FRAME:Z .
+}
+
+COLOUR:COLOUR {
+    COLOUR:COLOUR a rdfs:Class .
+
+    COLOUR:Blue rdf:value COLOUR:COLOUR .
+
+    COLOUR:Green rdf:value COLOUR:COLOUR .
+
+    COLOUR:Red rdf:value COLOUR:COLOUR .
+
+    COLOUR:UserBlue rdf:value COLOUR:UserColour .
+
+    COLOUR:UserGreen rdf:value COLOUR:UserColour .
+
+    COLOUR:UserRed rdf:value COLOUR:UserColour .
+
+    COLOUR:Yellow rdf:value COLOUR:COLOUR .
+
+    COLOUR:UserColour rdfs:member COLOUR:COLOUR .
+
+    "" xsd:boolean COLOUR:Blue,
+            COLOUR:Green,
+            COLOUR:Red,
+            COLOUR:Yellow ;
+        xsd:integer COLOUR:UserBlue,
+            COLOUR:UserGreen,
+            COLOUR:UserRed .
 }
 

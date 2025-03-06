@@ -3,6 +3,8 @@ import os
 from PyQt6 import QtCore
 from PyQt6 import QtGui
 
+from resources.pop_up_message_box import makeMessageBox
+
 # ===========================================  icons ==============================
 ICONS = {}
 ICONS["+"] = "plus-icon.png"
@@ -80,7 +82,7 @@ def getIcon(what):
   try:
     what in ICONS.keys()
   except:
-    print("assertation error %s is not in the icon dictionary" % what)
+    makeMessageBox("assertation error %s is not in the icon dictionary %s\n I exit" % what, ["OK"])
     os.exit()
 
   f_name = os.path.join(os.getcwd(), 'resources', "icons", ICONS[what])
@@ -91,5 +93,5 @@ def getIcon(what):
 
     return icon #QtGui.QIcon(pm)
   else:
-    print("no such file : ", f_name)
+    makeMessageBox("no such file : %s"%f_name, ["OK"])
     pass

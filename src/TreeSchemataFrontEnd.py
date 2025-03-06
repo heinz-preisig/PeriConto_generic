@@ -2,15 +2,25 @@
 front end for tree construction
 
 messages:
-"event"
-"project_name"
-"tree_name"
-"tree_item_name"
-"brick_name"
-"item_name"
-"value"
-"type"
-"parent_name"
+"start"
+"load ontology"
+"save"
+"save as"
+"new tree"
+"rename tree"
+"copy tree"
+"delete tree"
+"rename item"
+"remove item"
+"add item"
+"link"
+"reduce"
+"visualise"
+"selected tree"
+"got primitive"
+"%s in treeTree selected" % type
+"item in treeTree selected can be linked"
+
 
 """
 import os
@@ -33,15 +43,11 @@ from resources.pop_up_message_box import makeMessageBox
 from resources.resources_icons import roundButton
 from resources.ui_string_dialog_impl import UI_String
 from resources.ui_single_list_selector_impl import UI_stringSelector
+from Utilities import debugging
 
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 
-DEBUGG = True
-
-
-def debugging(*info):
-  if DEBUGG:
-    print("debugging", info)
+# DEBUGG = False
 
 
 COLOURS = {
@@ -77,7 +83,7 @@ class OntobuilderUI(QMainWindow):
     self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
     # self.ui.tabsBrickTrees.setTabVisible(1,False)
 
-    self.DEBUGG = True
+    # self.DEBUGG = True
 
     roundButton(self.ui.pushOntologyLoad, "load", tooltip="load ontology")
     # roundButton(self.ui.pushOntologyCreate, "plus", tooltip="create")
@@ -94,15 +100,9 @@ class OntobuilderUI(QMainWindow):
     roundButton(self.ui.pushNormal, "normal_view", tooltip="normal", mysize=35)
     # roundButton(self.ui.pushExit, "reject", tooltip="exit", mysize=35)
 
-    # w = 150
-    # h = 25
-    # for i in ["add_subclass", "add_primitive", "link_new_class", "link_existing_class"]:
-    #   self.gui_objects[i].setFixedSize(w, h)
-
     self.interfaceComponents()
     self.backend = BackEnd(self)
 
-    # message = GUIMessage(event="start")
     message = {"event": "start"}
     self.backend.processEvent(message)
     self.changed = False
@@ -165,8 +165,10 @@ class OntobuilderUI(QMainWindow):
     if file_spec == "":
       return
     project_name = os.path.basename(file_spec).split(os.path.extsep)[0].split("+")[0]
-    message = {"event"       : "load ontology",
-               "project_name": project_name}
+    message = {
+            "event"       : "load ontology",
+            "project_name": project_name
+            }
     self.backend.processEvent(message)
 
   def on_pushOntologySave_pressed(self):
@@ -176,12 +178,13 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushOntologySaveAs_pressed(self):
     debugging("-- pushOntologySaveAs")
-    event = "save as"
     dialog = UI_String("save as", "new name")
     name = dialog.text
     if name:
-      message = {"event"       : event,
-                 "project_name": name}
+      message = {
+              "event"       : "save as",
+              "project_name": name
+              }
       self.backend.processEvent(message)
 
   def on_pushTreeCreate_pressed(self):
@@ -197,9 +200,11 @@ class OntobuilderUI(QMainWindow):
         return
     else:
       return
-    message = {"event"     : "new tree",
-               "tree_name" : classCase(tree_name), #.upper(),
-               "brick_name": brick_name}
+    message = {
+            "event"     : "new tree",
+            "tree_name" : classCase(tree_name),  # .upper(),
+            "brick_name": brick_name
+            }
     self.backend.processEvent(message)
 
   def on_pushTreeRename_pressed(self):
@@ -208,9 +213,10 @@ class OntobuilderUI(QMainWindow):
     if not tree_name:
       return
     else:
-      event = "rename tree"
-      message = {"event"    : event,
-                 "tree_name": classCase(tree_name)} #.upper()}
+      message = {
+              "event"    : "rename tree",
+              "tree_name": classCase(tree_name)
+              }  # .upper()}
       self.backend.processEvent(message)
 
   def on_pushTreeCopy_pressed(self):
@@ -219,14 +225,15 @@ class OntobuilderUI(QMainWindow):
     if not tree_name:
       return
     else:
-      event = "copy tree"
-      message = {"event"    : event,
-                 "tree_name": classCase(tree_name)} #.upper()}
+      message = {
+              "event"    : "copy tree",
+              "tree_name": classCase(tree_name)
+              }  # .upper()}
       self.backend.processEvent(message)
 
   def on_pushTreeDelete_pressed(self):
     debugging("-- pushDeleteTree")
-    message = {"event" : "delete tree"}
+    message = {"event": "delete tree"}
     self.backend.processEvent(message)
 
   def on_pushTreeAddItem_pressed(self):
@@ -234,9 +241,10 @@ class OntobuilderUI(QMainWindow):
     item_name = self.askForItemName("item name", self.existing_item_names)
     if not item_name:
       return
-    event = "asks for adding an item"
-    message = {"event"    : event,
-               "item_name": item_name}
+    message = {
+            "event"    : "add item",
+            "item_name": item_name
+            }
     self.backend.processEvent(message)
 
   def on_pushItemRename_pressed(self):
@@ -244,18 +252,17 @@ class OntobuilderUI(QMainWindow):
     item_name = self.askForItemName("item name", self.existing_item_names)
     if not item_name:
       return
-    event = "rename item"
-    message = {"event"    : event,
-               "item_name": item_name}
+    message = {
+            "event"    : "rename item",
+            "item_name": item_name
+            }
     self.backend.processEvent(message)
-
-
 
   def on_pushRemoveItem_pressed(self):
     debugging("-- pushRemoveItem")
-    event = "asks for adding an item"
-    message = {"event"    : "remove item",
-               }
+    message = {
+            "event": "remove item",
+            }
     self.backend.processEvent(message)
 
   def on_pushTreeLinkExistingClass_pressed(self):
@@ -263,10 +270,10 @@ class OntobuilderUI(QMainWindow):
     dialog = UI_stringSelector("select brick",
                                self.brickList)
     brick_name = dialog.selection
-    event = "link"
-    message = {"event"     : event,
-               "brick_name": brick_name,
-               }
+    message = {
+            "event"     : "link",
+            "brick_name": brick_name,
+            }
     self.backend.processEvent(message)
 
   def on_pushTreeReduce_pressed(self):
@@ -292,8 +299,10 @@ class OntobuilderUI(QMainWindow):
   def on_listTrees_itemClicked(self, item):
     tree_name = item.text()
     debugging("-- listTrees -- item", tree_name)
-    message = {"event"    : "selected tree",
-               "tree_name": tree_name}
+    message = {
+            "event"    : "selected tree",
+            "tree_name": tree_name
+            }
     debugging("message:", message)
     self.backend.processEvent(message)
 
@@ -319,21 +328,23 @@ class OntobuilderUI(QMainWindow):
                            validator=type)
         primitive = dialog.text
         if primitive:
-          message = {"event"      : "got primitive",
-                     "value"      : primitive,
-                     "type"       : type,
-                     "parent_name": parent_name,
-                     }
+          message = {
+                  "event"      : "got primitive",
+                  "value"      : primitive,
+                  "type"       : type,
+                  "parent_name": parent_name,
+                  }
           self.backend.processEvent(message)
           return
       else:
         event = "%s in treeTree selected" % type
     else:
       event = "item in treeTree selected can be linked"
-    message = {"event"         : event,
-               "tree_item_name": name,
-               "item_type"     : type
-               }
+    message = {
+            "event"         : event,
+            "tree_item_name": name,
+            "item_type"     : type
+            }
     debugging("message:", message)
     self.backend.processEvent(message)
 

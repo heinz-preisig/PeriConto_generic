@@ -1,5 +1,0 @@
-@prefix GGG: <http://example.org/GGG#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-
-GGG:GGG a rdfs:Class .
-

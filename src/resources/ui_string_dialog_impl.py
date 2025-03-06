@@ -25,6 +25,7 @@ from PyQt6 import QtGui
 from PyQt6 import QtWidgets
 
 from Utilities import camelCase
+from resources.pop_up_message_box import makeMessageBox
 from resources_icons import roundButton
 # from ui_string_dialog import  Ui_Dialog
 from ui_string_dialog import Ui_Dialog
@@ -96,7 +97,7 @@ class UI_String(QtWidgets.QDialog):
       elif validator == "name":
         val = r"^[a-zA-Z][a-zA-Z0-9]*$"
       else:
-        print(">>>> should not come here, wrong validator", validator)
+        makeMessageBox(">>>> should not come here, wrong validator %s"%validator, ["OK"])
 
 
       v = QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(val))
@@ -140,7 +141,7 @@ class UI_String(QtWidgets.QDialog):
   #   self.__accept()
 
   def returnPressed(self):
-    print("return pressed")
+    # print("return pressed")
     self.__accept()
     return
 
