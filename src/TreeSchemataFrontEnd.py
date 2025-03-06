@@ -20,6 +20,7 @@ messages:
 "got primitive"
 "%s in treeTree selected" % type
 "item in treeTree selected can be linked"
+"do_nothing"
 
 
 """
@@ -43,6 +44,7 @@ from resources.pop_up_message_box import makeMessageBox
 from resources.resources_icons import roundButton
 from resources.ui_string_dialog_impl import UI_String
 from resources.ui_single_list_selector_impl import UI_stringSelector
+from resources.radioButtonDialog import RadioButtonDialog
 from Utilities import debugging
 
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
@@ -322,20 +324,29 @@ class OntobuilderUI(QMainWindow):
         value = None
         if name not in self.primitives:
           value = name
-        dialog = UI_String("provide %s" % type,
+        if type == "boolean":
+          dialog = RadioButtonDialog(["True", "False"])
+          if dialog.exec():
+            value = dialog.get_selected_option()
+          else:
+            value = "boolean"
+        else:
+          dialog = UI_String("provide %s" % type,
                            value=value,
                            placeholdertext=type,
                            validator=type)
-        primitive = dialog.text
-        if primitive:
-          message = {
-                  "event"      : "got primitive",
-                  "value"      : primitive,
-                  "type"       : type,
-                  "parent_name": parent_name,
-                  }
-          self.backend.processEvent(message)
-          return
+          value = dialog.text
+        if not value:
+          value = type
+        message = {
+                "event"      : "got primitive",
+                "value"      : value,
+                "type"       : type,
+                "parent_name": parent_name,
+                }
+        self.backend.processEvent(message)
+        return
+
       else:
         event = "%s in treeTree selected" % type
     else:

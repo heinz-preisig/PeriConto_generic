@@ -42,8 +42,8 @@ class RadioButtonDialog(QDialog):
     layout.addSpacing(20)
     layout.addLayout(box)
 
-    roundButton(button_accept, "accept", tooltip="accept")
-    roundButton(button_reject, "reject", tooltip="reject")
+    roundButton(button_accept, "accept", tooltip="accept",mysize=40)
+    roundButton(button_reject, "reject", tooltip="reject",mysize=40)
 
     button_accept.clicked.connect(self.accept)
     button_reject.clicked.connect(self.reject)
@@ -52,7 +52,6 @@ class RadioButtonDialog(QDialog):
 
 
   def get_selected_option(self):
-    selected = None
     for radio_button in self.radio_buttons:
       if radio_button.isChecked():
         return radio_button.text()

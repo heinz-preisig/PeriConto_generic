@@ -104,6 +104,7 @@ class UI_String(QtWidgets.QDialog):
       self.ui.lineEdit.setValidator(v)
       if value:
         self.ui.lineEdit.setText(value)
+        self.ui.pushAccept.show()
     self.exec()
 
     if fokus:
