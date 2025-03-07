@@ -61,6 +61,7 @@ TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
 "" xsd:boolean CAPACITY:D1,
         CAPACITY:D2,
         CAPACITY:D3,
+        COLOUR:Black,
         COLOUR:Blue,
         COLOUR:Green,
         COLOUR:Red,
@@ -99,6 +100,8 @@ TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
         ICON:RectangleWidth,
         ICON:SideLength,
         ICON:SquareSize .
+
+COLOUR:Black rdf:value COLOUR:COLOUR .
 
 COLOUR:Blue rdf:value COLOUR:COLOUR .
 
