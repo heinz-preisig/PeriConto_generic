@@ -1,903 +1,8 @@
 @prefix BASE: <http://example.org/BASE#> .
-@prefix ENTITY_LUMPED: <http://example.org/ENTITY_LUMPED#> .
+@prefix ENTITY-LUMPED: <http://example.org/ENTITY-LUMPED#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-ENTITY_LUMPED:ENTITY_LUMPED {
-    ENTITY_LUMPED:ENTITY_LUMPED a rdfs:Class .
-
-    ENTITY_LUMPED:20_Dot rdfs:member ENTITY_LUMPED:20_Shape .
-
-    ENTITY_LUMPED:21_Dot rdfs:member ENTITY_LUMPED:21_Shape .
-
-    ENTITY_LUMPED:21_LineColour rdfs:member ENTITY_LUMPED:21_Line .
-
-    ENTITY_LUMPED:21_ShapeColour rdfs:member ENTITY_LUMPED:21_Shape .
-
-    ENTITY_LUMPED:22_Dot rdfs:member ENTITY_LUMPED:22_Shape .
-
-    ENTITY_LUMPED:23_Dot rdfs:member ENTITY_LUMPED:23_Shape .
-
-    ENTITY_LUMPED:24_Dot rdfs:member ENTITY_LUMPED:24_Shape .
-
-    ENTITY_LUMPED:25_Dot rdfs:member ENTITY_LUMPED:25_Shape .
-
-    ENTITY_LUMPED:4_Distribution rdfs:member ENTITY_LUMPED:4_Characteristics .
-
-    ENTITY_LUMPED:4_Temporal rdfs:member ENTITY_LUMPED:4_Characteristics .
-
-    ENTITY_LUMPED:5_Distribution rdfs:member ENTITY_LUMPED:5_Characteristics .
-
-    "" xsd:boolean ENTITY_LUMPED:0_Continuous,
-            ENTITY_LUMPED:0_Discrete,
-            ENTITY_LUMPED:0_X,
-            ENTITY_LUMPED:0_Y,
-            ENTITY_LUMPED:0_Z,
-            ENTITY_LUMPED:10_Energy,
-            ENTITY_LUMPED:10_LinearMomentum,
-            ENTITY_LUMPED:10_Mass,
-            ENTITY_LUMPED:10_RotationalMomentum,
-            ENTITY_LUMPED:11_Energy,
-            ENTITY_LUMPED:11_LinearMomentum,
-            ENTITY_LUMPED:11_Mass,
-            ENTITY_LUMPED:11_RotationalMomentum,
-            ENTITY_LUMPED:12_Energy,
-            ENTITY_LUMPED:12_LinearMomentum,
-            ENTITY_LUMPED:12_Mass,
-            ENTITY_LUMPED:12_RotationalMomentum,
-            ENTITY_LUMPED:13_Energy,
-            ENTITY_LUMPED:13_LinearMomentum,
-            ENTITY_LUMPED:13_Mass,
-            ENTITY_LUMPED:13_RotationalMomentum,
-            ENTITY_LUMPED:14_Energy,
-            ENTITY_LUMPED:14_LinearMomentum,
-            ENTITY_LUMPED:14_Mass,
-            ENTITY_LUMPED:14_RotationalMomentum,
-            ENTITY_LUMPED:15_Energy,
-            ENTITY_LUMPED:15_LinearMomentum,
-            ENTITY_LUMPED:15_Mass,
-            ENTITY_LUMPED:15_RotationalMomentum,
-            ENTITY_LUMPED:16_D1,
-            ENTITY_LUMPED:16_D2,
-            ENTITY_LUMPED:16_D3,
-            ENTITY_LUMPED:16_Lumped,
-            ENTITY_LUMPED:17_D1,
-            ENTITY_LUMPED:17_D2,
-            ENTITY_LUMPED:17_D3,
-            ENTITY_LUMPED:17_Lumped,
-            ENTITY_LUMPED:18_Constant,
-            ENTITY_LUMPED:18_Dynamic,
-            ENTITY_LUMPED:18_Event,
-            ENTITY_LUMPED:19_D1,
-            ENTITY_LUMPED:19_D2,
-            ENTITY_LUMPED:19_D3,
-            ENTITY_LUMPED:19_Lumped,
-            ENTITY_LUMPED:20_Dashed,
-            ENTITY_LUMPED:20_Dotted,
-            ENTITY_LUMPED:20_DottedFine,
-            ENTITY_LUMPED:20_Full,
-            ENTITY_LUMPED:21_Dashed,
-            ENTITY_LUMPED:21_Dotted,
-            ENTITY_LUMPED:21_DottedFine,
-            ENTITY_LUMPED:21_Full,
-            ENTITY_LUMPED:22_Dashed,
-            ENTITY_LUMPED:22_Dotted,
-            ENTITY_LUMPED:22_DottedFine,
-            ENTITY_LUMPED:22_Full,
-            ENTITY_LUMPED:23_Dashed,
-            ENTITY_LUMPED:23_Dotted,
-            ENTITY_LUMPED:23_DottedFine,
-            ENTITY_LUMPED:23_Full,
-            ENTITY_LUMPED:24_Dashed,
-            ENTITY_LUMPED:24_Dotted,
-            ENTITY_LUMPED:24_DottedFine,
-            ENTITY_LUMPED:24_Full,
-            ENTITY_LUMPED:25_Dashed,
-            ENTITY_LUMPED:25_Dotted,
-            ENTITY_LUMPED:25_DottedFine,
-            ENTITY_LUMPED:25_Full,
-            ENTITY_LUMPED:26_Blue,
-            ENTITY_LUMPED:26_Green,
-            ENTITY_LUMPED:26_Red,
-            ENTITY_LUMPED:26_Yellow,
-            ENTITY_LUMPED:27_Blue,
-            ENTITY_LUMPED:27_Green,
-            ENTITY_LUMPED:27_Red,
-            ENTITY_LUMPED:27_Yellow,
-            ENTITY_LUMPED:28_Blue,
-            ENTITY_LUMPED:28_Green,
-            ENTITY_LUMPED:28_Red,
-            ENTITY_LUMPED:28_Yellow,
-            ENTITY_LUMPED:29_Blue,
-            ENTITY_LUMPED:29_Green,
-            ENTITY_LUMPED:29_Red,
-            ENTITY_LUMPED:29_Yellow,
-            ENTITY_LUMPED:30_Blue,
-            ENTITY_LUMPED:30_Green,
-            ENTITY_LUMPED:30_Red,
-            ENTITY_LUMPED:30_Yellow,
-            ENTITY_LUMPED:31_Constant,
-            ENTITY_LUMPED:31_Dynamic,
-            ENTITY_LUMPED:31_Event,
-            ENTITY_LUMPED:32_Blue,
-            ENTITY_LUMPED:32_Green,
-            ENTITY_LUMPED:32_Red,
-            ENTITY_LUMPED:32_Yellow,
-            ENTITY_LUMPED:33_Blue,
-            ENTITY_LUMPED:33_Green,
-            ENTITY_LUMPED:33_Red,
-            ENTITY_LUMPED:33_Yellow,
-            ENTITY_LUMPED:34_Blue,
-            ENTITY_LUMPED:34_Green,
-            ENTITY_LUMPED:34_Red,
-            ENTITY_LUMPED:34_Yellow,
-            ENTITY_LUMPED:35_Blue,
-            ENTITY_LUMPED:35_Green,
-            ENTITY_LUMPED:35_Red,
-            ENTITY_LUMPED:35_Yellow,
-            ENTITY_LUMPED:36_Blue,
-            ENTITY_LUMPED:36_Green,
-            ENTITY_LUMPED:36_Red,
-            ENTITY_LUMPED:36_Yellow,
-            ENTITY_LUMPED:4_D1,
-            ENTITY_LUMPED:4_D2,
-            ENTITY_LUMPED:4_D3,
-            ENTITY_LUMPED:5_D1,
-            ENTITY_LUMPED:5_D2,
-            ENTITY_LUMPED:5_D3,
-            ENTITY_LUMPED:6_D1,
-            ENTITY_LUMPED:6_D2,
-            ENTITY_LUMPED:6_D3,
-            ENTITY_LUMPED:7_Convection,
-            ENTITY_LUMPED:7_Diffusion,
-            ENTITY_LUMPED:7_Direct,
-            ENTITY_LUMPED:7_Radiation,
-            ENTITY_LUMPED:8_Convection,
-            ENTITY_LUMPED:8_Diffusion,
-            ENTITY_LUMPED:8_Direct,
-            ENTITY_LUMPED:8_Radiation,
-            ENTITY_LUMPED:9_Convection,
-            ENTITY_LUMPED:9_Diffusion,
-            ENTITY_LUMPED:9_Direct,
-            ENTITY_LUMPED:9_Radiation ;
-        xsd:integer ENTITY_LUMPED:20_CircleDiameter,
-            ENTITY_LUMPED:20_MajorAxis,
-            ENTITY_LUMPED:20_MinorAxis,
-            ENTITY_LUMPED:20_RectangleHeight,
-            ENTITY_LUMPED:20_RectangleWidth,
-            ENTITY_LUMPED:20_SideLength,
-            ENTITY_LUMPED:20_SquareSize,
-            ENTITY_LUMPED:21_CircleDiameter,
-            ENTITY_LUMPED:21_MajorAxis,
-            ENTITY_LUMPED:21_MinorAxis,
-            ENTITY_LUMPED:21_RectangleHeight,
-            ENTITY_LUMPED:21_RectangleWidth,
-            ENTITY_LUMPED:21_SideLength,
-            ENTITY_LUMPED:21_SquareSize,
-            ENTITY_LUMPED:22_CircleDiameter,
-            ENTITY_LUMPED:22_MajorAxis,
-            ENTITY_LUMPED:22_MinorAxis,
-            ENTITY_LUMPED:22_RectangleHeight,
-            ENTITY_LUMPED:22_RectangleWidth,
-            ENTITY_LUMPED:22_SideLength,
-            ENTITY_LUMPED:22_SquareSize,
-            ENTITY_LUMPED:23_CircleDiameter,
-            ENTITY_LUMPED:23_MajorAxis,
-            ENTITY_LUMPED:23_MinorAxis,
-            ENTITY_LUMPED:23_RectangleHeight,
-            ENTITY_LUMPED:23_RectangleWidth,
-            ENTITY_LUMPED:23_SideLength,
-            ENTITY_LUMPED:23_SquareSize,
-            ENTITY_LUMPED:24_CircleDiameter,
-            ENTITY_LUMPED:24_MajorAxis,
-            ENTITY_LUMPED:24_MinorAxis,
-            ENTITY_LUMPED:24_RectangleHeight,
-            ENTITY_LUMPED:24_RectangleWidth,
-            ENTITY_LUMPED:24_SideLength,
-            ENTITY_LUMPED:24_SquareSize,
-            ENTITY_LUMPED:25_CircleDiameter,
-            ENTITY_LUMPED:25_MajorAxis,
-            ENTITY_LUMPED:25_MinorAxis,
-            ENTITY_LUMPED:25_RectangleHeight,
-            ENTITY_LUMPED:25_RectangleWidth,
-            ENTITY_LUMPED:25_SideLength,
-            ENTITY_LUMPED:25_SquareSize,
-            ENTITY_LUMPED:26_UserBlue,
-            ENTITY_LUMPED:26_UserGreen,
-            ENTITY_LUMPED:26_UserRed,
-            ENTITY_LUMPED:27_UserBlue,
-            ENTITY_LUMPED:27_UserGreen,
-            ENTITY_LUMPED:27_UserRed,
-            ENTITY_LUMPED:28_UserBlue,
-            ENTITY_LUMPED:28_UserGreen,
-            ENTITY_LUMPED:28_UserRed,
-            ENTITY_LUMPED:29_UserBlue,
-            ENTITY_LUMPED:29_UserGreen,
-            ENTITY_LUMPED:29_UserRed,
-            ENTITY_LUMPED:30_UserBlue,
-            ENTITY_LUMPED:30_UserGreen,
-            ENTITY_LUMPED:30_UserRed,
-            ENTITY_LUMPED:32_UserBlue,
-            ENTITY_LUMPED:32_UserGreen,
-            ENTITY_LUMPED:32_UserRed,
-            ENTITY_LUMPED:33_UserBlue,
-            ENTITY_LUMPED:33_UserGreen,
-            ENTITY_LUMPED:33_UserRed,
-            ENTITY_LUMPED:34_UserBlue,
-            ENTITY_LUMPED:34_UserGreen,
-            ENTITY_LUMPED:34_UserRed,
-            ENTITY_LUMPED:35_UserBlue,
-            ENTITY_LUMPED:35_UserGreen,
-            ENTITY_LUMPED:35_UserRed,
-            ENTITY_LUMPED:36_UserBlue,
-            ENTITY_LUMPED:36_UserGreen,
-            ENTITY_LUMPED:36_UserRed .
-
-    ENTITY_LUMPED:0_Continuous rdf:value ENTITY_LUMPED:0_Time .
-
-    ENTITY_LUMPED:0_Discrete rdf:value ENTITY_LUMPED:0_Time .
-
-    ENTITY_LUMPED:0_SpatialCoordinate rdfs:member ENTITY_LUMPED:0_FRAME .
-
-    ENTITY_LUMPED:0_X rdf:value ENTITY_LUMPED:0_Cartesian .
-
-    ENTITY_LUMPED:0_Y rdf:value ENTITY_LUMPED:0_Cartesian .
-
-    ENTITY_LUMPED:0_Z rdf:value ENTITY_LUMPED:0_Cartesian .
-
-    ENTITY_LUMPED:10_Energy rdf:value ENTITY_LUMPED:10_TOKENS .
-
-    ENTITY_LUMPED:10_LinearMomentum rdf:value ENTITY_LUMPED:10_TOKENS .
-
-    ENTITY_LUMPED:10_Mass rdf:value ENTITY_LUMPED:10_TOKENS .
-
-    ENTITY_LUMPED:10_RotationalMomentum rdf:value ENTITY_LUMPED:10_TOKENS .
-
-    ENTITY_LUMPED:11_Energy rdf:value ENTITY_LUMPED:11_TOKENS .
-
-    ENTITY_LUMPED:11_LinearMomentum rdf:value ENTITY_LUMPED:11_TOKENS .
-
-    ENTITY_LUMPED:11_Mass rdf:value ENTITY_LUMPED:11_TOKENS .
-
-    ENTITY_LUMPED:11_RotationalMomentum rdf:value ENTITY_LUMPED:11_TOKENS .
-
-    ENTITY_LUMPED:12_Energy rdf:value ENTITY_LUMPED:12_TOKENS .
-
-    ENTITY_LUMPED:12_LinearMomentum rdf:value ENTITY_LUMPED:12_TOKENS .
-
-    ENTITY_LUMPED:12_Mass rdf:value ENTITY_LUMPED:12_TOKENS .
-
-    ENTITY_LUMPED:12_RotationalMomentum rdf:value ENTITY_LUMPED:12_TOKENS .
-
-    ENTITY_LUMPED:13_Energy rdf:value ENTITY_LUMPED:13_TOKENS .
-
-    ENTITY_LUMPED:13_LinearMomentum rdf:value ENTITY_LUMPED:13_TOKENS .
-
-    ENTITY_LUMPED:13_Mass rdf:value ENTITY_LUMPED:13_TOKENS .
-
-    ENTITY_LUMPED:13_RotationalMomentum rdf:value ENTITY_LUMPED:13_TOKENS .
-
-    ENTITY_LUMPED:14_Energy rdf:value ENTITY_LUMPED:14_TOKENS .
-
-    ENTITY_LUMPED:14_LinearMomentum rdf:value ENTITY_LUMPED:14_TOKENS .
-
-    ENTITY_LUMPED:14_Mass rdf:value ENTITY_LUMPED:14_TOKENS .
-
-    ENTITY_LUMPED:14_RotationalMomentum rdf:value ENTITY_LUMPED:14_TOKENS .
-
-    ENTITY_LUMPED:15_Energy rdf:value ENTITY_LUMPED:15_TOKENS .
-
-    ENTITY_LUMPED:15_LinearMomentum rdf:value ENTITY_LUMPED:15_TOKENS .
-
-    ENTITY_LUMPED:15_Mass rdf:value ENTITY_LUMPED:15_TOKENS .
-
-    ENTITY_LUMPED:15_RotationalMomentum rdf:value ENTITY_LUMPED:15_TOKENS .
-
-    ENTITY_LUMPED:16_D1 rdf:value ENTITY_LUMPED:16_DISTRIBUTION .
-
-    ENTITY_LUMPED:16_D2 rdf:value ENTITY_LUMPED:16_DISTRIBUTION .
-
-    ENTITY_LUMPED:16_D3 rdf:value ENTITY_LUMPED:16_DISTRIBUTION .
-
-    ENTITY_LUMPED:16_Lumped rdf:value ENTITY_LUMPED:16_DISTRIBUTION .
-
-    ENTITY_LUMPED:17_D1 rdf:value ENTITY_LUMPED:17_DISTRIBUTION .
-
-    ENTITY_LUMPED:17_D2 rdf:value ENTITY_LUMPED:17_DISTRIBUTION .
-
-    ENTITY_LUMPED:17_D3 rdf:value ENTITY_LUMPED:17_DISTRIBUTION .
-
-    ENTITY_LUMPED:17_Lumped rdf:value ENTITY_LUMPED:17_DISTRIBUTION .
-
-    ENTITY_LUMPED:18_Constant rdf:value ENTITY_LUMPED:18_TEMPORAL .
-
-    ENTITY_LUMPED:18_Dynamic rdf:value ENTITY_LUMPED:18_TEMPORAL .
-
-    ENTITY_LUMPED:18_Event rdf:value ENTITY_LUMPED:18_TEMPORAL .
-
-    ENTITY_LUMPED:19_D1 rdf:value ENTITY_LUMPED:19_DISTRIBUTION .
-
-    ENTITY_LUMPED:19_D2 rdf:value ENTITY_LUMPED:19_DISTRIBUTION .
-
-    ENTITY_LUMPED:19_D3 rdf:value ENTITY_LUMPED:19_DISTRIBUTION .
-
-    ENTITY_LUMPED:19_Lumped rdf:value ENTITY_LUMPED:19_DISTRIBUTION .
-
-    ENTITY_LUMPED:1_ArcIcon rdfs:member ENTITY_LUMPED:1_Arc .
-
-    ENTITY_LUMPED:1_NodeIcon rdfs:member ENTITY_LUMPED:1_Node .
-
-    ENTITY_LUMPED:20_Circle rdfs:member ENTITY_LUMPED:20_Shape .
-
-    ENTITY_LUMPED:20_CircleDiameter rdf:value ENTITY_LUMPED:20_Circle .
-
-    ENTITY_LUMPED:20_Dashed rdf:value ENTITY_LUMPED:20_Line .
-
-    ENTITY_LUMPED:20_Dotted rdf:value ENTITY_LUMPED:20_Line .
-
-    ENTITY_LUMPED:20_DottedFine rdf:value ENTITY_LUMPED:20_Line .
-
-    ENTITY_LUMPED:20_Full rdf:value ENTITY_LUMPED:20_Line .
-
-    ENTITY_LUMPED:20_ICON rdfs:isDefinedBy ENTITY_LUMPED:2_ArcIcon .
-
-    ENTITY_LUMPED:20_LineColour rdfs:member ENTITY_LUMPED:20_Line .
-
-    ENTITY_LUMPED:20_MajorAxis rdf:value ENTITY_LUMPED:20_Ellipse .
-
-    ENTITY_LUMPED:20_MinorAxis rdf:value ENTITY_LUMPED:20_Ellipse .
-
-    ENTITY_LUMPED:20_RectangleHeight rdf:value ENTITY_LUMPED:20_Rectangle .
-
-    ENTITY_LUMPED:20_RectangleWidth rdf:value ENTITY_LUMPED:20_Rectangle .
-
-    ENTITY_LUMPED:20_ShapeColour rdfs:member ENTITY_LUMPED:20_Shape .
-
-    ENTITY_LUMPED:20_SideLength rdf:value ENTITY_LUMPED:20_Triangle .
-
-    ENTITY_LUMPED:20_Square rdfs:member ENTITY_LUMPED:20_Shape .
-
-    ENTITY_LUMPED:20_SquareSize rdf:value ENTITY_LUMPED:20_Square .
-
-    ENTITY_LUMPED:20_Triangle rdfs:member ENTITY_LUMPED:20_Shape .
-
-    ENTITY_LUMPED:21_Circle rdfs:member ENTITY_LUMPED:21_Shape .
-
-    ENTITY_LUMPED:21_CircleDiameter rdf:value ENTITY_LUMPED:21_Circle .
-
-    ENTITY_LUMPED:21_Dashed rdf:value ENTITY_LUMPED:21_Line .
-
-    ENTITY_LUMPED:21_Dotted rdf:value ENTITY_LUMPED:21_Line .
-
-    ENTITY_LUMPED:21_DottedFine rdf:value ENTITY_LUMPED:21_Line .
-
-    ENTITY_LUMPED:21_Full rdf:value ENTITY_LUMPED:21_Line .
-
-    ENTITY_LUMPED:21_ICON rdfs:isDefinedBy ENTITY_LUMPED:2_NodeIcon .
-
-    ENTITY_LUMPED:21_MajorAxis rdf:value ENTITY_LUMPED:21_Ellipse .
-
-    ENTITY_LUMPED:21_MinorAxis rdf:value ENTITY_LUMPED:21_Ellipse .
-
-    ENTITY_LUMPED:21_RectangleHeight rdf:value ENTITY_LUMPED:21_Rectangle .
-
-    ENTITY_LUMPED:21_RectangleWidth rdf:value ENTITY_LUMPED:21_Rectangle .
-
-    ENTITY_LUMPED:21_SideLength rdf:value ENTITY_LUMPED:21_Triangle .
-
-    ENTITY_LUMPED:21_Square rdfs:member ENTITY_LUMPED:21_Shape .
-
-    ENTITY_LUMPED:21_SquareSize rdf:value ENTITY_LUMPED:21_Square .
-
-    ENTITY_LUMPED:21_Triangle rdfs:member ENTITY_LUMPED:21_Shape .
-
-    ENTITY_LUMPED:22_Circle rdfs:member ENTITY_LUMPED:22_Shape .
-
-    ENTITY_LUMPED:22_CircleDiameter rdf:value ENTITY_LUMPED:22_Circle .
-
-    ENTITY_LUMPED:22_Dashed rdf:value ENTITY_LUMPED:22_Line .
-
-    ENTITY_LUMPED:22_Dotted rdf:value ENTITY_LUMPED:22_Line .
-
-    ENTITY_LUMPED:22_DottedFine rdf:value ENTITY_LUMPED:22_Line .
-
-    ENTITY_LUMPED:22_Full rdf:value ENTITY_LUMPED:22_Line .
-
-    ENTITY_LUMPED:22_ICON rdfs:isDefinedBy ENTITY_LUMPED:3_ArcIcon .
-
-    ENTITY_LUMPED:22_LineColour rdfs:member ENTITY_LUMPED:22_Line .
-
-    ENTITY_LUMPED:22_MajorAxis rdf:value ENTITY_LUMPED:22_Ellipse .
-
-    ENTITY_LUMPED:22_MinorAxis rdf:value ENTITY_LUMPED:22_Ellipse .
-
-    ENTITY_LUMPED:22_RectangleHeight rdf:value ENTITY_LUMPED:22_Rectangle .
-
-    ENTITY_LUMPED:22_RectangleWidth rdf:value ENTITY_LUMPED:22_Rectangle .
-
-    ENTITY_LUMPED:22_ShapeColour rdfs:member ENTITY_LUMPED:22_Shape .
-
-    ENTITY_LUMPED:22_SideLength rdf:value ENTITY_LUMPED:22_Triangle .
-
-    ENTITY_LUMPED:22_Square rdfs:member ENTITY_LUMPED:22_Shape .
-
-    ENTITY_LUMPED:22_SquareSize rdf:value ENTITY_LUMPED:22_Square .
-
-    ENTITY_LUMPED:22_Triangle rdfs:member ENTITY_LUMPED:22_Shape .
-
-    ENTITY_LUMPED:23_Circle rdfs:member ENTITY_LUMPED:23_Shape .
-
-    ENTITY_LUMPED:23_CircleDiameter rdf:value ENTITY_LUMPED:23_Circle .
-
-    ENTITY_LUMPED:23_Dashed rdf:value ENTITY_LUMPED:23_Line .
-
-    ENTITY_LUMPED:23_Dotted rdf:value ENTITY_LUMPED:23_Line .
-
-    ENTITY_LUMPED:23_DottedFine rdf:value ENTITY_LUMPED:23_Line .
-
-    ENTITY_LUMPED:23_Full rdf:value ENTITY_LUMPED:23_Line .
-
-    ENTITY_LUMPED:23_ICON rdfs:isDefinedBy ENTITY_LUMPED:3_NodeIcon .
-
-    ENTITY_LUMPED:23_LineColour rdfs:member ENTITY_LUMPED:23_Line .
-
-    ENTITY_LUMPED:23_MajorAxis rdf:value ENTITY_LUMPED:23_Ellipse .
-
-    ENTITY_LUMPED:23_MinorAxis rdf:value ENTITY_LUMPED:23_Ellipse .
-
-    ENTITY_LUMPED:23_RectangleHeight rdf:value ENTITY_LUMPED:23_Rectangle .
-
-    ENTITY_LUMPED:23_RectangleWidth rdf:value ENTITY_LUMPED:23_Rectangle .
-
-    ENTITY_LUMPED:23_ShapeColour rdfs:member ENTITY_LUMPED:23_Shape .
-
-    ENTITY_LUMPED:23_SideLength rdf:value ENTITY_LUMPED:23_Triangle .
-
-    ENTITY_LUMPED:23_Square rdfs:member ENTITY_LUMPED:23_Shape .
-
-    ENTITY_LUMPED:23_SquareSize rdf:value ENTITY_LUMPED:23_Square .
-
-    ENTITY_LUMPED:23_Triangle rdfs:member ENTITY_LUMPED:23_Shape .
-
-    ENTITY_LUMPED:24_Circle rdfs:member ENTITY_LUMPED:24_Shape .
-
-    ENTITY_LUMPED:24_CircleDiameter rdf:value ENTITY_LUMPED:24_Circle .
-
-    ENTITY_LUMPED:24_Dashed rdf:value ENTITY_LUMPED:24_Line .
-
-    ENTITY_LUMPED:24_Dotted rdf:value ENTITY_LUMPED:24_Line .
-
-    ENTITY_LUMPED:24_DottedFine rdf:value ENTITY_LUMPED:24_Line .
-
-    ENTITY_LUMPED:24_Full rdf:value ENTITY_LUMPED:24_Line .
-
-    ENTITY_LUMPED:24_ICON rdfs:isDefinedBy ENTITY_LUMPED:1_NodeIcon .
-
-    ENTITY_LUMPED:24_LineColour rdfs:member ENTITY_LUMPED:24_Line .
-
-    ENTITY_LUMPED:24_MajorAxis rdf:value ENTITY_LUMPED:24_Ellipse .
-
-    ENTITY_LUMPED:24_MinorAxis rdf:value ENTITY_LUMPED:24_Ellipse .
-
-    ENTITY_LUMPED:24_RectangleHeight rdf:value ENTITY_LUMPED:24_Rectangle .
-
-    ENTITY_LUMPED:24_RectangleWidth rdf:value ENTITY_LUMPED:24_Rectangle .
-
-    ENTITY_LUMPED:24_ShapeColour rdfs:member ENTITY_LUMPED:24_Shape .
-
-    ENTITY_LUMPED:24_SideLength rdf:value ENTITY_LUMPED:24_Triangle .
-
-    ENTITY_LUMPED:24_Square rdfs:member ENTITY_LUMPED:24_Shape .
-
-    ENTITY_LUMPED:24_SquareSize rdf:value ENTITY_LUMPED:24_Square .
-
-    ENTITY_LUMPED:24_Triangle rdfs:member ENTITY_LUMPED:24_Shape .
-
-    ENTITY_LUMPED:25_Circle rdfs:member ENTITY_LUMPED:25_Shape .
-
-    ENTITY_LUMPED:25_CircleDiameter rdf:value ENTITY_LUMPED:25_Circle .
-
-    ENTITY_LUMPED:25_Dashed rdf:value ENTITY_LUMPED:25_Line .
-
-    ENTITY_LUMPED:25_Dotted rdf:value ENTITY_LUMPED:25_Line .
-
-    ENTITY_LUMPED:25_DottedFine rdf:value ENTITY_LUMPED:25_Line .
-
-    ENTITY_LUMPED:25_Full rdf:value ENTITY_LUMPED:25_Line .
-
-    ENTITY_LUMPED:25_ICON rdfs:isDefinedBy ENTITY_LUMPED:1_ArcIcon .
-
-    ENTITY_LUMPED:25_LineColour rdfs:member ENTITY_LUMPED:25_Line .
-
-    ENTITY_LUMPED:25_MajorAxis rdf:value ENTITY_LUMPED:25_Ellipse .
-
-    ENTITY_LUMPED:25_MinorAxis rdf:value ENTITY_LUMPED:25_Ellipse .
-
-    ENTITY_LUMPED:25_RectangleHeight rdf:value ENTITY_LUMPED:25_Rectangle .
-
-    ENTITY_LUMPED:25_RectangleWidth rdf:value ENTITY_LUMPED:25_Rectangle .
-
-    ENTITY_LUMPED:25_ShapeColour rdfs:member ENTITY_LUMPED:25_Shape .
-
-    ENTITY_LUMPED:25_SideLength rdf:value ENTITY_LUMPED:25_Triangle .
-
-    ENTITY_LUMPED:25_Square rdfs:member ENTITY_LUMPED:25_Shape .
-
-    ENTITY_LUMPED:25_SquareSize rdf:value ENTITY_LUMPED:25_Square .
-
-    ENTITY_LUMPED:25_Triangle rdfs:member ENTITY_LUMPED:25_Shape .
-
-    ENTITY_LUMPED:26_Blue rdf:value ENTITY_LUMPED:26_COLOUR .
-
-    ENTITY_LUMPED:26_Green rdf:value ENTITY_LUMPED:26_COLOUR .
-
-    ENTITY_LUMPED:26_Red rdf:value ENTITY_LUMPED:26_COLOUR .
-
-    ENTITY_LUMPED:26_UserBlue rdf:value ENTITY_LUMPED:26_UserColour .
-
-    ENTITY_LUMPED:26_UserGreen rdf:value ENTITY_LUMPED:26_UserColour .
-
-    ENTITY_LUMPED:26_UserRed rdf:value ENTITY_LUMPED:26_UserColour .
-
-    ENTITY_LUMPED:26_Yellow rdf:value ENTITY_LUMPED:26_COLOUR .
-
-    ENTITY_LUMPED:27_Blue rdf:value ENTITY_LUMPED:27_COLOUR .
-
-    ENTITY_LUMPED:27_Green rdf:value ENTITY_LUMPED:27_COLOUR .
-
-    ENTITY_LUMPED:27_Red rdf:value ENTITY_LUMPED:27_COLOUR .
-
-    ENTITY_LUMPED:27_UserBlue rdf:value ENTITY_LUMPED:27_UserColour .
-
-    ENTITY_LUMPED:27_UserGreen rdf:value ENTITY_LUMPED:27_UserColour .
-
-    ENTITY_LUMPED:27_UserRed rdf:value ENTITY_LUMPED:27_UserColour .
-
-    ENTITY_LUMPED:27_Yellow rdf:value ENTITY_LUMPED:27_COLOUR .
-
-    ENTITY_LUMPED:28_Blue rdf:value ENTITY_LUMPED:28_COLOUR .
-
-    ENTITY_LUMPED:28_Green rdf:value ENTITY_LUMPED:28_COLOUR .
-
-    ENTITY_LUMPED:28_Red rdf:value ENTITY_LUMPED:28_COLOUR .
-
-    ENTITY_LUMPED:28_UserBlue rdf:value ENTITY_LUMPED:28_UserColour .
-
-    ENTITY_LUMPED:28_UserGreen rdf:value ENTITY_LUMPED:28_UserColour .
-
-    ENTITY_LUMPED:28_UserRed rdf:value ENTITY_LUMPED:28_UserColour .
-
-    ENTITY_LUMPED:28_Yellow rdf:value ENTITY_LUMPED:28_COLOUR .
-
-    ENTITY_LUMPED:29_Blue rdf:value ENTITY_LUMPED:29_COLOUR .
-
-    ENTITY_LUMPED:29_Green rdf:value ENTITY_LUMPED:29_COLOUR .
-
-    ENTITY_LUMPED:29_Red rdf:value ENTITY_LUMPED:29_COLOUR .
-
-    ENTITY_LUMPED:29_UserBlue rdf:value ENTITY_LUMPED:29_UserColour .
-
-    ENTITY_LUMPED:29_UserGreen rdf:value ENTITY_LUMPED:29_UserColour .
-
-    ENTITY_LUMPED:29_UserRed rdf:value ENTITY_LUMPED:29_UserColour .
-
-    ENTITY_LUMPED:29_Yellow rdf:value ENTITY_LUMPED:29_COLOUR .
-
-    ENTITY_LUMPED:2_ArcIcon rdfs:member ENTITY_LUMPED:2_Arc .
-
-    ENTITY_LUMPED:2_NodeIcon rdfs:member ENTITY_LUMPED:2_Node .
-
-    ENTITY_LUMPED:30_Blue rdf:value ENTITY_LUMPED:30_COLOUR .
-
-    ENTITY_LUMPED:30_Green rdf:value ENTITY_LUMPED:30_COLOUR .
-
-    ENTITY_LUMPED:30_Red rdf:value ENTITY_LUMPED:30_COLOUR .
-
-    ENTITY_LUMPED:30_UserBlue rdf:value ENTITY_LUMPED:30_UserColour .
-
-    ENTITY_LUMPED:30_UserGreen rdf:value ENTITY_LUMPED:30_UserColour .
-
-    ENTITY_LUMPED:30_UserRed rdf:value ENTITY_LUMPED:30_UserColour .
-
-    ENTITY_LUMPED:30_Yellow rdf:value ENTITY_LUMPED:30_COLOUR .
-
-    ENTITY_LUMPED:31_Constant rdf:value ENTITY_LUMPED:31_TEMPORAL .
-
-    ENTITY_LUMPED:31_Dynamic rdf:value ENTITY_LUMPED:31_TEMPORAL .
-
-    ENTITY_LUMPED:31_Event rdf:value ENTITY_LUMPED:31_TEMPORAL .
-
-    ENTITY_LUMPED:32_Blue rdf:value ENTITY_LUMPED:32_COLOUR .
-
-    ENTITY_LUMPED:32_Green rdf:value ENTITY_LUMPED:32_COLOUR .
-
-    ENTITY_LUMPED:32_Red rdf:value ENTITY_LUMPED:32_COLOUR .
-
-    ENTITY_LUMPED:32_UserBlue rdf:value ENTITY_LUMPED:32_UserColour .
-
-    ENTITY_LUMPED:32_UserGreen rdf:value ENTITY_LUMPED:32_UserColour .
-
-    ENTITY_LUMPED:32_UserRed rdf:value ENTITY_LUMPED:32_UserColour .
-
-    ENTITY_LUMPED:32_Yellow rdf:value ENTITY_LUMPED:32_COLOUR .
-
-    ENTITY_LUMPED:33_Blue rdf:value ENTITY_LUMPED:33_COLOUR .
-
-    ENTITY_LUMPED:33_Green rdf:value ENTITY_LUMPED:33_COLOUR .
-
-    ENTITY_LUMPED:33_Red rdf:value ENTITY_LUMPED:33_COLOUR .
-
-    ENTITY_LUMPED:33_UserBlue rdf:value ENTITY_LUMPED:33_UserColour .
-
-    ENTITY_LUMPED:33_UserGreen rdf:value ENTITY_LUMPED:33_UserColour .
-
-    ENTITY_LUMPED:33_UserRed rdf:value ENTITY_LUMPED:33_UserColour .
-
-    ENTITY_LUMPED:33_Yellow rdf:value ENTITY_LUMPED:33_COLOUR .
-
-    ENTITY_LUMPED:34_Blue rdf:value ENTITY_LUMPED:34_COLOUR .
-
-    ENTITY_LUMPED:34_Green rdf:value ENTITY_LUMPED:34_COLOUR .
-
-    ENTITY_LUMPED:34_Red rdf:value ENTITY_LUMPED:34_COLOUR .
-
-    ENTITY_LUMPED:34_UserBlue rdf:value ENTITY_LUMPED:34_UserColour .
-
-    ENTITY_LUMPED:34_UserGreen rdf:value ENTITY_LUMPED:34_UserColour .
-
-    ENTITY_LUMPED:34_UserRed rdf:value ENTITY_LUMPED:34_UserColour .
-
-    ENTITY_LUMPED:34_Yellow rdf:value ENTITY_LUMPED:34_COLOUR .
-
-    ENTITY_LUMPED:35_Blue rdf:value ENTITY_LUMPED:35_COLOUR .
-
-    ENTITY_LUMPED:35_Green rdf:value ENTITY_LUMPED:35_COLOUR .
-
-    ENTITY_LUMPED:35_Red rdf:value ENTITY_LUMPED:35_COLOUR .
-
-    ENTITY_LUMPED:35_UserBlue rdf:value ENTITY_LUMPED:35_UserColour .
-
-    ENTITY_LUMPED:35_UserGreen rdf:value ENTITY_LUMPED:35_UserColour .
-
-    ENTITY_LUMPED:35_UserRed rdf:value ENTITY_LUMPED:35_UserColour .
-
-    ENTITY_LUMPED:35_Yellow rdf:value ENTITY_LUMPED:35_COLOUR .
-
-    ENTITY_LUMPED:36_Blue rdf:value ENTITY_LUMPED:36_COLOUR .
-
-    ENTITY_LUMPED:36_Green rdf:value ENTITY_LUMPED:36_COLOUR .
-
-    ENTITY_LUMPED:36_Red rdf:value ENTITY_LUMPED:36_COLOUR .
-
-    ENTITY_LUMPED:36_UserBlue rdf:value ENTITY_LUMPED:36_UserColour .
-
-    ENTITY_LUMPED:36_UserGreen rdf:value ENTITY_LUMPED:36_UserColour .
-
-    ENTITY_LUMPED:36_UserRed rdf:value ENTITY_LUMPED:36_UserColour .
-
-    ENTITY_LUMPED:36_Yellow rdf:value ENTITY_LUMPED:36_COLOUR .
-
-    ENTITY_LUMPED:3_ArcIcon rdfs:member ENTITY_LUMPED:3_Arc .
-
-    ENTITY_LUMPED:3_NodeIcon rdfs:member ENTITY_LUMPED:3_Node .
-
-    ENTITY_LUMPED:4_Tokens rdfs:member ENTITY_LUMPED:4_CAPACITY .
-
-    ENTITY_LUMPED:5_Temporal rdfs:member ENTITY_LUMPED:5_Characteristics .
-
-    ENTITY_LUMPED:5_Tokens rdfs:member ENTITY_LUMPED:5_CAPACITY .
-
-    ENTITY_LUMPED:6_Distribution rdfs:member ENTITY_LUMPED:6_Characteristics .
-
-    ENTITY_LUMPED:6_Temporal rdfs:member ENTITY_LUMPED:6_Characteristics .
-
-    ENTITY_LUMPED:6_Tokens rdfs:member ENTITY_LUMPED:6_CAPACITY .
-
-    ENTITY_LUMPED:7_Convection rdf:value ENTITY_LUMPED:7_TRANSPORT .
-
-    ENTITY_LUMPED:7_Diffusion rdf:value ENTITY_LUMPED:7_TRANSPORT .
-
-    ENTITY_LUMPED:7_Direct rdf:value ENTITY_LUMPED:7_TRANSPORT .
-
-    ENTITY_LUMPED:7_Radiation rdf:value ENTITY_LUMPED:7_TRANSPORT .
-
-    ENTITY_LUMPED:7_Tokens rdfs:member ENTITY_LUMPED:7_TRANSPORT .
-
-    ENTITY_LUMPED:8_Convection rdf:value ENTITY_LUMPED:8_TRANSPORT .
-
-    ENTITY_LUMPED:8_Diffusion rdf:value ENTITY_LUMPED:8_TRANSPORT .
-
-    ENTITY_LUMPED:8_Direct rdf:value ENTITY_LUMPED:8_TRANSPORT .
-
-    ENTITY_LUMPED:8_Radiation rdf:value ENTITY_LUMPED:8_TRANSPORT .
-
-    ENTITY_LUMPED:8_Tokens rdfs:member ENTITY_LUMPED:8_TRANSPORT .
-
-    ENTITY_LUMPED:9_Characteristics rdfs:member ENTITY_LUMPED:9_TRANSPORT .
-
-    ENTITY_LUMPED:9_Convection rdf:value ENTITY_LUMPED:9_TRANSPORT .
-
-    ENTITY_LUMPED:9_Diffusion rdf:value ENTITY_LUMPED:9_TRANSPORT .
-
-    ENTITY_LUMPED:9_Direct rdf:value ENTITY_LUMPED:9_TRANSPORT .
-
-    ENTITY_LUMPED:9_Distribution rdfs:member ENTITY_LUMPED:9_Characteristics .
-
-    ENTITY_LUMPED:9_Radiation rdf:value ENTITY_LUMPED:9_TRANSPORT .
-
-    ENTITY_LUMPED:9_Tokens rdfs:member ENTITY_LUMPED:9_TRANSPORT .
-
-    ENTITY_LUMPED:Control rdfs:member ENTITY_LUMPED:ENTITY_LUMPED .
-
-    ENTITY_LUMPED:Frame rdfs:member ENTITY_LUMPED:ENTITY_LUMPED .
-
-    ENTITY_LUMPED:Information rdfs:member ENTITY_LUMPED:ENTITY_LUMPED .
-
-    ENTITY_LUMPED:Physical rdfs:member ENTITY_LUMPED:ENTITY_LUMPED .
-
-    ENTITY_LUMPED:0_FRAME rdfs:isDefinedBy ENTITY_LUMPED:Frame .
-
-    ENTITY_LUMPED:0_Time rdfs:member ENTITY_LUMPED:0_FRAME .
-
-    ENTITY_LUMPED:1_Arc rdfs:member ENTITY_LUMPED:1_GRAPH .
-
-    ENTITY_LUMPED:1_GRAPH rdfs:isDefinedBy ENTITY_LUMPED:Physical .
-
-    ENTITY_LUMPED:1_Node rdfs:member ENTITY_LUMPED:1_GRAPH .
-
-    ENTITY_LUMPED:20_Ellipse rdfs:member ENTITY_LUMPED:20_Shape .
-
-    ENTITY_LUMPED:20_GraphicalObject rdfs:member ENTITY_LUMPED:20_ICON .
-
-    ENTITY_LUMPED:20_Rectangle rdfs:member ENTITY_LUMPED:20_Shape .
-
-    ENTITY_LUMPED:21_Ellipse rdfs:member ENTITY_LUMPED:21_Shape .
-
-    ENTITY_LUMPED:21_GraphicalObject rdfs:member ENTITY_LUMPED:21_ICON .
-
-    ENTITY_LUMPED:21_Rectangle rdfs:member ENTITY_LUMPED:21_Shape .
-
-    ENTITY_LUMPED:22_Ellipse rdfs:member ENTITY_LUMPED:22_Shape .
-
-    ENTITY_LUMPED:22_GraphicalObject rdfs:member ENTITY_LUMPED:22_ICON .
-
-    ENTITY_LUMPED:22_Rectangle rdfs:member ENTITY_LUMPED:22_Shape .
-
-    ENTITY_LUMPED:23_Ellipse rdfs:member ENTITY_LUMPED:23_Shape .
-
-    ENTITY_LUMPED:23_GraphicalObject rdfs:member ENTITY_LUMPED:23_ICON .
-
-    ENTITY_LUMPED:23_Rectangle rdfs:member ENTITY_LUMPED:23_Shape .
-
-    ENTITY_LUMPED:24_Ellipse rdfs:member ENTITY_LUMPED:24_Shape .
-
-    ENTITY_LUMPED:24_GraphicalObject rdfs:member ENTITY_LUMPED:24_ICON .
-
-    ENTITY_LUMPED:24_Rectangle rdfs:member ENTITY_LUMPED:24_Shape .
-
-    ENTITY_LUMPED:25_Ellipse rdfs:member ENTITY_LUMPED:25_Shape .
-
-    ENTITY_LUMPED:25_GraphicalObject rdfs:member ENTITY_LUMPED:25_ICON .
-
-    ENTITY_LUMPED:25_Rectangle rdfs:member ENTITY_LUMPED:25_Shape .
-
-    ENTITY_LUMPED:2_Arc rdfs:member ENTITY_LUMPED:2_GRAPH .
-
-    ENTITY_LUMPED:2_GRAPH rdfs:isDefinedBy ENTITY_LUMPED:Information .
-
-    ENTITY_LUMPED:2_Node rdfs:member ENTITY_LUMPED:2_GRAPH .
-
-    ENTITY_LUMPED:3_Arc rdfs:member ENTITY_LUMPED:3_GRAPH .
-
-    ENTITY_LUMPED:3_GRAPH rdfs:isDefinedBy ENTITY_LUMPED:Control .
-
-    ENTITY_LUMPED:3_Node rdfs:member ENTITY_LUMPED:3_GRAPH .
-
-    ENTITY_LUMPED:4_CAPACITY rdfs:isDefinedBy ENTITY_LUMPED:2_Node .
-
-    ENTITY_LUMPED:4_Characteristics rdfs:member ENTITY_LUMPED:4_CAPACITY .
-
-    ENTITY_LUMPED:5_CAPACITY rdfs:isDefinedBy ENTITY_LUMPED:3_Node .
-
-    ENTITY_LUMPED:5_Characteristics rdfs:member ENTITY_LUMPED:5_CAPACITY .
-
-    ENTITY_LUMPED:6_CAPACITY rdfs:isDefinedBy ENTITY_LUMPED:1_Node .
-
-    ENTITY_LUMPED:6_Characteristics rdfs:member ENTITY_LUMPED:6_CAPACITY .
-
-    ENTITY_LUMPED:0_Cartesian rdfs:member ENTITY_LUMPED:0_SpatialCoordinate .
-
-    ENTITY_LUMPED:18_TEMPORAL rdfs:isDefinedBy ENTITY_LUMPED:6_Temporal .
-
-    ENTITY_LUMPED:26_UserColour rdfs:member ENTITY_LUMPED:26_COLOUR .
-
-    ENTITY_LUMPED:27_UserColour rdfs:member ENTITY_LUMPED:27_COLOUR .
-
-    ENTITY_LUMPED:28_UserColour rdfs:member ENTITY_LUMPED:28_COLOUR .
-
-    ENTITY_LUMPED:29_UserColour rdfs:member ENTITY_LUMPED:29_COLOUR .
-
-    ENTITY_LUMPED:30_UserColour rdfs:member ENTITY_LUMPED:30_COLOUR .
-
-    ENTITY_LUMPED:31_TEMPORAL rdfs:isDefinedBy ENTITY_LUMPED:5_Temporal .
-
-    ENTITY_LUMPED:32_UserColour rdfs:member ENTITY_LUMPED:32_COLOUR .
-
-    ENTITY_LUMPED:33_UserColour rdfs:member ENTITY_LUMPED:33_COLOUR .
-
-    ENTITY_LUMPED:34_UserColour rdfs:member ENTITY_LUMPED:34_COLOUR .
-
-    ENTITY_LUMPED:35_UserColour rdfs:member ENTITY_LUMPED:35_COLOUR .
-
-    ENTITY_LUMPED:36_UserColour rdfs:member ENTITY_LUMPED:36_COLOUR .
-
-    ENTITY_LUMPED:10_TOKENS rdfs:isDefinedBy ENTITY_LUMPED:8_Tokens .
-
-    ENTITY_LUMPED:11_TOKENS rdfs:isDefinedBy ENTITY_LUMPED:5_Tokens .
-
-    ENTITY_LUMPED:12_TOKENS rdfs:isDefinedBy ENTITY_LUMPED:9_Tokens .
-
-    ENTITY_LUMPED:13_TOKENS rdfs:isDefinedBy ENTITY_LUMPED:6_Tokens .
-
-    ENTITY_LUMPED:14_TOKENS rdfs:isDefinedBy ENTITY_LUMPED:4_Tokens .
-
-    ENTITY_LUMPED:15_TOKENS rdfs:isDefinedBy ENTITY_LUMPED:7_Tokens .
-
-    ENTITY_LUMPED:17_DISTRIBUTION rdfs:isDefinedBy ENTITY_LUMPED:6_Distribution .
-
-    ENTITY_LUMPED:19_DISTRIBUTION rdfs:isDefinedBy ENTITY_LUMPED:9_Distribution .
-
-    ENTITY_LUMPED:20_Line rdfs:member ENTITY_LUMPED:20_GraphicalObject .
-
-    ENTITY_LUMPED:21_Line rdfs:member ENTITY_LUMPED:21_GraphicalObject .
-
-    ENTITY_LUMPED:22_Line rdfs:member ENTITY_LUMPED:22_GraphicalObject .
-
-    ENTITY_LUMPED:23_Line rdfs:member ENTITY_LUMPED:23_GraphicalObject .
-
-    ENTITY_LUMPED:24_Line rdfs:member ENTITY_LUMPED:24_GraphicalObject .
-
-    ENTITY_LUMPED:25_Line rdfs:member ENTITY_LUMPED:25_GraphicalObject .
-
-    ENTITY_LUMPED:26_COLOUR rdfs:isDefinedBy ENTITY_LUMPED:22_ShapeColour .
-
-    ENTITY_LUMPED:27_COLOUR rdfs:isDefinedBy ENTITY_LUMPED:22_LineColour .
-
-    ENTITY_LUMPED:28_COLOUR rdfs:isDefinedBy ENTITY_LUMPED:20_LineColour .
-
-    ENTITY_LUMPED:29_COLOUR rdfs:isDefinedBy ENTITY_LUMPED:23_ShapeColour .
-
-    ENTITY_LUMPED:30_COLOUR rdfs:isDefinedBy ENTITY_LUMPED:23_LineColour .
-
-    ENTITY_LUMPED:32_COLOUR rdfs:isDefinedBy ENTITY_LUMPED:20_ShapeColour .
-
-    ENTITY_LUMPED:33_COLOUR rdfs:isDefinedBy ENTITY_LUMPED:24_LineColour .
-
-    ENTITY_LUMPED:34_COLOUR rdfs:isDefinedBy ENTITY_LUMPED:24_ShapeColour .
-
-    ENTITY_LUMPED:35_COLOUR rdfs:isDefinedBy ENTITY_LUMPED:25_ShapeColour .
-
-    ENTITY_LUMPED:36_COLOUR rdfs:isDefinedBy ENTITY_LUMPED:25_LineColour .
-
-    ENTITY_LUMPED:7_TRANSPORT rdfs:isDefinedBy ENTITY_LUMPED:2_Arc .
-
-    ENTITY_LUMPED:8_TRANSPORT rdfs:isDefinedBy ENTITY_LUMPED:3_Arc .
-
-    ENTITY_LUMPED:9_TRANSPORT rdfs:isDefinedBy ENTITY_LUMPED:1_Arc .
-
-    ENTITY_LUMPED:20_Shape rdfs:member ENTITY_LUMPED:20_GraphicalObject .
-
-    ENTITY_LUMPED:21_Shape rdfs:member ENTITY_LUMPED:21_GraphicalObject .
-
-    ENTITY_LUMPED:22_Shape rdfs:member ENTITY_LUMPED:22_GraphicalObject .
-
-    ENTITY_LUMPED:23_Shape rdfs:member ENTITY_LUMPED:23_GraphicalObject .
-
-    ENTITY_LUMPED:24_Shape rdfs:member ENTITY_LUMPED:24_GraphicalObject .
-
-    ENTITY_LUMPED:25_Shape rdfs:member ENTITY_LUMPED:25_GraphicalObject .
-}
 
 BASE:BASE {
     BASE:0_FRAME a rdfs:Class ;
@@ -1035,6 +140,307 @@ BASE:BASE {
     BASE:4_Temporal rdfs:member BASE:4_Characteristics .
 
     BASE:5_Distribution rdfs:member BASE:5_Characteristics .
+
+    "" xsd:boolean BASE:0_Continuous,
+            BASE:0_Discrete,
+            BASE:0_X,
+            BASE:0_Y,
+            BASE:0_Z,
+            BASE:10_Energy,
+            BASE:10_LinearMomentum,
+            BASE:10_Mass,
+            BASE:10_RotationalMomentum,
+            BASE:11_Energy,
+            BASE:11_LinearMomentum,
+            BASE:11_Mass,
+            BASE:11_RotationalMomentum,
+            BASE:12_Energy,
+            BASE:12_LinearMomentum,
+            BASE:12_Mass,
+            BASE:12_RotationalMomentum,
+            BASE:13_Energy,
+            BASE:13_LinearMomentum,
+            BASE:13_Mass,
+            BASE:13_RotationalMomentum,
+            BASE:14_Energy,
+            BASE:14_LinearMomentum,
+            BASE:14_Mass,
+            BASE:14_RotationalMomentum,
+            BASE:15_Energy,
+            BASE:15_LinearMomentum,
+            BASE:15_Mass,
+            BASE:15_RotationalMomentum,
+            BASE:16_D1,
+            BASE:16_D2,
+            BASE:16_D3,
+            BASE:16_Lumped,
+            BASE:17_D1,
+            BASE:17_D2,
+            BASE:17_D3,
+            BASE:17_Lumped,
+            BASE:18_Constant,
+            BASE:18_Dynamic,
+            BASE:18_Event,
+            BASE:19_D1,
+            BASE:19_D2,
+            BASE:19_D3,
+            BASE:19_Lumped,
+            BASE:20_Dashed,
+            BASE:20_Dotted,
+            BASE:20_DottedFine,
+            BASE:20_Full,
+            BASE:21_Dashed,
+            BASE:21_Dotted,
+            BASE:21_DottedFine,
+            BASE:21_Full,
+            BASE:22_Dashed,
+            BASE:22_Dotted,
+            BASE:22_DottedFine,
+            BASE:22_Full,
+            BASE:23_Dashed,
+            BASE:23_Dotted,
+            BASE:23_DottedFine,
+            BASE:23_Full,
+            BASE:24_Dashed,
+            BASE:24_Dotted,
+            BASE:24_DottedFine,
+            BASE:24_Full,
+            BASE:25_Dashed,
+            BASE:25_Dotted,
+            BASE:25_DottedFine,
+            BASE:25_Full,
+            BASE:26_Blue,
+            BASE:26_Green,
+            BASE:26_Red,
+            BASE:26_Yellow,
+            BASE:27_Blue,
+            BASE:27_Green,
+            BASE:27_Red,
+            BASE:27_Yellow,
+            BASE:28_Blue,
+            BASE:28_Green,
+            BASE:28_Red,
+            BASE:28_Yellow,
+            BASE:29_Blue,
+            BASE:29_Green,
+            BASE:29_Red,
+            BASE:29_Yellow,
+            BASE:30_Blue,
+            BASE:30_Green,
+            BASE:30_Red,
+            BASE:30_Yellow,
+            BASE:31_Constant,
+            BASE:31_Dynamic,
+            BASE:31_Event,
+            BASE:32_Blue,
+            BASE:32_Green,
+            BASE:32_Red,
+            BASE:32_Yellow,
+            BASE:33_Blue,
+            BASE:33_Green,
+            BASE:33_Red,
+            BASE:33_Yellow,
+            BASE:34_Blue,
+            BASE:34_Green,
+            BASE:34_Red,
+            BASE:34_Yellow,
+            BASE:35_Blue,
+            BASE:35_Green,
+            BASE:35_Red,
+            BASE:35_Yellow,
+            BASE:36_Blue,
+            BASE:36_Green,
+            BASE:36_Red,
+            BASE:36_Yellow,
+            BASE:37_Black,
+            BASE:37_Blue,
+            BASE:37_Green,
+            BASE:37_Red,
+            BASE:37_Yellow,
+            BASE:38_Black,
+            BASE:38_Blue,
+            BASE:38_Green,
+            BASE:38_Red,
+            BASE:38_Yellow,
+            BASE:39_Black,
+            BASE:39_Blue,
+            BASE:39_Green,
+            BASE:39_Red,
+            BASE:39_Yellow,
+            BASE:40_Black,
+            BASE:40_Blue,
+            BASE:40_Green,
+            BASE:40_Red,
+            BASE:40_Yellow,
+            BASE:41_Black,
+            BASE:41_Blue,
+            BASE:41_Green,
+            BASE:41_Red,
+            BASE:41_Yellow,
+            BASE:42_Black,
+            BASE:42_Blue,
+            BASE:42_Green,
+            BASE:42_Red,
+            BASE:42_Yellow,
+            BASE:43_Black,
+            BASE:43_Blue,
+            BASE:43_Green,
+            BASE:43_Red,
+            BASE:43_Yellow,
+            BASE:44_Black,
+            BASE:44_Blue,
+            BASE:44_Green,
+            BASE:44_Red,
+            BASE:44_Yellow,
+            BASE:45_Black,
+            BASE:45_Blue,
+            BASE:45_Green,
+            BASE:45_Red,
+            BASE:45_Yellow,
+            BASE:46_Black,
+            BASE:46_Blue,
+            BASE:46_Green,
+            BASE:46_Red,
+            BASE:46_Yellow,
+            BASE:47_Black,
+            BASE:47_Blue,
+            BASE:47_Green,
+            BASE:47_Red,
+            BASE:47_Yellow,
+            BASE:48_Black,
+            BASE:48_Blue,
+            BASE:48_Green,
+            BASE:48_Red,
+            BASE:48_Yellow,
+            BASE:4_D1,
+            BASE:4_D2,
+            BASE:4_D3,
+            BASE:5_D1,
+            BASE:5_D2,
+            BASE:5_D3,
+            BASE:6_D1,
+            BASE:6_D2,
+            BASE:6_D3,
+            BASE:7_Convection,
+            BASE:7_Diffusion,
+            BASE:7_Direct,
+            BASE:7_Radiation,
+            BASE:8_Convection,
+            BASE:8_Diffusion,
+            BASE:8_Direct,
+            BASE:8_Radiation,
+            BASE:9_Convection,
+            BASE:9_Diffusion,
+            BASE:9_Direct,
+            BASE:9_Radiation ;
+        xsd:integer BASE:20_CircleDiameter,
+            BASE:20_MajorAxis,
+            BASE:20_MinorAxis,
+            BASE:20_RectangleHeight,
+            BASE:20_RectangleWidth,
+            BASE:20_SideLength,
+            BASE:20_SquareSize,
+            BASE:21_CircleDiameter,
+            BASE:21_MajorAxis,
+            BASE:21_MinorAxis,
+            BASE:21_RectangleHeight,
+            BASE:21_RectangleWidth,
+            BASE:21_SideLength,
+            BASE:21_SquareSize,
+            BASE:22_CircleDiameter,
+            BASE:22_MajorAxis,
+            BASE:22_MinorAxis,
+            BASE:22_RectangleHeight,
+            BASE:22_RectangleWidth,
+            BASE:22_SideLength,
+            BASE:22_SquareSize,
+            BASE:23_CircleDiameter,
+            BASE:23_MajorAxis,
+            BASE:23_MinorAxis,
+            BASE:23_RectangleHeight,
+            BASE:23_RectangleWidth,
+            BASE:23_SideLength,
+            BASE:23_SquareSize,
+            BASE:24_CircleDiameter,
+            BASE:24_MajorAxis,
+            BASE:24_MinorAxis,
+            BASE:24_RectangleHeight,
+            BASE:24_RectangleWidth,
+            BASE:24_SideLength,
+            BASE:24_SquareSize,
+            BASE:25_CircleDiameter,
+            BASE:25_MajorAxis,
+            BASE:25_MinorAxis,
+            BASE:25_RectangleHeight,
+            BASE:25_RectangleWidth,
+            BASE:25_SideLength,
+            BASE:25_SquareSize,
+            BASE:26_UserBlue,
+            BASE:26_UserGreen,
+            BASE:26_UserRed,
+            BASE:27_UserBlue,
+            BASE:27_UserGreen,
+            BASE:27_UserRed,
+            BASE:28_UserBlue,
+            BASE:28_UserGreen,
+            BASE:28_UserRed,
+            BASE:29_UserBlue,
+            BASE:29_UserGreen,
+            BASE:29_UserRed,
+            BASE:30_UserBlue,
+            BASE:30_UserGreen,
+            BASE:30_UserRed,
+            BASE:32_UserBlue,
+            BASE:32_UserGreen,
+            BASE:32_UserRed,
+            BASE:33_UserBlue,
+            BASE:33_UserGreen,
+            BASE:33_UserRed,
+            BASE:34_UserBlue,
+            BASE:34_UserGreen,
+            BASE:34_UserRed,
+            BASE:35_UserBlue,
+            BASE:35_UserGreen,
+            BASE:35_UserRed,
+            BASE:36_UserBlue,
+            BASE:36_UserGreen,
+            BASE:36_UserRed,
+            BASE:37_UserBlue,
+            BASE:37_UserGreen,
+            BASE:37_UserRed,
+            BASE:38_UserBlue,
+            BASE:38_UserGreen,
+            BASE:38_UserRed,
+            BASE:39_UserBlue,
+            BASE:39_UserGreen,
+            BASE:39_UserRed,
+            BASE:40_UserBlue,
+            BASE:40_UserGreen,
+            BASE:40_UserRed,
+            BASE:41_UserBlue,
+            BASE:41_UserGreen,
+            BASE:41_UserRed,
+            BASE:42_UserBlue,
+            BASE:42_UserGreen,
+            BASE:42_UserRed,
+            BASE:43_UserBlue,
+            BASE:43_UserGreen,
+            BASE:43_UserRed,
+            BASE:44_UserBlue,
+            BASE:44_UserGreen,
+            BASE:44_UserRed,
+            BASE:45_UserBlue,
+            BASE:45_UserGreen,
+            BASE:45_UserRed,
+            BASE:46_UserBlue,
+            BASE:46_UserGreen,
+            BASE:46_UserRed,
+            BASE:47_UserBlue,
+            BASE:47_UserGreen,
+            BASE:47_UserRed,
+            BASE:48_UserBlue,
+            BASE:48_UserGreen,
+            BASE:48_UserRed .
 
     BASE:0_Continuous rdf:value BASE:0_Time .
 
@@ -1642,307 +1048,6 @@ BASE:BASE {
 
     BASE:Physical rdfs:member BASE:BASE .
 
-    "" xsd:boolean BASE:0_Continuous,
-            BASE:0_Discrete,
-            BASE:0_X,
-            BASE:0_Y,
-            BASE:0_Z,
-            BASE:10_Energy,
-            BASE:10_LinearMomentum,
-            BASE:10_Mass,
-            BASE:10_RotationalMomentum,
-            BASE:11_Energy,
-            BASE:11_LinearMomentum,
-            BASE:11_Mass,
-            BASE:11_RotationalMomentum,
-            BASE:12_Energy,
-            BASE:12_LinearMomentum,
-            BASE:12_Mass,
-            BASE:12_RotationalMomentum,
-            BASE:13_Energy,
-            BASE:13_LinearMomentum,
-            BASE:13_Mass,
-            BASE:13_RotationalMomentum,
-            BASE:14_Energy,
-            BASE:14_LinearMomentum,
-            BASE:14_Mass,
-            BASE:14_RotationalMomentum,
-            BASE:15_Energy,
-            BASE:15_LinearMomentum,
-            BASE:15_Mass,
-            BASE:15_RotationalMomentum,
-            BASE:16_D1,
-            BASE:16_D2,
-            BASE:16_D3,
-            BASE:16_Lumped,
-            BASE:17_D1,
-            BASE:17_D2,
-            BASE:17_D3,
-            BASE:17_Lumped,
-            BASE:18_Constant,
-            BASE:18_Dynamic,
-            BASE:18_Event,
-            BASE:19_D1,
-            BASE:19_D2,
-            BASE:19_D3,
-            BASE:19_Lumped,
-            BASE:20_Dashed,
-            BASE:20_Dotted,
-            BASE:20_DottedFine,
-            BASE:20_Full,
-            BASE:21_Dashed,
-            BASE:21_Dotted,
-            BASE:21_DottedFine,
-            BASE:21_Full,
-            BASE:22_Dashed,
-            BASE:22_Dotted,
-            BASE:22_DottedFine,
-            BASE:22_Full,
-            BASE:23_Dashed,
-            BASE:23_Dotted,
-            BASE:23_DottedFine,
-            BASE:23_Full,
-            BASE:24_Dashed,
-            BASE:24_Dotted,
-            BASE:24_DottedFine,
-            BASE:24_Full,
-            BASE:25_Dashed,
-            BASE:25_Dotted,
-            BASE:25_DottedFine,
-            BASE:25_Full,
-            BASE:26_Blue,
-            BASE:26_Green,
-            BASE:26_Red,
-            BASE:26_Yellow,
-            BASE:27_Blue,
-            BASE:27_Green,
-            BASE:27_Red,
-            BASE:27_Yellow,
-            BASE:28_Blue,
-            BASE:28_Green,
-            BASE:28_Red,
-            BASE:28_Yellow,
-            BASE:29_Blue,
-            BASE:29_Green,
-            BASE:29_Red,
-            BASE:29_Yellow,
-            BASE:30_Blue,
-            BASE:30_Green,
-            BASE:30_Red,
-            BASE:30_Yellow,
-            BASE:31_Constant,
-            BASE:31_Dynamic,
-            BASE:31_Event,
-            BASE:32_Blue,
-            BASE:32_Green,
-            BASE:32_Red,
-            BASE:32_Yellow,
-            BASE:33_Blue,
-            BASE:33_Green,
-            BASE:33_Red,
-            BASE:33_Yellow,
-            BASE:34_Blue,
-            BASE:34_Green,
-            BASE:34_Red,
-            BASE:34_Yellow,
-            BASE:35_Blue,
-            BASE:35_Green,
-            BASE:35_Red,
-            BASE:35_Yellow,
-            BASE:36_Blue,
-            BASE:36_Green,
-            BASE:36_Red,
-            BASE:36_Yellow,
-            BASE:37_Black,
-            BASE:37_Blue,
-            BASE:37_Green,
-            BASE:37_Red,
-            BASE:37_Yellow,
-            BASE:38_Black,
-            BASE:38_Blue,
-            BASE:38_Green,
-            BASE:38_Red,
-            BASE:38_Yellow,
-            BASE:39_Black,
-            BASE:39_Blue,
-            BASE:39_Green,
-            BASE:39_Red,
-            BASE:39_Yellow,
-            BASE:40_Black,
-            BASE:40_Blue,
-            BASE:40_Green,
-            BASE:40_Red,
-            BASE:40_Yellow,
-            BASE:41_Black,
-            BASE:41_Blue,
-            BASE:41_Green,
-            BASE:41_Red,
-            BASE:41_Yellow,
-            BASE:42_Black,
-            BASE:42_Blue,
-            BASE:42_Green,
-            BASE:42_Red,
-            BASE:42_Yellow,
-            BASE:43_Black,
-            BASE:43_Blue,
-            BASE:43_Green,
-            BASE:43_Red,
-            BASE:43_Yellow,
-            BASE:44_Black,
-            BASE:44_Blue,
-            BASE:44_Green,
-            BASE:44_Red,
-            BASE:44_Yellow,
-            BASE:45_Black,
-            BASE:45_Blue,
-            BASE:45_Green,
-            BASE:45_Red,
-            BASE:45_Yellow,
-            BASE:46_Black,
-            BASE:46_Blue,
-            BASE:46_Green,
-            BASE:46_Red,
-            BASE:46_Yellow,
-            BASE:47_Black,
-            BASE:47_Blue,
-            BASE:47_Green,
-            BASE:47_Red,
-            BASE:47_Yellow,
-            BASE:48_Black,
-            BASE:48_Blue,
-            BASE:48_Green,
-            BASE:48_Red,
-            BASE:48_Yellow,
-            BASE:4_D1,
-            BASE:4_D2,
-            BASE:4_D3,
-            BASE:5_D1,
-            BASE:5_D2,
-            BASE:5_D3,
-            BASE:6_D1,
-            BASE:6_D2,
-            BASE:6_D3,
-            BASE:7_Convection,
-            BASE:7_Diffusion,
-            BASE:7_Direct,
-            BASE:7_Radiation,
-            BASE:8_Convection,
-            BASE:8_Diffusion,
-            BASE:8_Direct,
-            BASE:8_Radiation,
-            BASE:9_Convection,
-            BASE:9_Diffusion,
-            BASE:9_Direct,
-            BASE:9_Radiation ;
-        xsd:integer BASE:20_CircleDiameter,
-            BASE:20_MajorAxis,
-            BASE:20_MinorAxis,
-            BASE:20_RectangleHeight,
-            BASE:20_RectangleWidth,
-            BASE:20_SideLength,
-            BASE:20_SquareSize,
-            BASE:21_CircleDiameter,
-            BASE:21_MajorAxis,
-            BASE:21_MinorAxis,
-            BASE:21_RectangleHeight,
-            BASE:21_RectangleWidth,
-            BASE:21_SideLength,
-            BASE:21_SquareSize,
-            BASE:22_CircleDiameter,
-            BASE:22_MajorAxis,
-            BASE:22_MinorAxis,
-            BASE:22_RectangleHeight,
-            BASE:22_RectangleWidth,
-            BASE:22_SideLength,
-            BASE:22_SquareSize,
-            BASE:23_CircleDiameter,
-            BASE:23_MajorAxis,
-            BASE:23_MinorAxis,
-            BASE:23_RectangleHeight,
-            BASE:23_RectangleWidth,
-            BASE:23_SideLength,
-            BASE:23_SquareSize,
-            BASE:24_CircleDiameter,
-            BASE:24_MajorAxis,
-            BASE:24_MinorAxis,
-            BASE:24_RectangleHeight,
-            BASE:24_RectangleWidth,
-            BASE:24_SideLength,
-            BASE:24_SquareSize,
-            BASE:25_CircleDiameter,
-            BASE:25_MajorAxis,
-            BASE:25_MinorAxis,
-            BASE:25_RectangleHeight,
-            BASE:25_RectangleWidth,
-            BASE:25_SideLength,
-            BASE:25_SquareSize,
-            BASE:26_UserBlue,
-            BASE:26_UserGreen,
-            BASE:26_UserRed,
-            BASE:27_UserBlue,
-            BASE:27_UserGreen,
-            BASE:27_UserRed,
-            BASE:28_UserBlue,
-            BASE:28_UserGreen,
-            BASE:28_UserRed,
-            BASE:29_UserBlue,
-            BASE:29_UserGreen,
-            BASE:29_UserRed,
-            BASE:30_UserBlue,
-            BASE:30_UserGreen,
-            BASE:30_UserRed,
-            BASE:32_UserBlue,
-            BASE:32_UserGreen,
-            BASE:32_UserRed,
-            BASE:33_UserBlue,
-            BASE:33_UserGreen,
-            BASE:33_UserRed,
-            BASE:34_UserBlue,
-            BASE:34_UserGreen,
-            BASE:34_UserRed,
-            BASE:35_UserBlue,
-            BASE:35_UserGreen,
-            BASE:35_UserRed,
-            BASE:36_UserBlue,
-            BASE:36_UserGreen,
-            BASE:36_UserRed,
-            BASE:37_UserBlue,
-            BASE:37_UserGreen,
-            BASE:37_UserRed,
-            BASE:38_UserBlue,
-            BASE:38_UserGreen,
-            BASE:38_UserRed,
-            BASE:39_UserBlue,
-            BASE:39_UserGreen,
-            BASE:39_UserRed,
-            BASE:40_UserBlue,
-            BASE:40_UserGreen,
-            BASE:40_UserRed,
-            BASE:41_UserBlue,
-            BASE:41_UserGreen,
-            BASE:41_UserRed,
-            BASE:42_UserBlue,
-            BASE:42_UserGreen,
-            BASE:42_UserRed,
-            BASE:43_UserBlue,
-            BASE:43_UserGreen,
-            BASE:43_UserRed,
-            BASE:44_UserBlue,
-            BASE:44_UserGreen,
-            BASE:44_UserRed,
-            BASE:45_UserBlue,
-            BASE:45_UserGreen,
-            BASE:45_UserRed,
-            BASE:46_UserBlue,
-            BASE:46_UserGreen,
-            BASE:46_UserRed,
-            BASE:47_UserBlue,
-            BASE:47_UserGreen,
-            BASE:47_UserRed,
-            BASE:48_UserBlue,
-            BASE:48_UserGreen,
-            BASE:48_UserRed .
-
     BASE:0_Time rdfs:member BASE:0_FRAME .
 
     BASE:1_Arc rdfs:member BASE:1_GRAPH .
@@ -2048,5 +1153,1117 @@ BASE:BASE {
     BASE:24_Shape rdfs:member BASE:24_GraphicalObject .
 
     BASE:25_Shape rdfs:member BASE:25_GraphicalObject .
+}
+
+ENTITY-LUMPED:ENTITY-LUMPED {
+    ENTITY-LUMPED:ENTITY-LUMPED a rdfs:Class .
+
+    ENTITY-LUMPED:20_Dot rdfs:member ENTITY-LUMPED:20_Shape .
+
+    ENTITY-LUMPED:21_Dot rdfs:member ENTITY-LUMPED:21_Shape .
+
+    ENTITY-LUMPED:22_Dot rdfs:member ENTITY-LUMPED:22_Shape .
+
+    ENTITY-LUMPED:23_Dot rdfs:member ENTITY-LUMPED:23_Shape .
+
+    ENTITY-LUMPED:24_Dot rdfs:member ENTITY-LUMPED:24_Shape .
+
+    ENTITY-LUMPED:25_Dot rdfs:member ENTITY-LUMPED:25_Shape .
+
+    ENTITY-LUMPED:4_Distribution rdfs:member ENTITY-LUMPED:4_Characteristics .
+
+    ENTITY-LUMPED:4_Temporal rdfs:member ENTITY-LUMPED:4_Characteristics .
+
+    ENTITY-LUMPED:5_Distribution rdfs:member ENTITY-LUMPED:5_Characteristics .
+
+    "boolean" xsd:boolean ENTITY-LUMPED:31_Constant .
+
+    ENTITY-LUMPED:0_Continuous rdf:value ENTITY-LUMPED:0_Time .
+
+    ENTITY-LUMPED:0_Discrete rdf:value ENTITY-LUMPED:0_Time .
+
+    ENTITY-LUMPED:0_SpatialCoordinate rdfs:member ENTITY-LUMPED:0_FRAME .
+
+    ENTITY-LUMPED:0_X rdf:value ENTITY-LUMPED:0_Cartesian .
+
+    ENTITY-LUMPED:0_Y rdf:value ENTITY-LUMPED:0_Cartesian .
+
+    ENTITY-LUMPED:0_Z rdf:value ENTITY-LUMPED:0_Cartesian .
+
+    ENTITY-LUMPED:10_Energy rdf:value ENTITY-LUMPED:10_TOKENS .
+
+    ENTITY-LUMPED:10_LinearMomentum rdf:value ENTITY-LUMPED:10_TOKENS .
+
+    ENTITY-LUMPED:10_Mass rdf:value ENTITY-LUMPED:10_TOKENS .
+
+    ENTITY-LUMPED:10_RotationalMomentum rdf:value ENTITY-LUMPED:10_TOKENS .
+
+    ENTITY-LUMPED:11_Energy rdf:value ENTITY-LUMPED:11_TOKENS .
+
+    ENTITY-LUMPED:11_LinearMomentum rdf:value ENTITY-LUMPED:11_TOKENS .
+
+    ENTITY-LUMPED:11_Mass rdf:value ENTITY-LUMPED:11_TOKENS .
+
+    ENTITY-LUMPED:11_RotationalMomentum rdf:value ENTITY-LUMPED:11_TOKENS .
+
+    ENTITY-LUMPED:12_Energy rdf:value ENTITY-LUMPED:12_TOKENS .
+
+    ENTITY-LUMPED:12_LinearMomentum rdf:value ENTITY-LUMPED:12_TOKENS .
+
+    ENTITY-LUMPED:12_Mass rdf:value ENTITY-LUMPED:12_TOKENS .
+
+    ENTITY-LUMPED:12_RotationalMomentum rdf:value ENTITY-LUMPED:12_TOKENS .
+
+    ENTITY-LUMPED:13_Energy rdf:value ENTITY-LUMPED:13_TOKENS .
+
+    ENTITY-LUMPED:13_LinearMomentum rdf:value ENTITY-LUMPED:13_TOKENS .
+
+    ENTITY-LUMPED:13_Mass rdf:value ENTITY-LUMPED:13_TOKENS .
+
+    ENTITY-LUMPED:13_RotationalMomentum rdf:value ENTITY-LUMPED:13_TOKENS .
+
+    ENTITY-LUMPED:14_Energy rdf:value ENTITY-LUMPED:14_TOKENS .
+
+    ENTITY-LUMPED:14_LinearMomentum rdf:value ENTITY-LUMPED:14_TOKENS .
+
+    ENTITY-LUMPED:14_Mass rdf:value ENTITY-LUMPED:14_TOKENS .
+
+    ENTITY-LUMPED:14_RotationalMomentum rdf:value ENTITY-LUMPED:14_TOKENS .
+
+    ENTITY-LUMPED:15_Energy rdf:value ENTITY-LUMPED:15_TOKENS .
+
+    ENTITY-LUMPED:15_LinearMomentum rdf:value ENTITY-LUMPED:15_TOKENS .
+
+    ENTITY-LUMPED:15_Mass rdf:value ENTITY-LUMPED:15_TOKENS .
+
+    ENTITY-LUMPED:15_RotationalMomentum rdf:value ENTITY-LUMPED:15_TOKENS .
+
+    ENTITY-LUMPED:16_D1 rdf:value ENTITY-LUMPED:16_DISTRIBUTION .
+
+    ENTITY-LUMPED:16_D2 rdf:value ENTITY-LUMPED:16_DISTRIBUTION .
+
+    ENTITY-LUMPED:16_D3 rdf:value ENTITY-LUMPED:16_DISTRIBUTION .
+
+    ENTITY-LUMPED:16_Lumped rdf:value ENTITY-LUMPED:16_DISTRIBUTION .
+
+    ENTITY-LUMPED:17_D1 rdf:value ENTITY-LUMPED:17_DISTRIBUTION .
+
+    ENTITY-LUMPED:17_D2 rdf:value ENTITY-LUMPED:17_DISTRIBUTION .
+
+    ENTITY-LUMPED:17_D3 rdf:value ENTITY-LUMPED:17_DISTRIBUTION .
+
+    ENTITY-LUMPED:17_Lumped rdf:value ENTITY-LUMPED:17_DISTRIBUTION .
+
+    ENTITY-LUMPED:18_Constant rdf:value ENTITY-LUMPED:18_TEMPORAL .
+
+    ENTITY-LUMPED:18_Dynamic rdf:value ENTITY-LUMPED:18_TEMPORAL .
+
+    ENTITY-LUMPED:18_Event rdf:value ENTITY-LUMPED:18_TEMPORAL .
+
+    ENTITY-LUMPED:19_D1 rdf:value ENTITY-LUMPED:19_DISTRIBUTION .
+
+    ENTITY-LUMPED:19_D2 rdf:value ENTITY-LUMPED:19_DISTRIBUTION .
+
+    ENTITY-LUMPED:19_D3 rdf:value ENTITY-LUMPED:19_DISTRIBUTION .
+
+    ENTITY-LUMPED:19_Lumped rdf:value ENTITY-LUMPED:19_DISTRIBUTION .
+
+    ENTITY-LUMPED:1_ArcIcon rdfs:member ENTITY-LUMPED:1_Arc .
+
+    ENTITY-LUMPED:1_NodeIcon rdfs:member ENTITY-LUMPED:1_Node .
+
+    ENTITY-LUMPED:20_Circle rdfs:member ENTITY-LUMPED:20_Shape .
+
+    ENTITY-LUMPED:20_CircleDiameter rdf:value ENTITY-LUMPED:20_Circle .
+
+    ENTITY-LUMPED:20_Dashed rdf:value ENTITY-LUMPED:20_Line .
+
+    ENTITY-LUMPED:20_Dotted rdf:value ENTITY-LUMPED:20_Line .
+
+    ENTITY-LUMPED:20_DottedFine rdf:value ENTITY-LUMPED:20_Line .
+
+    ENTITY-LUMPED:20_Full rdf:value ENTITY-LUMPED:20_Line .
+
+    ENTITY-LUMPED:20_ICON rdfs:isDefinedBy ENTITY-LUMPED:2_ArcIcon .
+
+    ENTITY-LUMPED:20_LineColour rdfs:member ENTITY-LUMPED:20_Line .
+
+    ENTITY-LUMPED:20_MajorAxis rdf:value ENTITY-LUMPED:20_Ellipse .
+
+    ENTITY-LUMPED:20_MinorAxis rdf:value ENTITY-LUMPED:20_Ellipse .
+
+    ENTITY-LUMPED:20_RectangleHeight rdf:value ENTITY-LUMPED:20_Rectangle .
+
+    ENTITY-LUMPED:20_RectangleWidth rdf:value ENTITY-LUMPED:20_Rectangle .
+
+    ENTITY-LUMPED:20_ShapeColour rdfs:member ENTITY-LUMPED:20_Shape .
+
+    ENTITY-LUMPED:20_SideLength rdf:value ENTITY-LUMPED:20_Triangle .
+
+    ENTITY-LUMPED:20_Square rdfs:member ENTITY-LUMPED:20_Shape .
+
+    ENTITY-LUMPED:20_SquareSize rdf:value ENTITY-LUMPED:20_Square .
+
+    ENTITY-LUMPED:20_Triangle rdfs:member ENTITY-LUMPED:20_Shape .
+
+    ENTITY-LUMPED:21_Circle rdfs:member ENTITY-LUMPED:21_Shape .
+
+    ENTITY-LUMPED:21_CircleDiameter rdf:value ENTITY-LUMPED:21_Circle .
+
+    ENTITY-LUMPED:21_Dashed rdf:value ENTITY-LUMPED:21_Line .
+
+    ENTITY-LUMPED:21_Dotted rdf:value ENTITY-LUMPED:21_Line .
+
+    ENTITY-LUMPED:21_DottedFine rdf:value ENTITY-LUMPED:21_Line .
+
+    ENTITY-LUMPED:21_Full rdf:value ENTITY-LUMPED:21_Line .
+
+    ENTITY-LUMPED:21_ICON rdfs:isDefinedBy ENTITY-LUMPED:2_NodeIcon .
+
+    ENTITY-LUMPED:21_LineColour rdfs:member ENTITY-LUMPED:21_Line .
+
+    ENTITY-LUMPED:21_MajorAxis rdf:value ENTITY-LUMPED:21_Ellipse .
+
+    ENTITY-LUMPED:21_MinorAxis rdf:value ENTITY-LUMPED:21_Ellipse .
+
+    ENTITY-LUMPED:21_RectangleHeight rdf:value ENTITY-LUMPED:21_Rectangle .
+
+    ENTITY-LUMPED:21_RectangleWidth rdf:value ENTITY-LUMPED:21_Rectangle .
+
+    ENTITY-LUMPED:21_ShapeColour rdfs:member ENTITY-LUMPED:21_Shape .
+
+    ENTITY-LUMPED:21_SideLength rdf:value ENTITY-LUMPED:21_Triangle .
+
+    ENTITY-LUMPED:21_Square rdfs:member ENTITY-LUMPED:21_Shape .
+
+    ENTITY-LUMPED:21_SquareSize rdf:value ENTITY-LUMPED:21_Square .
+
+    ENTITY-LUMPED:21_Triangle rdfs:member ENTITY-LUMPED:21_Shape .
+
+    ENTITY-LUMPED:22_Circle rdfs:member ENTITY-LUMPED:22_Shape .
+
+    ENTITY-LUMPED:22_CircleDiameter rdf:value ENTITY-LUMPED:22_Circle .
+
+    ENTITY-LUMPED:22_Dashed rdf:value ENTITY-LUMPED:22_Line .
+
+    ENTITY-LUMPED:22_Dotted rdf:value ENTITY-LUMPED:22_Line .
+
+    ENTITY-LUMPED:22_DottedFine rdf:value ENTITY-LUMPED:22_Line .
+
+    ENTITY-LUMPED:22_Full rdf:value ENTITY-LUMPED:22_Line .
+
+    ENTITY-LUMPED:22_ICON rdfs:isDefinedBy ENTITY-LUMPED:3_ArcIcon .
+
+    ENTITY-LUMPED:22_LineColour rdfs:member ENTITY-LUMPED:22_Line .
+
+    ENTITY-LUMPED:22_MajorAxis rdf:value ENTITY-LUMPED:22_Ellipse .
+
+    ENTITY-LUMPED:22_MinorAxis rdf:value ENTITY-LUMPED:22_Ellipse .
+
+    ENTITY-LUMPED:22_RectangleHeight rdf:value ENTITY-LUMPED:22_Rectangle .
+
+    ENTITY-LUMPED:22_RectangleWidth rdf:value ENTITY-LUMPED:22_Rectangle .
+
+    ENTITY-LUMPED:22_ShapeColour rdfs:member ENTITY-LUMPED:22_Shape .
+
+    ENTITY-LUMPED:22_SideLength rdf:value ENTITY-LUMPED:22_Triangle .
+
+    ENTITY-LUMPED:22_Square rdfs:member ENTITY-LUMPED:22_Shape .
+
+    ENTITY-LUMPED:22_SquareSize rdf:value ENTITY-LUMPED:22_Square .
+
+    ENTITY-LUMPED:22_Triangle rdfs:member ENTITY-LUMPED:22_Shape .
+
+    ENTITY-LUMPED:23_Circle rdfs:member ENTITY-LUMPED:23_Shape .
+
+    ENTITY-LUMPED:23_CircleDiameter rdf:value ENTITY-LUMPED:23_Circle .
+
+    ENTITY-LUMPED:23_Dashed rdf:value ENTITY-LUMPED:23_Line .
+
+    ENTITY-LUMPED:23_Dotted rdf:value ENTITY-LUMPED:23_Line .
+
+    ENTITY-LUMPED:23_DottedFine rdf:value ENTITY-LUMPED:23_Line .
+
+    ENTITY-LUMPED:23_Full rdf:value ENTITY-LUMPED:23_Line .
+
+    ENTITY-LUMPED:23_ICON rdfs:isDefinedBy ENTITY-LUMPED:3_NodeIcon .
+
+    ENTITY-LUMPED:23_LineColour rdfs:member ENTITY-LUMPED:23_Line .
+
+    ENTITY-LUMPED:23_MajorAxis rdf:value ENTITY-LUMPED:23_Ellipse .
+
+    ENTITY-LUMPED:23_MinorAxis rdf:value ENTITY-LUMPED:23_Ellipse .
+
+    ENTITY-LUMPED:23_RectangleHeight rdf:value ENTITY-LUMPED:23_Rectangle .
+
+    ENTITY-LUMPED:23_RectangleWidth rdf:value ENTITY-LUMPED:23_Rectangle .
+
+    ENTITY-LUMPED:23_ShapeColour rdfs:member ENTITY-LUMPED:23_Shape .
+
+    ENTITY-LUMPED:23_SideLength rdf:value ENTITY-LUMPED:23_Triangle .
+
+    ENTITY-LUMPED:23_Square rdfs:member ENTITY-LUMPED:23_Shape .
+
+    ENTITY-LUMPED:23_SquareSize rdf:value ENTITY-LUMPED:23_Square .
+
+    ENTITY-LUMPED:23_Triangle rdfs:member ENTITY-LUMPED:23_Shape .
+
+    ENTITY-LUMPED:24_Circle rdfs:member ENTITY-LUMPED:24_Shape .
+
+    ENTITY-LUMPED:24_CircleDiameter rdf:value ENTITY-LUMPED:24_Circle .
+
+    ENTITY-LUMPED:24_Dashed rdf:value ENTITY-LUMPED:24_Line .
+
+    ENTITY-LUMPED:24_Dotted rdf:value ENTITY-LUMPED:24_Line .
+
+    ENTITY-LUMPED:24_DottedFine rdf:value ENTITY-LUMPED:24_Line .
+
+    ENTITY-LUMPED:24_Full rdf:value ENTITY-LUMPED:24_Line .
+
+    ENTITY-LUMPED:24_ICON rdfs:isDefinedBy ENTITY-LUMPED:1_NodeIcon .
+
+    ENTITY-LUMPED:24_LineColour rdfs:member ENTITY-LUMPED:24_Line .
+
+    ENTITY-LUMPED:24_MajorAxis rdf:value ENTITY-LUMPED:24_Ellipse .
+
+    ENTITY-LUMPED:24_MinorAxis rdf:value ENTITY-LUMPED:24_Ellipse .
+
+    ENTITY-LUMPED:24_RectangleHeight rdf:value ENTITY-LUMPED:24_Rectangle .
+
+    ENTITY-LUMPED:24_RectangleWidth rdf:value ENTITY-LUMPED:24_Rectangle .
+
+    ENTITY-LUMPED:24_ShapeColour rdfs:member ENTITY-LUMPED:24_Shape .
+
+    ENTITY-LUMPED:24_SideLength rdf:value ENTITY-LUMPED:24_Triangle .
+
+    ENTITY-LUMPED:24_Square rdfs:member ENTITY-LUMPED:24_Shape .
+
+    ENTITY-LUMPED:24_SquareSize rdf:value ENTITY-LUMPED:24_Square .
+
+    ENTITY-LUMPED:24_Triangle rdfs:member ENTITY-LUMPED:24_Shape .
+
+    ENTITY-LUMPED:25_Circle rdfs:member ENTITY-LUMPED:25_Shape .
+
+    ENTITY-LUMPED:25_CircleDiameter rdf:value ENTITY-LUMPED:25_Circle .
+
+    ENTITY-LUMPED:25_Dashed rdf:value ENTITY-LUMPED:25_Line .
+
+    ENTITY-LUMPED:25_Dotted rdf:value ENTITY-LUMPED:25_Line .
+
+    ENTITY-LUMPED:25_DottedFine rdf:value ENTITY-LUMPED:25_Line .
+
+    ENTITY-LUMPED:25_Full rdf:value ENTITY-LUMPED:25_Line .
+
+    ENTITY-LUMPED:25_ICON rdfs:isDefinedBy ENTITY-LUMPED:1_ArcIcon .
+
+    ENTITY-LUMPED:25_LineColour rdfs:member ENTITY-LUMPED:25_Line .
+
+    ENTITY-LUMPED:25_MajorAxis rdf:value ENTITY-LUMPED:25_Ellipse .
+
+    ENTITY-LUMPED:25_MinorAxis rdf:value ENTITY-LUMPED:25_Ellipse .
+
+    ENTITY-LUMPED:25_RectangleHeight rdf:value ENTITY-LUMPED:25_Rectangle .
+
+    ENTITY-LUMPED:25_RectangleWidth rdf:value ENTITY-LUMPED:25_Rectangle .
+
+    ENTITY-LUMPED:25_ShapeColour rdfs:member ENTITY-LUMPED:25_Shape .
+
+    ENTITY-LUMPED:25_SideLength rdf:value ENTITY-LUMPED:25_Triangle .
+
+    ENTITY-LUMPED:25_Square rdfs:member ENTITY-LUMPED:25_Shape .
+
+    ENTITY-LUMPED:25_SquareSize rdf:value ENTITY-LUMPED:25_Square .
+
+    ENTITY-LUMPED:25_Triangle rdfs:member ENTITY-LUMPED:25_Shape .
+
+    ENTITY-LUMPED:26_UserBlue rdf:value ENTITY-LUMPED:26_UserColour .
+
+    ENTITY-LUMPED:26_UserGreen rdf:value ENTITY-LUMPED:26_UserColour .
+
+    ENTITY-LUMPED:26_UserRed rdf:value ENTITY-LUMPED:26_UserColour .
+
+    ENTITY-LUMPED:27_UserBlue rdf:value ENTITY-LUMPED:27_UserColour .
+
+    ENTITY-LUMPED:27_UserGreen rdf:value ENTITY-LUMPED:27_UserColour .
+
+    ENTITY-LUMPED:27_UserRed rdf:value ENTITY-LUMPED:27_UserColour .
+
+    ENTITY-LUMPED:28_UserBlue rdf:value ENTITY-LUMPED:28_UserColour .
+
+    ENTITY-LUMPED:28_UserGreen rdf:value ENTITY-LUMPED:28_UserColour .
+
+    ENTITY-LUMPED:28_UserRed rdf:value ENTITY-LUMPED:28_UserColour .
+
+    ENTITY-LUMPED:29_UserBlue rdf:value ENTITY-LUMPED:29_UserColour .
+
+    ENTITY-LUMPED:29_UserGreen rdf:value ENTITY-LUMPED:29_UserColour .
+
+    ENTITY-LUMPED:29_UserRed rdf:value ENTITY-LUMPED:29_UserColour .
+
+    ENTITY-LUMPED:2_ArcIcon rdfs:member ENTITY-LUMPED:2_Arc .
+
+    ENTITY-LUMPED:2_NodeIcon rdfs:member ENTITY-LUMPED:2_Node .
+
+    ENTITY-LUMPED:30_UserBlue rdf:value ENTITY-LUMPED:30_UserColour .
+
+    ENTITY-LUMPED:30_UserGreen rdf:value ENTITY-LUMPED:30_UserColour .
+
+    ENTITY-LUMPED:30_UserRed rdf:value ENTITY-LUMPED:30_UserColour .
+
+    ENTITY-LUMPED:31_Constant rdf:value ENTITY-LUMPED:31_TEMPORAL .
+
+    ENTITY-LUMPED:31_Dynamic rdf:value ENTITY-LUMPED:31_TEMPORAL .
+
+    ENTITY-LUMPED:31_Event rdf:value ENTITY-LUMPED:31_TEMPORAL .
+
+    ENTITY-LUMPED:32_UserBlue rdf:value ENTITY-LUMPED:32_UserColour .
+
+    ENTITY-LUMPED:32_UserGreen rdf:value ENTITY-LUMPED:32_UserColour .
+
+    ENTITY-LUMPED:32_UserRed rdf:value ENTITY-LUMPED:32_UserColour .
+
+    ENTITY-LUMPED:33_UserBlue rdf:value ENTITY-LUMPED:33_UserColour .
+
+    ENTITY-LUMPED:33_UserGreen rdf:value ENTITY-LUMPED:33_UserColour .
+
+    ENTITY-LUMPED:33_UserRed rdf:value ENTITY-LUMPED:33_UserColour .
+
+    ENTITY-LUMPED:34_UserBlue rdf:value ENTITY-LUMPED:34_UserColour .
+
+    ENTITY-LUMPED:34_UserGreen rdf:value ENTITY-LUMPED:34_UserColour .
+
+    ENTITY-LUMPED:34_UserRed rdf:value ENTITY-LUMPED:34_UserColour .
+
+    ENTITY-LUMPED:35_UserBlue rdf:value ENTITY-LUMPED:35_UserColour .
+
+    ENTITY-LUMPED:35_UserGreen rdf:value ENTITY-LUMPED:35_UserColour .
+
+    ENTITY-LUMPED:35_UserRed rdf:value ENTITY-LUMPED:35_UserColour .
+
+    ENTITY-LUMPED:36_UserBlue rdf:value ENTITY-LUMPED:36_UserColour .
+
+    ENTITY-LUMPED:36_UserGreen rdf:value ENTITY-LUMPED:36_UserColour .
+
+    ENTITY-LUMPED:36_UserRed rdf:value ENTITY-LUMPED:36_UserColour .
+
+    ENTITY-LUMPED:37_Black rdf:value ENTITY-LUMPED:37_COLOUR .
+
+    ENTITY-LUMPED:37_Blue rdf:value ENTITY-LUMPED:37_COLOUR .
+
+    ENTITY-LUMPED:37_Green rdf:value ENTITY-LUMPED:37_COLOUR .
+
+    ENTITY-LUMPED:37_Red rdf:value ENTITY-LUMPED:37_COLOUR .
+
+    ENTITY-LUMPED:37_UserBlue rdf:value ENTITY-LUMPED:37_UserColour .
+
+    ENTITY-LUMPED:37_UserGreen rdf:value ENTITY-LUMPED:37_UserColour .
+
+    ENTITY-LUMPED:37_UserRed rdf:value ENTITY-LUMPED:37_UserColour .
+
+    ENTITY-LUMPED:37_Yellow rdf:value ENTITY-LUMPED:37_COLOUR .
+
+    ENTITY-LUMPED:38_Black rdf:value ENTITY-LUMPED:38_COLOUR .
+
+    ENTITY-LUMPED:38_Blue rdf:value ENTITY-LUMPED:38_COLOUR .
+
+    ENTITY-LUMPED:38_Green rdf:value ENTITY-LUMPED:38_COLOUR .
+
+    ENTITY-LUMPED:38_Red rdf:value ENTITY-LUMPED:38_COLOUR .
+
+    ENTITY-LUMPED:38_UserBlue rdf:value ENTITY-LUMPED:38_UserColour .
+
+    ENTITY-LUMPED:38_UserGreen rdf:value ENTITY-LUMPED:38_UserColour .
+
+    ENTITY-LUMPED:38_UserRed rdf:value ENTITY-LUMPED:38_UserColour .
+
+    ENTITY-LUMPED:38_Yellow rdf:value ENTITY-LUMPED:38_COLOUR .
+
+    ENTITY-LUMPED:39_Black rdf:value ENTITY-LUMPED:39_COLOUR .
+
+    ENTITY-LUMPED:39_Blue rdf:value ENTITY-LUMPED:39_COLOUR .
+
+    ENTITY-LUMPED:39_Green rdf:value ENTITY-LUMPED:39_COLOUR .
+
+    ENTITY-LUMPED:39_Red rdf:value ENTITY-LUMPED:39_COLOUR .
+
+    ENTITY-LUMPED:39_UserBlue rdf:value ENTITY-LUMPED:39_UserColour .
+
+    ENTITY-LUMPED:39_UserGreen rdf:value ENTITY-LUMPED:39_UserColour .
+
+    ENTITY-LUMPED:39_UserRed rdf:value ENTITY-LUMPED:39_UserColour .
+
+    ENTITY-LUMPED:39_Yellow rdf:value ENTITY-LUMPED:39_COLOUR .
+
+    ENTITY-LUMPED:3_ArcIcon rdfs:member ENTITY-LUMPED:3_Arc .
+
+    ENTITY-LUMPED:3_NodeIcon rdfs:member ENTITY-LUMPED:3_Node .
+
+    ENTITY-LUMPED:40_Black rdf:value ENTITY-LUMPED:40_COLOUR .
+
+    ENTITY-LUMPED:40_Blue rdf:value ENTITY-LUMPED:40_COLOUR .
+
+    ENTITY-LUMPED:40_Green rdf:value ENTITY-LUMPED:40_COLOUR .
+
+    ENTITY-LUMPED:40_Red rdf:value ENTITY-LUMPED:40_COLOUR .
+
+    ENTITY-LUMPED:40_UserBlue rdf:value ENTITY-LUMPED:40_UserColour .
+
+    ENTITY-LUMPED:40_UserGreen rdf:value ENTITY-LUMPED:40_UserColour .
+
+    ENTITY-LUMPED:40_UserRed rdf:value ENTITY-LUMPED:40_UserColour .
+
+    ENTITY-LUMPED:40_Yellow rdf:value ENTITY-LUMPED:40_COLOUR .
+
+    ENTITY-LUMPED:41_Black rdf:value ENTITY-LUMPED:41_COLOUR .
+
+    ENTITY-LUMPED:41_Blue rdf:value ENTITY-LUMPED:41_COLOUR .
+
+    ENTITY-LUMPED:41_Green rdf:value ENTITY-LUMPED:41_COLOUR .
+
+    ENTITY-LUMPED:41_Red rdf:value ENTITY-LUMPED:41_COLOUR .
+
+    ENTITY-LUMPED:41_UserBlue rdf:value ENTITY-LUMPED:41_UserColour .
+
+    ENTITY-LUMPED:41_UserGreen rdf:value ENTITY-LUMPED:41_UserColour .
+
+    ENTITY-LUMPED:41_UserRed rdf:value ENTITY-LUMPED:41_UserColour .
+
+    ENTITY-LUMPED:41_Yellow rdf:value ENTITY-LUMPED:41_COLOUR .
+
+    ENTITY-LUMPED:42_Black rdf:value ENTITY-LUMPED:42_COLOUR .
+
+    ENTITY-LUMPED:42_Blue rdf:value ENTITY-LUMPED:42_COLOUR .
+
+    ENTITY-LUMPED:42_Green rdf:value ENTITY-LUMPED:42_COLOUR .
+
+    ENTITY-LUMPED:42_Red rdf:value ENTITY-LUMPED:42_COLOUR .
+
+    ENTITY-LUMPED:42_UserBlue rdf:value ENTITY-LUMPED:42_UserColour .
+
+    ENTITY-LUMPED:42_UserGreen rdf:value ENTITY-LUMPED:42_UserColour .
+
+    ENTITY-LUMPED:42_UserRed rdf:value ENTITY-LUMPED:42_UserColour .
+
+    ENTITY-LUMPED:42_Yellow rdf:value ENTITY-LUMPED:42_COLOUR .
+
+    ENTITY-LUMPED:43_Black rdf:value ENTITY-LUMPED:43_COLOUR .
+
+    ENTITY-LUMPED:43_Blue rdf:value ENTITY-LUMPED:43_COLOUR .
+
+    ENTITY-LUMPED:43_Green rdf:value ENTITY-LUMPED:43_COLOUR .
+
+    ENTITY-LUMPED:43_Red rdf:value ENTITY-LUMPED:43_COLOUR .
+
+    ENTITY-LUMPED:43_UserBlue rdf:value ENTITY-LUMPED:43_UserColour .
+
+    ENTITY-LUMPED:43_UserGreen rdf:value ENTITY-LUMPED:43_UserColour .
+
+    ENTITY-LUMPED:43_UserRed rdf:value ENTITY-LUMPED:43_UserColour .
+
+    ENTITY-LUMPED:43_Yellow rdf:value ENTITY-LUMPED:43_COLOUR .
+
+    ENTITY-LUMPED:44_Black rdf:value ENTITY-LUMPED:44_COLOUR .
+
+    ENTITY-LUMPED:44_Blue rdf:value ENTITY-LUMPED:44_COLOUR .
+
+    ENTITY-LUMPED:44_Green rdf:value ENTITY-LUMPED:44_COLOUR .
+
+    ENTITY-LUMPED:44_Red rdf:value ENTITY-LUMPED:44_COLOUR .
+
+    ENTITY-LUMPED:44_UserBlue rdf:value ENTITY-LUMPED:44_UserColour .
+
+    ENTITY-LUMPED:44_UserGreen rdf:value ENTITY-LUMPED:44_UserColour .
+
+    ENTITY-LUMPED:44_UserRed rdf:value ENTITY-LUMPED:44_UserColour .
+
+    ENTITY-LUMPED:44_Yellow rdf:value ENTITY-LUMPED:44_COLOUR .
+
+    ENTITY-LUMPED:45_Black rdf:value ENTITY-LUMPED:45_COLOUR .
+
+    ENTITY-LUMPED:45_Blue rdf:value ENTITY-LUMPED:45_COLOUR .
+
+    ENTITY-LUMPED:45_Green rdf:value ENTITY-LUMPED:45_COLOUR .
+
+    ENTITY-LUMPED:45_Red rdf:value ENTITY-LUMPED:45_COLOUR .
+
+    ENTITY-LUMPED:45_UserBlue rdf:value ENTITY-LUMPED:45_UserColour .
+
+    ENTITY-LUMPED:45_UserGreen rdf:value ENTITY-LUMPED:45_UserColour .
+
+    ENTITY-LUMPED:45_UserRed rdf:value ENTITY-LUMPED:45_UserColour .
+
+    ENTITY-LUMPED:45_Yellow rdf:value ENTITY-LUMPED:45_COLOUR .
+
+    ENTITY-LUMPED:46_Black rdf:value ENTITY-LUMPED:46_COLOUR .
+
+    ENTITY-LUMPED:46_Blue rdf:value ENTITY-LUMPED:46_COLOUR .
+
+    ENTITY-LUMPED:46_Green rdf:value ENTITY-LUMPED:46_COLOUR .
+
+    ENTITY-LUMPED:46_Red rdf:value ENTITY-LUMPED:46_COLOUR .
+
+    ENTITY-LUMPED:46_UserBlue rdf:value ENTITY-LUMPED:46_UserColour .
+
+    ENTITY-LUMPED:46_UserGreen rdf:value ENTITY-LUMPED:46_UserColour .
+
+    ENTITY-LUMPED:46_UserRed rdf:value ENTITY-LUMPED:46_UserColour .
+
+    ENTITY-LUMPED:46_Yellow rdf:value ENTITY-LUMPED:46_COLOUR .
+
+    ENTITY-LUMPED:47_Black rdf:value ENTITY-LUMPED:47_COLOUR .
+
+    ENTITY-LUMPED:47_Blue rdf:value ENTITY-LUMPED:47_COLOUR .
+
+    ENTITY-LUMPED:47_Green rdf:value ENTITY-LUMPED:47_COLOUR .
+
+    ENTITY-LUMPED:47_Red rdf:value ENTITY-LUMPED:47_COLOUR .
+
+    ENTITY-LUMPED:47_UserBlue rdf:value ENTITY-LUMPED:47_UserColour .
+
+    ENTITY-LUMPED:47_UserGreen rdf:value ENTITY-LUMPED:47_UserColour .
+
+    ENTITY-LUMPED:47_UserRed rdf:value ENTITY-LUMPED:47_UserColour .
+
+    ENTITY-LUMPED:47_Yellow rdf:value ENTITY-LUMPED:47_COLOUR .
+
+    ENTITY-LUMPED:48_Black rdf:value ENTITY-LUMPED:48_COLOUR .
+
+    ENTITY-LUMPED:48_Blue rdf:value ENTITY-LUMPED:48_COLOUR .
+
+    ENTITY-LUMPED:48_Green rdf:value ENTITY-LUMPED:48_COLOUR .
+
+    ENTITY-LUMPED:48_Red rdf:value ENTITY-LUMPED:48_COLOUR .
+
+    ENTITY-LUMPED:48_UserBlue rdf:value ENTITY-LUMPED:48_UserColour .
+
+    ENTITY-LUMPED:48_UserGreen rdf:value ENTITY-LUMPED:48_UserColour .
+
+    ENTITY-LUMPED:48_UserRed rdf:value ENTITY-LUMPED:48_UserColour .
+
+    ENTITY-LUMPED:48_Yellow rdf:value ENTITY-LUMPED:48_COLOUR .
+
+    ENTITY-LUMPED:4_Tokens rdfs:member ENTITY-LUMPED:4_CAPACITY .
+
+    ENTITY-LUMPED:5_Temporal rdfs:member ENTITY-LUMPED:5_Characteristics .
+
+    ENTITY-LUMPED:5_Tokens rdfs:member ENTITY-LUMPED:5_CAPACITY .
+
+    ENTITY-LUMPED:6_Distribution rdfs:member ENTITY-LUMPED:6_Characteristics .
+
+    ENTITY-LUMPED:6_Temporal rdfs:member ENTITY-LUMPED:6_Characteristics .
+
+    ENTITY-LUMPED:6_Tokens rdfs:member ENTITY-LUMPED:6_CAPACITY .
+
+    ENTITY-LUMPED:7_Convection rdf:value ENTITY-LUMPED:7_TRANSPORT .
+
+    ENTITY-LUMPED:7_Diffusion rdf:value ENTITY-LUMPED:7_TRANSPORT .
+
+    ENTITY-LUMPED:7_Direct rdf:value ENTITY-LUMPED:7_TRANSPORT .
+
+    ENTITY-LUMPED:7_Radiation rdf:value ENTITY-LUMPED:7_TRANSPORT .
+
+    ENTITY-LUMPED:7_Tokens rdfs:member ENTITY-LUMPED:7_TRANSPORT .
+
+    ENTITY-LUMPED:8_Convection rdf:value ENTITY-LUMPED:8_TRANSPORT .
+
+    ENTITY-LUMPED:8_Diffusion rdf:value ENTITY-LUMPED:8_TRANSPORT .
+
+    ENTITY-LUMPED:8_Direct rdf:value ENTITY-LUMPED:8_TRANSPORT .
+
+    ENTITY-LUMPED:8_Radiation rdf:value ENTITY-LUMPED:8_TRANSPORT .
+
+    ENTITY-LUMPED:8_Tokens rdfs:member ENTITY-LUMPED:8_TRANSPORT .
+
+    ENTITY-LUMPED:9_Characteristics rdfs:member ENTITY-LUMPED:9_TRANSPORT .
+
+    ENTITY-LUMPED:9_Convection rdf:value ENTITY-LUMPED:9_TRANSPORT .
+
+    ENTITY-LUMPED:9_Diffusion rdf:value ENTITY-LUMPED:9_TRANSPORT .
+
+    ENTITY-LUMPED:9_Direct rdf:value ENTITY-LUMPED:9_TRANSPORT .
+
+    ENTITY-LUMPED:9_Distribution rdfs:member ENTITY-LUMPED:9_Characteristics .
+
+    ENTITY-LUMPED:9_Radiation rdf:value ENTITY-LUMPED:9_TRANSPORT .
+
+    ENTITY-LUMPED:9_Tokens rdfs:member ENTITY-LUMPED:9_TRANSPORT .
+
+    ENTITY-LUMPED:Control rdfs:member ENTITY-LUMPED:ENTITY-LUMPED .
+
+    ENTITY-LUMPED:Frame rdfs:member ENTITY-LUMPED:ENTITY-LUMPED .
+
+    ENTITY-LUMPED:Information rdfs:member ENTITY-LUMPED:ENTITY-LUMPED .
+
+    ENTITY-LUMPED:Physical rdfs:member ENTITY-LUMPED:ENTITY-LUMPED .
+
+    "" xsd:boolean ENTITY-LUMPED:0_Continuous,
+            ENTITY-LUMPED:0_Discrete,
+            ENTITY-LUMPED:0_X,
+            ENTITY-LUMPED:0_Y,
+            ENTITY-LUMPED:0_Z,
+            ENTITY-LUMPED:10_Energy,
+            ENTITY-LUMPED:10_LinearMomentum,
+            ENTITY-LUMPED:10_Mass,
+            ENTITY-LUMPED:10_RotationalMomentum,
+            ENTITY-LUMPED:11_Energy,
+            ENTITY-LUMPED:11_LinearMomentum,
+            ENTITY-LUMPED:11_Mass,
+            ENTITY-LUMPED:11_RotationalMomentum,
+            ENTITY-LUMPED:12_Energy,
+            ENTITY-LUMPED:12_LinearMomentum,
+            ENTITY-LUMPED:12_Mass,
+            ENTITY-LUMPED:12_RotationalMomentum,
+            ENTITY-LUMPED:13_Energy,
+            ENTITY-LUMPED:13_LinearMomentum,
+            ENTITY-LUMPED:13_Mass,
+            ENTITY-LUMPED:13_RotationalMomentum,
+            ENTITY-LUMPED:14_Energy,
+            ENTITY-LUMPED:14_LinearMomentum,
+            ENTITY-LUMPED:14_Mass,
+            ENTITY-LUMPED:14_RotationalMomentum,
+            ENTITY-LUMPED:15_Energy,
+            ENTITY-LUMPED:15_LinearMomentum,
+            ENTITY-LUMPED:15_Mass,
+            ENTITY-LUMPED:15_RotationalMomentum,
+            ENTITY-LUMPED:16_D1,
+            ENTITY-LUMPED:16_D2,
+            ENTITY-LUMPED:16_D3,
+            ENTITY-LUMPED:16_Lumped,
+            ENTITY-LUMPED:17_D1,
+            ENTITY-LUMPED:17_D2,
+            ENTITY-LUMPED:17_D3,
+            ENTITY-LUMPED:17_Lumped,
+            ENTITY-LUMPED:18_Constant,
+            ENTITY-LUMPED:18_Dynamic,
+            ENTITY-LUMPED:18_Event,
+            ENTITY-LUMPED:19_D1,
+            ENTITY-LUMPED:19_D2,
+            ENTITY-LUMPED:19_D3,
+            ENTITY-LUMPED:19_Lumped,
+            ENTITY-LUMPED:20_Dashed,
+            ENTITY-LUMPED:20_Dotted,
+            ENTITY-LUMPED:20_DottedFine,
+            ENTITY-LUMPED:20_Full,
+            ENTITY-LUMPED:21_Dashed,
+            ENTITY-LUMPED:21_Dotted,
+            ENTITY-LUMPED:21_DottedFine,
+            ENTITY-LUMPED:21_Full,
+            ENTITY-LUMPED:22_Dashed,
+            ENTITY-LUMPED:22_Dotted,
+            ENTITY-LUMPED:22_DottedFine,
+            ENTITY-LUMPED:22_Full,
+            ENTITY-LUMPED:23_Dashed,
+            ENTITY-LUMPED:23_Dotted,
+            ENTITY-LUMPED:23_DottedFine,
+            ENTITY-LUMPED:23_Full,
+            ENTITY-LUMPED:24_Dashed,
+            ENTITY-LUMPED:24_Dotted,
+            ENTITY-LUMPED:24_DottedFine,
+            ENTITY-LUMPED:24_Full,
+            ENTITY-LUMPED:25_Dashed,
+            ENTITY-LUMPED:25_Dotted,
+            ENTITY-LUMPED:25_DottedFine,
+            ENTITY-LUMPED:25_Full,
+            ENTITY-LUMPED:26_Blue,
+            ENTITY-LUMPED:26_Green,
+            ENTITY-LUMPED:26_Red,
+            ENTITY-LUMPED:26_Yellow,
+            ENTITY-LUMPED:27_Blue,
+            ENTITY-LUMPED:27_Green,
+            ENTITY-LUMPED:27_Red,
+            ENTITY-LUMPED:27_Yellow,
+            ENTITY-LUMPED:28_Blue,
+            ENTITY-LUMPED:28_Green,
+            ENTITY-LUMPED:28_Red,
+            ENTITY-LUMPED:28_Yellow,
+            ENTITY-LUMPED:29_Blue,
+            ENTITY-LUMPED:29_Green,
+            ENTITY-LUMPED:29_Red,
+            ENTITY-LUMPED:29_Yellow,
+            ENTITY-LUMPED:30_Blue,
+            ENTITY-LUMPED:30_Green,
+            ENTITY-LUMPED:30_Red,
+            ENTITY-LUMPED:30_Yellow,
+            ENTITY-LUMPED:31_Dynamic,
+            ENTITY-LUMPED:31_Event,
+            ENTITY-LUMPED:32_Blue,
+            ENTITY-LUMPED:32_Green,
+            ENTITY-LUMPED:32_Red,
+            ENTITY-LUMPED:32_Yellow,
+            ENTITY-LUMPED:33_Blue,
+            ENTITY-LUMPED:33_Green,
+            ENTITY-LUMPED:33_Red,
+            ENTITY-LUMPED:33_Yellow,
+            ENTITY-LUMPED:34_Blue,
+            ENTITY-LUMPED:34_Green,
+            ENTITY-LUMPED:34_Red,
+            ENTITY-LUMPED:34_Yellow,
+            ENTITY-LUMPED:35_Blue,
+            ENTITY-LUMPED:35_Green,
+            ENTITY-LUMPED:35_Red,
+            ENTITY-LUMPED:35_Yellow,
+            ENTITY-LUMPED:36_Blue,
+            ENTITY-LUMPED:36_Green,
+            ENTITY-LUMPED:36_Red,
+            ENTITY-LUMPED:36_Yellow,
+            ENTITY-LUMPED:37_Black,
+            ENTITY-LUMPED:37_Blue,
+            ENTITY-LUMPED:37_Green,
+            ENTITY-LUMPED:37_Red,
+            ENTITY-LUMPED:37_Yellow,
+            ENTITY-LUMPED:38_Black,
+            ENTITY-LUMPED:38_Blue,
+            ENTITY-LUMPED:38_Green,
+            ENTITY-LUMPED:38_Red,
+            ENTITY-LUMPED:38_Yellow,
+            ENTITY-LUMPED:39_Black,
+            ENTITY-LUMPED:39_Blue,
+            ENTITY-LUMPED:39_Green,
+            ENTITY-LUMPED:39_Red,
+            ENTITY-LUMPED:39_Yellow,
+            ENTITY-LUMPED:40_Black,
+            ENTITY-LUMPED:40_Blue,
+            ENTITY-LUMPED:40_Green,
+            ENTITY-LUMPED:40_Red,
+            ENTITY-LUMPED:40_Yellow,
+            ENTITY-LUMPED:41_Black,
+            ENTITY-LUMPED:41_Blue,
+            ENTITY-LUMPED:41_Green,
+            ENTITY-LUMPED:41_Red,
+            ENTITY-LUMPED:41_Yellow,
+            ENTITY-LUMPED:42_Black,
+            ENTITY-LUMPED:42_Blue,
+            ENTITY-LUMPED:42_Green,
+            ENTITY-LUMPED:42_Red,
+            ENTITY-LUMPED:42_Yellow,
+            ENTITY-LUMPED:43_Black,
+            ENTITY-LUMPED:43_Blue,
+            ENTITY-LUMPED:43_Green,
+            ENTITY-LUMPED:43_Red,
+            ENTITY-LUMPED:43_Yellow,
+            ENTITY-LUMPED:44_Black,
+            ENTITY-LUMPED:44_Blue,
+            ENTITY-LUMPED:44_Green,
+            ENTITY-LUMPED:44_Red,
+            ENTITY-LUMPED:44_Yellow,
+            ENTITY-LUMPED:45_Black,
+            ENTITY-LUMPED:45_Blue,
+            ENTITY-LUMPED:45_Green,
+            ENTITY-LUMPED:45_Red,
+            ENTITY-LUMPED:45_Yellow,
+            ENTITY-LUMPED:46_Black,
+            ENTITY-LUMPED:46_Blue,
+            ENTITY-LUMPED:46_Green,
+            ENTITY-LUMPED:46_Red,
+            ENTITY-LUMPED:46_Yellow,
+            ENTITY-LUMPED:47_Black,
+            ENTITY-LUMPED:47_Blue,
+            ENTITY-LUMPED:47_Green,
+            ENTITY-LUMPED:47_Red,
+            ENTITY-LUMPED:47_Yellow,
+            ENTITY-LUMPED:48_Black,
+            ENTITY-LUMPED:48_Blue,
+            ENTITY-LUMPED:48_Green,
+            ENTITY-LUMPED:48_Red,
+            ENTITY-LUMPED:48_Yellow,
+            ENTITY-LUMPED:4_D1,
+            ENTITY-LUMPED:4_D2,
+            ENTITY-LUMPED:4_D3,
+            ENTITY-LUMPED:5_D1,
+            ENTITY-LUMPED:5_D2,
+            ENTITY-LUMPED:5_D3,
+            ENTITY-LUMPED:6_D1,
+            ENTITY-LUMPED:6_D2,
+            ENTITY-LUMPED:6_D3,
+            ENTITY-LUMPED:7_Convection,
+            ENTITY-LUMPED:7_Diffusion,
+            ENTITY-LUMPED:7_Direct,
+            ENTITY-LUMPED:7_Radiation,
+            ENTITY-LUMPED:8_Convection,
+            ENTITY-LUMPED:8_Diffusion,
+            ENTITY-LUMPED:8_Direct,
+            ENTITY-LUMPED:8_Radiation,
+            ENTITY-LUMPED:9_Convection,
+            ENTITY-LUMPED:9_Diffusion,
+            ENTITY-LUMPED:9_Direct,
+            ENTITY-LUMPED:9_Radiation ;
+        xsd:integer ENTITY-LUMPED:20_CircleDiameter,
+            ENTITY-LUMPED:20_MajorAxis,
+            ENTITY-LUMPED:20_MinorAxis,
+            ENTITY-LUMPED:20_RectangleHeight,
+            ENTITY-LUMPED:20_RectangleWidth,
+            ENTITY-LUMPED:20_SideLength,
+            ENTITY-LUMPED:20_SquareSize,
+            ENTITY-LUMPED:21_CircleDiameter,
+            ENTITY-LUMPED:21_MajorAxis,
+            ENTITY-LUMPED:21_MinorAxis,
+            ENTITY-LUMPED:21_RectangleHeight,
+            ENTITY-LUMPED:21_RectangleWidth,
+            ENTITY-LUMPED:21_SideLength,
+            ENTITY-LUMPED:21_SquareSize,
+            ENTITY-LUMPED:22_CircleDiameter,
+            ENTITY-LUMPED:22_MajorAxis,
+            ENTITY-LUMPED:22_MinorAxis,
+            ENTITY-LUMPED:22_RectangleHeight,
+            ENTITY-LUMPED:22_RectangleWidth,
+            ENTITY-LUMPED:22_SideLength,
+            ENTITY-LUMPED:22_SquareSize,
+            ENTITY-LUMPED:23_CircleDiameter,
+            ENTITY-LUMPED:23_MajorAxis,
+            ENTITY-LUMPED:23_MinorAxis,
+            ENTITY-LUMPED:23_RectangleHeight,
+            ENTITY-LUMPED:23_RectangleWidth,
+            ENTITY-LUMPED:23_SideLength,
+            ENTITY-LUMPED:23_SquareSize,
+            ENTITY-LUMPED:24_CircleDiameter,
+            ENTITY-LUMPED:24_MajorAxis,
+            ENTITY-LUMPED:24_MinorAxis,
+            ENTITY-LUMPED:24_RectangleHeight,
+            ENTITY-LUMPED:24_RectangleWidth,
+            ENTITY-LUMPED:24_SideLength,
+            ENTITY-LUMPED:24_SquareSize,
+            ENTITY-LUMPED:25_CircleDiameter,
+            ENTITY-LUMPED:25_MajorAxis,
+            ENTITY-LUMPED:25_MinorAxis,
+            ENTITY-LUMPED:25_RectangleHeight,
+            ENTITY-LUMPED:25_RectangleWidth,
+            ENTITY-LUMPED:25_SideLength,
+            ENTITY-LUMPED:25_SquareSize,
+            ENTITY-LUMPED:26_UserBlue,
+            ENTITY-LUMPED:26_UserGreen,
+            ENTITY-LUMPED:26_UserRed,
+            ENTITY-LUMPED:27_UserBlue,
+            ENTITY-LUMPED:27_UserGreen,
+            ENTITY-LUMPED:27_UserRed,
+            ENTITY-LUMPED:28_UserBlue,
+            ENTITY-LUMPED:28_UserGreen,
+            ENTITY-LUMPED:28_UserRed,
+            ENTITY-LUMPED:29_UserBlue,
+            ENTITY-LUMPED:29_UserGreen,
+            ENTITY-LUMPED:29_UserRed,
+            ENTITY-LUMPED:30_UserBlue,
+            ENTITY-LUMPED:30_UserGreen,
+            ENTITY-LUMPED:30_UserRed,
+            ENTITY-LUMPED:32_UserBlue,
+            ENTITY-LUMPED:32_UserGreen,
+            ENTITY-LUMPED:32_UserRed,
+            ENTITY-LUMPED:33_UserBlue,
+            ENTITY-LUMPED:33_UserGreen,
+            ENTITY-LUMPED:33_UserRed,
+            ENTITY-LUMPED:34_UserBlue,
+            ENTITY-LUMPED:34_UserGreen,
+            ENTITY-LUMPED:34_UserRed,
+            ENTITY-LUMPED:35_UserBlue,
+            ENTITY-LUMPED:35_UserGreen,
+            ENTITY-LUMPED:35_UserRed,
+            ENTITY-LUMPED:36_UserBlue,
+            ENTITY-LUMPED:36_UserGreen,
+            ENTITY-LUMPED:36_UserRed,
+            ENTITY-LUMPED:37_UserBlue,
+            ENTITY-LUMPED:37_UserGreen,
+            ENTITY-LUMPED:37_UserRed,
+            ENTITY-LUMPED:38_UserBlue,
+            ENTITY-LUMPED:38_UserGreen,
+            ENTITY-LUMPED:38_UserRed,
+            ENTITY-LUMPED:39_UserBlue,
+            ENTITY-LUMPED:39_UserGreen,
+            ENTITY-LUMPED:39_UserRed,
+            ENTITY-LUMPED:40_UserBlue,
+            ENTITY-LUMPED:40_UserGreen,
+            ENTITY-LUMPED:40_UserRed,
+            ENTITY-LUMPED:41_UserBlue,
+            ENTITY-LUMPED:41_UserGreen,
+            ENTITY-LUMPED:41_UserRed,
+            ENTITY-LUMPED:42_UserBlue,
+            ENTITY-LUMPED:42_UserGreen,
+            ENTITY-LUMPED:42_UserRed,
+            ENTITY-LUMPED:43_UserBlue,
+            ENTITY-LUMPED:43_UserGreen,
+            ENTITY-LUMPED:43_UserRed,
+            ENTITY-LUMPED:44_UserBlue,
+            ENTITY-LUMPED:44_UserGreen,
+            ENTITY-LUMPED:44_UserRed,
+            ENTITY-LUMPED:45_UserBlue,
+            ENTITY-LUMPED:45_UserGreen,
+            ENTITY-LUMPED:45_UserRed,
+            ENTITY-LUMPED:46_UserBlue,
+            ENTITY-LUMPED:46_UserGreen,
+            ENTITY-LUMPED:46_UserRed,
+            ENTITY-LUMPED:47_UserBlue,
+            ENTITY-LUMPED:47_UserGreen,
+            ENTITY-LUMPED:47_UserRed,
+            ENTITY-LUMPED:48_UserBlue,
+            ENTITY-LUMPED:48_UserGreen,
+            ENTITY-LUMPED:48_UserRed .
+
+    ENTITY-LUMPED:0_FRAME rdfs:isDefinedBy ENTITY-LUMPED:Frame .
+
+    ENTITY-LUMPED:0_Time rdfs:member ENTITY-LUMPED:0_FRAME .
+
+    ENTITY-LUMPED:1_Arc rdfs:member ENTITY-LUMPED:1_GRAPH .
+
+    ENTITY-LUMPED:1_GRAPH rdfs:isDefinedBy ENTITY-LUMPED:Physical .
+
+    ENTITY-LUMPED:1_Node rdfs:member ENTITY-LUMPED:1_GRAPH .
+
+    ENTITY-LUMPED:20_Ellipse rdfs:member ENTITY-LUMPED:20_Shape .
+
+    ENTITY-LUMPED:20_GraphicalObject rdfs:member ENTITY-LUMPED:20_ICON .
+
+    ENTITY-LUMPED:20_Rectangle rdfs:member ENTITY-LUMPED:20_Shape .
+
+    ENTITY-LUMPED:21_Ellipse rdfs:member ENTITY-LUMPED:21_Shape .
+
+    ENTITY-LUMPED:21_GraphicalObject rdfs:member ENTITY-LUMPED:21_ICON .
+
+    ENTITY-LUMPED:21_Rectangle rdfs:member ENTITY-LUMPED:21_Shape .
+
+    ENTITY-LUMPED:22_Ellipse rdfs:member ENTITY-LUMPED:22_Shape .
+
+    ENTITY-LUMPED:22_GraphicalObject rdfs:member ENTITY-LUMPED:22_ICON .
+
+    ENTITY-LUMPED:22_Rectangle rdfs:member ENTITY-LUMPED:22_Shape .
+
+    ENTITY-LUMPED:23_Ellipse rdfs:member ENTITY-LUMPED:23_Shape .
+
+    ENTITY-LUMPED:23_GraphicalObject rdfs:member ENTITY-LUMPED:23_ICON .
+
+    ENTITY-LUMPED:23_Rectangle rdfs:member ENTITY-LUMPED:23_Shape .
+
+    ENTITY-LUMPED:24_Ellipse rdfs:member ENTITY-LUMPED:24_Shape .
+
+    ENTITY-LUMPED:24_GraphicalObject rdfs:member ENTITY-LUMPED:24_ICON .
+
+    ENTITY-LUMPED:24_Rectangle rdfs:member ENTITY-LUMPED:24_Shape .
+
+    ENTITY-LUMPED:25_Ellipse rdfs:member ENTITY-LUMPED:25_Shape .
+
+    ENTITY-LUMPED:25_GraphicalObject rdfs:member ENTITY-LUMPED:25_ICON .
+
+    ENTITY-LUMPED:25_Rectangle rdfs:member ENTITY-LUMPED:25_Shape .
+
+    ENTITY-LUMPED:2_Arc rdfs:member ENTITY-LUMPED:2_GRAPH .
+
+    ENTITY-LUMPED:2_GRAPH rdfs:isDefinedBy ENTITY-LUMPED:Information .
+
+    ENTITY-LUMPED:2_Node rdfs:member ENTITY-LUMPED:2_GRAPH .
+
+    ENTITY-LUMPED:3_Arc rdfs:member ENTITY-LUMPED:3_GRAPH .
+
+    ENTITY-LUMPED:3_GRAPH rdfs:isDefinedBy ENTITY-LUMPED:Control .
+
+    ENTITY-LUMPED:3_Node rdfs:member ENTITY-LUMPED:3_GRAPH .
+
+    ENTITY-LUMPED:4_CAPACITY rdfs:isDefinedBy ENTITY-LUMPED:2_Node .
+
+    ENTITY-LUMPED:4_Characteristics rdfs:member ENTITY-LUMPED:4_CAPACITY .
+
+    ENTITY-LUMPED:5_CAPACITY rdfs:isDefinedBy ENTITY-LUMPED:3_Node .
+
+    ENTITY-LUMPED:5_Characteristics rdfs:member ENTITY-LUMPED:5_CAPACITY .
+
+    ENTITY-LUMPED:6_CAPACITY rdfs:isDefinedBy ENTITY-LUMPED:1_Node .
+
+    ENTITY-LUMPED:6_Characteristics rdfs:member ENTITY-LUMPED:6_CAPACITY .
+
+    ENTITY-LUMPED:0_Cartesian rdfs:member ENTITY-LUMPED:0_SpatialCoordinate .
+
+    ENTITY-LUMPED:18_TEMPORAL rdfs:isDefinedBy ENTITY-LUMPED:6_Temporal .
+
+    ENTITY-LUMPED:31_TEMPORAL rdfs:isDefinedBy ENTITY-LUMPED:5_Temporal .
+
+    ENTITY-LUMPED:37_UserColour rdfs:member ENTITY-LUMPED:37_COLOUR .
+
+    ENTITY-LUMPED:38_UserColour rdfs:member ENTITY-LUMPED:38_COLOUR .
+
+    ENTITY-LUMPED:39_UserColour rdfs:member ENTITY-LUMPED:39_COLOUR .
+
+    ENTITY-LUMPED:40_UserColour rdfs:member ENTITY-LUMPED:40_COLOUR .
+
+    ENTITY-LUMPED:41_UserColour rdfs:member ENTITY-LUMPED:41_COLOUR .
+
+    ENTITY-LUMPED:42_UserColour rdfs:member ENTITY-LUMPED:42_COLOUR .
+
+    ENTITY-LUMPED:43_UserColour rdfs:member ENTITY-LUMPED:43_COLOUR .
+
+    ENTITY-LUMPED:44_UserColour rdfs:member ENTITY-LUMPED:44_COLOUR .
+
+    ENTITY-LUMPED:45_UserColour rdfs:member ENTITY-LUMPED:45_COLOUR .
+
+    ENTITY-LUMPED:46_UserColour rdfs:member ENTITY-LUMPED:46_COLOUR .
+
+    ENTITY-LUMPED:47_UserColour rdfs:member ENTITY-LUMPED:47_COLOUR .
+
+    ENTITY-LUMPED:48_UserColour rdfs:member ENTITY-LUMPED:48_COLOUR .
+
+    ENTITY-LUMPED:10_TOKENS rdfs:isDefinedBy ENTITY-LUMPED:8_Tokens .
+
+    ENTITY-LUMPED:11_TOKENS rdfs:isDefinedBy ENTITY-LUMPED:5_Tokens .
+
+    ENTITY-LUMPED:12_TOKENS rdfs:isDefinedBy ENTITY-LUMPED:9_Tokens .
+
+    ENTITY-LUMPED:13_TOKENS rdfs:isDefinedBy ENTITY-LUMPED:6_Tokens .
+
+    ENTITY-LUMPED:14_TOKENS rdfs:isDefinedBy ENTITY-LUMPED:4_Tokens .
+
+    ENTITY-LUMPED:15_TOKENS rdfs:isDefinedBy ENTITY-LUMPED:7_Tokens .
+
+    ENTITY-LUMPED:17_DISTRIBUTION rdfs:isDefinedBy ENTITY-LUMPED:6_Distribution .
+
+    ENTITY-LUMPED:19_DISTRIBUTION rdfs:isDefinedBy ENTITY-LUMPED:9_Distribution .
+
+    ENTITY-LUMPED:20_Line rdfs:member ENTITY-LUMPED:20_GraphicalObject .
+
+    ENTITY-LUMPED:21_Line rdfs:member ENTITY-LUMPED:21_GraphicalObject .
+
+    ENTITY-LUMPED:22_Line rdfs:member ENTITY-LUMPED:22_GraphicalObject .
+
+    ENTITY-LUMPED:23_Line rdfs:member ENTITY-LUMPED:23_GraphicalObject .
+
+    ENTITY-LUMPED:24_Line rdfs:member ENTITY-LUMPED:24_GraphicalObject .
+
+    ENTITY-LUMPED:25_Line rdfs:member ENTITY-LUMPED:25_GraphicalObject .
+
+    ENTITY-LUMPED:7_TRANSPORT rdfs:isDefinedBy ENTITY-LUMPED:2_Arc .
+
+    ENTITY-LUMPED:8_TRANSPORT rdfs:isDefinedBy ENTITY-LUMPED:3_Arc .
+
+    ENTITY-LUMPED:37_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:20_ShapeColour .
+
+    ENTITY-LUMPED:38_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:20_LineColour .
+
+    ENTITY-LUMPED:39_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:21_LineColour .
+
+    ENTITY-LUMPED:40_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:21_ShapeColour .
+
+    ENTITY-LUMPED:41_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:24_LineColour .
+
+    ENTITY-LUMPED:42_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:24_ShapeColour .
+
+    ENTITY-LUMPED:43_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:25_LineColour .
+
+    ENTITY-LUMPED:44_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:25_ShapeColour .
+
+    ENTITY-LUMPED:45_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:23_LineColour .
+
+    ENTITY-LUMPED:46_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:23_ShapeColour .
+
+    ENTITY-LUMPED:47_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:22_LineColour .
+
+    ENTITY-LUMPED:48_COLOUR rdfs:isDefinedBy ENTITY-LUMPED:22_ShapeColour .
+
+    ENTITY-LUMPED:9_TRANSPORT rdfs:isDefinedBy ENTITY-LUMPED:1_Arc .
+
+    ENTITY-LUMPED:20_Shape rdfs:member ENTITY-LUMPED:20_GraphicalObject .
+
+    ENTITY-LUMPED:21_Shape rdfs:member ENTITY-LUMPED:21_GraphicalObject .
+
+    ENTITY-LUMPED:22_Shape rdfs:member ENTITY-LUMPED:22_GraphicalObject .
+
+    ENTITY-LUMPED:23_Shape rdfs:member ENTITY-LUMPED:23_GraphicalObject .
+
+    ENTITY-LUMPED:24_Shape rdfs:member ENTITY-LUMPED:24_GraphicalObject .
+
+    ENTITY-LUMPED:25_Shape rdfs:member ENTITY-LUMPED:25_GraphicalObject .
 }
 

@@ -96,6 +96,8 @@ class UI_String(QtWidgets.QDialog):
         val = r"^([a-zA-Z][a-zA-Z0-9]+\s)*$"
       elif validator == "name":
         val = r"^[a-zA-Z][a-zA-Z0-9]*$"
+      elif validator == "name_upper":
+        val = r"^[A-Z][A-Z0-9-]*$"
       else:
         makeMessageBox(">>>> should not come here, wrong validator %s"%validator, ["OK"])
 
@@ -186,7 +188,7 @@ if __name__ == '__main__':
   # var_exp = r"^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$"
   # var_bool = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
   # var_url = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
-  w = UI_String("give name", placeholdertext="name", limiting_list=["1"])#, validator="name")
+  w = UI_String("give name", placeholdertext="name", limiting_list=["1"], validator="name_upper")
   w.show()
   s = w.text
   print(s)

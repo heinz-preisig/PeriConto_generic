@@ -198,7 +198,7 @@ class OntobuilderUI(QMainWindow):
     # dialog.exec()
     brick_name = dialog.selection
     if brick_name:
-      dialog = UI_String("tree name", limiting_list=self.treeList)
+      dialog = UI_String("tree name", limiting_list=self.treeList, validator="name_upper")
       tree_name = dialog.text
       if not tree_name:
         return
@@ -212,7 +212,7 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_pushTreeRename_pressed(self):
-    dialog = UI_String("new_tree name", limiting_list=self.treeList, validator="name")
+    dialog = UI_String("new_tree name", limiting_list=self.treeList, validator="name_upper")
     tree_name = dialog.text
     if not tree_name:
       return
@@ -224,7 +224,7 @@ class OntobuilderUI(QMainWindow):
       self.backend.processEvent(message)
 
   def on_pushTreeCopy_pressed(self):
-    dialog = UI_String("name for the copy", limiting_list=self.treeList, validator="name")
+    dialog = UI_String("name for the copy", limiting_list=self.treeList, validator="name_upper")
     tree_name = dialog.text
     if not tree_name:
       return
@@ -331,7 +331,7 @@ class OntobuilderUI(QMainWindow):
           if dialog.exec():
             value = dialog.get_selected_option()
           else:
-            value = "boolean"
+            value = ""
         else:
           dialog = UI_String("provide %s" % type,
                            value=value,
@@ -339,7 +339,7 @@ class OntobuilderUI(QMainWindow):
                            validator=type)
           value = dialog.text
         if not value:
-          value = type
+          value = ""
         message = {
                 "event"      : "got primitive",
                 "value"      : value,

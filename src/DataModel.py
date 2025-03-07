@@ -428,7 +428,8 @@ class DataModel:
         s_new = self.__renameURI(tree_name_instantiated, tree_name, s)
         o_new = self.__renameURI(tree_name_instantiated, tree_name, o)
         g.add((s_new, p, o_new))
-
+    else:
+      del graph
     pass
     return
 

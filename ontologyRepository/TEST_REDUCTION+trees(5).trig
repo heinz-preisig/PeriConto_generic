@@ -1,0 +1,44 @@
+@prefix GUGUS: <http://example.org/GUGUS#> .
+@prefix GUGUS_i: <http://example.org/GUGUS_i#> .
+@prefix GUGUS_i_i: <http://example.org/GUGUS_i_i#> .
+@prefix SE: <http://example.org/SE#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+SE:SE {
+    SE:SE a rdfs:Class .
+
+    "" xsd:integer SE:Kkk .
+
+    SE:Gugus rdfs:member SE:SE .
+
+    SE:Kkk rdf:value SE:Gugus .
+}
+
+GUGUS_i_i:GUGUS_i_i {
+    GUGUS_i_i:GUGUS_i_i a rdfs:Class .
+
+    "True" xsd:boolean GUGUS_i_i:HelloMe .
+
+    GUGUS_i_i:HelloMe rdf:value GUGUS_i_i:GUGUS_i_i .
+}
+
+GUGUS:GUGUS {
+    GUGUS:GUGUS a rdfs:Class .
+
+    GUGUS:Link rdfs:member GUGUS:GUGUS .
+
+    "boolean" xsd:boolean GUGUS:HelloMe .
+
+    GUGUS:HelloMe rdf:value GUGUS:GUGUS .
+}
+
+GUGUS_i:GUGUS_i {
+    GUGUS_i:GUGUS_i a rdfs:Class .
+
+    GUGUS_i:HelloMe rdf:value GUGUS_i:GUGUS_i .
+
+    "boolean" xsd:boolean GUGUS_i:HelloMe .
+}
+
