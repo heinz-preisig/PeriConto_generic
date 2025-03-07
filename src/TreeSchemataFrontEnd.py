@@ -174,11 +174,13 @@ class OntobuilderUI(QMainWindow):
             "project_name": project_name
             }
     self.backend.processEvent(message)
+    # self.ui.statusbar.showMessage("loading file")
 
   def on_pushOntologySave_pressed(self):
     debugging("-- pushOntologySave")
     message = {"event": "save"}
     self.backend.processEvent(message)
+    # self.ui.statusbar.showMessage("saving file")
 
   def on_pushOntologySaveAs_pressed(self):
     debugging("-- pushOntologySaveAs")
@@ -312,6 +314,7 @@ class OntobuilderUI(QMainWindow):
 
   def on_treeTree_itemClicked(self, item, column):
     name = item.text(column)
+    self.ui.treeTree.expandItem(item)
     type = item.type
     if type != "Class":
       parent_name = item.parent().text(0)
@@ -367,11 +370,10 @@ class OntobuilderUI(QMainWindow):
     self.ui.listTrees.addItems(treeList)
 
   def showTreeTree(self, tuples, origin, existing_item_names):
-    start = time.time()
+    sorted_tuples = sorted(tuples)
     self.existing_item_names = existing_item_names
     widget = self.ui.treeTree
     self.__instantiateTree(origin, tuples, widget)
-    print("making tree:", time.time()-start)
 
   def __instantiateTree(self, origin, tuples, widget):
     widget.clear()
@@ -386,7 +388,8 @@ class OntobuilderUI(QMainWindow):
     self.current_class = origin
     self.__makeTree(tuples, origin=origin, stack=[], items={origin: rootItem})
     widget.show()
-    widget.expandAll()
+    # widget.expandAll()
+    widget.collapseAll()
 
   def __makeTree(self, tuples, origin=[], stack=[], items={}):
     for q in tuples:
