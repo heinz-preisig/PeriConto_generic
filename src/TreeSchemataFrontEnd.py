@@ -370,7 +370,6 @@ class OntobuilderUI(QMainWindow):
     self.ui.listTrees.addItems(treeList)
 
   def showTreeTree(self, tuples, origin, existing_item_names):
-    sorted_tuples = sorted(tuples)
     self.existing_item_names = existing_item_names
     widget = self.ui.treeTree
     self.__instantiateTree(origin, tuples, widget)
