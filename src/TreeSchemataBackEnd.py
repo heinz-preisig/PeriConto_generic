@@ -1,6 +1,8 @@
 import os
 import subprocess
 import sys
+import timeit
+import time
 
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 from BricksAndTreeSemantics import PRIMITIVES
@@ -37,6 +39,7 @@ class BackEnd():
     self.frontEnd.setRules(RULES, PRIMITIVES)
 
   def processEvent(self, message):
+    start = time.time()
     debugging(">>>> message ", message)
     event = message["event"]
     # self.fail = False
@@ -90,6 +93,7 @@ class BackEnd():
     self.previousEvent = event
 
     self.memory.update(message)
+    print("processing time", time.time()-start)
 
   def loadOntology(self, message):
     name = message["project_name"]
@@ -198,14 +202,17 @@ class BackEnd():
     self.memory["tree_name"] = message["tree_name"]
 
   def getTreeDataTuples(self, message):
+    start = time.time()
     try:
       tree_name = message["tree_name"]
     except:
       tree_name = self.memory["tree_name"]
     dataTreeTuples = self.dataModel.makeDataTuplesForGraph(tree_name, "tree_name")
+    print("getting tuples", time.time() - start)
 
     existing_item_names = self.dataModel.getAllNamesInTheBrick(tree_name,
                                                                "tree")
+
     self.frontEnd.showTreeTree(dataTreeTuples, tree_name, existing_item_names)
     pass
 

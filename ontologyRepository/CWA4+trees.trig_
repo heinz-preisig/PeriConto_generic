@@ -57,44 +57,50 @@ BASE:24_ICON a rdfs:Class ;
 BASE:25_ICON a rdfs:Class ;
     rdfs:isDefinedBy BASE:1_ArcIcon .
 
-BASE:26_COLOUR a rdfs:Class ;
-    rdfs:isDefinedBy BASE:22_ShapeColour .
-
-BASE:27_COLOUR a rdfs:Class ;
-    rdfs:isDefinedBy BASE:22_LineColour .
-
-BASE:28_COLOUR a rdfs:Class ;
-    rdfs:isDefinedBy BASE:20_LineColour .
-
-BASE:29_COLOUR a rdfs:Class ;
-    rdfs:isDefinedBy BASE:23_ShapeColour .
-
 BASE:2_GRAPH a rdfs:Class ;
     rdfs:isDefinedBy BASE:Information .
-
-BASE:30_COLOUR a rdfs:Class ;
-    rdfs:isDefinedBy BASE:23_LineColour .
 
 BASE:31_TEMPORAL a rdfs:Class ;
     rdfs:isDefinedBy BASE:5_Temporal .
 
-BASE:32_COLOUR a rdfs:Class ;
+BASE:37_COLOUR a rdfs:Class ;
     rdfs:isDefinedBy BASE:20_ShapeColour .
 
-BASE:33_COLOUR a rdfs:Class ;
-    rdfs:isDefinedBy BASE:24_LineColour .
+BASE:38_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:20_LineColour .
 
-BASE:34_COLOUR a rdfs:Class ;
-    rdfs:isDefinedBy BASE:24_ShapeColour .
-
-BASE:35_COLOUR a rdfs:Class ;
-    rdfs:isDefinedBy BASE:25_ShapeColour .
-
-BASE:36_COLOUR a rdfs:Class ;
-    rdfs:isDefinedBy BASE:25_LineColour .
+BASE:39_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:21_LineColour .
 
 BASE:3_GRAPH a rdfs:Class ;
     rdfs:isDefinedBy BASE:Control .
+
+BASE:40_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:21_ShapeColour .
+
+BASE:41_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:24_LineColour .
+
+BASE:42_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:24_ShapeColour .
+
+BASE:43_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:25_LineColour .
+
+BASE:44_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:25_ShapeColour .
+
+BASE:45_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:23_LineColour .
+
+BASE:46_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:23_ShapeColour .
+
+BASE:47_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:22_LineColour .
+
+BASE:48_COLOUR a rdfs:Class ;
+    rdfs:isDefinedBy BASE:22_ShapeColour .
 
 BASE:4_CAPACITY a rdfs:Class ;
     rdfs:isDefinedBy BASE:2_Node .
@@ -121,10 +127,6 @@ ENTITY_LUMPED:ENTITY_LUMPED a rdfs:Class .
 BASE:20_Dot rdfs:member BASE:20_Shape .
 
 BASE:21_Dot rdfs:member BASE:21_Shape .
-
-BASE:21_LineColour rdfs:member BASE:21_Line .
-
-BASE:21_ShapeColour rdfs:member BASE:21_Shape .
 
 BASE:22_Dot rdfs:member BASE:22_Shape .
 
@@ -273,6 +275,66 @@ ENTITY_LUMPED:5_Distribution rdfs:member ENTITY_LUMPED:5_Characteristics .
         BASE:36_Green,
         BASE:36_Red,
         BASE:36_Yellow,
+        BASE:37_Black,
+        BASE:37_Blue,
+        BASE:37_Green,
+        BASE:37_Red,
+        BASE:37_Yellow,
+        BASE:38_Black,
+        BASE:38_Blue,
+        BASE:38_Green,
+        BASE:38_Red,
+        BASE:38_Yellow,
+        BASE:39_Black,
+        BASE:39_Blue,
+        BASE:39_Green,
+        BASE:39_Red,
+        BASE:39_Yellow,
+        BASE:40_Black,
+        BASE:40_Blue,
+        BASE:40_Green,
+        BASE:40_Red,
+        BASE:40_Yellow,
+        BASE:41_Black,
+        BASE:41_Blue,
+        BASE:41_Green,
+        BASE:41_Red,
+        BASE:41_Yellow,
+        BASE:42_Black,
+        BASE:42_Blue,
+        BASE:42_Green,
+        BASE:42_Red,
+        BASE:42_Yellow,
+        BASE:43_Black,
+        BASE:43_Blue,
+        BASE:43_Green,
+        BASE:43_Red,
+        BASE:43_Yellow,
+        BASE:44_Black,
+        BASE:44_Blue,
+        BASE:44_Green,
+        BASE:44_Red,
+        BASE:44_Yellow,
+        BASE:45_Black,
+        BASE:45_Blue,
+        BASE:45_Green,
+        BASE:45_Red,
+        BASE:45_Yellow,
+        BASE:46_Black,
+        BASE:46_Blue,
+        BASE:46_Green,
+        BASE:46_Red,
+        BASE:46_Yellow,
+        BASE:47_Black,
+        BASE:47_Blue,
+        BASE:47_Green,
+        BASE:47_Red,
+        BASE:47_Yellow,
+        BASE:48_Black,
+        BASE:48_Blue,
+        BASE:48_Green,
+        BASE:48_Red,
+        BASE:48_Yellow,
         BASE:4_D1,
         BASE:4_D2,
         BASE:4_D3,
@@ -498,6 +560,42 @@ ENTITY_LUMPED:5_Distribution rdfs:member ENTITY_LUMPED:5_Characteristics .
         BASE:36_UserBlue,
         BASE:36_UserGreen,
         BASE:36_UserRed,
+        BASE:37_UserBlue,
+        BASE:37_UserGreen,
+        BASE:37_UserRed,
+        BASE:38_UserBlue,
+        BASE:38_UserGreen,
+        BASE:38_UserRed,
+        BASE:39_UserBlue,
+        BASE:39_UserGreen,
+        BASE:39_UserRed,
+        BASE:40_UserBlue,
+        BASE:40_UserGreen,
+        BASE:40_UserRed,
+        BASE:41_UserBlue,
+        BASE:41_UserGreen,
+        BASE:41_UserRed,
+        BASE:42_UserBlue,
+        BASE:42_UserGreen,
+        BASE:42_UserRed,
+        BASE:43_UserBlue,
+        BASE:43_UserGreen,
+        BASE:43_UserRed,
+        BASE:44_UserBlue,
+        BASE:44_UserGreen,
+        BASE:44_UserRed,
+        BASE:45_UserBlue,
+        BASE:45_UserGreen,
+        BASE:45_UserRed,
+        BASE:46_UserBlue,
+        BASE:46_UserGreen,
+        BASE:46_UserRed,
+        BASE:47_UserBlue,
+        BASE:47_UserGreen,
+        BASE:47_UserRed,
+        BASE:48_UserBlue,
+        BASE:48_UserGreen,
+        BASE:48_UserRed,
         ENTITY_LUMPED:20_CircleDiameter,
         ENTITY_LUMPED:20_MajorAxis,
         ENTITY_LUMPED:20_MinorAxis,
@@ -709,6 +807,8 @@ BASE:21_DottedFine rdf:value BASE:21_Line .
 
 BASE:21_Full rdf:value BASE:21_Line .
 
+BASE:21_LineColour rdfs:member BASE:21_Line .
+
 BASE:21_MajorAxis rdf:value BASE:21_Ellipse .
 
 BASE:21_MinorAxis rdf:value BASE:21_Ellipse .
@@ -716,6 +816,8 @@ BASE:21_MinorAxis rdf:value BASE:21_Ellipse .
 BASE:21_RectangleHeight rdf:value BASE:21_Rectangle .
 
 BASE:21_RectangleWidth rdf:value BASE:21_Rectangle .
+
+BASE:21_ShapeColour rdfs:member BASE:21_Shape .
 
 BASE:21_SideLength rdf:value BASE:21_Triangle .
 
@@ -853,25 +955,11 @@ BASE:25_SquareSize rdf:value BASE:25_Square .
 
 BASE:25_Triangle rdfs:member BASE:25_Shape .
 
-BASE:26_Blue rdf:value BASE:26_COLOUR .
-
-BASE:26_Green rdf:value BASE:26_COLOUR .
-
-BASE:26_Red rdf:value BASE:26_COLOUR .
-
 BASE:26_UserBlue rdf:value BASE:26_UserColour .
 
 BASE:26_UserGreen rdf:value BASE:26_UserColour .
 
 BASE:26_UserRed rdf:value BASE:26_UserColour .
-
-BASE:26_Yellow rdf:value BASE:26_COLOUR .
-
-BASE:27_Blue rdf:value BASE:27_COLOUR .
-
-BASE:27_Green rdf:value BASE:27_COLOUR .
-
-BASE:27_Red rdf:value BASE:27_COLOUR .
 
 BASE:27_UserBlue rdf:value BASE:27_UserColour .
 
@@ -879,27 +967,11 @@ BASE:27_UserGreen rdf:value BASE:27_UserColour .
 
 BASE:27_UserRed rdf:value BASE:27_UserColour .
 
-BASE:27_Yellow rdf:value BASE:27_COLOUR .
-
-BASE:28_Blue rdf:value BASE:28_COLOUR .
-
-BASE:28_Green rdf:value BASE:28_COLOUR .
-
-BASE:28_Red rdf:value BASE:28_COLOUR .
-
 BASE:28_UserBlue rdf:value BASE:28_UserColour .
 
 BASE:28_UserGreen rdf:value BASE:28_UserColour .
 
 BASE:28_UserRed rdf:value BASE:28_UserColour .
-
-BASE:28_Yellow rdf:value BASE:28_COLOUR .
-
-BASE:29_Blue rdf:value BASE:29_COLOUR .
-
-BASE:29_Green rdf:value BASE:29_COLOUR .
-
-BASE:29_Red rdf:value BASE:29_COLOUR .
 
 BASE:29_UserBlue rdf:value BASE:29_UserColour .
 
@@ -907,17 +979,9 @@ BASE:29_UserGreen rdf:value BASE:29_UserColour .
 
 BASE:29_UserRed rdf:value BASE:29_UserColour .
 
-BASE:29_Yellow rdf:value BASE:29_COLOUR .
-
 BASE:2_ArcIcon rdfs:member BASE:2_Arc .
 
 BASE:2_NodeIcon rdfs:member BASE:2_Node .
-
-BASE:30_Blue rdf:value BASE:30_COLOUR .
-
-BASE:30_Green rdf:value BASE:30_COLOUR .
-
-BASE:30_Red rdf:value BASE:30_COLOUR .
 
 BASE:30_UserBlue rdf:value BASE:30_UserColour .
 
@@ -925,19 +989,11 @@ BASE:30_UserGreen rdf:value BASE:30_UserColour .
 
 BASE:30_UserRed rdf:value BASE:30_UserColour .
 
-BASE:30_Yellow rdf:value BASE:30_COLOUR .
-
 BASE:31_Constant rdf:value BASE:31_TEMPORAL .
 
 BASE:31_Dynamic rdf:value BASE:31_TEMPORAL .
 
 BASE:31_Event rdf:value BASE:31_TEMPORAL .
-
-BASE:32_Blue rdf:value BASE:32_COLOUR .
-
-BASE:32_Green rdf:value BASE:32_COLOUR .
-
-BASE:32_Red rdf:value BASE:32_COLOUR .
 
 BASE:32_UserBlue rdf:value BASE:32_UserColour .
 
@@ -945,27 +1001,11 @@ BASE:32_UserGreen rdf:value BASE:32_UserColour .
 
 BASE:32_UserRed rdf:value BASE:32_UserColour .
 
-BASE:32_Yellow rdf:value BASE:32_COLOUR .
-
-BASE:33_Blue rdf:value BASE:33_COLOUR .
-
-BASE:33_Green rdf:value BASE:33_COLOUR .
-
-BASE:33_Red rdf:value BASE:33_COLOUR .
-
 BASE:33_UserBlue rdf:value BASE:33_UserColour .
 
 BASE:33_UserGreen rdf:value BASE:33_UserColour .
 
 BASE:33_UserRed rdf:value BASE:33_UserColour .
-
-BASE:33_Yellow rdf:value BASE:33_COLOUR .
-
-BASE:34_Blue rdf:value BASE:34_COLOUR .
-
-BASE:34_Green rdf:value BASE:34_COLOUR .
-
-BASE:34_Red rdf:value BASE:34_COLOUR .
 
 BASE:34_UserBlue rdf:value BASE:34_UserColour .
 
@@ -973,27 +1013,11 @@ BASE:34_UserGreen rdf:value BASE:34_UserColour .
 
 BASE:34_UserRed rdf:value BASE:34_UserColour .
 
-BASE:34_Yellow rdf:value BASE:34_COLOUR .
-
-BASE:35_Blue rdf:value BASE:35_COLOUR .
-
-BASE:35_Green rdf:value BASE:35_COLOUR .
-
-BASE:35_Red rdf:value BASE:35_COLOUR .
-
 BASE:35_UserBlue rdf:value BASE:35_UserColour .
 
 BASE:35_UserGreen rdf:value BASE:35_UserColour .
 
 BASE:35_UserRed rdf:value BASE:35_UserColour .
-
-BASE:35_Yellow rdf:value BASE:35_COLOUR .
-
-BASE:36_Blue rdf:value BASE:36_COLOUR .
-
-BASE:36_Green rdf:value BASE:36_COLOUR .
-
-BASE:36_Red rdf:value BASE:36_COLOUR .
 
 BASE:36_UserBlue rdf:value BASE:36_UserColour .
 
@@ -1001,11 +1025,201 @@ BASE:36_UserGreen rdf:value BASE:36_UserColour .
 
 BASE:36_UserRed rdf:value BASE:36_UserColour .
 
-BASE:36_Yellow rdf:value BASE:36_COLOUR .
+BASE:37_Black rdf:value BASE:37_COLOUR .
+
+BASE:37_Blue rdf:value BASE:37_COLOUR .
+
+BASE:37_Green rdf:value BASE:37_COLOUR .
+
+BASE:37_Red rdf:value BASE:37_COLOUR .
+
+BASE:37_UserBlue rdf:value BASE:37_UserColour .
+
+BASE:37_UserGreen rdf:value BASE:37_UserColour .
+
+BASE:37_UserRed rdf:value BASE:37_UserColour .
+
+BASE:37_Yellow rdf:value BASE:37_COLOUR .
+
+BASE:38_Black rdf:value BASE:38_COLOUR .
+
+BASE:38_Blue rdf:value BASE:38_COLOUR .
+
+BASE:38_Green rdf:value BASE:38_COLOUR .
+
+BASE:38_Red rdf:value BASE:38_COLOUR .
+
+BASE:38_UserBlue rdf:value BASE:38_UserColour .
+
+BASE:38_UserGreen rdf:value BASE:38_UserColour .
+
+BASE:38_UserRed rdf:value BASE:38_UserColour .
+
+BASE:38_Yellow rdf:value BASE:38_COLOUR .
+
+BASE:39_Black rdf:value BASE:39_COLOUR .
+
+BASE:39_Blue rdf:value BASE:39_COLOUR .
+
+BASE:39_Green rdf:value BASE:39_COLOUR .
+
+BASE:39_Red rdf:value BASE:39_COLOUR .
+
+BASE:39_UserBlue rdf:value BASE:39_UserColour .
+
+BASE:39_UserGreen rdf:value BASE:39_UserColour .
+
+BASE:39_UserRed rdf:value BASE:39_UserColour .
+
+BASE:39_Yellow rdf:value BASE:39_COLOUR .
 
 BASE:3_ArcIcon rdfs:member BASE:3_Arc .
 
 BASE:3_NodeIcon rdfs:member BASE:3_Node .
+
+BASE:40_Black rdf:value BASE:40_COLOUR .
+
+BASE:40_Blue rdf:value BASE:40_COLOUR .
+
+BASE:40_Green rdf:value BASE:40_COLOUR .
+
+BASE:40_Red rdf:value BASE:40_COLOUR .
+
+BASE:40_UserBlue rdf:value BASE:40_UserColour .
+
+BASE:40_UserGreen rdf:value BASE:40_UserColour .
+
+BASE:40_UserRed rdf:value BASE:40_UserColour .
+
+BASE:40_Yellow rdf:value BASE:40_COLOUR .
+
+BASE:41_Black rdf:value BASE:41_COLOUR .
+
+BASE:41_Blue rdf:value BASE:41_COLOUR .
+
+BASE:41_Green rdf:value BASE:41_COLOUR .
+
+BASE:41_Red rdf:value BASE:41_COLOUR .
+
+BASE:41_UserBlue rdf:value BASE:41_UserColour .
+
+BASE:41_UserGreen rdf:value BASE:41_UserColour .
+
+BASE:41_UserRed rdf:value BASE:41_UserColour .
+
+BASE:41_Yellow rdf:value BASE:41_COLOUR .
+
+BASE:42_Black rdf:value BASE:42_COLOUR .
+
+BASE:42_Blue rdf:value BASE:42_COLOUR .
+
+BASE:42_Green rdf:value BASE:42_COLOUR .
+
+BASE:42_Red rdf:value BASE:42_COLOUR .
+
+BASE:42_UserBlue rdf:value BASE:42_UserColour .
+
+BASE:42_UserGreen rdf:value BASE:42_UserColour .
+
+BASE:42_UserRed rdf:value BASE:42_UserColour .
+
+BASE:42_Yellow rdf:value BASE:42_COLOUR .
+
+BASE:43_Black rdf:value BASE:43_COLOUR .
+
+BASE:43_Blue rdf:value BASE:43_COLOUR .
+
+BASE:43_Green rdf:value BASE:43_COLOUR .
+
+BASE:43_Red rdf:value BASE:43_COLOUR .
+
+BASE:43_UserBlue rdf:value BASE:43_UserColour .
+
+BASE:43_UserGreen rdf:value BASE:43_UserColour .
+
+BASE:43_UserRed rdf:value BASE:43_UserColour .
+
+BASE:43_Yellow rdf:value BASE:43_COLOUR .
+
+BASE:44_Black rdf:value BASE:44_COLOUR .
+
+BASE:44_Blue rdf:value BASE:44_COLOUR .
+
+BASE:44_Green rdf:value BASE:44_COLOUR .
+
+BASE:44_Red rdf:value BASE:44_COLOUR .
+
+BASE:44_UserBlue rdf:value BASE:44_UserColour .
+
+BASE:44_UserGreen rdf:value BASE:44_UserColour .
+
+BASE:44_UserRed rdf:value BASE:44_UserColour .
+
+BASE:44_Yellow rdf:value BASE:44_COLOUR .
+
+BASE:45_Black rdf:value BASE:45_COLOUR .
+
+BASE:45_Blue rdf:value BASE:45_COLOUR .
+
+BASE:45_Green rdf:value BASE:45_COLOUR .
+
+BASE:45_Red rdf:value BASE:45_COLOUR .
+
+BASE:45_UserBlue rdf:value BASE:45_UserColour .
+
+BASE:45_UserGreen rdf:value BASE:45_UserColour .
+
+BASE:45_UserRed rdf:value BASE:45_UserColour .
+
+BASE:45_Yellow rdf:value BASE:45_COLOUR .
+
+BASE:46_Black rdf:value BASE:46_COLOUR .
+
+BASE:46_Blue rdf:value BASE:46_COLOUR .
+
+BASE:46_Green rdf:value BASE:46_COLOUR .
+
+BASE:46_Red rdf:value BASE:46_COLOUR .
+
+BASE:46_UserBlue rdf:value BASE:46_UserColour .
+
+BASE:46_UserGreen rdf:value BASE:46_UserColour .
+
+BASE:46_UserRed rdf:value BASE:46_UserColour .
+
+BASE:46_Yellow rdf:value BASE:46_COLOUR .
+
+BASE:47_Black rdf:value BASE:47_COLOUR .
+
+BASE:47_Blue rdf:value BASE:47_COLOUR .
+
+BASE:47_Green rdf:value BASE:47_COLOUR .
+
+BASE:47_Red rdf:value BASE:47_COLOUR .
+
+BASE:47_UserBlue rdf:value BASE:47_UserColour .
+
+BASE:47_UserGreen rdf:value BASE:47_UserColour .
+
+BASE:47_UserRed rdf:value BASE:47_UserColour .
+
+BASE:47_Yellow rdf:value BASE:47_COLOUR .
+
+BASE:48_Black rdf:value BASE:48_COLOUR .
+
+BASE:48_Blue rdf:value BASE:48_COLOUR .
+
+BASE:48_Green rdf:value BASE:48_COLOUR .
+
+BASE:48_Red rdf:value BASE:48_COLOUR .
+
+BASE:48_UserBlue rdf:value BASE:48_UserColour .
+
+BASE:48_UserGreen rdf:value BASE:48_UserColour .
+
+BASE:48_UserRed rdf:value BASE:48_UserColour .
+
+BASE:48_Yellow rdf:value BASE:48_COLOUR .
 
 BASE:4_Tokens rdfs:member BASE:4_CAPACITY .
 
@@ -1691,25 +1905,29 @@ ENTITY_LUMPED:6_Characteristics rdfs:member ENTITY_LUMPED:6_CAPACITY .
 
 BASE:0_Cartesian rdfs:member BASE:0_SpatialCoordinate .
 
-BASE:26_UserColour rdfs:member BASE:26_COLOUR .
+BASE:37_UserColour rdfs:member BASE:37_COLOUR .
 
-BASE:27_UserColour rdfs:member BASE:27_COLOUR .
+BASE:38_UserColour rdfs:member BASE:38_COLOUR .
 
-BASE:28_UserColour rdfs:member BASE:28_COLOUR .
+BASE:39_UserColour rdfs:member BASE:39_COLOUR .
 
-BASE:29_UserColour rdfs:member BASE:29_COLOUR .
+BASE:40_UserColour rdfs:member BASE:40_COLOUR .
 
-BASE:30_UserColour rdfs:member BASE:30_COLOUR .
+BASE:41_UserColour rdfs:member BASE:41_COLOUR .
 
-BASE:32_UserColour rdfs:member BASE:32_COLOUR .
+BASE:42_UserColour rdfs:member BASE:42_COLOUR .
 
-BASE:33_UserColour rdfs:member BASE:33_COLOUR .
+BASE:43_UserColour rdfs:member BASE:43_COLOUR .
 
-BASE:34_UserColour rdfs:member BASE:34_COLOUR .
+BASE:44_UserColour rdfs:member BASE:44_COLOUR .
 
-BASE:35_UserColour rdfs:member BASE:35_COLOUR .
+BASE:45_UserColour rdfs:member BASE:45_COLOUR .
 
-BASE:36_UserColour rdfs:member BASE:36_COLOUR .
+BASE:46_UserColour rdfs:member BASE:46_COLOUR .
+
+BASE:47_UserColour rdfs:member BASE:47_COLOUR .
+
+BASE:48_UserColour rdfs:member BASE:48_COLOUR .
 
 ENTITY_LUMPED:0_Cartesian rdfs:member ENTITY_LUMPED:0_SpatialCoordinate .
 

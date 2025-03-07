@@ -26,6 +26,8 @@ messages:
 """
 import os
 import sys
+# import timeit
+import time
 
 from BricksAndTreeSemantics import FILE_FORMAT
 from TreeSchemataBackEnd import BackEnd
@@ -268,7 +270,7 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_pushTreeLinkExistingClass_pressed(self):
-    debugging("-- pushTreeLinkExistingClass")
+    print("-- pushTreeLinkExistingClass")
     dialog = UI_stringSelector("select brick",
                                self.brickList)
     brick_name = dialog.selection
@@ -365,9 +367,11 @@ class OntobuilderUI(QMainWindow):
     self.ui.listTrees.addItems(treeList)
 
   def showTreeTree(self, tuples, origin, existing_item_names):
+    start = time.time()
     self.existing_item_names = existing_item_names
     widget = self.ui.treeTree
     self.__instantiateTree(origin, tuples, widget)
+    print("making tree:", time.time()-start)
 
   def __instantiateTree(self, origin, tuples, widget):
     widget.clear()
