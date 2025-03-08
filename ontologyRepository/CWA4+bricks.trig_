@@ -5,6 +5,8 @@
 @prefix FRAME: <http://example.org/FRAME#> .
 @prefix GRAPH: <http://example.org/GRAPH#> .
 @prefix ICON: <http://example.org/ICON#> .
+@prefix LINE: <http://example.org/LINE#> .
+@prefix SHAPE: <http://example.org/SHAPE#> .
 @prefix TEMPORAL: <http://example.org/TEMPORAL#> .
 @prefix TOKENS: <http://example.org/TOKENS#> .
 @prefix TRANSPORT: <http://example.org/TRANSPORT#> .
@@ -25,6 +27,10 @@ FRAME:FRAME a rdfs:Class .
 GRAPH:GRAPH a rdfs:Class .
 
 ICON:ICON a rdfs:Class .
+
+LINE:LINE a rdfs:Class .
+
+SHAPE:SHAPE a rdfs:Class .
 
 TEMPORAL:TEMPORAL a rdfs:Class .
 
@@ -50,11 +56,13 @@ GRAPH:ArcIcon rdfs:member GRAPH:Arc .
 
 GRAPH:NodeIcon rdfs:member GRAPH:Node .
 
-ICON:Dot rdfs:member ICON:Shape .
+ICON:Line rdfs:member ICON:GraphicalObject .
 
-ICON:LineColour rdfs:member ICON:Line .
+ICON:Shape rdfs:member ICON:GraphicalObject .
 
-ICON:ShapeColour rdfs:member ICON:Shape .
+LINE:Colour rdfs:member LINE:LINE .
+
+SHAPE:Colour rdfs:member SHAPE:SHAPE .
 
 TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
 
@@ -75,10 +83,11 @@ TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
         FRAME:X,
         FRAME:Y,
         FRAME:Z,
-        ICON:Dashed,
-        ICON:Dotted,
-        ICON:DottedFine,
-        ICON:Full,
+        LINE:Dashed,
+        LINE:DashedFine,
+        LINE:Dotted,
+        LINE:DottedFine,
+        LINE:Full,
         TEMPORAL:Constant,
         TEMPORAL:Dynamic,
         TEMPORAL:Event,
@@ -98,8 +107,16 @@ TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
         ICON:MinorAxis,
         ICON:RectangleHeight,
         ICON:RectangleWidth,
+        ICON:SemiCircleDiameter,
         ICON:SideLength,
-        ICON:SquareSize .
+        ICON:SquareSize,
+        SHAPE:CircleRadius,
+        SHAPE:DotSize,
+        SHAPE:RectangleHight,
+        SHAPE:RectangleWidth,
+        SHAPE:SemiCircleRadius,
+        SHAPE:SideLength,
+        SHAPE:TriangleSideLength .
 
 COLOUR:Black rdf:value COLOUR:COLOUR .
 
@@ -141,33 +158,51 @@ GRAPH:Arc rdfs:member GRAPH:GRAPH .
 
 GRAPH:Node rdfs:member GRAPH:GRAPH .
 
-ICON:Circle rdfs:member ICON:Shape .
-
 ICON:CircleDiameter rdf:value ICON:Circle .
-
-ICON:Dashed rdf:value ICON:Line .
-
-ICON:Dotted rdf:value ICON:Line .
-
-ICON:DottedFine rdf:value ICON:Line .
-
-ICON:Full rdf:value ICON:Line .
 
 ICON:MajorAxis rdf:value ICON:Ellipse .
 
 ICON:MinorAxis rdf:value ICON:Ellipse .
 
-ICON:RectangleHeight rdf:value ICON:Rectangle .
-
-ICON:RectangleWidth rdf:value ICON:Rectangle .
+ICON:SemiCircleDiameter rdf:value ICON:SemiCircle .
 
 ICON:SideLength rdf:value ICON:Triangle .
 
-ICON:Square rdfs:member ICON:Shape .
-
 ICON:SquareSize rdf:value ICON:Square .
 
-ICON:Triangle rdfs:member ICON:Shape .
+LINE:Dashed rdf:value LINE:LINE .
+
+LINE:DashedFine rdf:value LINE:LINE .
+
+LINE:Dotted rdf:value LINE:LINE .
+
+LINE:DottedFine rdf:value LINE:LINE .
+
+LINE:Full rdf:value LINE:LINE .
+
+SHAPE:Circle rdfs:member SHAPE:SHAPE .
+
+SHAPE:CircleRadius rdf:value SHAPE:Circle .
+
+SHAPE:Dot rdfs:member SHAPE:SHAPE .
+
+SHAPE:DotSize rdf:value SHAPE:Dot .
+
+SHAPE:RectangleHight rdf:value SHAPE:Rectangle .
+
+SHAPE:RectangleWidth rdf:value SHAPE:Rectangle .
+
+SHAPE:SemiCircle rdfs:member SHAPE:SHAPE .
+
+SHAPE:SemiCircleRadius rdf:value SHAPE:SemiCircle .
+
+SHAPE:SideLength rdf:value SHAPE:Square .
+
+SHAPE:Square rdfs:member SHAPE:SHAPE .
+
+SHAPE:Triangle rdfs:member SHAPE:SHAPE .
+
+SHAPE:TriangleSideLength rdf:value SHAPE:Triangle .
 
 TEMPORAL:Constant rdf:value TEMPORAL:TEMPORAL .
 
@@ -195,17 +230,11 @@ CAPACITY:Characteristics rdfs:member CAPACITY:CAPACITY .
 
 FRAME:Time rdfs:member FRAME:FRAME .
 
-ICON:Ellipse rdfs:member ICON:Shape .
-
 ICON:GraphicalObject rdfs:member ICON:ICON .
 
-ICON:Rectangle rdfs:member ICON:Shape .
+SHAPE:Rectangle rdfs:member SHAPE:SHAPE .
 
 COLOUR:UserColour rdfs:member COLOUR:COLOUR .
 
 FRAME:Cartesian rdfs:member FRAME:SpatialCoordinate .
-
-ICON:Line rdfs:member ICON:GraphicalObject .
-
-ICON:Shape rdfs:member ICON:GraphicalObject .
 

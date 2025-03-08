@@ -6,80 +6,6 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-ENTITY-LUMPED_i:ENTITY-LUMPED_i {
-    ENTITY-LUMPED_i:ENTITY-LUMPED_i a rdfs:Class .
-
-    "50" xsd:integer ENTITY-LUMPED_i:24_CircleDiameter .
-
-    "True" xsd:boolean ENTITY-LUMPED_i:0_Continuous,
-            ENTITY-LUMPED_i:13_Energy,
-            ENTITY-LUMPED_i:13_Mass,
-            ENTITY-LUMPED_i:17_Lumped,
-            ENTITY-LUMPED_i:18_Dynamic,
-            ENTITY-LUMPED_i:24_Full,
-            ENTITY-LUMPED_i:42_Red .
-
-    ENTITY-LUMPED_i:0_Continuous rdf:value ENTITY-LUMPED_i:0_Time .
-
-    ENTITY-LUMPED_i:0_FRAME rdfs:isDefinedBy ENTITY-LUMPED_i:Frame .
-
-    ENTITY-LUMPED_i:0_Time rdfs:member ENTITY-LUMPED_i:0_FRAME .
-
-    ENTITY-LUMPED_i:13_Energy rdf:value ENTITY-LUMPED_i:13_TOKENS .
-
-    ENTITY-LUMPED_i:13_Mass rdf:value ENTITY-LUMPED_i:13_TOKENS .
-
-    ENTITY-LUMPED_i:17_DISTRIBUTION rdfs:isDefinedBy ENTITY-LUMPED_i:6_Distribution .
-
-    ENTITY-LUMPED_i:17_Lumped rdf:value ENTITY-LUMPED_i:17_DISTRIBUTION .
-
-    ENTITY-LUMPED_i:18_Dynamic rdf:value ENTITY-LUMPED_i:18_TEMPORAL .
-
-    ENTITY-LUMPED_i:18_TEMPORAL rdfs:isDefinedBy ENTITY-LUMPED_i:6_Temporal .
-
-    ENTITY-LUMPED_i:1_GRAPH rdfs:isDefinedBy ENTITY-LUMPED_i:Physical .
-
-    ENTITY-LUMPED_i:1_NodeIcon rdfs:member ENTITY-LUMPED_i:1_Node .
-
-    ENTITY-LUMPED_i:24_Circle rdfs:member ENTITY-LUMPED_i:24_Shape .
-
-    ENTITY-LUMPED_i:24_CircleDiameter rdf:value ENTITY-LUMPED_i:24_Circle .
-
-    ENTITY-LUMPED_i:24_Full rdf:value ENTITY-LUMPED_i:24_Line .
-
-    ENTITY-LUMPED_i:24_ICON rdfs:isDefinedBy ENTITY-LUMPED_i:1_NodeIcon .
-
-    ENTITY-LUMPED_i:24_Line rdfs:member ENTITY-LUMPED_i:24_GraphicalObject .
-
-    ENTITY-LUMPED_i:24_ShapeColour rdfs:member ENTITY-LUMPED_i:24_Shape .
-
-    ENTITY-LUMPED_i:42_COLOUR rdfs:isDefinedBy ENTITY-LUMPED_i:24_ShapeColour .
-
-    ENTITY-LUMPED_i:42_Red rdf:value ENTITY-LUMPED_i:42_COLOUR .
-
-    ENTITY-LUMPED_i:6_Distribution rdfs:member ENTITY-LUMPED_i:6_Characteristics .
-
-    ENTITY-LUMPED_i:6_Temporal rdfs:member ENTITY-LUMPED_i:6_Characteristics .
-
-    ENTITY-LUMPED_i:6_Tokens rdfs:member ENTITY-LUMPED_i:6_CAPACITY .
-
-    ENTITY-LUMPED_i:Frame rdfs:member ENTITY-LUMPED_i:ENTITY-LUMPED_i .
-
-    ENTITY-LUMPED_i:Physical rdfs:member ENTITY-LUMPED_i:ENTITY-LUMPED_i .
-
-    ENTITY-LUMPED_i:13_TOKENS rdfs:isDefinedBy ENTITY-LUMPED_i:6_Tokens .
-
-    ENTITY-LUMPED_i:1_Node rdfs:member ENTITY-LUMPED_i:1_GRAPH .
-
-    ENTITY-LUMPED_i:24_GraphicalObject rdfs:member ENTITY-LUMPED_i:24_ICON .
-
-    ENTITY-LUMPED_i:24_Shape rdfs:member ENTITY-LUMPED_i:24_GraphicalObject .
-
-    ENTITY-LUMPED_i:6_CAPACITY rdfs:isDefinedBy ENTITY-LUMPED_i:1_Node .
-
-    ENTITY-LUMPED_i:6_Characteristics rdfs:member ENTITY-LUMPED_i:6_CAPACITY .
-}
-
 ENTITY-RESEVOIR-MASS:ENTITY-RESEVOIR-MASS {
     ENTITY-RESEVOIR-MASS:ENTITY-RESEVOIR-MASS a rdfs:Class .
 
@@ -136,6 +62,7 @@ ENTITY-RESEVOIR-MASS:ENTITY-RESEVOIR-MASS {
             ENTITY-RESEVOIR-MASS:17_D2,
             ENTITY-RESEVOIR-MASS:17_D3,
             ENTITY-RESEVOIR-MASS:17_Lumped,
+            ENTITY-RESEVOIR-MASS:18_Constant,
             ENTITY-RESEVOIR-MASS:18_Dynamic,
             ENTITY-RESEVOIR-MASS:18_Event,
             ENTITY-RESEVOIR-MASS:19_D1,
@@ -398,6 +325,9 @@ ENTITY-RESEVOIR-MASS:ENTITY-RESEVOIR-MASS {
             ENTITY-RESEVOIR-MASS:48_UserBlue,
             ENTITY-RESEVOIR-MASS:48_UserGreen,
             ENTITY-RESEVOIR-MASS:48_UserRed .
+
+    "True" xsd:boolean ENTITY-RESEVOIR-MASS:0_Continuous,
+            ENTITY-RESEVOIR-MASS:13_Mass .
 
     ENTITY-RESEVOIR-MASS:0_Continuous rdf:value ENTITY-RESEVOIR-MASS:0_Time .
 
@@ -1017,10 +947,6 @@ ENTITY-RESEVOIR-MASS:ENTITY-RESEVOIR-MASS {
 
     ENTITY-RESEVOIR-MASS:Physical rdfs:member ENTITY-RESEVOIR-MASS:ENTITY-RESEVOIR-MASS .
 
-    "True" xsd:boolean ENTITY-RESEVOIR-MASS:0_Continuous,
-            ENTITY-RESEVOIR-MASS:13_Mass,
-            ENTITY-RESEVOIR-MASS:18_Constant .
-
     ENTITY-RESEVOIR-MASS:0_FRAME rdfs:isDefinedBy ENTITY-RESEVOIR-MASS:Frame .
 
     ENTITY-RESEVOIR-MASS:0_Time rdfs:member ENTITY-RESEVOIR-MASS:0_FRAME .
@@ -1212,6 +1138,8 @@ ENTITY-LUMPED:ENTITY-LUMPED {
     ENTITY-LUMPED:4_Temporal rdfs:member ENTITY-LUMPED:4_Characteristics .
 
     ENTITY-LUMPED:5_Distribution rdfs:member ENTITY-LUMPED:5_Characteristics .
+
+    "50" xsd:integer ENTITY-LUMPED:24_CircleDiameter .
 
     ENTITY-LUMPED:0_Continuous rdf:value ENTITY-LUMPED:0_Time .
 
@@ -2124,7 +2052,13 @@ ENTITY-LUMPED:ENTITY-LUMPED {
             ENTITY-LUMPED:48_UserGreen,
             ENTITY-LUMPED:48_UserRed .
 
-    "50" xsd:integer ENTITY-LUMPED:24_CircleDiameter .
+    "True" xsd:boolean ENTITY-LUMPED:0_Continuous,
+            ENTITY-LUMPED:13_Energy,
+            ENTITY-LUMPED:13_Mass,
+            ENTITY-LUMPED:17_Lumped,
+            ENTITY-LUMPED:18_Dynamic,
+            ENTITY-LUMPED:24_Full,
+            ENTITY-LUMPED:42_Red .
 
     ENTITY-LUMPED:0_FRAME rdfs:isDefinedBy ENTITY-LUMPED:Frame .
 
@@ -2195,14 +2129,6 @@ ENTITY-LUMPED:ENTITY-LUMPED {
     ENTITY-LUMPED:6_CAPACITY rdfs:isDefinedBy ENTITY-LUMPED:1_Node .
 
     ENTITY-LUMPED:6_Characteristics rdfs:member ENTITY-LUMPED:6_CAPACITY .
-
-    "True" xsd:boolean ENTITY-LUMPED:0_Continuous,
-            ENTITY-LUMPED:13_Energy,
-            ENTITY-LUMPED:13_Mass,
-            ENTITY-LUMPED:17_Lumped,
-            ENTITY-LUMPED:18_Dynamic,
-            ENTITY-LUMPED:24_Full,
-            ENTITY-LUMPED:42_Red .
 
     ENTITY-LUMPED:0_Cartesian rdfs:member ENTITY-LUMPED:0_SpatialCoordinate .
 
@@ -3454,5 +3380,79 @@ BASE:BASE {
     BASE:24_Shape rdfs:member BASE:24_GraphicalObject .
 
     BASE:25_Shape rdfs:member BASE:25_GraphicalObject .
+}
+
+ENTITY-LUMPED_i:ENTITY-LUMPED_i {
+    ENTITY-LUMPED_i:ENTITY-LUMPED_i a rdfs:Class .
+
+    ENTITY-LUMPED_i:0_Continuous rdf:value ENTITY-LUMPED_i:0_Time .
+
+    ENTITY-LUMPED_i:0_FRAME rdfs:isDefinedBy ENTITY-LUMPED_i:Frame .
+
+    ENTITY-LUMPED_i:0_Time rdfs:member ENTITY-LUMPED_i:0_FRAME .
+
+    ENTITY-LUMPED_i:13_Energy rdf:value ENTITY-LUMPED_i:13_TOKENS .
+
+    ENTITY-LUMPED_i:13_Mass rdf:value ENTITY-LUMPED_i:13_TOKENS .
+
+    ENTITY-LUMPED_i:17_DISTRIBUTION rdfs:isDefinedBy ENTITY-LUMPED_i:6_Distribution .
+
+    ENTITY-LUMPED_i:17_Lumped rdf:value ENTITY-LUMPED_i:17_DISTRIBUTION .
+
+    ENTITY-LUMPED_i:18_Dynamic rdf:value ENTITY-LUMPED_i:18_TEMPORAL .
+
+    ENTITY-LUMPED_i:18_TEMPORAL rdfs:isDefinedBy ENTITY-LUMPED_i:6_Temporal .
+
+    ENTITY-LUMPED_i:1_GRAPH rdfs:isDefinedBy ENTITY-LUMPED_i:Physical .
+
+    ENTITY-LUMPED_i:1_NodeIcon rdfs:member ENTITY-LUMPED_i:1_Node .
+
+    ENTITY-LUMPED_i:24_Circle rdfs:member ENTITY-LUMPED_i:24_Shape .
+
+    ENTITY-LUMPED_i:24_CircleDiameter rdf:value ENTITY-LUMPED_i:24_Circle .
+
+    ENTITY-LUMPED_i:24_Full rdf:value ENTITY-LUMPED_i:24_Line .
+
+    ENTITY-LUMPED_i:24_ICON rdfs:isDefinedBy ENTITY-LUMPED_i:1_NodeIcon .
+
+    ENTITY-LUMPED_i:24_Line rdfs:member ENTITY-LUMPED_i:24_GraphicalObject .
+
+    ENTITY-LUMPED_i:24_ShapeColour rdfs:member ENTITY-LUMPED_i:24_Shape .
+
+    ENTITY-LUMPED_i:42_COLOUR rdfs:isDefinedBy ENTITY-LUMPED_i:24_ShapeColour .
+
+    ENTITY-LUMPED_i:42_Red rdf:value ENTITY-LUMPED_i:42_COLOUR .
+
+    ENTITY-LUMPED_i:6_Distribution rdfs:member ENTITY-LUMPED_i:6_Characteristics .
+
+    ENTITY-LUMPED_i:6_Temporal rdfs:member ENTITY-LUMPED_i:6_Characteristics .
+
+    ENTITY-LUMPED_i:6_Tokens rdfs:member ENTITY-LUMPED_i:6_CAPACITY .
+
+    ENTITY-LUMPED_i:Frame rdfs:member ENTITY-LUMPED_i:ENTITY-LUMPED_i .
+
+    ENTITY-LUMPED_i:Physical rdfs:member ENTITY-LUMPED_i:ENTITY-LUMPED_i .
+
+    "50" xsd:integer ENTITY-LUMPED_i:24_CircleDiameter .
+
+    ENTITY-LUMPED_i:13_TOKENS rdfs:isDefinedBy ENTITY-LUMPED_i:6_Tokens .
+
+    ENTITY-LUMPED_i:1_Node rdfs:member ENTITY-LUMPED_i:1_GRAPH .
+
+    ENTITY-LUMPED_i:24_GraphicalObject rdfs:member ENTITY-LUMPED_i:24_ICON .
+
+    ENTITY-LUMPED_i:24_Shape rdfs:member ENTITY-LUMPED_i:24_GraphicalObject .
+
+    ENTITY-LUMPED_i:6_CAPACITY rdfs:isDefinedBy ENTITY-LUMPED_i:1_Node .
+
+    ENTITY-LUMPED_i:6_Characteristics rdfs:member ENTITY-LUMPED_i:6_CAPACITY .
+
+    "True" xsd:boolean ENTITY-LUMPED_i:0_Continuous,
+            ENTITY-LUMPED_i:13_Energy,
+            ENTITY-LUMPED_i:13_Mass,
+            ENTITY-LUMPED_i:17_Lumped,
+            ENTITY-LUMPED_i:18_Dynamic,
+            ENTITY-LUMPED_i:24_Full,
+            ENTITY-LUMPED_i:42_Red .
 }
 

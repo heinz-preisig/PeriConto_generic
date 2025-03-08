@@ -596,7 +596,6 @@ ENTITY-RESEVOIR-MASS:5_Distribution rdfs:member ENTITY-RESEVOIR-MASS:5_Character
         ENTITY-RESEVOIR-MASS:17_D2,
         ENTITY-RESEVOIR-MASS:17_D3,
         ENTITY-RESEVOIR-MASS:17_Lumped,
-        ENTITY-RESEVOIR-MASS:18_Constant,
         ENTITY-RESEVOIR-MASS:18_Dynamic,
         ENTITY-RESEVOIR-MASS:18_Event,
         ENTITY-RESEVOIR-MASS:19_D1,
@@ -1093,7 +1092,8 @@ ENTITY-RESEVOIR-MASS:5_Distribution rdfs:member ENTITY-RESEVOIR-MASS:5_Character
         ENTITY-LUMPED_i:24_Full,
         ENTITY-LUMPED_i:42_Red,
         ENTITY-RESEVOIR-MASS:0_Continuous,
-        ENTITY-RESEVOIR-MASS:13_Mass .
+        ENTITY-RESEVOIR-MASS:13_Mass,
+        ENTITY-RESEVOIR-MASS:18_Constant .
 
 BASE:0_Continuous rdf:value BASE:0_Time .
 

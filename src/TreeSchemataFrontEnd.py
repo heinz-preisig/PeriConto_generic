@@ -53,6 +53,11 @@ from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 
 # DEBUGG = False
 
+global expanded_state
+global tree_name
+expanded_state = {}
+tree_name = None
+
 
 COLOURS = {
         "ROOT"         : QtGui.QColor(0, 199, 255),
@@ -110,6 +115,8 @@ class OntobuilderUI(QMainWindow):
     message = {"event": "start"}
     self.backend.processEvent(message)
     self.changed = False
+    # self.expanded_state = {}
+    self.treetop = {}
 
   def interfaceComponents(self):
     self.window_controls = {
@@ -194,6 +201,7 @@ class OntobuilderUI(QMainWindow):
       self.backend.processEvent(message)
 
   def on_pushTreeCreate_pressed(self):
+    global tree_name
     debugging("-- pushTreeCreate")
     dialog = UI_stringSelector("select brick",
                                self.brickList)
@@ -214,6 +222,7 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_pushTreeRename_pressed(self):
+    global tree_name
     dialog = UI_String("new_tree name", limiting_list=self.treeList, validator="name_upper")
     tree_name = dialog.text
     if not tree_name:
@@ -226,6 +235,7 @@ class OntobuilderUI(QMainWindow):
       self.backend.processEvent(message)
 
   def on_pushTreeCopy_pressed(self):
+    global tree_name
     dialog = UI_String("name for the copy", limiting_list=self.treeList, validator="name_upper")
     tree_name = dialog.text
     if not tree_name:
@@ -303,6 +313,8 @@ class OntobuilderUI(QMainWindow):
     self.showNormal()
 
   def on_listTrees_itemClicked(self, item):
+    global tree_name
+    global expanded_state
     tree_name = item.text()
     debugging("-- listTrees -- item", tree_name)
     message = {
@@ -310,11 +322,14 @@ class OntobuilderUI(QMainWindow):
             "tree_name": tree_name
             }
     debugging("message:", message)
+    if tree_name not in expanded_state:
+      expanded_state[tree_name] = {}
     self.backend.processEvent(message)
 
   def on_treeTree_itemClicked(self, item, column):
     name = item.text(column)
     self.ui.treeTree.expandItem(item)
+    self.save_expanded_state()
     type = item.type
     if type != "Class":
       parent_name = item.parent().text(0)
@@ -373,6 +388,10 @@ class OntobuilderUI(QMainWindow):
     self.existing_item_names = existing_item_names
     widget = self.ui.treeTree
     self.__instantiateTree(origin, tuples, widget)
+    try:
+      self.restore_expanded_state()
+    except:
+      pass
 
   def __instantiateTree(self, origin, tuples, widget):
     widget.clear()
@@ -384,6 +403,8 @@ class OntobuilderUI(QMainWindow):
     rootItem.type = self.rules["is_class"]
     rootItem.count = 0
     widget.addTopLevelItem(rootItem)
+    self.treetop = widget.invisibleRootItem()
+
     self.current_class = origin
     self.__makeTree(tuples, origin=origin, stack=[], items={origin: rootItem})
     widget.show()
@@ -423,6 +444,34 @@ class OntobuilderUI(QMainWindow):
 
   def putBricksListForTree(self, brick_list):
     self.brickList = brick_list
+
+  def save_expanded_state(self):
+    """Stores the expanded state of all items in the tree."""
+    expanded_state = {}
+    # self._iterate_tree(self.ui.treeTree.invisibleRootItem(), save=True)
+    self._iterate_tree(self.treetop, save=True)
+
+  def restore_expanded_state(self):
+    """Restores the expanded state of all items in the tree."""
+    # self._iterate_tree(self.ui.treeTree.invisibleRootItem(), save=False)
+    self._iterate_tree(self.treetop, save=False)
+
+  def _iterate_tree(self, item, save=True):
+    global expanded_state
+    global tree_name
+
+    """Helper function to iterate through tree items recursively."""
+    for i in range(item.childCount()):
+      child = item.child(i)
+      key = child.text(0)  # Using item text as a unique key
+
+      if save:
+        expanded_state[tree_name][key] = child.isExpanded()
+      else:
+        if key in expanded_state[tree_name]:
+          child.setExpanded(expanded_state[tree_name][key])
+
+      self._iterate_tree(child, save)
 
   # enable moving the window --https://www.youtube.com/watch?v=R4jfg9mP_zo&t=152s
   def mousePressEvent(self, event, QMouseEvent=None):
