@@ -53,10 +53,12 @@ from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 
 # DEBUGG = False
 
-global expanded_state
-global tree_name
+# global expanded_state
+# global tree_name
+# global changed
 expanded_state = {}
 tree_name = None
+changed = False
 
 
 COLOURS = {
@@ -114,7 +116,6 @@ class OntobuilderUI(QMainWindow):
 
     message = {"event": "start"}
     self.backend.processEvent(message)
-    self.changed = False
     # self.expanded_state = {}
     self.treetop = {}
 
@@ -184,6 +185,9 @@ class OntobuilderUI(QMainWindow):
     # self.ui.statusbar.showMessage("loading file")
 
   def on_pushOntologySave_pressed(self):
+    global changed
+    if not changed:
+      return
     debugging("-- pushOntologySave")
     message = {"event": "save"}
     self.backend.processEvent(message)
@@ -327,6 +331,7 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_treeTree_itemClicked(self, item, column):
+    print("single click")
     name = item.text(column)
     self.ui.treeTree.expandItem(item)
     self.save_expanded_state()
@@ -378,6 +383,8 @@ class OntobuilderUI(QMainWindow):
             }
     debugging("message:", message)
     self.backend.processEvent(message)
+
+
 
   def showTreeList(self, treeList):
     self.treeList = treeList
@@ -482,16 +489,19 @@ class OntobuilderUI(QMainWindow):
     self.dragPos = event.globalPosition().toPoint()
 
   def markChanged(self):
-    self.changed = True
+    global changed
+    changed = True
 
   def on_pushExit_pressed(self):
     self.closeMe()
 
   def markSaved(self):
-    self.changed = False
+    global changed
+    changed = False
 
   def closeMe(self):
-    if self.changed:
+    global changed
+    if changed:
       dialog = makeMessageBox(message="save changes", buttons=["YES", "NO"])
       if dialog == "YES":
         self.on_pushOntologySave_pressed()

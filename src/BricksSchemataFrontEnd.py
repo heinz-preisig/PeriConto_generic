@@ -26,6 +26,8 @@ from Utilities import debugging
 
 # DEBUGG = False
 
+changed = False
+
 
 COLOURS = {
         "ROOT"         : QtGui.QColor(0, 199, 255),
@@ -78,7 +80,6 @@ class OntobuilderUI(QMainWindow):
 
     message = {"event": "start"}
     self.backend.processEvent(message)
-    self.changed = False
 
   def interfaceComponents(self):
     self.window_controls = {
@@ -158,6 +159,8 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushOntologySave_pressed(self):
     debugging("-- pushOntologySave")
+    if not changed:
+      return
     message = {"event": "save"}
     self.backend.processEvent(message)
 
@@ -404,16 +407,19 @@ class OntobuilderUI(QMainWindow):
     self.dragPos = event.globalPosition().toPoint()
 
   def markChanged(self):
-    self.changed = True
+    global changed
+    changed = True
 
   def on_pushExit_pressed(self):
     self.closeMe()
 
   def markSaved(self):
-    self.changed = False
+    global changed
+    changed = False
 
   def closeMe(self):
-    if self.changed:
+    global changed
+    if changed:
       dialog = makeMessageBox(message="save changes", buttons=["YES", "NO"])
       if dialog == "YES":
         self.on_pushOntologySave_pressed()

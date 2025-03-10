@@ -386,7 +386,7 @@ class DataModel:
     self.__writeQuadFile(conjunctiveGraph, file_name)
     pass
 
-  def extractInstance(self, tree_name):
+  def reduceGraph(self, tree_name):
     graph = copy.deepcopy(self.TREE_GRAPHS[tree_name])
 
     keep_target = []

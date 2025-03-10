@@ -1,30 +1,34 @@
 @prefix S: <http://example.org/S#> .
-@prefix SE: <http://example.org/SE#> .
-@prefix SE_i: <http://example.org/SE_i#> .
+@prefix SEE: <http://example.org/SEE#> .
+@prefix SEE_i: <http://example.org/SEE_i#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 S:S a rdfs:Class .
 
-SE:SE a rdfs:Class .
+SEE:SEE a rdfs:Class .
 
-SE_i:SE_i a rdfs:Class .
+SEE_i:SEE_i a rdfs:Class .
+
+S:Help rdfs:member S:S .
+
+SEE:Help rdfs:member SEE:SEE .
 
 "" xsd:integer S:Kkk .
 
-"integer" xsd:integer SE:Kkk,
-        SE_i:Kkk .
+"123" xsd:integer SEE:Kkk,
+        SEE_i:Kkk .
 
 S:Gugus rdfs:member S:S .
 
 S:Kkk rdf:value S:Gugus .
 
-SE:Gugus rdfs:member SE:SE .
+SEE:Gugus rdfs:member SEE:SEE .
 
-SE:Kkk rdf:value SE:Gugus .
+SEE:Kkk rdf:value SEE:Gugus .
 
-SE_i:Gugus rdfs:member SE_i:SE_i .
+SEE_i:Gugus rdfs:member SEE_i:SEE_i .
 
-SE_i:Kkk rdf:value SE_i:Gugus .
+SEE_i:Kkk rdf:value SEE_i:Gugus .
 

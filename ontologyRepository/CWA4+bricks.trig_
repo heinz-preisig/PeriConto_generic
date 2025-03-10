@@ -66,7 +66,8 @@ SHAPE:Colour rdfs:member SHAPE:SHAPE .
 
 TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
 
-"" xsd:boolean CAPACITY:D1,
+"" xsd:anyURI SHAPE:UserShape ;
+    xsd:boolean CAPACITY:D1,
         CAPACITY:D2,
         CAPACITY:D3,
         COLOUR:Black,
@@ -83,6 +84,7 @@ TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
         FRAME:X,
         FRAME:Y,
         FRAME:Z,
+        LINE:Arrow,
         LINE:Dashed,
         LINE:DashedFine,
         LINE:Dotted,
@@ -114,8 +116,12 @@ TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
         SHAPE:DotSize,
         SHAPE:RectangleHight,
         SHAPE:RectangleWidth,
+        SHAPE:RhomboidHeight,
+        SHAPE:RomboidWidth,
         SHAPE:SemiCircleRadius,
         SHAPE:SideLength,
+        SHAPE:ThickArrowHeight,
+        SHAPE:ThickArrowWidth,
         SHAPE:TriangleSideLength .
 
 COLOUR:Black rdf:value COLOUR:COLOUR .
@@ -170,6 +176,8 @@ ICON:SideLength rdf:value ICON:Triangle .
 
 ICON:SquareSize rdf:value ICON:Square .
 
+LINE:Arrow rdf:value LINE:LINE .
+
 LINE:Dashed rdf:value LINE:LINE .
 
 LINE:DashedFine rdf:value LINE:LINE .
@@ -192,6 +200,10 @@ SHAPE:RectangleHight rdf:value SHAPE:Rectangle .
 
 SHAPE:RectangleWidth rdf:value SHAPE:Rectangle .
 
+SHAPE:RhomboidHeight rdf:value SHAPE:Rhomboid .
+
+SHAPE:RomboidWidth rdf:value SHAPE:Rhomboid .
+
 SHAPE:SemiCircle rdfs:member SHAPE:SHAPE .
 
 SHAPE:SemiCircleRadius rdf:value SHAPE:SemiCircle .
@@ -200,9 +212,17 @@ SHAPE:SideLength rdf:value SHAPE:Square .
 
 SHAPE:Square rdfs:member SHAPE:SHAPE .
 
+SHAPE:ThickArrowHeight rdf:value SHAPE:ThickArrow .
+
+SHAPE:ThickArrowWidth rdf:value SHAPE:ThickArrow .
+
 SHAPE:Triangle rdfs:member SHAPE:SHAPE .
 
 SHAPE:TriangleSideLength rdf:value SHAPE:Triangle .
+
+SHAPE:UserDefined rdfs:member SHAPE:SHAPE .
+
+SHAPE:UserShape rdf:value SHAPE:UserDefined .
 
 TEMPORAL:Constant rdf:value TEMPORAL:TEMPORAL .
 
@@ -233,6 +253,10 @@ FRAME:Time rdfs:member FRAME:FRAME .
 ICON:GraphicalObject rdfs:member ICON:ICON .
 
 SHAPE:Rectangle rdfs:member SHAPE:SHAPE .
+
+SHAPE:Rhomboid rdfs:member SHAPE:SHAPE .
+
+SHAPE:ThickArrow rdfs:member SHAPE:SHAPE .
 
 COLOUR:UserColour rdfs:member COLOUR:COLOUR .
 

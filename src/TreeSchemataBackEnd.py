@@ -192,7 +192,7 @@ class BackEnd():
 
   def extractInstance(self, message):
     tree_name = self.memory["tree_name"]
-    self.dataModel.extractInstance(tree_name)
+    self.dataModel.reduceGraph(tree_name)
 
   def putTreeList(self, message):
     tree_list = self.dataModel.getTreeList()
