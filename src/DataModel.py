@@ -18,6 +18,7 @@ from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
 from Utilities import debugging
 from Utilities import find_path_back_triples
+from Utilities import get_subtree
 from Utilities import saveBackupFile
 from resources.pop_up_message_box import makeMessageBox
 
@@ -52,14 +53,15 @@ class DataModel:
         i = -1
         graph = self.TREE_GRAPHS[g]
         for s, p, o in graph.triples((None, None, None)):
-          n = self.__extractNumber(s)
-          m = self.__extractNumber(o)
+          n, _ = self.__extractNumber(s)
+          m,_ = self.__extractNumber(o)
           if n > i:
             i = n
           if m > i:
             i = m
         self.brick_counter[g] = i + 1
     pass
+    # self.__reenumerateGraph()
 
   def __extractNumber(self, s):
     """
@@ -69,13 +71,20 @@ class DataModel:
     s = str(s)
     try:
       ss = s.split("#")[-1].split("_")[0]
+      name = s.split("#")[-1].split("_")[1]
+      no = int(ss)
     except:
       ss = None
-    if ss.isnumeric():
-      no = int(ss)
-    else:
       no = -1
-    return no
+      try:
+        name = s.split("#")[1]
+      except:
+        name = s
+    # if ss.isnumeric():
+    #   no = int(ss)
+    # else:
+    #   no = -1
+    return no, name
 
   def makeFileName(self, project_name, what=None):
     file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s." % what + FILE_FORMAT
@@ -170,16 +179,23 @@ class DataModel:
       graph = self.BRICK_GRAPHS[name]
     else:
       graph = self.TREE_GRAPHS[name]
-    for t in graph.triples(triple):
-      graph.remove(t)
 
-    triple = (None, None, subject)
-    for t in graph.triples(triple):
-      graph.remove(t)
+    predicates = RDFSTerms.values()
 
-    triple = (subject, None, None)
-    for t in graph.triples(triple):
-      graph.remove(t)
+    subtree = get_subtree(self.TREE_GRAPHS[name], triple[0], predicates)
+
+    pass
+
+    # for t in graph.triples(triple):
+    #   graph.remove(t)
+    #
+    # triple = (None, None, subject)
+    # for t in graph.triples(triple):
+    #   graph.remove(t)
+    #
+    # triple = (subject, None, None)
+    # for t in graph.triples(triple):
+    #   graph.remove(t)
 
   def addItem(self, Class, ClassOrSubClass, name):
     g = self.BRICK_GRAPHS[Class]
@@ -327,26 +343,33 @@ class DataModel:
 
   def __attachBrick(self, brick_name, s_or_o, tree_name):
     counter = self.brick_counter[tree_name]
+
+    tree_name_space_item = makeItemURI(tree_name, "")
     s_or_o_new = s_or_o
     if brick_name in str(s_or_o):
       s_name = extractNameFromIRI(s_or_o)
-      s_or_o_new = URIRef(self.tree_name_space_item + "%s_%s" % (counter, s_name))
+      s_or_o_new = URIRef(tree_name_space_item + "%s_%s" % (counter, s_name))
     return s_or_o_new
 
-  def linkBrickToItem(self, tree_name, tree_item_name, brick_name):
+  def linkBrickToItem(self, tree_name, tree_item_name, brick_name, new_tree=False):
     tree_graph = self.TREE_GRAPHS[tree_name]
     brick_graph = self.BRICK_GRAPHS[brick_name]
     counter = self.brick_counter[tree_name]
 
     for s, p, o in brick_graph.triples((None, RDFSTerms["is_class"], None)):
       # rule: keep brick name
-      self.tree_name_space = makeClassURI(tree_name)
-      self.tree_name_space_item = makeItemURI(tree_name, "")
-      s_ = URIRef(self.tree_name_space_item + "%s_%s" % (counter, brick_name))
-      o_ = URIRef(self.tree_name_space_item + tree_item_name)
-      triple = (s_,
-                RDFSTerms["is_defined_by"],
-                o_)
+      tree_name_space = makeClassURI(tree_name)
+      tree_name_space_item = makeItemURI(tree_name, "")
+      s_ = URIRef(tree_name_space_item + "%s_%s" % (counter, brick_name))
+
+      if new_tree:
+        o_ = URIRef(tree_name_space)
+        triple = s_, RDFSTerms["is_member"], o_
+      else:
+        o_ = URIRef(tree_name_space_item + tree_item_name)
+        triple = (s_,
+                  RDFSTerms["is_defined_by"],
+                  o_)
       # triple_ = triple[2], triple[1], triple[0]
       tree_graph.add(triple)
       pass
@@ -363,9 +386,10 @@ class DataModel:
         triple = s_new, p, o_new
         tree_graph.add(triple)
       else:
-        debugging("class found s,p,o", s, p, o)  # note: adding linked node as class
-        triple = s_, RDFSTerms["is_class"], RDFSTerms["class"]
-        tree_graph.add(triple)
+        if not new_tree:
+          debugging("class found s,p,o", s, p, o)  # note: adding linked node as class
+          triple = s_, RDFSTerms["is_class"], RDFSTerms["class"]
+          tree_graph.add(triple)
         pass
     self.brick_counter[tree_name] += 1
     pass
@@ -444,32 +468,136 @@ class DataModel:
         conjunctiveGraph.get_context(classURI).add((s, p, o))
     return conjunctiveGraph
 
-  def newTree(self, tree_name, brick_name):
-    brick = self.BRICK_GRAPHS[brick_name]
-    copy_brick = copy.deepcopy(brick)
+  def __reenumerateGraph(self):
+    enumerate_lists = {}
+    enumerates = {}
+    for g in self.TREE_GRAPHS:
+      enumerate_lists[g] = set()
+      i = -1
+      graph = self.TREE_GRAPHS[g]
+      for s, p, o in graph.triples((None, None, None)):
+        no,name = self.__extractNumber(s)
+        enumerate_lists[g].add((no, name))
+        no, name = self.__extractNumber(o)
+        enumerate_lists[g].add((no,name))
+      enumerates[g] = sorted(enumerate_lists[g])
 
-    self.renameBrick(brick_name, tree_name)
-    named_brick = self.BRICK_GRAPHS[tree_name]
-    self.TREE_GRAPHS[tree_name] = copy.deepcopy(named_brick)
+    mapped_graphs = {}
+    for g in self.TREE_GRAPHS:
+      count = 0
+      mapped_graphs[g] = Graph("Memory")
+      old_triples = set()
+      for triple in self.TREE_GRAPHS[g].triples((None,None,None)):
+        old_triples.add(triple)
+      for old_number, name in enumerates[g]:
+        tree_name_space_item = makeItemURI(g, "")
+        if old_number == -1:
+          s_ = URIRef(tree_name_space_item + "%s" % (name))
+          o_ = URIRef(tree_name_space_item + "%s" % (name))
+          s_new = s_
+          o_new = o_
+        else:
+          s_ = URIRef(tree_name_space_item + "%s_%s" % (old_number, name))
+          o_ = URIRef(tree_name_space_item + "%s_%s" % (old_number, name))
+          s_new = URIRef(tree_name_space_item + "%s_%s" % (count, name))
+          o_new = URIRef(tree_name_space_item + "%s_%s" % (count, name))
+          count +=count
+
+        triple = (s_, None, o_)
+        for s,p,o in self.TREE_GRAPHS[g].triples(triple):
+          new_triple = s_new,p,o_new
+          if (s,p,o) in old_triples:
+            mapped_graphs[g].add(new_triple)
+            old_triples.remove((s,p,o))
+
+        triple = (s_, None, None)
+        for s,p,o in self.TREE_GRAPHS[g].triples(triple):
+          print(s,p,o)
+          new_triple = s_new, p, o
+          if (s,p,o) in old_triples:
+            mapped_graphs[g].add(new_triple)
+            old_triples.remove((s,p,o))
+
+        triple = (None, None, o_)
+        for s,p,o in self.TREE_GRAPHS[g].triples(triple):
+          print(s,p,o)
+          new_triple = s, p, o_new
+          if (s,p,o) in old_triples:
+            mapped_graphs[g].add(new_triple)
+            old_triples.remove((s,p,o))
+
+        for t in old_triples:
+          mapped_graphs[g].add(t)
+    self.brick_counter[g] = count
+      # del self.TREE_GRAPHS[g]
+    self.TREE_GRAPHS = mapped_graphs
+
+
+
+
+
+    pass
+
+
+  def newTree(self, tree_name, brick_name):
+
+    brick = self.BRICK_GRAPHS[brick_name]
+    # copy_brick = copy.deepcopy(brick)
+
+    # self.renameBrick(brick_name, tree_name)
+    # named_brick = self.BRICK_GRAPHS[tree_name]
+    # self.TREE_GRAPHS[tree_name] = copy.deepcopy(named_brick)
+    self.TREE_GRAPHS[tree_name] = Graph("Memory")
 
     classURI = makeClassURI(tree_name)
     self.namespaces[tree_name] = classURI
-    triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
-    self.TREE_GRAPHS[tree_name].add(triple)
+    # triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
+    # self.TREE_GRAPHS[tree_name].add(triple)
 
     self.tree_name_space = makeClassURI(tree_name)
     self.tree_name_space_item = makeItemURI(tree_name, "")
+
+    self.namespaces[tree_name] = classURI
+    triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
+    self.TREE_GRAPHS[tree_name].add(triple)
 
     self.brick_counter[tree_name] = 0
     self.TREE_GRAPHS[tree_name].bind(tree_name,
                                      self.tree_name_space)
     self.TREE_GRAPHS[tree_name].bind(tree_name,
                                      self.tree_name_space_item)
+    self.linkBrickToItem(tree_name,None,brick_name,True)
 
     # clean up bricks
-    self.BRICK_GRAPHS[brick_name] = copy_brick
-    del self.BRICK_GRAPHS[tree_name]
+    # self.BRICK_GRAPHS[brick_name] = copy_brick
+    # del self.BRICK_GRAPHS[tree_name]
     pass
+
+    # brick = self.BRICK_GRAPHS[brick_name]
+    # copy_brick = copy.deepcopy(brick)
+    #
+    # self.renameBrick(brick_name, tree_name)
+    # named_brick = self.BRICK_GRAPHS[tree_name]
+    # self.TREE_GRAPHS[tree_name] = copy.deepcopy(named_brick)
+    #
+    # classURI = makeClassURI(tree_name)
+    # self.namespaces[tree_name] = classURI
+    # triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
+    # self.TREE_GRAPHS[tree_name].add(triple)
+    #
+    # self.tree_name_space = makeClassURI(tree_name)
+    # self.tree_name_space_item = makeItemURI(tree_name, "")
+    #
+    # self.brick_counter[tree_name] = 0
+    # self.TREE_GRAPHS[tree_name].bind(tree_name,
+    #                                  self.tree_name_space)
+    # self.TREE_GRAPHS[tree_name].bind(tree_name,
+    #                                  self.tree_name_space_item)
+    #
+    # # clean up bricks
+    # self.BRICK_GRAPHS[brick_name] = copy_brick
+    # del self.BRICK_GRAPHS[tree_name]
+    # pass
 
   def getTreeList(self):
     tree_list = sorted(self.TREE_GRAPHS.keys())

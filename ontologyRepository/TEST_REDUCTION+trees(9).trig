@@ -1,0 +1,65 @@
+@prefix KK: <http://example.org/KK#> .
+@prefix S: <http://example.org/S#> .
+@prefix SEE: <http://example.org/SEE#> .
+@prefix SEE_i: <http://example.org/SEE_i#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+KK:KK {
+    KK:2_SECOND a rdfs:Class ;
+        rdfs:isDefinedBy KK:0_Link .
+
+    KK:KK a rdfs:Class .
+
+    "" xsd:boolean KK:0_HelloMe ;
+        xsd:integer KK:1_Kkk,
+            KK:2_Kkk .
+
+    KK:0_HelloMe rdf:value KK:0_FIRST .
+
+    KK:0_Link rdfs:member KK:0_FIRST .
+
+    KK:1_Kkk rdf:value KK:1_Gugus .
+
+    KK:2_Gugus rdfs:member KK:2_SECOND .
+
+    KK:2_Kkk rdf:value KK:2_Gugus .
+
+    KK:0_FIRST rdfs:member KK:KK .
+}
+
+SEE_i:SEE_i {
+    SEE_i:SEE_i a rdfs:Class .
+
+    "123" xsd:integer SEE_i:Kkk .
+
+    SEE_i:Gugus rdfs:member SEE_i:SEE_i .
+
+    SEE_i:Kkk rdf:value SEE_i:Gugus .
+}
+
+S:S {
+    S:S a rdfs:Class .
+
+    S:Help rdfs:member S:S .
+
+    S:Gugus rdfs:member S:S .
+
+    S:Kkk rdf:value S:Gugus .
+
+    "" xsd:integer S:Kkk .
+}
+
+SEE:SEE {
+    SEE:SEE a rdfs:Class .
+
+    SEE:Help rdfs:member SEE:SEE .
+
+    SEE:Gugus rdfs:member SEE:SEE .
+
+    SEE:Kkk rdf:value SEE:Gugus .
+
+    "123" xsd:integer SEE:Kkk .
+}
+

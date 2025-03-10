@@ -1,4 +1,3 @@
-@prefix JJ: <http://example.org/JJ#> .
 @prefix KK: <http://example.org/KK#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -22,24 +21,5 @@ KK:KK {
     KK:1_Kkk rdf:value KK:1_Gugus .
 
     KK:0_FIRST rdfs:member KK:KK .
-}
-
-JJ:JJ {
-    JJ:JJ a rdfs:Class .
-
-    JJ:0_HelloMe rdf:value JJ:0_FIRST .
-
-    JJ:0_Link rdfs:member JJ:0_FIRST .
-
-    JJ:1_Gugus rdfs:member JJ:1_SECOND .
-
-    JJ:1_Kkk rdf:value JJ:1_Gugus .
-
-    JJ:1_SECOND rdfs:isDefinedBy JJ:0_Link .
-
-    "" xsd:boolean JJ:0_HelloMe ;
-        xsd:integer JJ:1_Kkk .
-
-    JJ:0_FIRST rdfs:member JJ:JJ .
 }
 

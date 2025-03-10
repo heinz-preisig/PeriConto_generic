@@ -74,10 +74,6 @@ def find_path_back_triples(graph, leave_triple, root):
           now = o
           path.append(t)
 
-    # try:
-    #   now == root
-    # except:
-    #   pass
 
   return path
 
@@ -241,3 +237,19 @@ if __name__ == "__main__":
   path = find_path_back_triples(g2, triple_, root)
   for t in path:
     print(t)
+
+
+# def get_subtree(graph, node, predicate):
+#   subtree = {node}
+#   for _, _, child in graph.triples((node, None, None)):
+#     subtree.update(get_subtree(graph, child, predicate))
+#   return subtree
+
+def get_subtree(graph, node, predicates):
+  subtree = {node}
+  for predicate in predicates:
+    for child, _, _ in graph.triples((node, predicate, None)):
+      print("child", child)
+      if child not in subtree:  # Avoid duplicate processing
+        subtree.update(get_subtree(graph, child, predicates))
+  return subtree
