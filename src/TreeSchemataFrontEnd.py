@@ -331,7 +331,6 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_treeTree_itemClicked(self, item, column):
-    print("single click")
     name = item.text(column)
     self.ui.treeTree.expandItem(item)
     self.save_expanded_state()
