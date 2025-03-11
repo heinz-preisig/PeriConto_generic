@@ -360,8 +360,6 @@ class DataModel:
       # triple_ = triple[2], triple[1], triple[0]
       tree_graph.add(triple)
 
-      self.reEnumerateGraph()
-
     for s, p, o in brick_graph.triples((None, None, None)):
       if (p != RDFSTerms["is_class"]):
         s_new = self.__attachBrick(brick_name,
@@ -380,6 +378,9 @@ class DataModel:
           tree_graph.add(triple)
         pass
     self.brick_counter[tree_name] += 1
+
+
+    self.reEnumerateGraph()
     pass
 
   def saveBricks(self, file_name=None):
@@ -469,6 +470,7 @@ class DataModel:
         numbers.add(no)
       numbers.remove(-1)
       tree_brick_numbers[g] = sorted(numbers)
+      print("graph %s has %s bricks"%(g, tree_brick_numbers[g]))
 
 
 
