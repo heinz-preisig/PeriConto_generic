@@ -181,7 +181,7 @@ class OntobuilderUI(QMainWindow):
                        value=None,
                        placeholdertext="brick name",
                        limiting_list=self.brickList,
-                       validator="name")
+                       validator="name_upper")
     name = dialog.text
     if name:
       event = "new brick"
@@ -272,7 +272,7 @@ class OntobuilderUI(QMainWindow):
                        value=None,
                        placeholdertext="brick name",
                        limiting_list=self.brickList,
-                       validator="name")
+                       validator="name_upper")
     new_name = dialog.text
     if new_name:
       event = "rename brick"

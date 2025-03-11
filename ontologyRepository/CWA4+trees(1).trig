@@ -133,11 +133,6 @@ BASE:BASE {
             BASE:57_Dotted,
             BASE:57_DottedFine,
             BASE:57_Full,
-            BASE:58_Black,
-            BASE:58_Blue,
-            BASE:58_Green,
-            BASE:58_Red,
-            BASE:58_Yellow,
             BASE:5_D1,
             BASE:5_D2,
             BASE:5_D3,
@@ -218,10 +213,7 @@ BASE:BASE {
             BASE:55_SideLength,
             BASE:55_ThickArrowHeight,
             BASE:55_ThickArrowWidth,
-            BASE:55_TriangleSideLength,
-            BASE:58_UserBlue,
-            BASE:58_UserGreen,
-            BASE:58_UserRed .
+            BASE:55_TriangleSideLength .
 
     BASE:37_COLOUR a BASE:Class .
 
@@ -264,6 +256,8 @@ BASE:BASE {
     BASE:54_Colour rdfs:member BASE:54_LINE .
 
     BASE:55_Colour rdfs:member BASE:55_SHAPE .
+
+    BASE:56_Colour rdfs:member BASE:56_LINE .
 
     BASE:57_Colour rdfs:member BASE:57_LINE .
 
@@ -639,8 +633,6 @@ BASE:BASE {
 
     BASE:56_Arrow rdf:value BASE:56_LINE .
 
-    BASE:56_Colour rdfs:member BASE:56_LINE .
-
     BASE:56_Dashed rdf:value BASE:56_LINE .
 
     BASE:56_DashedFine rdf:value BASE:56_LINE .
@@ -662,22 +654,6 @@ BASE:BASE {
     BASE:57_DottedFine rdf:value BASE:57_LINE .
 
     BASE:57_Full rdf:value BASE:57_LINE .
-
-    BASE:58_Black rdf:value BASE:58_COLOUR .
-
-    BASE:58_Blue rdf:value BASE:58_COLOUR .
-
-    BASE:58_Green rdf:value BASE:58_COLOUR .
-
-    BASE:58_Red rdf:value BASE:58_COLOUR .
-
-    BASE:58_UserBlue rdf:value BASE:58_UserColour .
-
-    BASE:58_UserGreen rdf:value BASE:58_UserColour .
-
-    BASE:58_UserRed rdf:value BASE:58_UserColour .
-
-    BASE:58_Yellow rdf:value BASE:58_COLOUR .
 
     BASE:5_Temporal rdfs:member BASE:5_Characteristics .
 
@@ -804,8 +780,6 @@ BASE:BASE {
     BASE:31_TEMPORAL a BASE:Class ;
         rdfs:isDefinedBy BASE:5_Temporal .
 
-    BASE:58_UserColour rdfs:member BASE:58_COLOUR .
-
     BASE:10_TOKENS a BASE:Class ;
         rdfs:isDefinedBy BASE:8_Tokens .
 
@@ -839,9 +813,6 @@ BASE:BASE {
 
     BASE:8_TRANSPORT a BASE:Class ;
         rdfs:isDefinedBy BASE:3_Arc .
-
-    BASE:58_COLOUR a BASE:Class ;
-        rdfs:isDefinedBy BASE:56_Colour .
 
     BASE:9_TRANSPORT a BASE:Class ;
         rdfs:isDefinedBy BASE:1_Arc .
