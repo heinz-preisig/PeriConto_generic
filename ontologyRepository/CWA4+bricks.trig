@@ -10,68 +10,60 @@
 @prefix TEMPORAL: <http://example.org/TEMPORAL#> .
 @prefix TOKENS: <http://example.org/TOKENS#> .
 @prefix TRANSPORT: <http://example.org/TRANSPORT#> .
+@prefix USER-COLOUR: <http://example.org/USER-COLOUR#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-COLOUR:COLOUR {
-    COLOUR:COLOUR a rdfs:Class .
+DOMAIN:DOMAIN {
+    DOMAIN:DOMAIN a rdfs:Class .
 
-    "" xsd:boolean COLOUR:Black,
-            COLOUR:Blue,
-            COLOUR:Green,
-            COLOUR:Red,
-            COLOUR:Yellow ;
-        xsd:integer COLOUR:UserBlue,
-            COLOUR:UserGreen,
-            COLOUR:UserRed .
+    DOMAIN:Control rdfs:member DOMAIN:DOMAIN .
 
-    COLOUR:Black rdf:value COLOUR:COLOUR .
+    DOMAIN:Frame rdfs:member DOMAIN:DOMAIN .
 
-    COLOUR:Blue rdf:value COLOUR:COLOUR .
+    DOMAIN:Information rdfs:member DOMAIN:DOMAIN .
 
-    COLOUR:Green rdf:value COLOUR:COLOUR .
-
-    COLOUR:Red rdf:value COLOUR:COLOUR .
-
-    COLOUR:UserBlue rdf:value COLOUR:UserColour .
-
-    COLOUR:UserGreen rdf:value COLOUR:UserColour .
-
-    COLOUR:UserRed rdf:value COLOUR:UserColour .
-
-    COLOUR:Yellow rdf:value COLOUR:COLOUR .
-
-    COLOUR:UserColour rdfs:member COLOUR:COLOUR .
+    DOMAIN:Physical rdfs:member DOMAIN:DOMAIN .
 }
 
-TOKENS:TOKENS {
-    TOKENS:TOKENS a rdfs:Class .
+TEMPORAL:TEMPORAL {
+    TEMPORAL:TEMPORAL a rdfs:Class .
 
-    TOKENS:Energy rdf:value TOKENS:TOKENS .
+    "" xsd:boolean TEMPORAL:Constant,
+            TEMPORAL:Dynamic,
+            TEMPORAL:Event .
 
-    TOKENS:LinearMomentum rdf:value TOKENS:TOKENS .
+    TEMPORAL:Constant rdf:value TEMPORAL:TEMPORAL .
 
-    TOKENS:Mass rdf:value TOKENS:TOKENS .
+    TEMPORAL:Dynamic rdf:value TEMPORAL:TEMPORAL .
 
-    TOKENS:RotationalMomentum rdf:value TOKENS:TOKENS .
-
-    "" xsd:boolean TOKENS:Energy,
-            TOKENS:LinearMomentum,
-            TOKENS:Mass,
-            TOKENS:RotationalMomentum .
+    TEMPORAL:Event rdf:value TEMPORAL:TEMPORAL .
 }
 
-GRAPH:GRAPH {
-    GRAPH:GRAPH a rdfs:Class .
+LINE:LINE {
+    LINE:LINE a rdfs:Class .
 
-    GRAPH:ArcIcon rdfs:member GRAPH:Arc .
+    LINE:Colour rdfs:member LINE:LINE .
 
-    GRAPH:NodeIcon rdfs:member GRAPH:Node .
+    LINE:Arrow rdf:value LINE:LINE .
 
-    GRAPH:Arc rdfs:member GRAPH:GRAPH .
+    LINE:Dashed rdf:value LINE:LINE .
 
-    GRAPH:Node rdfs:member GRAPH:GRAPH .
+    LINE:DashedFine rdf:value LINE:LINE .
+
+    LINE:Dotted rdf:value LINE:LINE .
+
+    LINE:DottedFine rdf:value LINE:LINE .
+
+    LINE:Full rdf:value LINE:LINE .
+
+    "" xsd:boolean LINE:Arrow,
+            LINE:Dashed,
+            LINE:DashedFine,
+            LINE:Dotted,
+            LINE:DottedFine,
+            LINE:Full .
 }
 
 TRANSPORT:TRANSPORT {
@@ -91,6 +83,64 @@ TRANSPORT:TRANSPORT {
             TRANSPORT:Diffusion,
             TRANSPORT:Direct,
             TRANSPORT:Radiation .
+}
+
+USER-COLOUR:USER-COLOUR {
+    USER-COLOUR:USER-COLOUR a rdfs:Class .
+
+    USER-COLOUR:Blue rdfs:member USER-COLOUR:USER-COLOUR .
+
+    USER-COLOUR:Green rdfs:member USER-COLOUR:USER-COLOUR .
+
+    USER-COLOUR:Red rdfs:member USER-COLOUR:USER-COLOUR .
+}
+
+ICON:ICON {
+    ICON:ICON a rdfs:Class .
+
+    ICON:Line rdfs:member ICON:GraphicalObject .
+
+    ICON:Shape rdfs:member ICON:GraphicalObject .
+
+    ICON:CircleDiameter rdf:value ICON:Circle .
+
+    ICON:MajorAxis rdf:value ICON:Ellipse .
+
+    ICON:MinorAxis rdf:value ICON:Ellipse .
+
+    ICON:SemiCircleDiameter rdf:value ICON:SemiCircle .
+
+    ICON:SideLength rdf:value ICON:Triangle .
+
+    ICON:SquareSize rdf:value ICON:Square .
+
+    ICON:GraphicalObject rdfs:member ICON:ICON .
+
+    "" xsd:integer ICON:CircleDiameter,
+            ICON:MajorAxis,
+            ICON:MinorAxis,
+            ICON:RectangleHeight,
+            ICON:RectangleWidth,
+            ICON:SemiCircleDiameter,
+            ICON:SideLength,
+            ICON:SquareSize .
+}
+
+DISTRIBUTION:DISTRIBUTION {
+    DISTRIBUTION:DISTRIBUTION a rdfs:Class .
+
+    DISTRIBUTION:D1 rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    DISTRIBUTION:D2 rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    DISTRIBUTION:D3 rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    DISTRIBUTION:Lumped rdf:value DISTRIBUTION:DISTRIBUTION .
+
+    "" xsd:boolean DISTRIBUTION:D1,
+            DISTRIBUTION:D2,
+            DISTRIBUTION:D3,
+            DISTRIBUTION:Lumped .
 }
 
 FRAME:FRAME {
@@ -117,6 +167,66 @@ FRAME:FRAME {
             FRAME:X,
             FRAME:Y,
             FRAME:Z .
+}
+
+COLOUR:COLOUR {
+    COLOUR:COLOUR a rdfs:Class .
+
+    COLOUR:Black rdf:value COLOUR:COLOUR .
+
+    COLOUR:Blue rdf:value COLOUR:COLOUR .
+
+    COLOUR:Green rdf:value COLOUR:COLOUR .
+
+    COLOUR:Red rdf:value COLOUR:COLOUR .
+
+    COLOUR:UserBlue rdf:value COLOUR:UserColour .
+
+    COLOUR:UserGreen rdf:value COLOUR:UserColour .
+
+    COLOUR:UserRed rdf:value COLOUR:UserColour .
+
+    COLOUR:Yellow rdf:value COLOUR:COLOUR .
+
+    COLOUR:UserColour rdfs:member COLOUR:COLOUR .
+
+    "" xsd:boolean COLOUR:Black,
+            COLOUR:Blue,
+            COLOUR:Green,
+            COLOUR:Red,
+            COLOUR:Yellow ;
+        xsd:integer COLOUR:UserBlue,
+            COLOUR:UserGreen,
+            COLOUR:UserRed .
+}
+
+GRAPH:GRAPH {
+    GRAPH:GRAPH a rdfs:Class .
+
+    GRAPH:ArcIcon rdfs:member GRAPH:Arc .
+
+    GRAPH:NodeIcon rdfs:member GRAPH:Node .
+
+    GRAPH:Arc rdfs:member GRAPH:GRAPH .
+
+    GRAPH:Node rdfs:member GRAPH:GRAPH .
+}
+
+TOKENS:TOKENS {
+    TOKENS:TOKENS a rdfs:Class .
+
+    TOKENS:Energy rdf:value TOKENS:TOKENS .
+
+    TOKENS:LinearMomentum rdf:value TOKENS:TOKENS .
+
+    TOKENS:Mass rdf:value TOKENS:TOKENS .
+
+    TOKENS:RotationalMomentum rdf:value TOKENS:TOKENS .
+
+    "" xsd:boolean TOKENS:Energy,
+            TOKENS:LinearMomentum,
+            TOKENS:Mass,
+            TOKENS:RotationalMomentum .
 }
 
 SHAPE:SHAPE {
@@ -180,88 +290,6 @@ SHAPE:SHAPE {
             SHAPE:TriangleSideLength .
 }
 
-LINE:LINE {
-    LINE:LINE a rdfs:Class .
-
-    LINE:Colour rdfs:member LINE:LINE .
-
-    LINE:Arrow rdf:value LINE:LINE .
-
-    LINE:Dashed rdf:value LINE:LINE .
-
-    LINE:DashedFine rdf:value LINE:LINE .
-
-    LINE:Dotted rdf:value LINE:LINE .
-
-    LINE:DottedFine rdf:value LINE:LINE .
-
-    LINE:Full rdf:value LINE:LINE .
-
-    "" xsd:boolean LINE:Arrow,
-            LINE:Dashed,
-            LINE:DashedFine,
-            LINE:Dotted,
-            LINE:DottedFine,
-            LINE:Full .
-}
-
-TEMPORAL:TEMPORAL {
-    TEMPORAL:TEMPORAL a rdfs:Class .
-
-    TEMPORAL:Constant rdf:value TEMPORAL:TEMPORAL .
-
-    TEMPORAL:Dynamic rdf:value TEMPORAL:TEMPORAL .
-
-    TEMPORAL:Event rdf:value TEMPORAL:TEMPORAL .
-
-    "" xsd:boolean TEMPORAL:Constant,
-            TEMPORAL:Dynamic,
-            TEMPORAL:Event .
-}
-
-ICON:ICON {
-    ICON:ICON a rdfs:Class .
-
-    ICON:Line rdfs:member ICON:GraphicalObject .
-
-    ICON:Shape rdfs:member ICON:GraphicalObject .
-
-    ICON:CircleDiameter rdf:value ICON:Circle .
-
-    ICON:MajorAxis rdf:value ICON:Ellipse .
-
-    ICON:MinorAxis rdf:value ICON:Ellipse .
-
-    ICON:SemiCircleDiameter rdf:value ICON:SemiCircle .
-
-    ICON:SideLength rdf:value ICON:Triangle .
-
-    ICON:SquareSize rdf:value ICON:Square .
-
-    ICON:GraphicalObject rdfs:member ICON:ICON .
-
-    "" xsd:integer ICON:CircleDiameter,
-            ICON:MajorAxis,
-            ICON:MinorAxis,
-            ICON:RectangleHeight,
-            ICON:RectangleWidth,
-            ICON:SemiCircleDiameter,
-            ICON:SideLength,
-            ICON:SquareSize .
-}
-
-DOMAIN:DOMAIN {
-    DOMAIN:DOMAIN a rdfs:Class .
-
-    DOMAIN:Control rdfs:member DOMAIN:DOMAIN .
-
-    DOMAIN:Frame rdfs:member DOMAIN:DOMAIN .
-
-    DOMAIN:Information rdfs:member DOMAIN:DOMAIN .
-
-    DOMAIN:Physical rdfs:member DOMAIN:DOMAIN .
-}
-
 CAPACITY:CAPACITY {
     CAPACITY:CAPACITY a rdfs:Class .
 
@@ -276,22 +304,5 @@ CAPACITY:CAPACITY {
     "" xsd:boolean CAPACITY:D1,
             CAPACITY:D2,
             CAPACITY:D3 .
-}
-
-DISTRIBUTION:DISTRIBUTION {
-    DISTRIBUTION:DISTRIBUTION a rdfs:Class .
-
-    DISTRIBUTION:D1 rdf:value DISTRIBUTION:DISTRIBUTION .
-
-    DISTRIBUTION:D2 rdf:value DISTRIBUTION:DISTRIBUTION .
-
-    DISTRIBUTION:D3 rdf:value DISTRIBUTION:DISTRIBUTION .
-
-    DISTRIBUTION:Lumped rdf:value DISTRIBUTION:DISTRIBUTION .
-
-    "" xsd:boolean DISTRIBUTION:D1,
-            DISTRIBUTION:D2,
-            DISTRIBUTION:D3,
-            DISTRIBUTION:Lumped .
 }
 

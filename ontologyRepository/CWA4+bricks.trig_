@@ -10,6 +10,7 @@
 @prefix TEMPORAL: <http://example.org/TEMPORAL#> .
 @prefix TOKENS: <http://example.org/TOKENS#> .
 @prefix TRANSPORT: <http://example.org/TRANSPORT#> .
+@prefix USER-COLOUR: <http://example.org/USER-COLOUR#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -38,6 +39,8 @@ TOKENS:TOKENS a rdfs:Class .
 
 TRANSPORT:TRANSPORT a rdfs:Class .
 
+USER-COLOUR:USER-COLOUR a rdfs:Class .
+
 CAPACITY:Distribution rdfs:member CAPACITY:Characteristics .
 
 CAPACITY:Temporal rdfs:member CAPACITY:Characteristics .
@@ -65,6 +68,12 @@ LINE:Colour rdfs:member LINE:LINE .
 SHAPE:Colour rdfs:member SHAPE:SHAPE .
 
 TRANSPORT:Tokens rdfs:member TRANSPORT:TRANSPORT .
+
+USER-COLOUR:Blue rdfs:member USER-COLOUR:USER-COLOUR .
+
+USER-COLOUR:Green rdfs:member USER-COLOUR:USER-COLOUR .
+
+USER-COLOUR:Red rdfs:member USER-COLOUR:USER-COLOUR .
 
 "" xsd:anyURI SHAPE:UserShape ;
     xsd:boolean CAPACITY:D1,
