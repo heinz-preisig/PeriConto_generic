@@ -86,6 +86,7 @@ class BackEnd():
         self.visualise(message)
       else:
         print(">>>>>>>>>>> -- no such command: ", a)
+        print("\n message was:", message)
 
     if len(self.UI_state[event]["show"]) > 0:
       if self.UI_state[event]["show"][0] == "do_nothing":

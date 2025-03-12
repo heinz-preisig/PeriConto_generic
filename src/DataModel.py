@@ -178,7 +178,7 @@ class DataModel:
       for t in graph.triples((None,None,n)):
         to_delete.append(t)
     for t in to_delete:
-      self.TREE_GRAPHS[name].remove(t)
+      graph.remove(t)
 
     pass
 
@@ -406,7 +406,12 @@ class DataModel:
     for primitive in RDF_PRIMITIVES:
       triple = None, primitive, None
       for s, p, o in graph.triples(triple):
-        if s != Literal(""):
+        # if s != Literal(""):
+        try:
+          _,name = str(s).split("#")
+        except:
+          name = str(s)
+        if name != "":
           keep_target.append((s, p, o))
 
     root = URIRef(makeClassURI(tree_name))

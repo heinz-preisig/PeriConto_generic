@@ -157,7 +157,7 @@ UI_state = {
                            ],
                 "except": [],
                 "action": ["selectedValueInBrickTree",
-                           ""],
+                           ],
                 },
         "string in brick tree selected" : {
                 "show"  : ["exit",
