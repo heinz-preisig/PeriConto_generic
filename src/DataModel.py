@@ -41,10 +41,10 @@ class DataModel:
     that's a bit tricky. We need the brick numbers for each tree
     """
 
-    self.file_name_bricks = self.makeFileName(project_name, what="bricks")
+    # self.file_name_bricks = self.makeFileName(project_name, what="bricks")
     self.BRICK_GRAPHS, self.namespaces = self.__loadFromFile(self.file_name_bricks)
 
-    self.file_name_trees = self.makeFileName(project_name, what="trees")
+    # self.file_name_trees = self.makeFileName(project_name, what="trees")
     exists = os.path.exists(self.file_name_trees)
     if exists:
       self.TREE_GRAPHS, _ = self.__loadFromFile(self.file_name_trees)
