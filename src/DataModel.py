@@ -475,7 +475,7 @@ class DataModel:
         numbers.add(no)
       numbers.remove(-1)
       tree_brick_numbers[g] = sorted(numbers)
-      print("graph %s has %s bricks"%(g, tree_brick_numbers[g]))
+      print("graph %s has %s bricks"%(g, len(tree_brick_numbers[g])))
 
 
 

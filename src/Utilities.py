@@ -108,15 +108,33 @@ NODE_SPECS = {
                 "fillcolor": "red",
                 "style"    : "filled",
                 },
-        "member"   : {
+        "Item"   : {
                 "colour"   : "orange",
                 "shape"    : "",
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "primitive": {
+        "Value": {
+                "colour"   : "green",
+                "shape"    : "",
+                "fillcolor": "white",
+                "style"    : "filled",
+                },
+        "integer": {
                 "colour"   : "blue",
-                "shape"    : "rectangle",
+                "shape"    : "",
+                "fillcolor": "white",
+                "style"    : "filled",
+                },
+        "string": {
+                "colour"   : "blue",
+                "shape"    : "",
+                "fillcolor": "white",
+                "style"    : "filled",
+                },
+        "boolean": {
+                "colour"   : "blue",
+                "shape"    : "",
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
@@ -135,7 +153,7 @@ NODE_SPECS = {
         "other"    : {
                 "colour"   : None,
                 "shape"    : None,
-                "fillcolor": None,
+                "fillcolor": "red",
                 "style"    : None,
                 },
         }
@@ -153,7 +171,10 @@ class TreePlot:
     self.dot = Digraph(graph_name)
     self.dot.graph_attr["rankdir"] = "LR"
 
+    self.nodes = set()
+
   def addNode(self, node, type):
+    # print(type)
     try:
       specs = NODE_SPECS[type]
     except:
@@ -165,8 +186,11 @@ class TreePlot:
                   fillcolor=specs["fillcolor"],
                   style=specs["style"],
                   )
+    self.nodes.add(node)
 
   def addEdge(self, From, To, type, dir):
+    # print("from", From,type, dir)
+    # print("to", To, type, dir)
     try:
       colour = EDGE_COLOURS[type]
     except:
@@ -187,6 +211,7 @@ class TreePlot:
   def makeMe(self, root):
     self.addNode(root, "Class")
     self.__makeGraph(origin=[root], stack=[])
+    print("nodes ", self.nodes, len(self.nodes))
 
   def __makeGraph(self, origin=[], stack=[]):
     for q in self.triples:
@@ -194,6 +219,10 @@ class TreePlot:
         s, p, o, dir = q
         if s != origin:
           type = RULES[p]
+          # print("that's an o", o)
+          # print("that's an s", s, type)
+          if str(s) == "":
+            pass
           self.addNode(o, type)
           self.addEdge(s, o, p, dir)
           stack.append(q)  # (s, p, o))
