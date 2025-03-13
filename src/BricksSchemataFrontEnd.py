@@ -75,6 +75,8 @@ class OntobuilderUI(QMainWindow):
     roundButton(self.ui.pushMaximise, "max_view", tooltip="maximise", mysize=35)
     roundButton(self.ui.pushNormal, "normal_view", tooltip="normal", mysize=35)
 
+    self.signalButton = roundButton(self.ui.LED, "LED_green", tooltip="status", mysize=20)
+
     self.interfaceComponents()
     self.backend = BackEnd(self)
 
@@ -163,6 +165,7 @@ class OntobuilderUI(QMainWindow):
       return
     message = {"event": "save"}
     self.backend.processEvent(message)
+    self.markSaved()
 
   def on_pushOntologySaveAs_pressed(self):
     debugging("-- pushOntologySaveAs")
@@ -174,6 +177,7 @@ class OntobuilderUI(QMainWindow):
               "name" : name
               }
       self.backend.processEvent(message)
+      self.markSaved()
 
   def on_pushBrickCreate_pressed(self):
     debugging("-- pushBrickCreate")
@@ -409,6 +413,8 @@ class OntobuilderUI(QMainWindow):
   def markChanged(self):
     global changed
     changed = True
+    self.signalButton.changeIcon("LED_red")
+    self.ui.statusbar.showMessage("modified")
 
   def on_pushExit_pressed(self):
     self.closeMe()
@@ -416,6 +422,8 @@ class OntobuilderUI(QMainWindow):
   def markSaved(self):
     global changed
     changed = False
+    self.signalButton.changeIcon("LED_green")
+    self.ui.statusbar.showMessage("up to date")
 
   def closeMe(self):
     global changed

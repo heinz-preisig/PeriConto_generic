@@ -38,60 +38,58 @@ ICONS["collaps"] = "collaps_tree_button_hap.svg"
 ICONS["bricks"] = "bricks_button_hap.svg"
 ICONS["build_tree"] = "build_tree_hap.svg"
 ICONS["instantiate_tree"] = "instantiate_tree_hap.svg"
-
-# size = 52
-# defaultsize = size
-# BUTTON_ICON_SIZE = QtCore.QSize(size, size)
-# round = 'border-radius: %spx; ' % (size / 2)
-# BUTTON_ICON_STYLE_ROUND = 'background-color: white; '
-# BUTTON_ICON_STYLE_ROUND += 'border-style: outset; '
-# BUTTON_ICON_STYLE_ROUND += 'border-width: 2px; '
-# BUTTON_ICON_STYLE_ROUND += round
-# BUTTON_ICON_STYLE_ROUND += 'border-color: white;    '
-# BUTTON_ICON_STYLE_ROUND += 'font: bold 14px;   '
-# BUTTON_ICON_STYLE_ROUND += 'padding: 6px;'
+ICONS["LED_green"] = "LED_green.svg"
+ICONS["LED_red"] = "LED_red.svg"
 
 
-def roundButton(button, what, tooltip=None, mysize=None):
-  defaultsize = 52
-  if mysize:
-    size=mysize
-  else:
-    size = defaultsize
-
-  BUTTON_ICON_SIZE = QtCore.QSize(size, size)
-  round = 'border-radius: %spx; ' % (size / 2)
-  BUTTON_ICON_STYLE_ROUND = 'background-color: white; '
-  BUTTON_ICON_STYLE_ROUND += 'border-style: outset; '
-  BUTTON_ICON_STYLE_ROUND += 'border-width: 2px; '
-  BUTTON_ICON_STYLE_ROUND += round
-  BUTTON_ICON_STYLE_ROUND += 'border-color: white;    '
-  BUTTON_ICON_STYLE_ROUND += 'font: bold 14px;   '
-  BUTTON_ICON_STYLE_ROUND += 'padding: 6px;'
-
-  button.setText("")
-  button.setFixedSize(size,size)
-  icon = getIcon(what)
-  button.setIcon(icon) #getIcon(what))
-  button.setStyleSheet(BUTTON_ICON_STYLE_ROUND)
-  button.setIconSize(BUTTON_ICON_SIZE)
-  button.setToolTip(tooltip)
+class roundButton:
 
 
-def getIcon(what):
-  try:
-    what in ICONS.keys()
-  except:
-    makeMessageBox("assertation error %s is not in the icon dictionary %s\n I exit" % what, ["OK"])
-    os.exit()
+  def __init__(self, button, what, tooltip=None, mysize=None):
+    defaultsize = 52
+    if mysize:
+      size=mysize
+    else:
+      size = defaultsize
 
-  f_name = os.path.join(os.getcwd(), 'resources', "icons", ICONS[what])
-  # print("debugging .....", f_name)
-  if os.path.exists(f_name):
-    # pm = QtGui.QPixmap(f_name)
-    icon = QtGui.QIcon(f_name)
+    BUTTON_ICON_SIZE = QtCore.QSize(size, size)
+    round = 'border-radius: %spx; ' % (size / 2)
+    BUTTON_ICON_STYLE_ROUND = 'background-color: white; '
+    BUTTON_ICON_STYLE_ROUND += 'border-style: outset; '
+    BUTTON_ICON_STYLE_ROUND += 'border-width: 2px; '
+    BUTTON_ICON_STYLE_ROUND += round
+    BUTTON_ICON_STYLE_ROUND += 'border-color: white;    '
+    BUTTON_ICON_STYLE_ROUND += 'font: bold 14px;   '
+    BUTTON_ICON_STYLE_ROUND += 'padding: 6px;'
 
-    return icon #QtGui.QIcon(pm)
-  else:
-    makeMessageBox("no such file : %s"%f_name, ["OK"])
-    pass
+    button.setText("")
+    button.setFixedSize(size,size)
+    icon = self.getIcon(what)
+    button.setIcon(icon) #getIcon(what))
+    button.setStyleSheet(BUTTON_ICON_STYLE_ROUND)
+    button.setIconSize(BUTTON_ICON_SIZE)
+    button.setToolTip(tooltip)
+    self.button = button
+
+
+  def getIcon(self,what):
+    try:
+      what in ICONS.keys()
+    except:
+      makeMessageBox("assertation error %s is not in the icon dictionary %s\n I exit" % what, ["OK"])
+      os.exit()
+
+    f_name = os.path.join(os.getcwd(), 'resources', "icons", ICONS[what])
+    # print("debugging .....", f_name)
+    if os.path.exists(f_name):
+      # pm = QtGui.QPixmap(f_name)
+      icon = QtGui.QIcon(f_name)
+
+      return icon #QtGui.QIcon(pm)
+    else:
+      makeMessageBox("no such file : %s"%f_name, ["OK"])
+      pass
+
+  def changeIcon(self, what):
+    icon = self.getIcon(what)
+    self.button.setIcon(icon)

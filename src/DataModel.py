@@ -633,7 +633,7 @@ class DataModel:
     inf.write(conjunctiveGraph.serialize(format=FILE_FORMAT))
     inf.close()
 
-    makeMessageBox("saved to file:\n   %s" % f, buttons=["OK"])
+    # makeMessageBox("saved to file:\n   %s" % f, buttons=["OK"])
 
     fs = f + "_"
     inf = open(fs, "w")
