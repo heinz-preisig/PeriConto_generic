@@ -142,6 +142,8 @@ class OntobuilderUI(QMainWindow):
             "name" : name
             }
     self.backend.processEvent(message)
+    self.ui.labelProject.setText(name)
+
 
   def on_pushOntologyLoad_pressed(self):
     debugging("-- ontology_load")
@@ -158,6 +160,7 @@ class OntobuilderUI(QMainWindow):
             "name" : project_name
             }
     self.backend.processEvent(message)
+    self.ui.labelProject.setText(project_name)
 
   def on_pushOntologySave_pressed(self):
     debugging("-- pushOntologySave")

@@ -20,7 +20,6 @@ from Utilities import debugging
 from Utilities import find_path_back_triples
 from Utilities import get_subtree
 from Utilities import saveBackupFile
-from resources.pop_up_message_box import makeMessageBox
 
 
 # DEBUGG = False
@@ -36,6 +35,8 @@ class DataModel:
     self.file_name_trees = self.makeFileName(root, what="trees")
     self.brick_counter = {}
 
+    self.number_of_bricks = {}
+
   def loadFromFile(self, project_name):
     """
     that's a bit tricky. We need the brick numbers for each tree
@@ -49,7 +50,7 @@ class DataModel:
     if exists:
       self.TREE_GRAPHS, _ = self.__loadFromFile(self.file_name_trees)
 
-    self.reEnumerateGraph()
+    self.number_of_bricks = self.reEnumerateGraph()
 
   def __extractNumber(self, s):
     """
@@ -175,13 +176,12 @@ class DataModel:
     to_delete = [triple]
     for n in subtree:
       # print("node ",n)
-      for t in graph.triples((None,None,n)):
+      for t in graph.triples((None, None, n)):
         to_delete.append(t)
     for t in to_delete:
       graph.remove(t)
 
     pass
-
 
   def addItem(self, Class, ClassOrSubClass, name):
     g = self.BRICK_GRAPHS[Class]
@@ -379,8 +379,7 @@ class DataModel:
         pass
     self.brick_counter[tree_name] += 1
 
-
-    self.reEnumerateGraph()
+    self.number_of_bricks = self.reEnumerateGraph()
     pass
 
   def saveBricks(self, file_name=None):
@@ -408,7 +407,7 @@ class DataModel:
       for s, p, o in graph.triples(triple):
         # if s != Literal(""):
         try:
-          _,name = str(s).split("#")
+          _, name = str(s).split("#")
         except:
           name = str(s)
         if name != "":
@@ -469,15 +468,14 @@ class DataModel:
       numbers = set()
       graph = self.TREE_GRAPHS[g]
       for s, p, o in graph.triples((None, None, None)):
-        no,name = self.__extractNumber(s)
+        no, name = self.__extractNumber(s)
         numbers.add(no)
         no, name = self.__extractNumber(o)
         numbers.add(no)
       numbers.remove(-1)
       tree_brick_numbers[g] = sorted(numbers)
-      print("graph %s has %s bricks"%(g, len(tree_brick_numbers[g])))
-
-
+      number_of_bricks = len(tree_brick_numbers[g])
+      print("graph %s has %s bricks" % (g, number_of_bricks))
 
     for g in self.TREE_GRAPHS:
       graph = self.TREE_GRAPHS[g]
@@ -486,9 +484,9 @@ class DataModel:
 
       tree_name_space_item = makeItemURI(g, "")
 
-      for s,p,o in graph.triples((None,None,None)):
-        s_no,s_name = self.__extractNumber(s)
-        o_no,o_name = self.__extractNumber(o)
+      for s, p, o in graph.triples((None, None, None)):
+        s_no, s_name = self.__extractNumber(s)
+        o_no, o_name = self.__extractNumber(o)
         if s_no == -1:
           s_ = URIRef(tree_name_space_item + "%s" % (s_name))
         else:
@@ -503,65 +501,7 @@ class DataModel:
 
       self.TREE_GRAPHS[g] = mapped_graph
       self.brick_counter[g] = len(tree_brick_numbers[g])
-
-
-
-      # count = 0
-      # mapped_graphs[g] = Graph("Memory")
-      old_triples = set()
-    #   for triple in self.TREE_GRAPHS[g].triples((None,None,None)):
-    #     old_triples.add(triple)
-    #
-    #
-    #
-    #   for old_number, name in enumerates[g]:
-    #     tree_name_space_item = makeItemURI(g, "")
-    #     if old_number == -1:
-    #       s_ = URIRef(tree_name_space_item + "%s" % (name))
-    #       o_ = URIRef(tree_name_space_item + "%s" % (name))
-    #       s_new = s_
-    #       o_new = o_
-    #     else:
-    #       s_ = URIRef(tree_name_space_item + "%s_%s" % (old_number, name))
-    #       o_ = URIRef(tree_name_space_item + "%s_%s" % (old_number, name))
-    #       s_new = URIRef(tree_name_space_item + "%s_%s" % (numbers.index(old_number), name))
-    #       o_new = URIRef(tree_name_space_item + "%s_%s" % (numbers.index(old_number), name))
-    #
-    #     triple = (s_, None, o_)
-    #     for s,p,o in self.TREE_GRAPHS[g].triples(triple):
-    #       new_triple = s_new,p,o_new
-    #       if (s,p,o) in old_triples:
-    #         mapped_graphs[g].add(new_triple)
-    #         old_triples.remove((s,p,o))
-    #
-    #     triple = (s_, None, None)
-    #     for s,p,o in self.TREE_GRAPHS[g].triples(triple):
-    #       print(s,p,o)
-    #       new_triple = s_new, p, o
-    #       if (s,p,o) in old_triples:
-    #         mapped_graphs[g].add(new_triple)
-    #         old_triples.remove((s,p,o))
-    #
-    #     triple = (None, None, o_)
-    #     for s,p,o in self.TREE_GRAPHS[g].triples(triple):
-    #       print(s,p,o)
-    #       new_triple = s, p, o_new
-    #       if (s,p,o) in old_triples:
-    #         mapped_graphs[g].add(new_triple)
-    #         old_triples.remove((s,p,o))
-    #
-    #   for t in old_triples:
-    #     mapped_graphs[g].add(t)
-    # self.brick_counter[g] = len(numbers)+1
-    #   # del self.TREE_GRAPHS[g]
-    # self.TREE_GRAPHS = mapped_graphs
-
-
-
-
-
-    pass
-
+    return tree_brick_numbers
 
   def newTree(self, tree_name, brick_name):
 
@@ -590,7 +530,7 @@ class DataModel:
                                      self.tree_name_space)
     self.TREE_GRAPHS[tree_name].bind(tree_name,
                                      self.tree_name_space_item)
-    self.linkBrickToItem(tree_name,None,brick_name,True)
+    self.linkBrickToItem(tree_name, None, brick_name, True)
 
     # clean up bricks
     # self.BRICK_GRAPHS[brick_name] = copy_brick

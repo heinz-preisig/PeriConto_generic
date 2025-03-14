@@ -166,10 +166,14 @@ class TreePlot:
 
 
   def __init__(self, graph_name, graph_triples, class_names):
+    self.graph_name = graph_name
     self.classes = class_names
     self.triples = graph_triples
     self.dot = Digraph(graph_name)
-    self.dot.graph_attr["rankdir"] = "LR"
+    self.dot.graph_attr["rankdir"] = "LR"  # Set graph direction Left to Right
+    # self.dot.graph_attr["label"] = "Graph of : %s"%graph_name  # Add a title
+    # self.dot.graph_attr["labelloc"] = "t"  # Position title at the top
+    # self.dot.graph_attr["fontsize"] = "16"  # Adjust font size of the title
 
     self.nodes = set()
 
@@ -195,6 +199,7 @@ class TreePlot:
       colour = EDGE_COLOURS[type]
     except:
       colour = EDGE_COLOURS["other"]
+    print("from-to", From, To)
     if dir == -1:
       self.dot.edge(From, To,
                     color=colour,
@@ -211,9 +216,25 @@ class TreePlot:
   def makeMe(self, root):
     self.addNode(root, "Class")
     self.__makeGraph(origin=[root], stack=[])
-    print("nodes ", self.nodes, len(self.nodes))
+    # print("nodes ", self.nodes)
+
+    no_nodes = len(self.nodes)
+    # Add a standalone annotation (invisible node with label)
+    # self.dot.node('note', 'number of nodes %s'%no_nodes, shape='plaintext')
+
+    # with self.dot.subgraph() as s:
+    #   s.attr(rank='source')  # Push to the top
+    #   s.attr(rank='sink')  # Push to the bottom
+    #   s.node('note')  # Ensure it's part of the subgraph
+
+    self.dot.graph_attr["label"] = "Graph of : %s with %s nodes\n"%(self.graph_name, no_nodes)  # Add a title
+    self.dot.graph_attr["labelloc"] = "t"  # Position title at the top
+    self.dot.graph_attr["fontsize"] = "20"  # Adjust font size of the title
+    self.dot.graph_attr["ranksep"] = "1.5"
+    print("number of nodes:", no_nodes)
 
   def __makeGraph(self, origin=[], stack=[]):
+    defined_nodes = set()
     for q in self.triples:
       if q not in stack:
         s, p, o, dir = q
@@ -223,7 +244,12 @@ class TreePlot:
           # print("that's an s", s, type)
           if str(s) == "":
             pass
-          self.addNode(o, type)
+          if o not in defined_nodes:
+            self.addNode(o, type)
+            defined_nodes.add(o)
+          if s not in defined_nodes:
+            self.addNode(s, type)
+            defined_nodes.add(s)
           self.addEdge(s, o, p, dir)
           stack.append(q)  # (s, p, o))
           self.__makeGraph(origin=s, stack=stack)

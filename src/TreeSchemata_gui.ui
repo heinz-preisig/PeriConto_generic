@@ -70,6 +70,14 @@
      </item>
      <item>
       <widget class="QLabel" name="labelProject">
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+         <weight>75</weight>
+         <italic>true</italic>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="text">
         <string/>
        </property>

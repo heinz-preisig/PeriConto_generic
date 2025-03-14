@@ -199,13 +199,14 @@ class OntobuilderUI(QMainWindow):
   def on_pushOntologySaveAs_pressed(self):
     debugging("-- pushOntologySaveAs")
     dialog = UI_String("save as", "new name")
-    name = dialog.text
-    if name:
+    project_name = dialog.text
+    if project_name:
       message = {
               "event"       : "save as",
-              "project_name": name
+              "project_name": project_name
               }
       self.backend.processEvent(message)
+      self.ui.labelProject.setText(project_name)
       self.markSaved()
 
   def on_pushTreeCreate_pressed(self):
