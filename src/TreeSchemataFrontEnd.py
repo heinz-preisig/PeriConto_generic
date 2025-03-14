@@ -184,6 +184,7 @@ class OntobuilderUI(QMainWindow):
             "project_name": project_name
             }
     self.backend.processEvent(message)
+    self.ui.labelProject.setText(project_name)
     # self.ui.statusbar.showMessage("loading file")
 
   def on_pushOntologySave_pressed(self):

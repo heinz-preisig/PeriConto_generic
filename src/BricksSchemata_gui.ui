@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>963</width>
+    <width>776</width>
     <height>963</height>
    </rect>
   </property>
@@ -23,13 +23,58 @@
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>0</y>
-      <width>351</width>
+      <x>20</x>
+      <y>20</y>
+      <width>721</width>
       <height>51</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="labelProject">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="LED">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>20</horstretch>
+         <verstretch>20</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Ontology Bricks</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
      <item>
       <spacer name="horizontalSpacer_11">
        <property name="orientation">
@@ -71,7 +116,7 @@
      <rect>
       <x>20</x>
       <y>84</y>
-      <width>891</width>
+      <width>721</width>
       <height>51</height>
      </rect>
     </property>
@@ -146,28 +191,10 @@
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>231</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>20</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Ontology Bricks</string>
-    </property>
-   </widget>
    <widget class="QTreeWidget" name="brickTree">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>410</x>
       <y>400</y>
       <width>341</width>
       <height>411</height>
@@ -189,7 +216,7 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>410</x>
       <y>200</y>
       <width>160</width>
       <height>161</height>
@@ -271,28 +298,9 @@
      <rect>
       <x>20</x>
       <y>400</y>
-      <width>171</width>
+      <width>351</width>
       <height>411</height>
      </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="LED">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>20</y>
-      <width>20</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>20</horstretch>
-      <verstretch>20</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
   </widget>

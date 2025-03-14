@@ -15,7 +15,7 @@ ITEM_IDENTIFIERS = BASE + CLASS_SEPARATOR + "%s" + ITEM_SEPARATOR
 ITEM_IDENTIFIERS_COUNTED = BASE + CLASS_SEPARATOR + "%s_%s" + ITEM_SEPARATOR
 
 # ONTOLOGY_REPOSITORY = "../ontologyRepository"
-ONTOLOGY_REPOSITORY = "../../PeriContoOntologyRepository"
+ONTOLOGY_REPOSITORY = "../../PeriConto-Ontologies"
 
 FILE_FORMAT = "trig"
 FILE_FORMAT_ = "json-ld"
