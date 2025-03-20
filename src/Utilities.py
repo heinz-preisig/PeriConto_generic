@@ -144,10 +144,16 @@ NODE_SPECS = {
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "linked"   : {
+        "link"   : {
                 "colour"   : "green",
                 "shape"    : "rectangle",
                 "fillcolor": "white",
+                "style"    : "filled",
+                },
+        "LinkedClass"   : {
+                "colour"   : "green",
+                "shape"    : "rectangle",
+                "fillcolor": "green",
                 "style"    : "filled",
                 },
         "other"    : {
@@ -199,13 +205,13 @@ class TreePlot:
       colour = EDGE_COLOURS[type]
     except:
       colour = EDGE_COLOURS["other"]
-    print("from-to", From, To)
-    if dir == -1:
+    # print("from-to", From, To)
+    if dir == 1:
       self.dot.edge(From, To,
                     color=colour,
                     label=type
                     )
-    elif dir == 1:
+    elif dir == -1:
       self.dot.edge(To, From,
                     color=colour,
                     label=type
@@ -234,22 +240,27 @@ class TreePlot:
     print("number of nodes:", no_nodes)
 
   def __makeGraph(self, origin=[], stack=[]):
-    defined_nodes = set()
     for q in self.triples:
       if q not in stack:
         s, p, o, dir = q
         if s != origin:
           type = RULES[p]
-          # print("that's an o", o)
-          # print("that's an s", s, type)
+          print("that's s, o, dir, type --- ",s, o, dir, type)
           if str(s) == "":
             pass
-          if o not in defined_nodes:
+          # if o not in defined_nodes:
+          if (dir == 1) and (type != "LinkedClass"):
             self.addNode(o, type)
-            defined_nodes.add(o)
-          if s not in defined_nodes:
+            print("added node ", o, type)
+          # if s not in defined_nodes:
+          else:
             self.addNode(s, type)
-            defined_nodes.add(s)
+            print("added node ", s, type)
+          if type == "LinkedClass":
+            self.addNode(o, "link")
+            self.addNode(s, type)
+            print("added linked node ", s, type)
+            # defined_nodes.add(s)
           self.addEdge(s, o, p, dir)
           stack.append(q)  # (s, p, o))
           self.__makeGraph(origin=s, stack=stack)
