@@ -1,4 +1,4 @@
-##########::Instructions to use PERICONTO 0.2::####
+##########::Instructions to use PERICONTO 1.0::####
 
 Authors:
     Heinz A Preisig
@@ -11,19 +11,26 @@ a mysterious transluscnet paint ingredient used untill 19th century (https://en.
 
 
 # how to use PERICONTO_generic_0.1 
-    The program is built on pyqt6 and python 3 
+    The program is built on pyqt6 and python 3 and PDM
     
     1. make a project directory
     2. change to project directory
-    3. create and activate a virtual invironment as following 
-        $ python3 -m venv .venv
-        $ source .venv/bin/activate
-    4. Install dependencies (there was an unresolvable error with the package PyQtWebEngine,tested in Python 3.6)
-        $ pip3 install -r requirements.txt ()
+    3. clone PeriConto_generic
+    4. add infrastructure from terminal in the PeriConto directory
+        4.1 change to the new PeriConto directory
+        4.2 init to generate the infrastructure
+        4.3 pdm python install 3.12
+        4.4 pdm sync to install all requirements
     5. Issus with icons -- .svg did not show --> install
        sudo apt-get install python3-pyqt6.qtsvg
-    5. launch the PeriConto's GUI
-        $ python3 PeriConto.py
+    6. add model repository
+        6.1 return to project directory
+        6.2 make new directory with the name PeriConto-Ontologies
+            the current version uses a fixed location and name.
+        6.3 clone PeriConto-Ontologies to get started
+    8. The two tasks are found in PeriConto's scr directory
+        BricksSchemata.py
+        TreeSchemata.py
 
 
 # Information about directories
@@ -31,16 +38,20 @@ a mysterious transluscnet paint ingredient used untill 19th century (https://en.
 
 
 
-        periconto_0.1
-        ├── ontologyRepository  -- quatruple stores and pdf figures of the generated graph
-        ├── README.md
-        └── src
-            ├── attic -- not used
-            ├── resources
-            ├── PeriConto.py
-            ├── PeriConto_gui.py
-            ├── PeriConto_gui.ui
-            └── requirements.txt
+        periconto_1.0
+        ├── PeriConto-Ontologies  -- quatruple stores and pdf figures of the generated graph
+        └── PeriConto├── README.md
+                     ├── pdm.lock
+                     ├── pdm.toml
+                     ├── requirements.txt (not needed)
+                     └── src
+                         ├── resources
+                         ├── tests  (not used)
+                         ├── BrickSchemata.py -- the brick editor
+                         ├── TreeSchemata.py  -- the application tree editor
+                         ├── ...
+                    ├── attic -- not used
+                    ├── notes -- not used
 
 
 
@@ -48,22 +59,23 @@ a mysterious transluscnet paint ingredient used untill 19th century (https://en.
 # What one can do with the periconto?
 
     Currently it allows:
-         1. load an existing ontlogy (<name>.trig)
-            or create a new ontology -- it will ask for file <name>
-            starts a new tree with the root named root
-         2. chose an existing sample ontology. 
-            asks for input file
-         3. one can:
-                . add items to a class
-                . link a class to an item in a class
-                    . either define a new class
-                    . or choose an existing class
-                . add a primitive to a class or a subclass
-                    . primitives are integer, string, comment, decimal, uri
-                . items and primitives can be renamed (double click on name)
-                . unlink items from a class
-                . remove items, primitives and unused classes
-    
-    Not (yet) implented:
-        1. renaming classes
-        2. handling of elucidations
+        Bricks
+         . load an existing brick set (<name>.trig)
+            or create a new brick set -- it will ask for file <name>
+         . add define a new brick
+         . add items to a brick recursively
+         . add primitives
+         . rename bricks, items and primitives
+         . make a graph plot
+         . save or save with new name
+         . delete bricks, items recursively, primitives
+
+        Application trees:
+         . define a new tree base on a selected brick
+         . link a brick to an enabled link (an open-ended item leave)
+         . add a new item to establich a new link point
+         . rename a selected tree
+         . copy a selected tree --> give name
+         . instantiate primitives
+         . reduce instantiated tree --> contains only those paths from root to instantiated primitives
+        
