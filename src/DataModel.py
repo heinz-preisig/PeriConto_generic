@@ -335,7 +335,8 @@ class DataModel:
     s_or_o_new = s_or_o
     if brick_name in str(s_or_o):
       s_name = extractNameFromIRI(s_or_o)
-      s_or_o_new = URIRef(tree_name_space_item + "%s_%s" % (counter, s_name))
+      # s_or_o_new = URIRef(tree_name_space_item + "%s_%s" % (counter, s_name))
+      s_or_o_new = URIRef(tree_name_space_item + "%s" % (s_name))
     return s_or_o_new
 
   def linkBrickToItem(self, tree_name, tree_item_name, brick_name, new_tree=False):
@@ -347,7 +348,8 @@ class DataModel:
       # rule: keep brick name
       tree_name_space = makeClassURI(tree_name)
       tree_name_space_item = makeItemURI(tree_name, "")
-      s_ = URIRef(tree_name_space_item + "%s_%s" % (counter, brick_name))
+      # s_ = URIRef(tree_name_space_item + "%s_%s" % (counter, brick_name))
+      s_ = URIRef(tree_name_space_item + "%s" % (brick_name))
 
       if new_tree:
         o_ = URIRef(tree_name_space)
