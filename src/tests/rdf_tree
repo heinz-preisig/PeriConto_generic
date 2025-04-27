@@ -1,0 +1,29 @@
+// RDF Tree
+digraph {
+	node [shape=ellipse]
+	ABC
+	A
+	ABC -> A
+	Ab
+	A -> Ab
+	Int
+	A -> Int
+	""
+	Int -> ""
+	K
+	ABC -> K
+	B
+	K -> B
+	S
+	B -> S
+	""
+	S -> ""
+	L
+	ABC -> L
+	B
+	L -> B
+	S
+	B -> S
+	""
+	S -> ""
+}
