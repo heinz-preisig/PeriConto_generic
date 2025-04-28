@@ -1,4 +1,7 @@
-from rdflib import Graph, URIRef, Namespace
+from rdflib import Graph
+from rdflib import Namespace
+
+from treeid import ObjectTree
 
 ABC = Namespace("http://example.org/ABC#")
 RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
@@ -88,40 +91,51 @@ ABC:A rdfs:member ABC:ABC .
 ABC:ABC a ABC:Class .
 """)
 
+
 def getName(iri):
-    return iri.split("#")[-1]
-def depth_first_iter(graph, node, in_branch_visited=None, branch=None, current_branch= None, parent=None, depth=0):
-    if parent == None:
-        parent = getName(node)
-    if in_branch_visited is None:
-        in_branch_visited = set()
-    if branch is None:
-        branch = set()
-    if current_branch == None:
-        current_branch = getName(node)
+  return iri.split("#")[-1]
 
-    yield (depth, node, current_branch, parent)
-    in_branch_visited.add(node)
 
-    for child, p, target in sorted(graph.triples((None, None, node)), key=lambda t: t[0].split('#')[-1]):
-        if child not in in_branch_visited:
-            parent = getName(target)
-            if p == RDFS.isDefinedBy:
-                branch.add(target)
-                current_branch = getName(target)
-                yield from depth_first_iter(graph, child, in_branch_visited=set(), branch=branch, current_branch=current_branch, parent=parent,depth=depth + 1)
-            else:
-                yield from depth_first_iter(graph, child, in_branch_visited=in_branch_visited, branch=branch, current_branch=current_branch, parent=parent,depth=depth + 1)
+def depth_first_iter(graph, node, in_branch_visited=None, branch=None, current_branch=None, parent=None, depth=0):
+  if not parent :
+    # parent = getName(node)
+    parent = node
+  if not in_branch_visited:
+    in_branch_visited = set()
+  if not branch:
+    branch = set()
+  if not current_branch:
+    current_branch = getName(node)
 
+
+  yield (depth, node, current_branch, parent)
+  in_branch_visited.add(node)
+
+  for child, p, target in sorted(graph.triples((None, None, node)), key=lambda t: t[0].split('#')[-1]):
+    if child not in in_branch_visited:
+      # parent = getName(target)
+      parent = target
+      if p == RDFS.isDefinedBy:
+        branch.add(target)
+        current_branch = getName(target)
+        yield from depth_first_iter(graph, child, in_branch_visited=set(), branch=branch, current_branch=current_branch, parent=parent, depth=depth + 1)
+      else:
+        yield from depth_first_iter(graph, child, in_branch_visited=in_branch_visited, branch=branch, current_branch=current_branch, parent=parent, depth=depth + 1)
+
+
+
+tree = ObjectTree(ABC.ABC)
 # Example usage:
 for depth, node, current_branch, parent in depth_first_iter(g3, ABC.ABC):
-    print(current_branch, parent)
-    print("  " * depth + node.split('#')[-1])
+  # print(current_branch, parent)
+  # print("  " * depth + node.split('#')[-1])
+  tree.addChildtoNode(node,parent)
+  print(parent, node)
 
-
+print(tree)
 
 # output:
-#g::
+# g::
 # ABC
 #     A
 #         Ab
@@ -135,7 +149,7 @@ for depth, node, current_branch, parent in depth_first_iter(g3, ABC.ABC):
 #         B
 #             S
 
-#g3::
+# g3::
 # ABC
 #   A
 #       Ab
