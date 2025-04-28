@@ -88,25 +88,34 @@ ABC:A rdfs:member ABC:ABC .
 ABC:ABC a ABC:Class .
 """)
 
-def depth_first_iter(graph, node, in_branch_visited=None, branch=None, depth=0):
+def getName(iri):
+    return iri.split("#")[-1]
+def depth_first_iter(graph, node, in_branch_visited=None, branch=None, current_branch= None, parent=None, depth=0):
+    if parent == None:
+        parent = getName(node)
     if in_branch_visited is None:
         in_branch_visited = set()
     if branch is None:
         branch = set()
+    if current_branch == None:
+        current_branch = getName(node)
 
-    yield (depth, node)
+    yield (depth, node, current_branch, parent)
     in_branch_visited.add(node)
 
     for child, p, target in sorted(graph.triples((None, None, node)), key=lambda t: t[0].split('#')[-1]):
         if child not in in_branch_visited:
+            parent = getName(target)
             if p == RDFS.isDefinedBy:
                 branch.add(target)
-                yield from depth_first_iter(graph, child, in_branch_visited=set(), branch=branch, depth=depth + 1)
+                current_branch = getName(target)
+                yield from depth_first_iter(graph, child, in_branch_visited=set(), branch=branch, current_branch=current_branch, parent=parent,depth=depth + 1)
             else:
-                yield from depth_first_iter(graph, child, in_branch_visited=in_branch_visited, branch=branch, depth=depth + 1)
+                yield from depth_first_iter(graph, child, in_branch_visited=in_branch_visited, branch=branch, current_branch=current_branch, parent=parent,depth=depth + 1)
 
 # Example usage:
-for depth, node in depth_first_iter(g3, ABC.ABC):
+for depth, node, current_branch, parent in depth_first_iter(g3, ABC.ABC):
+    print(current_branch, parent)
     print("  " * depth + node.split('#')[-1])
 
 
