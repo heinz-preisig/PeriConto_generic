@@ -1,4 +1,3 @@
 Babel
 graphviz
 PyQt6
-rdflib

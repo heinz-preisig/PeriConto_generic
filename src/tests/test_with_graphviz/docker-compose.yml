@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  pyqt-graphviz:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - .:/app
+    # For Linux users, ensure X11 access is granted before running:
+    # xhost +local:docker
+    # For macOS users with XQuartz or Windows users with VcXsrv, use:
+    # DISPLAY=host.docker.internal:0 docker-compose up

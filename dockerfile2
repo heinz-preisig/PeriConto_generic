@@ -1,0 +1,84 @@
+# Stage 1: Build environment
+FROM ubuntu:22.04 AS builder
+ENV DEBIAN_FRONTEND=noninteractive
+# Install only the packages needed for building
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    libgl1-mesa-glx \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    
+# Create and activate virtual environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+# Install PyQt5 in the virtual environment
+RUN pip3 install --no-cache-dir PyQt6
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Stage 2: Runtime environment
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+# Copy the virtual environment from the builder stage
+COPY --from=builder /opt/venv /opt/venv
+# Set environment variables for virtual environment
+ENV PATH="/opt/venv/bin:$PATH"
+# Install only runtime dependencies, not build tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 \
+    libegl1 \
+    libxext6 \
+    libx11-6 \
+    libxkbcommon-x11-0 \
+    libsm6 \
+    libice6 \
+    libxcb1 \
+    libxcb-icccm4 \
+    libxcb-image0 \
+    libxcb-keysyms1 \
+    libxcb-randr0 \
+    libxcb-render-util0 \
+    libxcb-shape0 \
+    libxcb-shm0 \
+    libxcb-sync1 \
+    libxcb-xfixes0 \
+    libxcb-xinerama0 \
+    libxcb-xkb1 \
+    libx11-xcb1 \
+    libglib2.0-0 \
+    libdbus-1-3 \
+    libxkbcommon0 \
+    ibus \
+#    python3 \
+#    python3-minimal \    
+#    graphviz \
+#	texlive-science \
+#	texlive-latex-extra \
+#	dvipng\
+#	imagemagick\
+#	python3-simplejson \
+#	python3-ujson \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    
+    
+# Set Qt plugin path and other environment variables
+ENV QT_QPA_PLATFORM_PLUGIN_PATH=/opt/venv/lib/python3.10/site-packages/PyQt6/Qt6/plugins
+#ENV QT_DEBUG_PLUGINS=1   # can be omitted
+ENV QT_XCB_GL_INTEGRATION=none
+ENV QT_IM_MODULE=ibus
+ENV XMODIFIERS=@im=ibus
+ENV GTK_IM_MODULE=ibus
+RUN mkdir "Ontology_Repository"
+WORKDIR /PeriConto
+COPY ./src/ src/
+## Set the DISPLAY environment variable
+ENV DISPLAY=:0
+# Set the DISPLAY environment variable
+#ENV DISPLAY=:0
+ENV XDG_RUNTIME_DIR="/PeriConto/src/"
+RUN chmod 0700 /PeriConto/src
+#RUN chmod +x /PeriConto/src/*.sh
+WORKDIR /PeriConto/src 
+#CMD ["bash", "cd /ProMo/tasks"]
+CMD ["python3", "graphviz_test.py"]
