@@ -37,52 +37,15 @@ import copy
 
 
 def invertDict(dictionary):
+  """
+  inverts a dictionary i.e. it returns a dictionary where the keys of the
+  original dictionary are the values of the new dictionary and vice versa.
+  :param dictionary: dictionary to be inverted
+  :return: inverted dictionary
+  """
   return dict(zip(dictionary.values(), list(dictionary.keys())))
 
 
-# # TODO: replace the other walk methods with these functions
-#
-# def walkDepthFirstFnc(tree, id):
-#   #   for child in self[id]['children']:
-#   #     if self[child]['children'] == []:
-#   #       #                print child, 'is a leave'
-#   #       yield child, 'leave'
-#   #     else:
-#   #       yield child, 'node'
-#   #       for x in self.walkDepthFirst(child):
-#   #         self.walkDepthFirst(x)
-#   #         #                    print 'walk' , x, '    kids ', self[x]['children']
-#   #         yield x
-#   #
-#   # def get_depth_first_nodes(self, id):
-#   nodes = []
-#   stack = [id]
-#   while stack:
-#     cur_node = stack[0]
-#     stack = stack[1:]
-#     nodes.append(cur_node)
-#     for child in reversed(tree[cur_node]["children"]):  # .get_rev_children():
-#       stack.insert(0, child)
-#   return nodes
-#
-#
-# def walkBreathFirstFnc(tree, id):
-#   # BFS(v)
-#   #   let neighbours be the set of all  neighbours of  vertex  v
-#   #   for neighbor in neighbors:
-#   #     if neighbor is not visited:
-#   #       visit neighbour
-#   #   for neighbor in neighbors:
-#   #     recurisvely call BFS(neighbor)
-#   nodes = []
-#   stack = [id]
-#   while stack:
-#     cur_node = stack[0]
-#     stack = stack[1:]
-#     nodes.append(cur_node)
-#     for child in tree[cur_node]["children"]:  # cur_node.get_children():
-#       stack.append(child)
-#   return nodes
 
 
 class ObjectTree(dict):
@@ -163,6 +126,8 @@ class ObjectTree(dict):
       taggedTree[self["nodes"][i]]["children"] = children
       taggedTree[self["nodes"][i]]["ancestors"] = ancestors
     return taggedTree
+
+
 
 
 class Tree(dict):

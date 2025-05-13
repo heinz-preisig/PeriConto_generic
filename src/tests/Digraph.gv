@@ -1,0 +1,35 @@
+// RDF Tree
+digraph {
+	rankdir=TB
+	1 [label=ABC]
+	2 [label=A]
+	1 -> 2
+	3 [label=Ab]
+	2 -> 3
+	4 [label=B]
+	3 -> 4
+	5 [label=S]
+	4 -> 5
+	6 [label=""]
+	5 -> 6
+	7 [label=Int]
+	2 -> 7
+	8 [label=""]
+	7 -> 8
+	9 [label=K]
+	1 -> 9
+	10 [label=B]
+	9 -> 10
+	11 [label=S]
+	10 -> 11
+	12 [label=""]
+	11 -> 12
+	13 [label=L]
+	1 -> 13
+	14 [label=B]
+	13 -> 14
+	15 [label=S]
+	14 -> 15
+	16 [label=""]
+	15 -> 16
+}
