@@ -4,6 +4,7 @@ from graphviz import Digraph
 
 from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import RULES
+from rdflib import Namespace
 
 DEBUGG = False
 
@@ -18,6 +19,40 @@ def classCase(word):
 def debugging(*info):
   if DEBUGG:
     print("debugging", info)
+
+def getName(iri):
+  return iri.split("#")[-1]
+
+
+RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
+RDF = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+
+def depth_first_iter(graph, node, in_branch_visited=None, branch=None, current_branch=None, parent=None, depth=0):
+  if not parent:
+    # parent = getName(node)
+    parent = node
+  if not in_branch_visited:
+    in_branch_visited = set()
+  if not branch:
+    branch = set()
+  if not current_branch:
+    current_branch = getName(node)
+
+  yield (depth, node, current_branch, parent)
+  in_branch_visited.add(node)
+
+  for child, p, target in sorted(graph.triples((None, None, node)), key=lambda t: t[0].split('#')[-1]):
+    if child not in in_branch_visited:
+      # parent = getName(target)
+      parent = target
+      if p == RDFS.isDefinedBy:
+        branch.add(target)
+        current_branch = getName(target)
+        yield from depth_first_iter(graph, child, in_branch_visited=set(), branch=branch,
+                                    current_branch=current_branch, parent=parent, depth=depth + 1)
+      else:
+        yield from depth_first_iter(graph, child, in_branch_visited=in_branch_visited, branch=branch,
+                                    current_branch=current_branch, parent=parent, depth=depth + 1)
 
 
 def getFilesAndVersions(abs_name, ext):

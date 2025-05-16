@@ -207,13 +207,15 @@ class BackEnd():
       tree_name = message["tree_name"]
     except:
       tree_name = self.memory["tree_name"]
-    dataTreeTuples = self.dataModel.makeDataTuplesForGraph(tree_name, "tree_name")
+    # dataTreeTuples = self.dataModel.makeDataTuplesForGraph(tree_name, "tree_name")
     print("getting tuples", time.time() - start)
 
-    existing_item_names = self.dataModel.getAllNamesInTheBrick(tree_name,
-                                                               "tree")
+    # existing_item_names = self.dataModel.getAllNamesInTheBrick(tree_name,
+    #                                                            "tree")
 
-    self.frontEnd.showTreeTree(dataTreeTuples, tree_name, existing_item_names)
+    # self.frontEnd.showTreeTree(dataTreeTuples, tree_name, existing_item_names)
+    graph = self.dataModel.getGraph(tree_name, "tree_name")
+    self.frontEnd.showNewTreeTree(graph, tree_name)
     pass
 
     # ======================== trees

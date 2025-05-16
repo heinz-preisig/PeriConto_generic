@@ -31,7 +31,7 @@ import time
 
 from BricksAndTreeSemantics import FILE_FORMAT
 from TreeSchemataBackEnd import BackEnd
-from Utilities import classCase
+from Utilities import classCase, depth_first_iter
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -394,6 +394,12 @@ class OntobuilderUI(QMainWindow):
     self.treeList = treeList
     self.ui.listTrees.clear()
     self.ui.listTrees.addItems(treeList)
+
+  def showNewTreeTree(self, graph, root):
+    pass
+    for depth, node, current_branch, parent in depth_first_iter(graph, root):
+      print(node)
+
 
   def showTreeTree(self, tuples, origin, existing_item_names):
     self.existing_item_names = existing_item_names

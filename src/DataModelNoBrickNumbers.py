@@ -19,7 +19,7 @@ from BricksAndTreeSemantics import makeItemURI
 from Utilities import debugging
 from Utilities import find_path_back_triples
 from Utilities import get_subtree
-from Utilities import saveBackupFile
+from Utilities import saveBackupFile, getName, depth_first_iter
 
 
 # DEBUGG = False
@@ -48,7 +48,7 @@ class DataModel:
     # self.file_name_trees = self.makeFileName(project_name, what="trees")
     exists = os.path.exists(self.file_name_trees)
     if exists:
-      self.TREE_GRAPHS, _ = self.__loadFromFile(self.file_name_trees)
+      self.TREE_GRAPHS, tree_namespaces = self.__loadFromFile(self.file_name_trees)
 
     self.number_of_bricks = self.reEnumerateGraph()
 
@@ -581,3 +581,14 @@ class DataModel:
     inf = open(fs, "w")
     inf.write(conjunctiveGraph.serialize(format="turtle"))
     inf.close()
+
+
+  def getGraph(self, graphName, what):
+    if what == "bricks":
+      graph = self.BRICK_GRAPHS[graphName]
+    else:
+      graph = self.TREE_GRAPHS[graphName]
+
+    # Example usage:
+    # for depth, node, current_branch, parent in depth_first_iter(g3, ABC.ABC):
+    return graph
