@@ -214,8 +214,8 @@ class BackEnd():
     #                                                            "tree")
 
     # self.frontEnd.showTreeTree(dataTreeTuples, tree_name, existing_item_names)
-    graph = self.dataModel.getGraph(tree_name, "tree_name")
-    self.frontEnd.showNewTreeTree(graph, tree_name)
+    graph, root = self.dataModel.getGraph(tree_name, "tree_name")
+    self.frontEnd.showNewTreeTree(graph, root)
     pass
 
     # ======================== trees

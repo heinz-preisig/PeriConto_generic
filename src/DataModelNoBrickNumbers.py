@@ -15,7 +15,7 @@ from BricksAndTreeSemantics import RDFSTerms
 from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
-from BricksAndTreeSemantics import makeItemURI
+from BricksAndTreeSemantics import makeItemURI, BASE
 from Utilities import debugging
 from Utilities import find_path_back_triples
 from Utilities import get_subtree
@@ -27,8 +27,8 @@ from Utilities import saveBackupFile, getName, depth_first_iter
 
 class DataModel:
   def __init__(self, root):
-    self.namespaces = {}
-
+    self.brick_namespaces = {}
+    self.tree_namespaces = {}
     self.BRICK_GRAPHS = {}
     self.TREE_GRAPHS = {}
     self.file_name_bricks = self.makeFileName(root, what="bricks")
@@ -43,14 +43,15 @@ class DataModel:
     """
 
     # self.file_name_bricks = self.makeFileName(project_name, what="bricks")
-    self.BRICK_GRAPHS, self.namespaces = self.__loadFromFile(self.file_name_bricks)
+    self.BRICK_GRAPHS, self.brick_namespaces = self.__loadFromFile(self.file_name_bricks)
 
     # self.file_name_trees = self.makeFileName(project_name, what="trees")
     exists = os.path.exists(self.file_name_trees)
     if exists:
-      self.TREE_GRAPHS, tree_namespaces = self.__loadFromFile(self.file_name_trees)
+      self.TREE_GRAPHS, self.tree_namespaces = self.__loadFromFile(self.file_name_trees)
 
-    self.number_of_bricks = self.reEnumerateGraph()
+    # TODO: clean  by removing the ones that are not in the base
+    self.number_of_bricks = self.reEnumerateGraph()   #TODO: remove EnumbereateGraph
 
   def __extractNumber(self, s):
     """
@@ -90,7 +91,9 @@ class DataModel:
 
     namespaces = {}
     for (prefix, namespace) in data.namespaces():
-      namespaces[prefix] = namespace
+      if BASE in namespace:
+        namespaces[prefix] = namespace
+
 
     return GRAPHS, namespaces
     pass
@@ -133,7 +136,7 @@ class DataModel:
     triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
     graphs[brick_name].add(triple)
     graphs[brick_name].bind(brick_name, classURI)
-    self.namespaces[brick_name] = classURI
+    self.brick_namespaces[brick_name] = classURI
     graphs[brick_name].bind(brick_name, itemURI)
     pass
 
@@ -279,7 +282,7 @@ class DataModel:
       what_graphs = self.TREE_GRAPHS
     self.newBrickOrTreeGraph(brickORtrees, newName)
     new_graph = what_graphs[newName]
-    self.namespaces[newName] = Namespace(makeItemURI(newName, newName))
+    self.brick_namespaces[newName] = Namespace(makeItemURI(newName, newName))
     old_graph = what_graphs[oldName]
 
     for s, p, o in old_graph.triples((None, None, None)):
@@ -434,7 +437,7 @@ class DataModel:
       g = self.TREE_GRAPHS[tree_name_instantiated] = Graph("Memory")
 
       classURI = makeClassURI(tree_name_instantiated)
-      self.namespaces[tree_name_instantiated] = classURI
+      self.brick_namespaces[tree_name_instantiated] = classURI
       triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
       self.TREE_GRAPHS[tree_name_instantiated].add(triple)
 
@@ -505,25 +508,20 @@ class DataModel:
       # self.brick_counter[g] = len(tree_brick_numbers[g])
     return tree_brick_numbers
 
-  def newTree(self, tree_name, brick_name):
+  def newTree(self, tree_name, brick_name): #TODO: fix name spaces
 
-    brick = self.BRICK_GRAPHS[brick_name]
-    # copy_brick = copy.deepcopy(brick)
-
-    # self.renameBrick(brick_name, tree_name)
-    # named_brick = self.BRICK_GRAPHS[tree_name]
-    # self.TREE_GRAPHS[tree_name] = copy.deepcopy(named_brick)
+    # brick = self.BRICK_GRAPHS[brick_name]
     self.TREE_GRAPHS[tree_name] = Graph("Memory")
 
     classURI = makeClassURI(tree_name)
-    self.namespaces[tree_name] = classURI
+    self.brick_namespaces[tree_name] = classURI
     # triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
     # self.TREE_GRAPHS[tree_name].add(triple)
 
     self.tree_name_space = makeClassURI(tree_name)
     self.tree_name_space_item = makeItemURI(tree_name, "")
 
-    self.namespaces[tree_name] = classURI
+    self.brick_namespaces[tree_name] = classURI
     triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
     self.TREE_GRAPHS[tree_name].add(triple)
 
@@ -533,37 +531,7 @@ class DataModel:
     self.TREE_GRAPHS[tree_name].bind(tree_name,
                                      self.tree_name_space_item)
     self.linkBrickToItem(tree_name, None, brick_name, True)
-
-    # clean up bricks
-    # self.BRICK_GRAPHS[brick_name] = copy_brick
-    # del self.BRICK_GRAPHS[tree_name]
     pass
-
-    # brick = self.BRICK_GRAPHS[brick_name]
-    # copy_brick = copy.deepcopy(brick)
-    #
-    # self.renameBrick(brick_name, tree_name)
-    # named_brick = self.BRICK_GRAPHS[tree_name]
-    # self.TREE_GRAPHS[tree_name] = copy.deepcopy(named_brick)
-    #
-    # classURI = makeClassURI(tree_name)
-    # self.namespaces[tree_name] = classURI
-    # triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
-    # self.TREE_GRAPHS[tree_name].add(triple)
-    #
-    # self.tree_name_space = makeClassURI(tree_name)
-    # self.tree_name_space_item = makeItemURI(tree_name, "")
-    #
-    # self.brick_counter[tree_name] = 0
-    # self.TREE_GRAPHS[tree_name].bind(tree_name,
-    #                                  self.tree_name_space)
-    # self.TREE_GRAPHS[tree_name].bind(tree_name,
-    #                                  self.tree_name_space_item)
-    #
-    # # clean up bricks
-    # self.BRICK_GRAPHS[brick_name] = copy_brick
-    # del self.BRICK_GRAPHS[tree_name]
-    # pass
 
   def getTreeList(self):
     tree_list = sorted(self.TREE_GRAPHS.keys())
@@ -586,9 +554,13 @@ class DataModel:
   def getGraph(self, graphName, what):
     if what == "bricks":
       graph = self.BRICK_GRAPHS[graphName]
+      namespace = self.brick_namespaces[graphName]
     else:
       graph = self.TREE_GRAPHS[graphName]
+      namespace = self.tree_namespaces[graphName]
+
+    root = URIRef(namespace+graphName)
 
     # Example usage:
     # for depth, node, current_branch, parent in depth_first_iter(g3, ABC.ABC):
-    return graph
+    return graph, root
