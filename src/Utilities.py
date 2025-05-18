@@ -27,7 +27,7 @@ def getName(iri):
 RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 RDF = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
-def depth_first_iter(graph, node, in_branch_visited=None, branch=None, current_branch=None, parent=None, depth=0):
+def depth_first_iter(graph, node, in_branch_visited=None, branch=None, current_branch=None, parent=None, depth=0, predicate=None):
   if not parent:
     # parent = getName(node)
     parent = node
@@ -38,7 +38,7 @@ def depth_first_iter(graph, node, in_branch_visited=None, branch=None, current_b
   if not current_branch:
     current_branch = getName(node)
 
-  yield (depth, node, current_branch, parent)
+  yield (depth, node, current_branch, parent, predicate)
   in_branch_visited.add(node)
 
   for child, p, target in sorted(graph.triples((None, None, node)), key=lambda t: t[0].split('#')[-1]):
@@ -49,10 +49,10 @@ def depth_first_iter(graph, node, in_branch_visited=None, branch=None, current_b
         branch.add(target)
         current_branch = getName(target)
         yield from depth_first_iter(graph, child, in_branch_visited=set(), branch=branch,
-                                    current_branch=current_branch, parent=parent, depth=depth + 1)
+                                    current_branch=current_branch, parent=parent, depth=depth + 1, predicate=p)
       else:
         yield from depth_first_iter(graph, child, in_branch_visited=in_branch_visited, branch=branch,
-                                    current_branch=current_branch, parent=parent, depth=depth + 1)
+                                    current_branch=current_branch, parent=parent, depth=depth + 1,predicate=p)
 
 
 def getFilesAndVersions(abs_name, ext):

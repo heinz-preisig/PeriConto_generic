@@ -64,7 +64,9 @@ changed = False
 COLOURS = {
         "ROOT"         : QtGui.QColor(0, 199, 255),
         "is_member"    : QtGui.QColor(0, 0, 0, 255),
+        "member"    : QtGui.QColor(0, 0, 0, 255),
         "is_defined_by": QtGui.QColor(255, 100, 5, 255),
+        "isdefinedby": QtGui.QColor(255, 100, 5, 255),
         "value"        : QtGui.QColor(230, 165, 75),
         "data_type"    : QtGui.QColor(100, 100, 100),
         "integer"      : QtGui.QColor(155, 155, 255),
@@ -397,37 +399,78 @@ class OntobuilderUI(QMainWindow):
 
   def showNewTreeTree(self, graph, root):
     pass
-    for depth, node, current_branch, parent in depth_first_iter(graph, root):
-      print(node)
-
-
-  def showTreeTree(self, tuples, origin, existing_item_names):
-    self.existing_item_names = existing_item_names
     widget = self.ui.treeTree
-    self.__instantiateTree(origin, tuples, widget)
+    for depth, node, current_branch, parent, predicate in depth_first_iter(graph, root):
+      _, name = node.split("#")
+      _,parent_name = parent.split("#")
+      print(depth,node,current_branch, parent)
+      if node == root:
+        widget.clear()
+        rootItem = QTreeWidgetItem(widget)
+        widget.setColumnCount(1)
+        rootItem.root = name
+        rootItem.setText(0, name)
+        rootItem.setSelected(False)
+        rootItem.type = self.rules["is_class"]
+        rootItem.count = 0
+        widget.addTopLevelItem(rootItem)
+        self.treetop = widget.invisibleRootItem()
+        self.current_class = name
+        items = {name: rootItem}
+      else:
+
+        items[name] = QTreeWidgetItem(items[parent_name])
+        items[name].setText(0,name)
+        items[name].count = 0
+        _,type = predicate.split("#")
+        print(name,parent_name,type)
+        if name == "":
+          items[name].setText(0, type)
+        try:
+          items[name].setForeground(0,QBRUSHES[type])
+        except:
+          pass
+        try:
+          items[name].count +=1
+        except:
+          pass
+
+    widget.show()
+    widget.expandAll()
+    # widget.collapseAll()
     try:
       self.restore_expanded_state()
     except:
       pass
 
-  def __instantiateTree(self, origin, tuples, widget):
-    widget.clear()
-    rootItem = QTreeWidgetItem(widget)
-    widget.setColumnCount(1)
-    rootItem.root = origin
-    rootItem.setText(0, origin)
-    rootItem.setSelected(False)
-    rootItem.type = self.rules["is_class"]
-    rootItem.count = 0
-    widget.addTopLevelItem(rootItem)
-    self.treetop = widget.invisibleRootItem()
-
-    self.current_class = origin
-    self.__makeTree(tuples, origin=origin, stack=[], items={origin: rootItem})
-    # self.__makeNewTree(tuples, origin=origin, stack=[], items={origin: rootItem})
-    widget.show()
-    # widget.expandAll()
-    widget.collapseAll()
+  #
+  # def showTreeTree(self, tuples, origin, existing_item_names):
+  #   self.existing_item_names = existing_item_names
+  #   widget = self.ui.treeTree
+  #   self.__instantiateTree(origin, tuples, widget)
+  #   try:
+  #     self.restore_expanded_state()
+  #   except:
+  #     pass
+  #
+  # def __instantiateTree(self, origin, tuples, widget):
+  #   widget.clear()
+  #   rootItem = QTreeWidgetItem(widget)
+  #   widget.setColumnCount(1)
+  #   rootItem.root = origin
+  #   rootItem.setText(0, origin)
+  #   rootItem.setSelected(False)
+  #   rootItem.type = self.rules["is_class"]
+  #   rootItem.count = 0
+  #   widget.addTopLevelItem(rootItem)
+  #   self.treetop = widget.invisibleRootItem()
+  #
+  #   self.current_class = origin
+  #   self.__makeTree(tuples, origin=origin, stack=[], items={origin: rootItem})
+  #   # self.__makeNewTree(tuples, origin=origin, stack=[], items={origin: rootItem})
+  #   widget.show()
+  #   # widget.expandAll()
+  #   widget.collapseAll()
 
   # def __makeNewTree(self, tuples, origin=[], stack=[], items={}):
   #   for q in tuples:
