@@ -265,7 +265,7 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushTreeAddItem_pressed(self):
     debugging("-- pushBrickAddItem")
-    item_name = self.askForItemName("item name", self.existing_item_names)
+    item_name = self.askForItemName("item name", self.existing_names)
     if not item_name:
       return
     message = {
@@ -276,7 +276,7 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushItemRename_pressed(self):
     debugging("-- pushItemRename")
-    item_name = self.askForItemName("item name", self.existing_item_names)
+    item_name = self.askForItemName("item name", self.existing_names)
     if not item_name:
       return
     message = {
@@ -341,7 +341,7 @@ class OntobuilderUI(QMainWindow):
     name = item.text(column)
     self.ui.treeTree.expandItem(item)
     self.save_expanded_state()
-    type = item.type
+    type = item.node_type
     if type != "Class":
       parent_name = item.parent().text(0)
     else:
@@ -400,38 +400,43 @@ class OntobuilderUI(QMainWindow):
   def showNewTreeTree(self, graph, root):
     pass
     widget = self.ui.treeTree
+
+    self.existing_names = set()
+
+    _, name = root.split("#")
+    count_children = 0
+    widget.clear()
+    rootItem = QTreeWidgetItem(widget)
+    widget.setColumnCount(1)
+    rootItem.root = name
+    rootItem.setText(0, name)
+    rootItem.setSelected(False)
+    rootItem.node_type = self.rules["is_class"]
+    rootItem.count = count_children
+    widget.addTopLevelItem(rootItem)
+    self.treetop = widget.invisibleRootItem()
+    self.current_class = name
+    items = {name: rootItem}
+    self.existing_names.add(name)
+    
     for depth, node, current_branch, parent, predicate in depth_first_iter(graph, root):
       _, name = node.split("#")
+      self.existing_names.add(name)
       _,parent_name = parent.split("#")
       print(depth,node,current_branch, parent)
-      if node == root:
-        widget.clear()
-        rootItem = QTreeWidgetItem(widget)
-        widget.setColumnCount(1)
-        rootItem.root = name
-        rootItem.setText(0, name)
-        rootItem.setSelected(False)
-        rootItem.type = self.rules["is_class"]
-        rootItem.count = 0
-        widget.addTopLevelItem(rootItem)
-        self.treetop = widget.invisibleRootItem()
-        self.current_class = name
-        items = {name: rootItem}
-      else:
-
-        items[name] = QTreeWidgetItem(items[parent_name])
+      if node != root:
+        parent_item = items[parent_name]
+        items[name] = QTreeWidgetItem(parent_item)
         items[name].setText(0,name)
         items[name].count = 0
-        _,type = predicate.split("#")
-        print(name,parent_name,type)
+        items[parent_name].count += 1
+        _,node_type = predicate.split("#")
+        print(name,parent_name,node_type)
+        items[name].node_type = node_type
         if name == "":
-          items[name].setText(0, type)
+          items[name].setText(0, node_type)
         try:
-          items[name].setForeground(0,QBRUSHES[type])
-        except:
-          pass
-        try:
-          items[name].count +=1
+          items[name].setForeground(0,QBRUSHES[node_type])
         except:
           pass
 
@@ -460,7 +465,7 @@ class OntobuilderUI(QMainWindow):
   #   rootItem.root = origin
   #   rootItem.setText(0, origin)
   #   rootItem.setSelected(False)
-  #   rootItem.type = self.rules["is_class"]
+  #   rootItem.node_type = self.rules["is_class"]
   #   rootItem.count = 0
   #   widget.addTopLevelItem(rootItem)
   #   self.treetop = widget.invisibleRootItem()
@@ -481,7 +486,7 @@ class OntobuilderUI(QMainWindow):
   #           # if s != "":
   #           item = QTreeWidgetItem(items[o])
   #           item.count = 0
-  #           item.type = self.rules[p]
+  #           item.node_type = self.rules[p]
   #           item.parent_name = o
   #           item.setForeground(0, QBRUSHES[p])
   #           stack.append(q)  # (s, p, o))
@@ -502,7 +507,7 @@ class OntobuilderUI(QMainWindow):
             # if s != "":
             item = QTreeWidgetItem(items[o])
             item.count = 0
-            item.type = self.rules[p]
+            item.node_type = self.rules[p]
             item.parent_name = o
             item.setForeground(0, QBRUSHES[p])
             stack.append(q)  # (s, p, o))
