@@ -51,7 +51,7 @@ from Utilities import debugging
 
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 
-# DEBUGG = False
+DEBUGG = False
 
 # global expanded_state
 # global tree_name
@@ -349,7 +349,7 @@ class OntobuilderUI(QMainWindow):
     linkpoint = (item.count == 0) and (type == self.rules["is_member"])
     debugging("item count", item.count, linkpoint)
     debugging("-- tree item %s, column %s" % (name, column))
-    event = "do_nothing"
+    # event = "do_nothing"
     if not linkpoint:
       if type in self.primitives:
         value = None

@@ -510,27 +510,28 @@ class DataModel:
 
   def newTree(self, tree_name, brick_name): #TODO: fix name spaces
 
-    # brick = self.BRICK_GRAPHS[brick_name]
-    self.TREE_GRAPHS[tree_name] = Graph("Memory")
+    brick = self.BRICK_GRAPHS[brick_name]
+    graph = self.copyTree(brick_name, tree_name)
+    graph = self.TREE_GRAPHS[tree_name] = Graph("Memory")
 
     classURI = makeClassURI(tree_name)
-    self.brick_namespaces[tree_name] = classURI
-    # triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
-    # self.TREE_GRAPHS[tree_name].add(triple)
+    # self.brick_namespaces[tree_name] = classURI
+    # # triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
+    # # self.TREE_GRAPHS[tree_name].add(triple)
 
-    self.tree_name_space = makeClassURI(tree_name)
+    self.tree_namespaces[tree_name] = classURI #makeClassURI(tree_name)
     self.tree_name_space_item = makeItemURI(tree_name, "")
 
-    self.brick_namespaces[tree_name] = classURI
+    # self.brick_namespaces[tree_name] = classURI
     triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
     self.TREE_GRAPHS[tree_name].add(triple)
 
     # self.brick_counter[tree_name] = 0
     self.TREE_GRAPHS[tree_name].bind(tree_name,
-                                     self.tree_name_space)
-    self.TREE_GRAPHS[tree_name].bind(tree_name,
-                                     self.tree_name_space_item)
-    self.linkBrickToItem(tree_name, None, brick_name, True)
+                                     self.tree_namespaces[tree_name])
+    # self.TREE_GRAPHS[tree_name].bind(tree_name,
+    #                                  self.tree_name_space_item)
+    # self.linkBrickToItem(tree_name, None, brick_name, True)
     pass
 
   def getTreeList(self):
