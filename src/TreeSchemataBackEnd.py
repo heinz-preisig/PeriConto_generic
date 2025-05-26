@@ -37,6 +37,7 @@ class BackEnd():
     self.frontEnd = frontEnd
     self.rules = RULES
     self.frontEnd.setRules(RULES, PRIMITIVES)
+    self.primitive_counter = 0
 
   def processEvent(self, message):
     start = time.time()
@@ -123,6 +124,9 @@ class BackEnd():
     pass
 
   def copyTree(self, message):
+    """
+    copy a tree with a new name
+    """
     tree_to_be_copied_name = self.memory["tree_name"]
     tree_name = message["tree_name"]
     self.dataModel.copyTree(tree_to_be_copied_name, tree_name)
@@ -169,7 +173,8 @@ class BackEnd():
     tree_name = self.memory["tree_name"]
     primitive_type = message["type"]
     value = message["value"]
-    self.dataModel.modifyPrimitiveValue(tree_name, primitive_name, primitive_type, value)
+    path = message["path"]
+    self.dataModel.modifyPrimitiveValue(tree_name, primitive_name, primitive_type, value, path)
 
     pass
 

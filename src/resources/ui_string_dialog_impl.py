@@ -98,6 +98,8 @@ class UI_String(QtWidgets.QDialog):
         val = r"^[a-zA-Z][a-zA-Z0-9]*$"
       elif validator == "name_upper":
         val = r"^[A-Z][A-Z0-9-]*$"
+      elif validator == "string":
+        val = r""
       else:
         makeMessageBox(">>>> should not come here, wrong validator %s"%validator, ["OK"])
 

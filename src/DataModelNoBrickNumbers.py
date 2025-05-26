@@ -222,7 +222,7 @@ class DataModel:
     self.BRICK_GRAPHS[Class].add(triple)
     pass
 
-  def modifyPrimitiveValue(self, tree_name, primitive_name, primitive_type, value):
+  def modifyPrimitiveValue(self, tree_name, primitive_name, primitive_type, value,path):
     pass
     graph = self.TREE_GRAPHS[tree_name]
     primitive_uri = URIRef(makeItemURI(tree_name, primitive_name))
@@ -256,7 +256,7 @@ class DataModel:
     graph.remove(t)
 
   def renameBrick(self, oldName, newName):
-    self.copyBrick("bricks", oldName, newName)
+    self.copyBrickOrTree("brick2brick", oldName, newName)
     del self.BRICK_GRAPHS[oldName]
 
   # def renameTree(self, oldName, newName):
@@ -267,7 +267,7 @@ class DataModel:
   #   del self.brick_counter[oldName]
 
   def copyTree(self, from_name, to_name):
-    self.copyBrick("trees", from_name, to_name)
+    self.copyBrickOrTree("tree2tree", from_name, to_name)
     # self.brick_counter[to_name] = copy.copy(self.brick_counter[from_name])
     pass
 
@@ -275,15 +275,35 @@ class DataModel:
     del self.TREE_GRAPHS[tree_name]
     return
 
-  def copyBrick(self, brickORtrees, oldName, newName):
-    if brickORtrees == "bricks":
-      what_graphs = self.BRICK_GRAPHS
-    elif brickORtrees == "trees":
-      what_graphs = self.TREE_GRAPHS
-    self.newBrickOrTreeGraph(brickORtrees, newName)
-    new_graph = what_graphs[newName]
-    self.brick_namespaces[newName] = Namespace(makeItemURI(newName, newName))
-    old_graph = what_graphs[oldName]
+  def copyBrickOrTree(self, brickORtrees, oldName, newName):
+    new_graph = Graph()
+    # self.classURI = makeClassURI(brick_name)
+    classURI = makeItemURI(newName, newName)
+    itemURI = makeItemURI(newName, "")
+    triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
+    new_graph.add(triple)
+    new_graph.bind(newName, classURI)
+    # self.newNamespaces[newName] = classURI
+    new_graph.bind(newName, itemURI)
+
+    if brickORtrees == "brick2brick":
+      # what_graphs = self.BRICK_GRAPHS
+      old_graph = self.BRICK_GRAPHS[oldName]
+      self.BRICK_GRAPHS[newName] = new_graph
+      self.brick_namespaces[newName] = Namespace(makeItemURI(newName, newName))
+    elif brickORtrees == "trees2tree":
+      old_graph = self.TREE_GRAPHS[oldName]
+      self.TREE_GRAPHS[newName] = new_graph
+      self.tree_namespaces[newName] = Namespace(makeItemURI(newName, newName))
+    elif brickORtrees == "brick2tree":
+      old_graph = self.BRICK_GRAPHS[oldName]
+      self.TREE_GRAPHS[newName] = new_graph
+      self.tree_namespaces[newName] = Namespace(makeItemURI(newName, ""))
+    # self.newBrickOrTreeGraph(brickORtrees, newName)
+
+
+    # new_graph = what_graphs[newName]
+    # old_graph = what_graphs[oldName]
 
     for s, p, o in old_graph.triples((None, None, None)):
       if p != RDFSTerms["is_class"]:
@@ -510,28 +530,28 @@ class DataModel:
 
   def newTree(self, tree_name, brick_name): #TODO: fix name spaces
 
-    brick = self.BRICK_GRAPHS[brick_name]
-    graph = self.copyTree(brick_name, tree_name)
-    graph = self.TREE_GRAPHS[tree_name] = Graph("Memory")
-
-    classURI = makeClassURI(tree_name)
-    # self.brick_namespaces[tree_name] = classURI
-    # # triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
-    # # self.TREE_GRAPHS[tree_name].add(triple)
-
-    self.tree_namespaces[tree_name] = classURI #makeClassURI(tree_name)
-    self.tree_name_space_item = makeItemURI(tree_name, "")
-
-    # self.brick_namespaces[tree_name] = classURI
-    triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
-    self.TREE_GRAPHS[tree_name].add(triple)
-
-    # self.brick_counter[tree_name] = 0
-    self.TREE_GRAPHS[tree_name].bind(tree_name,
-                                     self.tree_namespaces[tree_name])
+    # brick = self.BRICK_GRAPHS[brick_name]
+    graph = self.copyBrickOrTree("brick2tree", brick_name, tree_name)
+    # graph = self.TREE_GRAPHS[tree_name] = Graph("Memory")
+    #
+    # classURI = makeClassURI(tree_name)
+    # # self.brick_namespaces[tree_name] = classURI
+    # # # triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
+    # # # self.TREE_GRAPHS[tree_name].add(triple)
+    #
+    # self.tree_namespaces[tree_name] = classURI #makeClassURI(tree_name)
+    # self.tree_name_space_item = makeItemURI(tree_name, "")
+    #
+    # # self.brick_namespaces[tree_name] = classURI
+    # triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
+    # self.TREE_GRAPHS[tree_name].add(triple)
+    #
+    # # self.brick_counter[tree_name] = 0
     # self.TREE_GRAPHS[tree_name].bind(tree_name,
-    #                                  self.tree_name_space_item)
-    # self.linkBrickToItem(tree_name, None, brick_name, True)
+    #                                  self.tree_namespaces[tree_name])
+    # # self.TREE_GRAPHS[tree_name].bind(tree_name,
+    # #                                  self.tree_name_space_item)
+    # # self.linkBrickToItem(tree_name, None, brick_name, True)
     pass
 
   def getTreeList(self):

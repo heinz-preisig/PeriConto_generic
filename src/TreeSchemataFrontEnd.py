@@ -350,8 +350,16 @@ class OntobuilderUI(QMainWindow):
     debugging("item count", item.count, linkpoint)
     debugging("-- tree item %s, column %s" % (name, column))
     # event = "do_nothing"
+    path = []
     if not linkpoint:
       if type in self.primitives:
+        i = item
+        x = []
+        while i.parent():
+          x.append(i.text(0))
+          i = i.parent()
+        x.append(i.text(0))
+        print(x)
         value = None
         if name not in self.primitives:
           value = name
@@ -374,6 +382,7 @@ class OntobuilderUI(QMainWindow):
                 "value"      : value,
                 "type"       : type,
                 "parent_name": parent_name,
+                "path"       : x,
                 }
         self.backend.processEvent(message)
         return
@@ -420,7 +429,10 @@ class OntobuilderUI(QMainWindow):
     self.existing_names.add(name)
     
     for depth, node, current_branch, parent, predicate in depth_first_iter(graph, root):
-      _, name = node.split("#")
+      try:
+        _, name = node.split("#")
+      except:
+        name = str(node)
       self.existing_names.add(name)
       _,parent_name = parent.split("#")
       print(depth,node,current_branch, parent)
