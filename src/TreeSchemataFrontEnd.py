@@ -353,12 +353,7 @@ class OntobuilderUI(QMainWindow):
     path = []
     if not linkpoint:
       if type in self.primitives:
-        i = item
-        x = []
-        while i.parent():
-          x.append(i.text(0))
-          i = i.parent()
-        x.append(i.text(0))
+        x = self.__makePath(item)
         print(x)
         value = None
         if name not in self.primitives:
@@ -399,14 +394,21 @@ class OntobuilderUI(QMainWindow):
     debugging("message:", message)
     self.backend.processEvent(message)
 
-
+  def __makePath(self, item):
+    i = item
+    x = []
+    while i.parent():
+      x.append(i.text(0))
+      i = i.parent()
+    x.append(i.text(0))
+    return x
 
   def showTreeList(self, treeList):
     self.treeList = treeList
     self.ui.listTrees.clear()
     self.ui.listTrees.addItems(treeList)
 
-  def showNewTreeTree(self, graph, root):
+  def showNewTreeTree(self, graph, root,instances):
     pass
     widget = self.ui.treeTree
 
@@ -435,18 +437,29 @@ class OntobuilderUI(QMainWindow):
         name = str(node)
       self.existing_names.add(name)
       _,parent_name = parent.split("#")
-      print(depth,node,current_branch, parent)
+      # print(depth,node,current_branch, parent)
       if node != root:
         parent_item = items[parent_name]
         items[name] = QTreeWidgetItem(parent_item)
-        items[name].setText(0,name)
         items[name].count = 0
         items[parent_name].count += 1
         _,node_type = predicate.split("#")
-        print(name,parent_name,node_type)
+        # print(name,parent_name,node_type)
         items[name].node_type = node_type
         if name == "":
           items[name].setText(0, node_type)
+        elif "instance" in name:
+          x = self.__makePath(items[name])
+          # if value == "":
+          #   items[name].setText(0, node_type)
+          # else:
+          for n  in instances:
+            path, value = instances[n]
+            if path[1:] == x[1:]:
+              items[name].setText(0, value)
+        else:
+          items[name].setText(0, name)
+
         try:
           items[name].setForeground(0,QBRUSHES[node_type])
         except:

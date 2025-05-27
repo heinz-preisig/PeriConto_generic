@@ -114,6 +114,9 @@ class BackEnd():
     file_name = self.dataModel.makeFileName(project_name,
                                             what="trees")
     self.dataModel.saveTrees(file_name=file_name)
+    file_name = self.dataModel.makeFileName(project_name,
+                                            what="instances")
+    self.dataModel.saveInstances(file_name=file_name)
     self.frontEnd.markSaved()
     self.project_name = project_name
 
@@ -219,8 +222,9 @@ class BackEnd():
     #                                                            "tree")
 
     # self.frontEnd.showTreeTree(dataTreeTuples, tree_name, existing_item_names)
+    instances = self.dataModel.instances
     graph, root = self.dataModel.getGraph(tree_name, "tree_name")
-    self.frontEnd.showNewTreeTree(graph, root)
+    self.frontEnd.showNewTreeTree(graph, root, instances)
     pass
 
     # ======================== trees

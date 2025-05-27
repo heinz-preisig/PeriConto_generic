@@ -39,8 +39,8 @@ RDFSTerms = {
 RULES = {
         "is_class"     : "Class",
         "is_member"    : "member",
-        "is_defined_by": "LinkedClass",
-        "value"        : "Value",
+        "is_defined_by": "isDefinedBy",
+        "value"        : "value",
         "string"       : "string",
         "integer"      : "integer",
         "decimal"      : "decimal",

@@ -1,4 +1,5 @@
 import copy
+import json
 import os
 
 import rdflib
@@ -12,7 +13,7 @@ from BricksAndTreeSemantics import FILE_FORMAT
 from BricksAndTreeSemantics import MYTerms
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 from BricksAndTreeSemantics import RDFSTerms
-from BricksAndTreeSemantics import RDF_PRIMITIVES
+from BricksAndTreeSemantics import RDF_PRIMITIVES, PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI, BASE
@@ -34,6 +35,8 @@ class DataModel:
     self.file_name_bricks = self.makeFileName(root, what="bricks")
     self.file_name_trees = self.makeFileName(root, what="trees")
     # self.brick_counter = {}
+    self.instance_counter = 0
+    self.instances = {}
 
     self.number_of_bricks = {}
 
@@ -96,7 +99,6 @@ class DataModel:
 
 
     return GRAPHS, namespaces
-    pass
 
   def makeDataTuplesForGraph(self, graphName, what):
     if what == "bricks":
@@ -226,15 +228,34 @@ class DataModel:
     pass
     graph = self.TREE_GRAPHS[tree_name]
     primitive_uri = URIRef(makeItemURI(tree_name, primitive_name))
-    triple = Literal(value), RDFSTerms[primitive_type], primitive_uri
     triple_search = None, RDFSTerms[primitive_type], primitive_uri
     for t in graph.triples(triple_search):
-      debugging("modifyPrimitiveValue -- found triple: ", t)
-    if t:
-      graph.remove(t)
-      graph.add(triple)
-    else:
-      print(">>>>> should not come here")
+      # print("modifyPrimitiveValue -- found triple: ", t, "\n   replacing it with: ", triple)
+
+      if t:
+        s,p,o = t
+        modify = True
+        _,name = s.split("#")
+        if name == "":
+          graph.remove(t)
+          instance_ID = "instance_%s" % self.instance_counter
+          self.instance_counter += 1
+          instance_uri = URIRef(makeItemURI(tree_name, instance_ID))
+        else:
+          instance_uri = s
+          _,counter = s.split("_")
+          instance_ID = "instance_%s"%counter
+          instance_path,instance_value = self.instances[instance_ID]
+          if instance_path[1:] != path[1:] :
+            modify = False
+
+        if modify:
+          triple = instance_uri, RDFSTerms[primitive_type], primitive_uri
+          graph.add(triple)
+          self.instances[instance_ID] = path,value
+      else:
+        print(">>>>> should not come here")
+      print("got now instances",self.instances)
 
   def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
     graph = self.BRICK_GRAPHS[brick_name]
@@ -422,6 +443,11 @@ class DataModel:
       file_name = self.file_name_trees
     self.__writeQuadFile(conjunctiveGraph, file_name)
     pass
+
+  def saveInstances(self, file_name=None):
+    dump = json.dumps(self.instances, indent="  ")
+    with open(file_name, "w+") as f:
+      f.write(dump)
 
   def reduceGraph(self, tree_name):
     graph = copy.deepcopy(self.TREE_GRAPHS[tree_name])

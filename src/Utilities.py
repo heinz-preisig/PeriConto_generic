@@ -280,7 +280,7 @@ class TreePlot:
         s, p, o, dir = q
         if s != origin:
           type = RULES[p]
-          print("that's s, o, dir, type --- ",s, o, dir, type)
+          # print("that's s, o, dir, type --- ",s, o, dir, type)
           if str(s) == "":
             pass
           # if o not in defined_nodes:
