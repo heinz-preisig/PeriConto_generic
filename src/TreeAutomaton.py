@@ -26,6 +26,15 @@ UI_state = {
                            "putTreeList",
                            ],
                 },
+        "save"                                            : {
+                "show"  : ["do_nothing"],
+                "action": ["saveTrees",
+                           ],
+                },
+        "save as"                                         : {
+                "show"  : ["do_nothing"],
+                "action": ["saveTreeWithNewName"],
+                },
         # note: trees
         "new tree"                                        : {
                 "show"  : ["exit",
@@ -304,15 +313,6 @@ UI_state = {
                            "putTreeList",
                            "markChanged"],
                 },
-        "save"                                            : {
-                "show"  : ["do_nothing"],
-                "action": ["saveTrees",
-                           ],
-                },
-        "save as"                                         : {
-                "show"  : ["do_nothing"],
-                "action": ["saveTreeWithNewName"],
-                },
         "visualise"                                       : {
                 "show"  : ["do_nothing"],
                 "action": ["visualise"],
@@ -349,6 +349,11 @@ EDGE_COLOURS = {
         "action": "darkorange",
         }
 
+actions = set()
+for a in UI_state:
+  for a in UI_state[a]["action"]:
+    actions.add(a)
+print("all actions", sorted(actions))
 
 class AutomatonPlot:
 

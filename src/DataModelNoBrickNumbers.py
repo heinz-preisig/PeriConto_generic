@@ -126,11 +126,8 @@ class DataModel:
   def getBrickList(self):
     return sorted(self.BRICK_GRAPHS.keys())
 
-  def newBrickOrTreeGraph(self, what, brick_name):
-    if what == "bricks":
-      graphs = self.BRICK_GRAPHS
-    else:
-      graphs = self.TREE_GRAPHS
+  def newBrick(self, brick_name):
+    graphs = self.BRICK_GRAPHS
     graphs[brick_name] = Graph()
     # self.classURI = makeClassURI(brick_name)
     classURI = makeItemURI(brick_name, brick_name)
@@ -227,35 +224,41 @@ class DataModel:
   def modifyPrimitiveValue(self, tree_name, primitive_name, primitive_type, value,path):
     pass
     graph = self.TREE_GRAPHS[tree_name]
-    primitive_uri = URIRef(makeItemURI(tree_name, primitive_name))
-    triple_search = None, RDFSTerms[primitive_type], primitive_uri
-    for t in graph.triples(triple_search):
-      # print("modifyPrimitiveValue -- found triple: ", t, "\n   replacing it with: ", triple)
 
-      if t:
-        s,p,o = t
-        modify = True
-        _,name = s.split("#")
-        if name == "":
-          graph.remove(t)
-          instance_ID = "instance_%s" % self.instance_counter
-          self.instance_counter += 1
-          instance_uri = URIRef(makeItemURI(tree_name, instance_ID))
-        else:
+    primitive_uri = URIRef(makeItemURI(tree_name, primitive_name))
+
+    if path[0] in PRIMITIVES:
+      triple_remove = URIRef(makeItemURI(tree_name,"")) , RDFSTerms[primitive_type], primitive_uri
+      # graph.remove(triple_remove)
+      instance_ID = "instance_%s" % self.instance_counter
+      self.instance_counter += 1
+      instance_uri = URIRef(makeItemURI(tree_name, instance_ID))
+      modify = True
+      pass
+
+    else:
+      triple_search = None, RDFSTerms[primitive_type], primitive_uri
+      for t in graph.triples(triple_search):
+        # print("modifyPrimitiveValue -- found triple: ", t, "\n   replacing it with: ", triple)
+
+        s, p, o = t
+        n = s.split("#")[-1]
+        modify = False
+        if n != "":
           instance_uri = s
           _,counter = s.split("_")
           instance_ID = "instance_%s"%counter
           instance_path,instance_value = self.instances[instance_ID]
-          if instance_path[1:] != path[1:] :
-            modify = False
+          if instance_path[1:] == path[1:] :
+            modify = True
 
-        if modify:
-          triple = instance_uri, RDFSTerms[primitive_type], primitive_uri
-          graph.add(triple)
-          self.instances[instance_ID] = path,value
-      else:
-        print(">>>>> should not come here")
-      print("got now instances",self.instances)
+    if modify:
+      triple = instance_uri, RDFSTerms[primitive_type], primitive_uri
+      graph.add(triple)
+      self.instances[instance_ID] = path,value
+      # else:
+      #   print(">>>>> should not come here")
+    print("got now instances",self.instances)
 
   def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
     graph = self.BRICK_GRAPHS[brick_name]
@@ -425,7 +428,7 @@ class DataModel:
         pass
     # self.brick_counter[tree_name] += 1
 
-    self.number_of_bricks = self.reEnumerateGraph()
+    # self.number_of_bricks = self.reEnumerateGraph()
     pass
 
   def saveBricks(self, file_name=None):

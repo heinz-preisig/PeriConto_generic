@@ -45,44 +45,44 @@ class BackEnd():
     event = message["event"]
     # self.fail = False
     for a in self.UI_state[event]["action"]:
-      if a == "loadOntology":
-        self.loadOntology(message)
-      elif a == "putBricksListForTree":
-        self.putBricksListForTree(message)
-      elif a == "putTreeList":
-        self.putTreeList(message)
-      elif a == "tree_create":
-        self.createTree(message)
-      elif a == "newTree":
-        self.newTree(message)
-      elif a == "renameTree":
-        self.renameTree(message)
+      if a == "addItem":
+        self.addItem(message)
+      elif a == "addLink":
+        self.addLink(message)
       elif a == "copyTree":
         self.copyTree(message)
       elif a == "deleteTree":
         self.deleteTree(message)
-      elif a == "getTreeDataTuples":
-        self.getTreeDataTuples(message)
-      elif a == "saveTrees":
-        self.saveTrees(message)
-      elif a == "saveTreeWithNewName":
-        self.saveTreeWithNewName(message)
-      elif a == "visualise":
-        self.visualise(message)
-      elif a == "markChanged":
-        self.markChanged(message)
-      elif a == "addLink":
-        self.addLink(message)
-      elif a == "removeItem":
-        self.removeItem(message)
-      elif a == "addItem":
-        self.addItem(message)
-      elif a == "renameItem":
-        self.renameItem(message)
-      elif a == "instantiatePrimitive":
-        self.instantiatePrimitive(message)
       elif a == "extractInstance":
         self.extractInstance(message)
+      elif a == "getTreeDataTuples":
+        self.getTreeDataTuples(message)
+      elif a == "instantiatePrimitive":
+        self.instantiatePrimitive(message)
+      elif a == "loadOntology": #
+        self.loadOntology(message)
+      elif a == "markChanged":
+        self.markChanged(message)
+      elif a == "newTree":
+        self.newTree(message)
+      elif a == "putBricksListForTree":
+        self.putBricksListForTree(message)
+      elif a == "putTreeList":
+        self.putTreeList(message)
+      elif a == "removeItem":
+        self.removeItem(message)
+      elif a == "renameItem":
+        self.renameItem(message)
+      # elif a == "tree_create":
+      #   self.createTree(message)
+      elif a == "saveTreeWithNewName":
+        self.saveTreeWithNewName(message)
+      elif a == "renameTree":
+        self.renameTree(message)
+      elif a == "saveTrees":
+        self.saveTrees(message)
+      elif a == "visualise":
+        self.visualise(message)
       else:
         print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> oops no such command", a)
 
@@ -120,11 +120,11 @@ class BackEnd():
     self.frontEnd.markSaved()
     self.project_name = project_name
 
-  def createTree(self, message):
-    tree_name = message["tree_name"]
-    self.dataModel.newTree(tree_name)
-    self.memory["tree_name"] = tree_name
-    pass
+  # def createTree(self, message):
+  #   tree_name = message["tree_name"]
+  #   self.dataModel.newTree(tree_name)
+  #   self.memory["tree_name"] = tree_name
+  #   pass
 
   def copyTree(self, message):
     """

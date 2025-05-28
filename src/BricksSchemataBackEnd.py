@@ -6,7 +6,7 @@ from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 from BricksAndTreeSemantics import PRIMITIVES
 from BricksAndTreeSemantics import RULES
 from BricksAutomaton import UI_state
-from DataModel import DataModel
+from DataModelNoBrickNumbers import DataModel
 from Utilities import TreePlot
 from Utilities import camelCase
 from Utilities import classCase
@@ -135,7 +135,7 @@ class BackEnd():
 
   def newBrick(self, message):
     name = message["name"]
-    self.dataModel.newBrickOrTreeGraph("bricks", name)
+    self.dataModel.newBrick("bricks", name)
     self.memory["brick"] = name
 
   def removeBrick(self, message):
