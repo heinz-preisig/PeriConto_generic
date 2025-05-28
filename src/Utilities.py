@@ -2,7 +2,7 @@ import os
 
 from graphviz import Digraph
 
-from BricksAndTreeSemantics import RDF_PRIMITIVES
+from BricksAndTreeSemantics import RDF_PRIMITIVES, RDFSTerms
 from BricksAndTreeSemantics import RULES
 from rdflib import Namespace
 
@@ -96,6 +96,8 @@ def find_path_back_triples(graph, leave_triple, root):
   one has to watch out for multiple equal leave values.
   Remedy: take the neighbour along, because he is uniquely named.
   """
+  from BricksAndTreeSemantics import RDF_PRIMITIVES, RDFSTerms
+
   path = [leave_triple]
 
   now = path[0][2]  # neighbour
@@ -105,7 +107,7 @@ def find_path_back_triples(graph, leave_triple, root):
     for s, p, o in graph.triples(triple):
       t = (s, p, o)
       if t not in path:
-        if not p in RDF_PRIMITIVES:
+        if not p in RDF_PRIMITIVES and o not in RDFSTerms["class"]:
           now = o
           path.append(t)
 

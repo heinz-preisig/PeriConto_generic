@@ -72,6 +72,8 @@ class BackEnd():
         self.putAllNames(message)
       elif a == "renameItem":
         self.renameItem(message)
+      elif a == "renameBrick":
+        self.renameBrick(message)
       elif a == "addItem":
         self.addItem(message)
       elif a == "addPrimitive":
@@ -135,7 +137,7 @@ class BackEnd():
 
   def newBrick(self, message):
     name = message["name"]
-    self.dataModel.newBrick("bricks", name)
+    self.dataModel.newBrick(name)
     self.memory["brick"] = name
 
   def removeBrick(self, message):
@@ -180,6 +182,7 @@ class BackEnd():
     new_name = message["name"]
     if new_name:
       self.dataModel.renameBrick(old_name, classCase(new_name))
+      self.memory["brick"] = new_name
 
   def saveBricks(self, message):
     self.dataModel.saveBricks()

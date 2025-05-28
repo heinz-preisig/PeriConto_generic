@@ -120,11 +120,6 @@ class BackEnd():
     self.frontEnd.markSaved()
     self.project_name = project_name
 
-  # def createTree(self, message):
-  #   tree_name = message["tree_name"]
-  #   self.dataModel.newTree(tree_name)
-  #   self.memory["tree_name"] = tree_name
-  #   pass
 
   def copyTree(self, message):
     """
