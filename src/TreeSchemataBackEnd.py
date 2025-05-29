@@ -108,16 +108,17 @@ class BackEnd():
 
   def saveTreeWithNewName(self, message):
     project_name = message["project_name"]
-    file_name = self.dataModel.makeFileName(project_name,
-                                            what="bricks")
-    self.dataModel.saveBricks(file_name=file_name)
-    file_name = self.dataModel.makeFileName(project_name,
-                                            what="trees")
-    self.dataModel.saveTrees(file_name=file_name)
-    file_name = self.dataModel.makeFileName(project_name,
-                                            what="instances")
-    self.dataModel.saveInstances(file_name=file_name)
-    self.frontEnd.markSaved()
+    self.dataModel.saveBricksTreesAndInstances(project_name)
+    # file_name = self.dataModel.makeFileName(project_name,
+    #                                         what="bricks")
+    # self.dataModel.saveBricks(file_name=file_name)
+    # file_name = self.dataModel.makeFileName(project_name,
+    #                                         what="trees")
+    # self.dataModel.saveTrees(file_name=file_name)
+    # file_name = self.dataModel.makeFileName(project_name,
+    #                                         what="instances")
+    # self.dataModel.saveInstances(file_name=file_name)
+    # self.frontEnd.markSaved()
     self.project_name = project_name
 
 
@@ -190,7 +191,7 @@ class BackEnd():
                                      brick_name)
 
   def saveTrees(self, message):
-    self.dataModel.saveTrees()
+    self.dataModel.saveTreesAndInstances(self.project_name)
     self.frontEnd.markSaved()
 
   def extractInstance(self, message):
@@ -232,7 +233,7 @@ class BackEnd():
   def renameTree(self, message):
     old_name = self.memory["tree_name"]
     new_name = message["tree_name"]
-    # self.dataModel.renameTree(old_name, new_name)
+    self.dataModel.renameTree(old_name, new_name)
     pass
 
   def deleteTree(self, message):

@@ -185,13 +185,13 @@ class BackEnd():
       self.memory["brick"] = new_name
 
   def saveBricks(self, message):
-    self.dataModel.saveBricks()
+    self.dataModel.saveBricks(self.project_name)
     self.frontEnd.markSaved()
 
   def saveBricksWithNewName(self, message):
     name = message["name"]
-    file_name = self.dataModel.makeFileName(name, what="bricks")
-    self.dataModel.saveBricks(file_name=file_name)
+    # file_name = self.dataModel.makeFileName(name, what="bricks")
+    self.dataModel.saveBricks(name)
     self.frontEnd.markSaved()
 
   def renameItem(self, message):

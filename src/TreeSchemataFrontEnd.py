@@ -207,9 +207,9 @@ class OntobuilderUI(QMainWindow):
               "event"       : "save as",
               "project_name": project_name
               }
-      self.backend.processEvent(message)
       self.ui.labelProject.setText(project_name)
       self.markSaved()
+      self.backend.processEvent(message)
 
   def on_pushTreeCreate_pressed(self):
     global tree_name
@@ -454,9 +454,10 @@ class OntobuilderUI(QMainWindow):
           #   items[name].setText(0, node_type)
           # else:
           for n  in instances:
-            path, value = instances[n]
-            if path[1:] == x[1:]:
-              items[name].setText(0, value)
+            for pos in instances[n]:
+              path, value = pos
+              if path[1:] == x[1:]:
+                items[name].setText(0, value)
         else:
           items[name].setText(0, name)
 

@@ -57,7 +57,7 @@ class DataModel:
 
     exists = os.path.exists(self.file_name_instances)
     if exists:
-      self.instances = self.loadInstances(self.file_name_instances)
+      self.loadInstances(self.file_name_instances)
 
     # TODO: clean  by removing the ones that are not in the base
     # self.number_of_bricks = self.reEnumerateGraph()   #TODO: remove EnumbereateGraph
@@ -85,9 +85,10 @@ class DataModel:
     #   no = -1
     return no, name
 
-  def makeFileName(self, project_name, what=None):
-    file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s." % what + FILE_FORMAT
-    return file_name_bricks
+  def makeFileName(self, project_name, what):
+    file_name = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s." % what + FILE_FORMAT
+    return file_name
+
 
   def __loadFromFile(self, file_name):
     data = ConjunctiveGraph("Memory")
@@ -365,8 +366,9 @@ class DataModel:
         n_s = extractNameFromIRI(_s)
         path_names.append(n_s)
       path_names.append(tree_name)
-      self.instances[tree_name] = (path_names, new_ID)
+      self.instances[tree_name].append( (path_names, new_ID))
       # print(">>> replacing",s, p, o)
+    pass
 
   def __renameURI(self, newName, oldName, uri):
     if uri.__class__ == rdflib.term.Literal:  # handle Literals
@@ -459,24 +461,28 @@ class DataModel:
     self.replaceBlankWithUndefinedIdenfitier(tree_name)
     pass
 
-  def saveBricks(self, file_name=None):
+  def saveBricks(self, project_name):
     graphs = self.BRICK_GRAPHS
     conjunctiveGraph = self.__prepareConjunctiveGraph(graphs)
+    file_name = self.makeFileName( project_name,"bricks")
     if not file_name:
       file_name = self.file_name_bricks
     self.__writeQuadFile(conjunctiveGraph, file_name)
     pass
 
-  def saveTrees(self, file_name=None):
+  def saveBricksTreesAndInstances(self, project_name):
     graphs = self.TREE_GRAPHS
     conjunctiveGraph = self.__prepareConjunctiveGraph(graphs)
+    file_name = self.makeFileName( project_name,"trees")
     if not file_name:
       file_name = self.file_name_trees
     self.__writeQuadFile(conjunctiveGraph, file_name)
-    self.saveInstances(self.file_name_instances)
+    self.saveBricks(project_name)
+    self.saveInstances(project_name)
     pass
 
-  def saveInstances(self, file_name=None):
+  def saveInstances(self, project_name):
+    file_name = self.makeFileName(project_name, "instances")
     dump = json.dumps(self.instances, indent="  ")
     with open(file_name, "w+") as f:
       f.write(dump)
@@ -486,15 +492,16 @@ class DataModel:
       self.instances = json.load(f)
 
     self.instance_counter = {}
-    try:
-      for instance in self.instances:
+    for instance in self.instances:
+      if self.instances[instance]:
         for i in self.instances[instance]:
-          for _, s in self.instances[instance][i]:
+          if i :
+            _, s = i
             _,counter = s.split("_")
-            self.instance_counter[instance] = counter
-    except:
-      pass
-
+            self.instance_counter[instance] = int(counter)
+      else:
+        self.instance_counter[instance] = 0
+    pass
 
 
   def reduceGraph(self, tree_name):
@@ -605,6 +612,7 @@ class DataModel:
   def newTree(self, tree_name, brick_name):
 
     self.instance_counter[tree_name] = 0
+    self.instances[tree_name] = []
     self.copyBrickOrTree("brick2tree", brick_name, tree_name)
 
 
