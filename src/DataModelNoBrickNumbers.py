@@ -57,10 +57,10 @@ class DataModel:
 
     exists = os.path.exists(self.file_name_instances)
     if exists:
-      self.instances = self.__loadFromFile(self.file_name_trees)
+      self.instances = self.loadInstances(self.file_name_instances)
 
     # TODO: clean  by removing the ones that are not in the base
-    self.number_of_bricks = self.reEnumerateGraph()   #TODO: remove EnumbereateGraph
+    # self.number_of_bricks = self.reEnumerateGraph()   #TODO: remove EnumbereateGraph
 
   def __extractNumber(self, s):
     """
@@ -482,14 +482,18 @@ class DataModel:
       f.write(dump)
 
   def loadInstances(self, file_name=None):
-    with open(file_name, "r") as f:
+    with open(file_name) as f:
       self.instances = json.load(f)
 
     self.instance_counter = {}
-    for instance in self.instances:
-      for _, s in self.instances[instance]:
-        _,counter = s.split("_")
-        self.instance_counter[instance] = counter
+    try:
+      for instance in self.instances:
+        for i in self.instances[instance]:
+          for _, s in self.instances[instance][i]:
+            _,counter = s.split("_")
+            self.instance_counter[instance] = counter
+    except:
+      pass
 
 
 

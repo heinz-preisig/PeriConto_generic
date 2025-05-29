@@ -40,6 +40,14 @@ UI_state = {
                            "putBrickList",
                            ],
                 },
+        "save"                          : {
+                "show"  : ["do_nothing"],
+                "action": ["saveBricks"],
+                },
+        "save as"                       : {
+                "show"  : ["do_nothing"],
+                "action": ["saveBricksWithNewName"],
+                },
         # note: bricks
         "new brick"                     : {
                 "show"  : ["exit",
@@ -55,6 +63,23 @@ UI_state = {
                            "putBrickList",
                            "markChanged",
                            ],
+                },
+        "remove brick"                  : {
+                "show"  : ["exit",
+                           "tree_visualise",
+                           "ontology_save",
+                           "ontology_save_as",
+                           # "tabs",
+                           "brick_list",
+                           "brick_create",
+                           "brick_remove",
+                           "brick_rename",
+                           ],
+                "except": [],
+                "action": ["removeBrick",
+                           "putBrickList",
+                           "putAllNames",
+                           "markChanged", ],
                 },
         "selected brick"                : {
                 "show"  : ["exit",
@@ -91,23 +116,6 @@ UI_state = {
                            "putAllNames",
                            "markChanged", ],
                 },
-        "remove brick"                  : {
-                "show"  : ["exit",
-                           "tree_visualise",
-                           "ontology_save",
-                           "ontology_save_as",
-                           # "tabs",
-                           "brick_list",
-                           "brick_create",
-                           "brick_remove",
-                           "brick_rename",
-                           ],
-                "except": [],
-                "action": ["removeBrick",
-                           "putBrickList",
-                           "putAllNames",
-                           "markChanged", ],
-                },
         # note: selection in brick tree
         "Class in brick tree selected"  : {
                 "show"  : ["exit",
@@ -123,7 +131,7 @@ UI_state = {
                 "except": [],
                 "action": ["selectedClassInBrickTree"],
                 },
-        "Item in brick tree selected"   : {
+        "member in brick tree selected"   : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -141,7 +149,7 @@ UI_state = {
                 "except": [],
                 "action": ["selectedItemInBrickTree"],
                 },
-        "Value in brick tree selected"  : {
+        "value in brick tree selected"  : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -256,7 +264,7 @@ UI_state = {
                            "putAllNames",
                            "markChanged", ],
                 },
-        "Value rename"                  : {
+        "value rename"                  : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -274,7 +282,7 @@ UI_state = {
                            "putAllNames",
                            ],
                 },
-        "Item rename"                   : {
+        "member rename"                   : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
@@ -308,14 +316,6 @@ UI_state = {
                            ],
                 },
         # note: tab changes
-        "save"                          : {
-                "show"  : ["do_nothing"],
-                "action": ["saveBricks"],
-                },
-        "save as"                       : {
-                "show"  : ["do_nothing"],
-                "action": ["saveBricksWithNewName"],
-                },
         "visualise"                     : {
                 "show"  : ["do_nothing"],
                 "action": ["visualise"],

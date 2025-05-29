@@ -1,3 +1,24 @@
+"""
+events:
+start
+create ontology
+load ontology
+save
+save as
+new brick
+remove brick
+selected brick
+rename brick
+%s in brick tree selected" % selected
+add item
+remove item from brick tree
+add primitive
+change primitive
+%s rename" % type
+visualise
+selected tree
+"""
+
 import os
 import sys
 
@@ -348,16 +369,16 @@ class OntobuilderUI(QMainWindow):
     debugging("message:", message)
     self.backend.processEvent(message)
 
-  def on_treeTree_itemClicked(self, item, column):
-    name = item.text(column)
-    debugging("-- tree item %s, column %s" % (name, column))
-    selected = item.type
-    event = "%s in treeTree selected" % selected
-    message = {
-            "event": event,
-            "name" : name
-            }
-    self.backend.processEvent(message)
+  # def on_treeTree_itemClicked(self, item, column):
+  #   name = item.text(column)
+  #   debugging("-- tree item %s, column %s" % (name, column))
+  #   selected = item.type
+  #   event = "%s in treeTree selected" % selected
+  #   message = {
+  #           "event": event,
+  #           "name" : name
+  #           }
+  #   self.backend.processEvent(message)
 
   def showBrickList(self, brickList):
     self.brickList = brickList
