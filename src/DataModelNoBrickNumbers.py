@@ -218,40 +218,61 @@ class DataModel:
   def modifyPrimitiveValue(self, tree_name, primitive_name, primitive_type, value, path):
     pass
     graph = self.TREE_GRAPHS[tree_name]
-
-    primitive_uri = URIRef(makeItemURI(tree_name, primitive_name))
-
-    if path[0] in PRIMITIVES:
-      triple_remove = URIRef(makeItemURI(tree_name, "")), RDFSTerms[primitive_type], primitive_uri
-      # graph.remove(triple_remove)
-      instance_ID = "instance_%s" % self.instance_counter[tree_name]
-      self.instance_counter[tree_name] += 1
-      instance_uri = URIRef(makeItemURI(tree_name, instance_ID))
-      modify = True
-      pass
-
-    else:
-      triple_search = None, RDFSTerms[primitive_type], primitive_uri
+    prefix = makeItemURI(tree_name,"")
+    triple_search = (URIRef(prefix + path[0]),
+                     RDFSTerms[primitive_type],
+                     None)
+    t = None
+    for t in graph.triples(triple_search):
+      s,p,o = t
+      del self.instances[path[0]]
+    if not t:
+      triple_search = (Literal(path[0]),
+                     RDFSTerms[primitive_type],
+                     None)
       for t in graph.triples(triple_search):
+        s,p,o = t
 
-        s, p, o = t
-        n = s.split("#")[-1]
-        modify = False
-        if n != "":
-          instance_uri = s
-          _, counter = s.split("_")
-          instance_ID = "instance_%s" % counter
-          instance_path, instance_value = self.instances[instance_ID]
-          if instance_path[1:] == path[1:]:
-            modify = True
+    if t :
+      graph.remove(t)
+      s = Literal(value)
+      triple_add = s,p,o
+      graph.add(triple_add)
 
-    if modify:
-      triple = instance_uri, RDFSTerms[primitive_type], primitive_uri
-      graph.add(triple)
-      self.instances[instance_ID] = path, value
-      # else:
-      #   print(">>>>> should not come here")
-    print("got now instances", self.instances)
+
+    # primitive_uri = URIRef(makeItemURI(tree_name, primitive_name))
+    #
+    # if path[0] in PRIMITIVES:
+    #   triple_remove = URIRef(makeItemURI(tree_name, "")), RDFSTerms[primitive_type], primitive_uri
+    #   # graph.remove(triple_remove)
+    #   instance_ID = "instance_%s" % self.instance_counter[tree_name]
+    #   self.instance_counter[tree_name] += 1
+    #   instance_uri = URIRef(makeItemURI(tree_name, instance_ID))
+    #   modify = True
+    #   pass
+    #
+    # else:
+    #   triple_search = None, RDFSTerms[primitive_type], primitive_uri
+    #   for t in graph.triples(triple_search):
+    #
+    #     s, p, o = t
+    #     n = s.split("#")[-1]
+    #     modify = False
+    #     if n != "":
+    #       instance_uri = s
+    #       _, counter = s.split("_")
+    #       instance_ID = "instance_%s" % counter
+    #       instance_path, instance_value = self.instances[instance_ID]
+    #       if instance_path[1:] == path[1:]:
+    #         modify = True
+    #
+    # if modify:
+    #   triple = instance_uri, RDFSTerms[primitive_type], primitive_uri
+    #   graph.add(triple)
+    #   self.instances[instance_ID] = path, value
+    #   # else:
+    #   #   print(">>>>> should not come here")
+    # print("got now instances", self.instances)
 
   def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
     graph = self.BRICK_GRAPHS[brick_name]
@@ -326,7 +347,7 @@ class DataModel:
         triple = s_new, p, o_new
         new_graph.add(triple)
 
-  def replaceBlankWithUndefinedIdenfitier(self, tree_name):
+  def replaceBlankWithUndefinedIdentifier(self, tree_name):
     graph = self.TREE_GRAPHS[tree_name]
     for s, p, o in graph.triples((Literal(""), None, None)):
       new_ID = "instance_%s" % self.instance_counter[tree_name]
@@ -338,7 +359,8 @@ class DataModel:
       graph.add(triple)
       tree_uri = URIRef(makeItemURI(tree_name, tree_name))
       path, path_names = find_path_back_triples(graph, triple, tree_uri)
-      self.instances[tree_name].append((path_names, new_ID))
+
+      self.instances[tree_name][new_ID]= path_names
       # print(">>> replacing",s, p, o)
     pass
 
@@ -415,7 +437,7 @@ class DataModel:
 
         triple = s_new, p, o_new
         tree_graph.add(triple)
-    self.replaceBlankWithUndefinedIdenfitier(tree_name)
+    self.replaceBlankWithUndefinedIdentifier(tree_name)
     pass
 
   def saveBricks(self, project_name):
@@ -566,14 +588,14 @@ class DataModel:
   def newTree(self, tree_name, brick_name):
 
     self.instance_counter[tree_name] = 0
-    self.instances[tree_name] = []
+    self.instances[tree_name] = {}
 
     tree_graph = self.__makeNewGraph(tree_name)
     brick_graph = self.BRICK_GRAPHS[brick_name]
     self.TREE_GRAPHS[tree_name] = tree_graph
     self.tree_namespaces[tree_name] = Namespace(makeItemURI(tree_name, ""))
     self.copyGraph(brick_name, brick_graph, tree_name, tree_graph)
-    self.replaceBlankWithUndefinedIdenfitier(tree_name)
+    self.replaceBlankWithUndefinedIdentifier(tree_name)
 
   def getTreeList(self):
     tree_list = sorted(self.TREE_GRAPHS.keys())

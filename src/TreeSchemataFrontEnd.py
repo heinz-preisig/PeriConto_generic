@@ -449,13 +449,10 @@ class OntobuilderUI(QMainWindow):
         if "instance" in name:
           x = self.__makePath(items[name])
           x[0] = name
-          for n in instances:
-            for pos in instances[n]:
-              path, instance = pos
+          for i in instances[tree_name]:
+              path = instances[tree_name][i]
               if path == x:  # (path[1:] == x[1:]) and (instance == name):
                 items[name].setText(0, name)
-                break
-            break
         else:
           items[name].setText(0, name)
 
