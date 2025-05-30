@@ -6,6 +6,8 @@ from BricksAndTreeSemantics import RDF_PRIMITIVES, RDFSTerms
 from BricksAndTreeSemantics import RULES
 from rdflib import Namespace
 
+from BricksAndTreeSemantics import extractNameFromIRI
+
 DEBUGG = False
 
 def camelCase(sentence):
@@ -94,7 +96,8 @@ def find_path_back_triples(graph, leave_triple, root):
   Find a path from a primitive, which is a leave to the root.
   It's a straight walk back to the root, as it is a tree, but
   one has to watch out for multiple equal leave values.
-  Remedy: take the neighbour along, because he is uniquely named.
+  Remedy: extract names without duplicating a name -- rule: names in a path are unique
+          and then build path again.
   """
   from BricksAndTreeSemantics import RDF_PRIMITIVES, RDFSTerms
 
@@ -111,8 +114,17 @@ def find_path_back_triples(graph, leave_triple, root):
           now = o
           path.append(t)
 
+  path_names = []
+  reduced_path = []
+  for _s, _p, _o in path:
+    pre, n_s = _s.split("#")
+    if n_s not in path_names:
+      path_names.append(n_s)
+      reduced_path.append((_s,_p,_o))
+  root_name = root.split("#")[1]
+  path_names.append(root_name)
 
-  return path
+  return reduced_path, path_names
 
 
 def get_subtree(graph, node, predicates):

@@ -132,7 +132,7 @@ class BackEnd():
 
   def putAllNames(self, message):
     brick_name = self.memory["brick"]
-    names = self.dataModel.getAllNamesInTheBrick(brick_name, "brick")
+    names = self.dataModel.getAllNamesInABrickOrATree(brick_name, "brick")
     self.frontEnd.setAllNames(names)
 
   def newBrick(self, message):
@@ -197,7 +197,7 @@ class BackEnd():
   def renameItem(self, message):
     old_name = self.memory["brick"]
     item_name = self.memory["item"]
-    item_names = self.dataModel.getAllNamesInTheBrick(old_name, "brick")
+    item_names = self.dataModel.getAllNamesInABrickOrATree(old_name, "brick")
     newName = self.frontEnd.askForItemName("provide new name for item %s" % item_name, item_names)
     if newName:
       self.dataModel.renameItem(old_name, item_name, camelCase(newName))

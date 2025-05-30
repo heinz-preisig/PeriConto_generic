@@ -26,12 +26,13 @@ messages:
 """
 import os
 import sys
-# import timeit
-import time
 
 from BricksAndTreeSemantics import FILE_FORMAT
 from TreeSchemataBackEnd import BackEnd
-from Utilities import classCase, depth_first_iter
+from Utilities import classCase
+from Utilities import depth_first_iter
+
+# import timeit
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -60,13 +61,12 @@ expanded_state = {}
 tree_name = None
 changed = False
 
-
 COLOURS = {
         "ROOT"         : QtGui.QColor(0, 199, 255),
         "is_member"    : QtGui.QColor(0, 0, 0, 255),
-        "member"    : QtGui.QColor(0, 0, 0, 255),
+        "member"       : QtGui.QColor(0, 0, 0, 255),
         "is_defined_by": QtGui.QColor(255, 100, 5, 255),
-        "isdefinedby": QtGui.QColor(255, 100, 5, 255),
+        "isdefinedby"  : QtGui.QColor(255, 100, 5, 255),
         "value"        : QtGui.QColor(230, 165, 75),
         "data_type"    : QtGui.QColor(100, 100, 100),
         "integer"      : QtGui.QColor(155, 155, 255),
@@ -366,9 +366,9 @@ class OntobuilderUI(QMainWindow):
             value = ""
         else:
           dialog = UI_String("provide %s" % type,
-                           value=value,
-                           placeholdertext=type,
-                           validator=type)
+                             value=value,
+                             placeholdertext=type,
+                             validator=type)
           value = dialog.text
         if not value:
           value = ""
@@ -408,7 +408,7 @@ class OntobuilderUI(QMainWindow):
     self.ui.listTrees.clear()
     self.ui.listTrees.addItems(treeList)
 
-  def showNewTreeTree(self, graph, root,instances):
+  def showNewTreeTree(self, graph, root, instances):
     pass
     widget = self.ui.treeTree
 
@@ -429,40 +429,43 @@ class OntobuilderUI(QMainWindow):
     self.current_class = name
     items = {name: rootItem}
     self.existing_names.add(name)
-    
+
     for depth, node, current_branch, parent, predicate in depth_first_iter(graph, root):
       try:
         _, name = node.split("#")
       except:
         name = str(node)
       self.existing_names.add(name)
-      _,parent_name = parent.split("#")
+      _, parent_name = parent.split("#")
       # print(depth,node,current_branch, parent)
       if node != root:
         parent_item = items[parent_name]
         items[name] = QTreeWidgetItem(parent_item)
+        # print("made item")
         items[name].count = 0
         items[parent_name].count += 1
-        _,node_type = predicate.split("#")
-        # print(name,parent_name,node_type)
+        _, node_type = predicate.split("#")
         items[name].node_type = node_type
-        if name == "":
-          items[name].setText(0, node_type)
-        elif "instance" in name:
+        if "instance" in name:
           x = self.__makePath(items[name])
-          # if value == "":
-          #   items[name].setText(0, node_type)
-          # else:
-          for n  in instances:
+          x[0] = name
+          for n in instances:
             for pos in instances[n]:
-              path, value = pos
-              if path[1:] == x[1:]:
-                items[name].setText(0, value)
+              path, instance = pos
+              if path == x:  # (path[1:] == x[1:]) and (instance == name):
+                items[name].setText(0, name)
+                break
+            break
         else:
           items[name].setText(0, name)
 
+        if items[name].text(0) == "":
+          # print(">>>> found obsolete item")
+          # Note: this item was generated but not named -- couldn't find another solution
+          parent_item.removeChild(items[name])
+
         try:
-          items[name].setForeground(0,QBRUSHES[node_type])
+          items[name].setForeground(0, QBRUSHES[node_type])
         except:
           pass
 
@@ -474,36 +477,7 @@ class OntobuilderUI(QMainWindow):
     except:
       pass
 
-  #
-  # def showTreeTree(self, tuples, origin, existing_item_names):
-  #   self.existing_item_names = existing_item_names
-  #   widget = self.ui.treeTree
-  #   self.__instantiateTree(origin, tuples, widget)
-  #   try:
-  #     self.restore_expanded_state()
-  #   except:
-  #     pass
-  #
-  # def __instantiateTree(self, origin, tuples, widget):
-  #   widget.clear()
-  #   rootItem = QTreeWidgetItem(widget)
-  #   widget.setColumnCount(1)
-  #   rootItem.root = origin
-  #   rootItem.setText(0, origin)
-  #   rootItem.setSelected(False)
-  #   rootItem.node_type = self.rules["is_class"]
-  #   rootItem.count = 0
-  #   widget.addTopLevelItem(rootItem)
-  #   self.treetop = widget.invisibleRootItem()
-  #
-  #   self.current_class = origin
-  #   self.__makeTree(tuples, origin=origin, stack=[], items={origin: rootItem})
-  #   # self.__makeNewTree(tuples, origin=origin, stack=[], items={origin: rootItem})
-  #   widget.show()
-  #   # widget.expandAll()
-  #   widget.collapseAll()
-
-  # def __makeNewTree(self, tuples, origin=[], stack=[], items={}):
+  # def __makeTree(self, tuples, origin=[], stack=[], items={}):
   #   for q in tuples:
   #     if q not in stack:
   #       s, p, o, dir = q
@@ -523,32 +497,11 @@ class OntobuilderUI(QMainWindow):
   #           items[s] = item
   #           try:
   #             items[o].count += 1
-
-  def __makeTree(self, tuples, origin=[], stack=[], items={}):
-    for q in tuples:
-      if q not in stack:
-        s, p, o, dir = q
-        if s != origin:
-          if o in items:
-            # if s != "":
-            item = QTreeWidgetItem(items[o])
-            item.count = 0
-            item.node_type = self.rules[p]
-            item.parent_name = o
-            item.setForeground(0, QBRUSHES[p])
-            stack.append(q)  # (s, p, o))
-            if s == "":
-              item.setText(0, p)
-            else:
-              item.setText(0, s)
-            items[s] = item
-            try:
-              items[o].count += 1
-            except:
-              pass
-
-            debugging("items", s, p, o)
-            self.__makeTree(tuples, origin=s, stack=stack, items=items)
+  #           except:
+  #             pass
+  #
+  #           debugging("items", s, p, o)
+  #           self.__makeTree(tuples, origin=s, stack=stack, items=items)
 
   def putTreeList(self, tree_list):
     self.treeList = tree_list

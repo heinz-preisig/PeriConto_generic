@@ -355,6 +355,7 @@ for a in UI_state:
     actions.add(a)
 print("all actions", sorted(actions))
 
+
 class AutomatonPlot:
 
   def __init__(self):

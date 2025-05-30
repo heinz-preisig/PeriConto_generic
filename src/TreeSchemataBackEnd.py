@@ -1,7 +1,7 @@
 import os
 import subprocess
 import sys
-import timeit
+
 import time
 
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
@@ -13,6 +13,7 @@ from Utilities import TreePlot
 from Utilities import camelCase
 from Utilities import debugging
 
+TIMING = False
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 root = os.path.abspath(os.path.join("."))
@@ -40,7 +41,7 @@ class BackEnd():
     self.primitive_counter = 0
 
   def processEvent(self, message):
-    start = time.time()
+    if TIMING: start = time.time()
     debugging(">>>> message ", message)
     event = message["event"]
     # self.fail = False
@@ -73,8 +74,6 @@ class BackEnd():
         self.removeItem(message)
       elif a == "renameItem":
         self.renameItem(message)
-      # elif a == "tree_create":
-      #   self.createTree(message)
       elif a == "saveTreeWithNewName":
         self.saveTreeWithNewName(message)
       elif a == "renameTree":
@@ -94,7 +93,7 @@ class BackEnd():
     self.previousEvent = event
 
     self.memory.update(message)
-    print("processing time", time.time()-start)
+    if TIMING: print("processing time", time.time()-start)
 
   def loadOntology(self, message):
     name = message["project_name"]
@@ -109,18 +108,7 @@ class BackEnd():
   def saveTreeWithNewName(self, message):
     project_name = message["project_name"]
     self.dataModel.saveBricksTreesAndInstances(project_name)
-    # file_name = self.dataModel.makeFileName(project_name,
-    #                                         what="bricks")
-    # self.dataModel.saveBricks(file_name=file_name)
-    # file_name = self.dataModel.makeFileName(project_name,
-    #                                         what="trees")
-    # self.dataModel.saveTrees(file_name=file_name)
-    # file_name = self.dataModel.makeFileName(project_name,
-    #                                         what="instances")
-    # self.dataModel.saveInstances(file_name=file_name)
-    # self.frontEnd.markSaved()
     self.project_name = project_name
-
 
   def copyTree(self, message):
     """
@@ -191,7 +179,7 @@ class BackEnd():
                                      brick_name)
 
   def saveTrees(self, message):
-    self.dataModel.saveTreesAndInstances(self.project_name)
+    self.dataModel.saveBricksTreesAndInstances(self.project_name)
     self.frontEnd.markSaved()
 
   def extractInstance(self, message):
@@ -202,22 +190,16 @@ class BackEnd():
     tree_list = self.dataModel.getTreeList()
     self.frontEnd.putTreeList(tree_list)
 
-  def rememberTreeSelection(self, message):
-    self.memory["tree_name"] = message["tree_name"]
+  # def rememberTreeSelection(self, message):
+  #   self.memory["tree_name"] = message["tree_name"]
 
   def getTreeDataTuples(self, message):
-    start = time.time()
+    if TIMING: start = time.time()
     try:
       tree_name = message["tree_name"]
     except:
       tree_name = self.memory["tree_name"]
-    # dataTreeTuples = self.dataModel.makeDataTuplesForGraph(tree_name, "tree_name")
-    print("getting tuples", time.time() - start)
-
-    # existing_item_names = self.dataModel.getAllNamesInTheBrick(tree_name,
-    #                                                            "tree")
-
-    # self.frontEnd.showTreeTree(dataTreeTuples, tree_name, existing_item_names)
+    if TIMING: print("getting tuples", time.time() - start)
     instances = self.dataModel.instances
     graph, root = self.dataModel.getGraph(tree_name, "tree_name")
     self.frontEnd.showNewTreeTree(graph, root, instances)
