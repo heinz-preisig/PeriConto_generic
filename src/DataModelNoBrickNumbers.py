@@ -225,59 +225,32 @@ class DataModel:
     t = None
     for t in graph.triples(triple_search):
       s,p,o = t
-      del self.instances[tree_name][path[0]]
-    if not t:
-      triple_search = (Literal(path[0]),
-                     RDFSTerms[primitive_type],
-                     None)
-      for t in graph.triples(triple_search):
-        s,p,o = t
+      try:
+        del self.instances[tree_name][path[0]]
+      except:
+        pass
+    # if not t:
+    #   triple_search = (Literal(path[0]),
+    #                  RDFSTerms[primitive_type],
+    #                  None)
+    #   for t in graph.triples(triple_search):
+    #     s,p,o = t
 
     if t :
       graph.remove(t)
-      s = Literal(value)
+      s = URIRef(prefix+value)
       triple_add = s,p,o
       graph.add(triple_add)
+    else:
+      print(">>> something went wrong, Not triple found")
 
-
-    # primitive_uri = URIRef(makeItemURI(tree_name, primitive_name))
-    #
-    # if path[0] in PRIMITIVES:
-    #   triple_remove = URIRef(makeItemURI(tree_name, "")), RDFSTerms[primitive_type], primitive_uri
-    #   # graph.remove(triple_remove)
-    #   instance_ID = "instance_%s" % self.instance_counter[tree_name]
-    #   self.instance_counter[tree_name] += 1
-    #   instance_uri = URIRef(makeItemURI(tree_name, instance_ID))
-    #   modify = True
-    #   pass
-    #
-    # else:
-    #   triple_search = None, RDFSTerms[primitive_type], primitive_uri
-    #   for t in graph.triples(triple_search):
-    #
-    #     s, p, o = t
-    #     n = s.split("#")[-1]
-    #     modify = False
-    #     if n != "":
-    #       instance_uri = s
-    #       _, counter = s.split("_")
-    #       instance_ID = "instance_%s" % counter
-    #       instance_path, instance_value = self.instances[instance_ID]
-    #       if instance_path[1:] == path[1:]:
-    #         modify = True
-    #
-    # if modify:
-    #   triple = instance_uri, RDFSTerms[primitive_type], primitive_uri
-    #   graph.add(triple)
-    #   self.instances[instance_ID] = path, value
-    #   # else:
-    #   #   print(">>>>> should not come here")
-    # print("got now instances", self.instances)
 
   def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
     graph = self.BRICK_GRAPHS[brick_name]
-    primitive_uri = URIRef(makeItemURI(brick_name, primitive_name))
-    triple = (None, None, primitive_uri)
+    prefix = makeItemURI(brick_name, "")
+    name_uri = URIRef(prefix + primitive_name)
+    primitive_uri= URIRef(prefix + new_type)
+    triple = (None, None, name_uri)
     selected_triples = []
     for t in graph.triples(triple):
       selected_triples.append(t)
@@ -289,7 +262,7 @@ class DataModel:
       return
 
     t = selected_triples[0]
-    new_triple = Literal(""), RDFSTerms[new_type], primitive_uri
+    new_triple = primitive_uri, RDFSTerms[new_type], name_uri
     graph.add(new_triple)
     graph.remove(t)
 
@@ -369,8 +342,8 @@ class DataModel:
     pass
 
   def __renameURI(self, newName, oldName, uri):
-    if uri.__class__ == rdflib.term.Literal:  # handle Literals
-      return uri
+    # if uri.__class__ == rdflib.term.Literal:  # handle Literals
+    #   return uri
     uri_name = extractNameFromIRI(uri)
     if uri_name == oldName:  # handle classes
       uri_name = newName
