@@ -210,7 +210,7 @@ class DataModel:
     o = URIRef(itemURI + name)
     triple = (o, RDFSTerms["value"], s)
     self.BRICK_GRAPHS[Class].add(triple)
-    oo = Literal("")
+    oo = URIRef(itemURI+type) #Literal("")
     triple = (oo, RDFSTerms[type], o)
     self.BRICK_GRAPHS[Class].add(triple)
     pass
@@ -225,7 +225,7 @@ class DataModel:
     t = None
     for t in graph.triples(triple_search):
       s,p,o = t
-      del self.instances[path[0]]
+      del self.instances[tree_name][path[0]]
     if not t:
       triple_search = (Literal(path[0]),
                      RDFSTerms[primitive_type],
@@ -349,19 +349,23 @@ class DataModel:
 
   def replaceBlankWithUndefinedIdentifier(self, tree_name):
     graph = self.TREE_GRAPHS[tree_name]
-    for s, p, o in graph.triples((Literal(""), None, None)):
-      new_ID = "instance_%s" % self.instance_counter[tree_name]
-      s_new = URIRef(makeItemURI(tree_name, new_ID))
-      self.instance_counter[tree_name] += 1
-      remove_triple = s, p, o
-      graph.remove(remove_triple)
-      triple = s_new, p, o
-      graph.add(triple)
-      tree_uri = URIRef(makeItemURI(tree_name, tree_name))
-      path, path_names = find_path_back_triples(graph, triple, tree_uri)
+    prefix = makeItemURI(tree_name,"")
+    for primitive in PRIMITIVES:
+      primitive_uri = URIRef(prefix + primitive)
+      for t in graph.triples((primitive_uri, None, None)):
+        s,p,o = t
+        new_ID = "instance_%s" % self.instance_counter[tree_name]
+        s_new = URIRef(makeItemURI(tree_name, new_ID))
+        self.instance_counter[tree_name] += 1
+        remove_triple = s, p, o
+        graph.remove(remove_triple)
+        triple = s_new, p, o
+        graph.add(triple)
+        tree_uri = URIRef(makeItemURI(tree_name, tree_name))
+        path, path_names = find_path_back_triples(graph, triple, tree_uri)
 
-      self.instances[tree_name][new_ID]= path_names
-      # print(">>> replacing",s, p, o)
+        self.instances[tree_name][new_ID]= path_names
+        # print(">>> replacing",s, p, o)
     pass
 
   def __renameURI(self, newName, oldName, uri):
@@ -471,15 +475,15 @@ class DataModel:
       self.instances = json.load(f)
 
     self.instance_counter = {}
-    for instance in self.instances:
-      if self.instances[instance]:
-        for i in self.instances[instance]:
+    for tree_name in self.instances:
+      if self.instances[tree_name]:
+        for i in self.instances[tree_name]:
           if i:
-            _, s = i
-            _, counter = s.split("_")
-            self.instance_counter[instance] = int(counter) + 1
+            s = i
+            counter = s.split("_")[1]
+            self.instance_counter[tree_name] = int(counter) + 1
       else:
-        self.instance_counter[instance] = 0
+        self.instance_counter[tree_name] = 0
     pass
 
   def reduceGraph(self, tree_name):
