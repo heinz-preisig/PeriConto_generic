@@ -474,32 +474,6 @@ class OntobuilderUI(QMainWindow):
     except:
       pass
 
-  # def __makeTree(self, tuples, origin=[], stack=[], items={}):
-  #   for q in tuples:
-  #     if q not in stack:
-  #       s, p, o, dir = q
-  #       if s != origin:
-  #         if o in items:
-  #           # if s != "":
-  #           item = QTreeWidgetItem(items[o])
-  #           item.count = 0
-  #           item.node_type = self.rules[p]
-  #           item.parent_name = o
-  #           item.setForeground(0, QBRUSHES[p])
-  #           stack.append(q)  # (s, p, o))
-  #           if s == "":
-  #             item.setText(0, p)
-  #           else:
-  #             item.setText(0, s)
-  #           items[s] = item
-  #           try:
-  #             items[o].count += 1
-  #           except:
-  #             pass
-  #
-  #           debugging("items", s, p, o)
-  #           self.__makeTree(tuples, origin=s, stack=stack, items=items)
-
   def putTreeList(self, tree_list):
     self.treeList = tree_list
     self.ui.listTrees.clear()
