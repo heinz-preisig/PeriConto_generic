@@ -2,9 +2,11 @@ from rdflib import Namespace
 from rdflib import RDF
 from rdflib import XSD
 from rdflib import namespace
+from rdflib import DCTERMS
 
 # https://www.w3.org/TR/rdf12-concepts/#dfn-rdf-dataset
 # https://www.w3.org/TR/rdf-schema/#ch_resource
+# https://www.w3.org/TR/vocab-dcat-3/#Property:resource_identifier
 
 RDFS = namespace.RDFS
 BASE = "http://example.org"
@@ -34,6 +36,7 @@ RDFSTerms = {
         "uri"          : XSD.anyURI,
         "label"        : RDFS.label,
         "boolean"      : XSD.boolean,
+        "identifier"   : DCTERMS.identier,
         }
 
 RULES = {
