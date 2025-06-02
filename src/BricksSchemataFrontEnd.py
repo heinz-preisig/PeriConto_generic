@@ -419,10 +419,10 @@ class OntobuilderUI(QMainWindow):
             item.setForeground(0, QBRUSHES[p])
             stack.append(q)  # (s, p, o))
             item.setText(0, s)
-            # if s == "":
-            #   item.setText(0, p)
-            # else:
-            #   item.setText(0, s)
+            if s == "":
+              item.setText(0, p)
+            else:
+              item.setText(0, s)
             items[s] = item
             # debugging("items", s, p, o)
             self.__makeTree(tuples, origin=s, stack=stack, items=items)

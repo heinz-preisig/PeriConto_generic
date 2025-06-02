@@ -1,5 +1,6 @@
 from rdflib import Namespace
 from rdflib import RDF
+from rdflib import URIRef
 from rdflib import XSD
 from rdflib import namespace
 from rdflib import DCTERMS
@@ -22,6 +23,8 @@ ONTOLOGY_REPOSITORY = "../../PeriConto-Ontologies"
 FILE_FORMAT = "trig"
 FILE_FORMAT_ = "json-ld"
 
+IDENTIFIER_predicate = URIRef(BASE + ITEM_SEPARATOR+"identifier")
+
 RDFSTerms = {
         "class"        : RDFS.Class,
         "is_class"     : RDF.type,  # was "is_type"
@@ -36,7 +39,7 @@ RDFSTerms = {
         "uri"          : XSD.anyURI,
         "label"        : RDFS.label,
         "boolean"      : XSD.boolean,
-        "identifier"   : DCTERMS.identier,
+        "identifier"   : IDENTIFIER_predicate,
         }
 
 RULES = {
@@ -44,6 +47,7 @@ RULES = {
         "is_member"    : "member",
         "is_defined_by": "isDefinedBy",
         "value"        : "value",
+        "identifier"   : "identifier",
         "string"       : "string",
         "integer"      : "integer",
         "decimal"      : "decimal",

@@ -216,19 +216,19 @@ class OntobuilderUI(QMainWindow):
     debugging("-- pushTreeCreate")
     dialog = UI_stringSelector("select brick",
                                self.brickList)
-    # dialog.exec()
     brick_name = dialog.selection
-    if brick_name:
-      dialog = UI_String("tree name", limiting_list=self.treeList, validator="name_upper")
-      tree_name = dialog.text
-      if not tree_name:
-        return
-    else:
-      return
+    # if brick_name:  #todo: reinstante tree naming, but then it must be the new root
+    #   dialog = UI_String("tree name", limiting_list=self.treeList, validator="name_upper")
+    #   tree_name = dialog.text
+    #   if not tree_name:
+    #     return
+    # else:
+    #   return
+    tree_name = brick_name
     message = {
             "event"     : "new tree",
             "tree_name" : classCase(tree_name),  # .upper(),
-            "brick_name": brick_name
+            "brick_name": classCase(tree_name) # brick_name
             }
     self.backend.processEvent(message)
 
@@ -356,8 +356,9 @@ class OntobuilderUI(QMainWindow):
         x = self.__makePath(item)
         print(x)
         value = None
+        instance = None
         if name not in self.primitives:
-          value = name
+          instance,value = name.split(":")
         if type == "boolean":
           dialog = RadioButtonDialog(["True", "False"])
           if dialog.exec():
@@ -372,9 +373,10 @@ class OntobuilderUI(QMainWindow):
           value = dialog.text
         if not value:
           value = ""
+        instance = instance+":"+value
         message = {
                 "event"      : "got primitive",
-                "value"      : value,
+                "value"      : instance,
                 "type"       : type,
                 "parent_name": parent_name,
                 "path"       : x,
@@ -437,7 +439,7 @@ class OntobuilderUI(QMainWindow):
         name = str(node)
       self.existing_names.add(name)
       _, parent_name = parent.split("#")
-      # print(depth,node,current_branch, parent)
+      print(depth,node,current_branch, parent)
       if node != root:
         parent_item = items[parent_name]
         items[name] = QTreeWidgetItem(parent_item)
@@ -455,9 +457,13 @@ class OntobuilderUI(QMainWindow):
                 items[name].setText(0, name)
         else:
           items[name].setText(0, name)
+        # items[name].setText(0, name)
 
         if items[name].text(0) == "":
-          # print(">>>> found obsolete item")
+          x = self.__makePath(items[name])
+          x_p = self.__makePath(parent_item)
+
+          print(">>>> found obsolete item", x, "parent_path", x_p)
           # Note: this item was generated but not named -- couldn't find another solution
           parent_item.removeChild(items[name])
 
