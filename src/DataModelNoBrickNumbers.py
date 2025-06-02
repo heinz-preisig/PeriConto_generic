@@ -496,11 +496,9 @@ class DataModel:
     for primitive in RDF_PRIMITIVES:
       triple = None, primitive, None
       for s, p, o in graph.triples(triple):
-        try:
-          _, name = str(s).split("#")
-        except:
-          name = str(s)
-        if name != "":
+        _, name = str(s).split("#")
+        value =  name.split(":")[-1]
+        if value != "undefined":
           keep_target.append((s, p, o))
 
     root = URIRef(makeClassURI(tree_name))

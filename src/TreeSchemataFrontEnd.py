@@ -293,7 +293,7 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_pushTreeLinkExistingClass_pressed(self):
-    print("-- pushTreeLinkExistingClass")
+    # print("-- pushTreeLinkExistingClass")
     dialog = UI_stringSelector("select brick",
                                self.brickList)
     brick_name = dialog.selection
@@ -354,7 +354,7 @@ class OntobuilderUI(QMainWindow):
     if not linkpoint:
       if type in self.primitives:
         x = self.__makePath(item)
-        print(x)
+        # print(x)
         value = None
         instance = None
         if name not in self.primitives:
@@ -372,7 +372,7 @@ class OntobuilderUI(QMainWindow):
                              validator=type)
           value = dialog.text
         if not value:
-          value = ""
+          value = "undefined"
         instance = instance+":"+value
         message = {
                 "event"      : "got primitive",
@@ -439,7 +439,7 @@ class OntobuilderUI(QMainWindow):
         name = str(node)
       self.existing_names.add(name)
       _, parent_name = parent.split("#")
-      print(depth,node,current_branch, parent)
+      # print(depth,node,current_branch, parent)
       if node != root:
         parent_item = items[parent_name]
         items[name] = QTreeWidgetItem(parent_item)
@@ -463,7 +463,7 @@ class OntobuilderUI(QMainWindow):
           x = self.__makePath(items[name])
           x_p = self.__makePath(parent_item)
 
-          print(">>>> found obsolete item", x, "parent_path", x_p)
+          # print(">>>> found obsolete item", x, "parent_path", x_p)
           # Note: this item was generated but not named -- couldn't find another solution
           parent_item.removeChild(items[name])
 

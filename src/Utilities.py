@@ -300,15 +300,15 @@ class TreePlot:
           # if o not in defined_nodes:
           if (dir == 1) and (type != "LinkedClass"):
             self.addNode(o, type)
-            print("added node ", o, type)
+            # print("added node ", o, type)
           # if s not in defined_nodes:
           else:
             self.addNode(s, type)
-            print("added node ", s, type)
+            # print("added node ", s, type)
           if type == "LinkedClass":
             self.addNode(o, "link")
             self.addNode(s, type)
-            print("added linked node ", s, type)
+            # print("added linked node ", s, type)
             # defined_nodes.add(s)
           self.addEdge(s, o, p, dir)
           stack.append(q)  # (s, p, o))
