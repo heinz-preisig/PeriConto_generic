@@ -18,6 +18,7 @@ from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
+from Utilities import DEBUGG
 from Utilities import debugging
 from Utilities import find_path_back_triples
 from Utilities import get_subtree
@@ -226,17 +227,23 @@ class DataModel:
       s, p, o = t
     if t:
       graph.remove(t)
-      # instance = s.split(":")[1].split("#")[1]
       s = URIRef(prefix + value)
       triple_add = s, p, o
       graph.add(triple_add)
-      path, path_names = find_path_back_triples(graph, triple_add, tree_uri)
-      self.instances[tree_name][instance_ID] = path_names
+      old_path = self.instances[tree_name][instance_ID]
+      new_path = old_path
+      new_path[0] = value
+      self.instances[tree_name][instance_ID] = new_path
     else:
       print(">>> something went wrong, Not triple found")
     pass
-    for ttt in graph.triples((None, None, None)):
-      print(ttt)
+
+    if DEBUGG:
+      for ttt in graph.triples((None, None, None)):
+        print(ttt)
+      print("end")
+      print(self.instances[tree_name])
+
 
   def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
     graph = self.BRICK_GRAPHS[brick_name]
@@ -490,64 +497,54 @@ class DataModel:
     pass
 
   def reduceGraph(self, tree_name):
-    graph = copy.deepcopy(self.TREE_GRAPHS[tree_name])
+    pass
+    prefix = makeItemURI(tree_name, "")
+    tree_graph = self.TREE_GRAPHS[tree_name]
+
+    instances = self.instances[tree_name]
 
     keep_target = []
-    keep_instance_IDs = []
-    for primitive in RDF_PRIMITIVES:
-      triple = None, primitive, None
-      for s, p, o in graph.triples(triple):
-        _, name = str(s).split("#")
-        instance_ID, value =  name.split(":")
-        if value != "undefined":
-          keep_target.append((s, p, o))
-          keep_instance_IDs.append(instance_ID)
+    for instance_ID in instances:
+      instance_value = instances[instance_ID][0].split(":")[1]
+      instance_path = instances[instance_ID]
+      if instance_value != "undefined":
+        keep_target.append(instance_path)
 
-    root = URIRef(makeClassURI(tree_name))
-    paths = set()
-    for t in keep_target:
-      path, path_names = find_path_back_triples(graph, t, root)
+    pass
+    if not keep_target:
+      return
 
-      debugging("found path")
-      for triple in path:
-        paths.add(triple)
+    tree_name_instantiated = tree_name + "_i"
+    self.tree_namespaces[tree_name_instantiated] = Namespace(makeItemURI(tree_name_instantiated, ""))
+    graph = self.TREE_GRAPHS[tree_name_instantiated] = Graph("Memory")
+    # make path
+    for i in keep_target:
+      for n in range(len(i[:-1])):
+        s_n, o_n = i[n:n+2]
+        print(s_n, o_n)
+        s = makeItemURI(tree_name, s_n)
+        o = makeItemURI(tree_name, o_n)
 
-    if paths:
-      tree_name_instantiated = tree_name + "_i"
+        triple_search = (URIRef(s), None, URIRef(o))
 
-      self.tree_namespaces[tree_name_instantiated] = Namespace(makeItemURI(tree_name_instantiated, ""))
-
-      # self.tree_name_space[tree_name_instantiated] = makeClassURI(tree_name_instantiated)
-      # self.tree_name_space_item = makeItemURI(tree_name_instantiated[tree_name_instantiated], "")
-
-      g = self.TREE_GRAPHS[tree_name_instantiated] = Graph("Memory")
-
-      classURI = makeClassURI(tree_name_instantiated)
-      # self.brick_namespaces[tree_name_instantiated] = classURI
-      triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
-      self.TREE_GRAPHS[tree_name_instantiated].add(triple)
-
-      self.TREE_GRAPHS[tree_name_instantiated].bind(tree_name_instantiated,
-                                                    self.tree_namespaces[tree_name_instantiated])
-      # self.TREE_GRAPHS[tree_name_instantiated].bind(tree_name_instantiated,
-      #                                               self.tree_name_space_item)
-      pass
-      for s, p, o in paths:
         s_new = self.__renameURI(tree_name_instantiated, tree_name, s)
         o_new = self.__renameURI(tree_name_instantiated, tree_name, o)
-        g.add((s_new, p, o_new))
-    else:
-      del graph
+        for _, p, _ in tree_graph.triples(triple_search):
+          triple = (s_new, p, o_new)
+          graph.add(triple)
+
     pass
-    # finally copy instantiated instances
-    self.instances[tree_name_instantiated] = {}
-    for id in self.instances[tree_name]:
-      if id in keep_instance_IDs:
-        if id in keep_instance_IDs:
-          instance = copy.copy(self.instances[tree_name][id])
-          instance[-1]= tree_name_instantiated
-          self.instances[tree_name_instantiated][id] = instance
-    return
+
+    # finally, copy instantiated instances
+    self.instances[tree_name_instantiated] = copy.deepcopy(self.instances[tree_name])
+    for instance_ID in self.instances[tree_name_instantiated]:
+      path = copy.copy(self.instances[tree_name_instantiated][instance_ID])
+      path[-1] = tree_name_instantiated
+      self.instances[tree_name_instantiated][instance_ID] = path
+
+
+    pass
+
 
   def __prepareConjunctiveGraph(self, graphs):
     pass
@@ -560,47 +557,7 @@ class DataModel:
         conjunctiveGraph.get_context(classURI).add((s, p, o))
     return conjunctiveGraph
 
-  # def reEnumerateGraph(self):
-  #
-  #   tree_brick_numbers = {}
-  #   for g in self.TREE_GRAPHS:
-  #     numbers = set()
-  #     graph = self.TREE_GRAPHS[g]
-  #     for s, p, o in graph.triples((None, None, None)):
-  #       no, name = self.__extractNumber(s)
-  #       numbers.add(no)
-  #       no, name = self.__extractNumber(o)
-  #       numbers.add(no)
-  #     numbers.remove(-1)
-  #     tree_brick_numbers[g] = sorted(numbers)
-  #     number_of_bricks = len(tree_brick_numbers[g])
-  #     print("graph %s has %s bricks" % (g, number_of_bricks))
-  #
-  #   for g in self.TREE_GRAPHS:
-  #     graph = self.TREE_GRAPHS[g]
-  #     mapped_graph = Graph("Memory")
-  #     numbers = tree_brick_numbers[g]
-  #
-  #     tree_name_space_item = makeItemURI(g, "")
-  #
-  #     for s, p, o in graph.triples((None, None, None)):
-  #       s_no, s_name = self.__extractNumber(s)
-  #       o_no, o_name = self.__extractNumber(o)
-  #       if s_no == -1:
-  #         s_ = URIRef(tree_name_space_item + "%s" % (s_name))
-  #       else:
-  #         s_ = URIRef(tree_name_space_item + "%s_%s" % (numbers.index(s_no), s_name))
-  #
-  #       if o_no == -1:
-  #         o_ = URIRef(tree_name_space_item + "%s" % (o_name))
-  #       else:
-  #         o_ = URIRef(tree_name_space_item + "%s_%s" % (numbers.index(o_no), o_name))
-  #
-  #       mapped_graph.add((s_, p, o_))
-  #
-  #     self.TREE_GRAPHS[g] = mapped_graph
-  #     # self.brick_counter[g] = len(tree_brick_numbers[g])
-  #   return tree_brick_numbers
+
 
   def newTree(self, tree_name, brick_name):
 
@@ -608,11 +565,9 @@ class DataModel:
     self.instances[tree_name] = {}
 
     tree_graph = self.__makeNewGraph(tree_name)
-    brick_graph = self.BRICK_GRAPHS[brick_name]
     self.TREE_GRAPHS[tree_name] = tree_graph
     self.tree_namespaces[tree_name] = Namespace(makeItemURI(tree_name, ""))
-    self.copyGraph(brick_name, brick_graph, tree_name, tree_graph)
-    self.replaceBlankWithUndefinedIdentifier(tree_name)
+    self.linkBrickToItem(tree_name, tree_name, brick_name, new_tree=True)
 
   def getTreeList(self):
     tree_list = sorted(self.TREE_GRAPHS.keys())

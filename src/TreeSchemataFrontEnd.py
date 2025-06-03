@@ -24,6 +24,7 @@ messages:
 
 
 """
+import copy
 import os
 import sys
 
@@ -223,18 +224,18 @@ class OntobuilderUI(QMainWindow):
     dialog = UI_stringSelector("select brick",
                                self.brickList)
     brick_name = dialog.selection
-    # if brick_name:  #todo: reinstante tree naming, but then it must be the new root
-    #   dialog = UI_String("tree name", limiting_list=self.treeList, validator="name_upper")
-    #   tree_name = dialog.text
-    #   if not tree_name:
-    #     return
-    # else:
-    #   return
-    tree_name = brick_name
+    if brick_name:  #todo: reinstante tree naming, but then it must be the new root
+      dialog = UI_String("tree name", limiting_list=self.treeList, validator="name_upper")
+      tree_name = dialog.text
+      if not tree_name:
+        return
+    else:
+      return
+    # tree_name = brick_name
     message = {
             "event"     : "new tree",
             "tree_name" : classCase(tree_name),  # .upper(),
-            "brick_name": classCase(tree_name) # brick_name
+            "brick_name": brick_name #classCase(tree_name) # brick_name
             }
     self.backend.processEvent(message)
 
@@ -300,8 +301,18 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushTreeLinkExistingClass_pressed(self):
     # print("-- pushTreeLinkExistingClass")
+    current_item = self.ui.treeTree.currentItem()
+    current_item_name = current_item.text(0)
+    brick_list = copy.copy(self.brickList)
+    x = self.__makePath(current_item)
+    for i in x:   # RULE: make sure that no name is repeated in any path
+      if i in brick_list:
+        brick_list.remove(i)
+
+    if not current_item:
+      return
     dialog = UI_stringSelector("select brick",
-                               self.brickList)
+                               brick_list)
     brick_name = dialog.selection
     message = {
             "event"     : "link",

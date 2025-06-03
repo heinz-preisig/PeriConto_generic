@@ -4,7 +4,7 @@ from graphviz import Digraph
 
 from BricksAndTreeSemantics import RDF_PRIMITIVES, RDFSTerms
 from BricksAndTreeSemantics import RULES
-from rdflib import Namespace
+from rdflib import Namespace, Graph
 
 from BricksAndTreeSemantics import extractNameFromIRI
 
@@ -102,27 +102,31 @@ def find_path_back_triples(graph, leave_triple, root):
   from BricksAndTreeSemantics import RDF_PRIMITIVES, RDFSTerms
 
   path = [leave_triple]
-
   now = path[0][2]  # neighbour
 
   while not now == root:
     triple = (now, None, None)
     for s, p, o in graph.triples(triple):
       t = (s, p, o)
-      if (t not in path) and (s == now):
+      if (t not in path) :
         if not p in RDF_PRIMITIVES and o not in RDFSTerms["class"]:
           now = o
           path.append(t)
 
   path_names = []
-  reduced_path = []
   for _s, _p, _o in path:
     pre, n_s = _s.split("#")
     if n_s not in path_names:
       path_names.append(n_s)
-      reduced_path.append((_s,_p,_o))
   root_name = root.split("#")[1]
   path_names.append(root_name)
+
+
+  reduced_path = []
+  for _s, _p, _o in path:
+    _, n_o = _o.split("#")
+    if n_o in path_names:
+      reduced_path.append((_s,_p,_o))
 
   return reduced_path, path_names
 
