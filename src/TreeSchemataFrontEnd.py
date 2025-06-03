@@ -86,6 +86,12 @@ for c_hash in COLOURS.keys():
 LINK_COLOUR = QtGui.QColor(255, 100, 5, 255)
 PRIMITIVE_COLOUR = QtGui.QColor(255, 3, 23, 255)
 
+def PrintGraph(graph):
+  print("graph")
+  for s, p, o in graph.triples((None, None, None)):
+    print(s, p, o)
+  print("end graph")
+
 
 class OntobuilderUI(QMainWindow):
   def __init__(self):
@@ -413,6 +419,7 @@ class OntobuilderUI(QMainWindow):
   def showNewTreeTree(self, graph, root, instances):
     pass
     widget = self.ui.treeTree
+    # PrintGraph(graph)
 
     self.existing_names = set()
 
@@ -439,7 +446,7 @@ class OntobuilderUI(QMainWindow):
         name = str(node)
       self.existing_names.add(name)
       _, parent_name = parent.split("#")
-      # print(depth,node,current_branch, parent)
+      # print(depth,node,current_branch, parent, predicate)
       if node != root:
         parent_item = items[parent_name]
         items[name] = QTreeWidgetItem(parent_item)

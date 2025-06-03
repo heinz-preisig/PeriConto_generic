@@ -109,7 +109,7 @@ def find_path_back_triples(graph, leave_triple, root):
     triple = (now, None, None)
     for s, p, o in graph.triples(triple):
       t = (s, p, o)
-      if t not in path:
+      if (t not in path) and (s == now):
         if not p in RDF_PRIMITIVES and o not in RDFSTerms["class"]:
           now = o
           path.append(t)
@@ -221,6 +221,7 @@ class TreePlot:
 
 
   def __init__(self, graph_name, graph_triples, class_names):
+
     self.graph_name = graph_name
     self.classes = class_names
     self.triples = graph_triples
@@ -248,13 +249,10 @@ class TreePlot:
     self.nodes.add(node)
 
   def addEdge(self, From, To, type, dir):
-    # print("from", From,type, dir)
-    # print("to", To, type, dir)
     try:
       colour = EDGE_COLOURS[type]
     except:
       colour = EDGE_COLOURS["other"]
-    # print("from-to", From, To)
     if dir == 1:
       self.dot.edge(From, To,
                     color=colour,
@@ -270,17 +268,29 @@ class TreePlot:
 
   def makeMe(self, root):
     self.addNode(root, "Class")
-    self.__makeGraph(origin=[root], stack=[])
-    # print("nodes ", self.nodes)
+
+    nodes = set()
+    new_triples = []
+
+    for q in self.triples:
+      s,p,o,dir = q
+      if ":" in s:
+        s = s.split(":")[-1]
+      if ":" in o:
+        o = o.split(":")[-1]
+      new_triples.append((s,p,o,dir))
+      nodes.add((s,p))
+      nodes.add((o,p))
+
+    for n,p in nodes:
+      type = RULES[p]
+      self.addNode(n, type)
+
+    for q in new_triples:
+      s, p, o, dir = q
+      self.addEdge(s, o, p, dir)
 
     no_nodes = len(self.nodes)
-    # Add a standalone annotation (invisible node with label)
-    # self.dot.node('note', 'number of nodes %s'%no_nodes, shape='plaintext')
-
-    # with self.dot.subgraph() as s:
-    #   s.attr(rank='source')  # Push to the top
-    #   s.attr(rank='sink')  # Push to the bottom
-    #   s.node('note')  # Ensure it's part of the subgraph
 
     self.dot.graph_attr["label"] = "Graph of : %s with %s nodes\n"%(self.graph_name, no_nodes)  # Add a title
     self.dot.graph_attr["labelloc"] = "t"  # Position title at the top
@@ -288,31 +298,7 @@ class TreePlot:
     self.dot.graph_attr["ranksep"] = "1.5"
     print("number of nodes:", no_nodes)
 
-  def __makeGraph(self, origin=[], stack=[]):
-    for q in self.triples:
-      if q not in stack:
-        s, p, o, dir = q
-        if s != origin:
-          type = RULES[p]
-          # print("that's s, o, dir, type --- ",s, o, dir, type)
-          if str(s) == "":
-            pass
-          # if o not in defined_nodes:
-          if (dir == 1) and (type != "LinkedClass"):
-            self.addNode(o, type)
-            # print("added node ", o, type)
-          # if s not in defined_nodes:
-          else:
-            self.addNode(s, type)
-            # print("added node ", s, type)
-          if type == "LinkedClass":
-            self.addNode(o, "link")
-            self.addNode(s, type)
-            # print("added linked node ", s, type)
-            # defined_nodes.add(s)
-          self.addEdge(s, o, p, dir)
-          stack.append(q)  # (s, p, o))
-          self.__makeGraph(origin=s, stack=stack)
+
 
 
 if __name__ == "__main__":
@@ -349,17 +335,50 @@ if __name__ == "__main__":
   """
 
   print("============================================================")
-  g2 = Graph()
-  g2.parse(data=data3, format="turtle")
+  # g2 = Graph()
+  # g2.parse(data=data3, format="turtle")
+  #
+  # root = URIRef("http://example.org/k")
+  # neighbour = URIRef("http://example.org/k#i")
+  # leave = Literal("123")
+  #
+  # triple = (neighbour, RDFSTerms["integer"], leave)
+  # triple_ = (leave, RDFSTerms["integer"], neighbour)
+  #
+  # path = find_path_back_triples(g2, triple_, root)
+  # for t in path:
+  #   print(t)
 
-  root = URIRef("http://example.org/k")
-  neighbour = URIRef("http://example.org/k#i")
-  leave = Literal("123")
 
-  triple = (neighbour, RDFSTerms["integer"], leave)
-  triple_ = (leave, RDFSTerms["integer"], neighbour)
+  # print("============================================================")
+  data4 = """@prefix A: <http://example.org/A#> .
+  @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+  @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+  
+  A:A a rdfs:Class .
+  
+  <http://example.org/A#instance_0:undefined> xsd:string A:S .
+  
+  <http://example.org/A#instance_1:p> xsd:string A:S .
+  
+  A:Aa rdfs:member A:A .
+  
+  A:Ab rdfs:member A:A .
+  
+  A:B rdfs:isDefinedBy A:Aa,
+          A:Ab .
+  
+  A:S rdf:value A:B .
+  
+  """
+  g4 = Graph()
+  g4.parse(data=data4, format="turtle")
 
-  path = find_path_back_triples(g2, triple_, root)
-  for t in path:
-    print(t)
+  root = URIRef("http://example.org/A#A")
 
+  triple = (URIRef("http://example.org/A#instance_0:undefined"), RDFSTerms["string"], URIRef("http://example.org/A#S"))
+
+
+  path, names = find_path_back_triples(g4, triple, root)
+  pass

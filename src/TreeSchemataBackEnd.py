@@ -230,7 +230,7 @@ class BackEnd():
     tree = self.memory["tree_name"]
     dataBrickTuples = self.dataModel.makeDataTuplesForGraph(tree,
                                                             "tree_name")
-    class_names = sorted(self.dataModel.BRICK_GRAPHS.keys())
+    class_names = [tree] #sorted(self.dataModel.BRICK_GRAPHS.keys())
     graph = TreePlot(graph_name=tree, graph_triples=dataBrickTuples, class_names=class_names)
     graph.makeMe(tree)
     file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, self.project_name) + "+%s_tree" % tree

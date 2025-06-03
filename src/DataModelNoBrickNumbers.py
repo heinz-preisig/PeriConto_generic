@@ -493,40 +493,44 @@ class DataModel:
     graph = copy.deepcopy(self.TREE_GRAPHS[tree_name])
 
     keep_target = []
+    keep_instance_IDs = []
     for primitive in RDF_PRIMITIVES:
       triple = None, primitive, None
       for s, p, o in graph.triples(triple):
         _, name = str(s).split("#")
-        value =  name.split(":")[-1]
+        instance_ID, value =  name.split(":")
         if value != "undefined":
           keep_target.append((s, p, o))
+          keep_instance_IDs.append(instance_ID)
 
     root = URIRef(makeClassURI(tree_name))
     paths = set()
     for t in keep_target:
-      path, _ = find_path_back_triples(graph, t, root)
+      path, path_names = find_path_back_triples(graph, t, root)
 
       debugging("found path")
       for triple in path:
         paths.add(triple)
 
-    if paths != set():
+    if paths:
       tree_name_instantiated = tree_name + "_i"
 
-      self.tree_name_space = makeClassURI(tree_name_instantiated)
-      self.tree_name_space_item = makeItemURI(tree_name_instantiated, "")
+      self.tree_namespaces[tree_name_instantiated] = Namespace(makeItemURI(tree_name_instantiated, ""))
+
+      # self.tree_name_space[tree_name_instantiated] = makeClassURI(tree_name_instantiated)
+      # self.tree_name_space_item = makeItemURI(tree_name_instantiated[tree_name_instantiated], "")
 
       g = self.TREE_GRAPHS[tree_name_instantiated] = Graph("Memory")
 
       classURI = makeClassURI(tree_name_instantiated)
-      self.brick_namespaces[tree_name_instantiated] = classURI
+      # self.brick_namespaces[tree_name_instantiated] = classURI
       triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
       self.TREE_GRAPHS[tree_name_instantiated].add(triple)
 
       self.TREE_GRAPHS[tree_name_instantiated].bind(tree_name_instantiated,
-                                                    self.tree_name_space)
-      self.TREE_GRAPHS[tree_name_instantiated].bind(tree_name_instantiated,
-                                                    self.tree_name_space_item)
+                                                    self.tree_namespaces[tree_name_instantiated])
+      # self.TREE_GRAPHS[tree_name_instantiated].bind(tree_name_instantiated,
+      #                                               self.tree_name_space_item)
       pass
       for s, p, o in paths:
         s_new = self.__renameURI(tree_name_instantiated, tree_name, s)
@@ -535,6 +539,14 @@ class DataModel:
     else:
       del graph
     pass
+    # finally copy instantiated instances
+    self.instances[tree_name_instantiated] = {}
+    for id in self.instances[tree_name]:
+      if id in keep_instance_IDs:
+        if id in keep_instance_IDs:
+          instance = copy.copy(self.instances[tree_name][id])
+          instance[-1]= tree_name_instantiated
+          self.instances[tree_name_instantiated][id] = instance
     return
 
   def __prepareConjunctiveGraph(self, graphs):
