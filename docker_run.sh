@@ -1,13 +1,31 @@
 #!/bin/bash
 # Script to run the PyQt5 application with proper X11 forwarding
 
-# $1 may be empty, then predefined task is started else it is what one defines
-
-# Set image name - replace with your image name
+# Set image name and paths
 IMAGE_NAME="periconto"
 LOCAL_ONTOLOGY_REPOSITORY="/home/heinz/1_Gits/OntoBuild/PeriConto-Ontologies"
 DOKER_ONTOLOGY_REPOSITORY="/PeriConto-Ontologies"
-BASH=$1
+
+# Default command (BricksSchemata.py)
+CMD=("python3" "/app/src/TreeSchemata.py")
+
+# Check for different run modes
+case "$1" in
+    "bash")
+        # Start an interactive bash shell
+        CMD=("/bin/bash")
+        ;;
+    "bricks")
+        # Run BricksSchemata.py
+        CMD=("python3" "/app/src/BricksSchemata.py")
+        ;;
+    *)
+        # Any other arguments will be passed to TreeSchemata.py
+        if [ -n "$1" ]; then
+            CMD=("python3" "/app/src/TreeSchemata.py" "$@")
+        fi
+        ;;
+esac
 
 # Enable X11 access for Docker (Linux only)
 if [ "$(uname)" == "Linux" ]; then
@@ -31,11 +49,14 @@ else
 fi
 
 # Run the docker container
-echo "Running PyQt6 application with display: $DISPLAY_ENV"
+echo "Running container with display: $DISPLAY_ENV"
+echo "Command: ${CMD[*]}"
 docker run --rm -it \
   -e DISPLAY=$DISPLAY_ENV \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
-  $IMAGE_NAME $1
+  -v "$LOCAL_ONTOLOGY_REPOSITORY:$DOKER_ONTOLOGY_REPOSITORY" \
+  --network="host" \
+  "$IMAGE_NAME" "${CMD[@]}"
 
 # Cleanup X11 access (Linux only)
 if [ "$(uname)" == "Linux" ]; then
