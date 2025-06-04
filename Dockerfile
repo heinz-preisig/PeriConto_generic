@@ -40,10 +40,21 @@ WORKDIR /app
 
 # Copy the application
 COPY src/ /app/src/
-RUN chmod +x /app/src/graphviz_test.py
+RUN chmod +x /app/src/BricksSchemata.py /app/src/TreeSchemata.py
 
 # Set ownership to the non-root user
 RUN chown -R appuser:appuser /app
+
+# Install Python dependencies using apt for better compatibility with system packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pyqt6 \
+    python3-pyqt6.qtwebengine \
+    python3-pyqt6.qtwebchannel \
+    python3-pyqt6.qtsvg \
+    python3-graphviz \
+    python3-rdflib \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Switch to the non-root user
 USER appuser
@@ -55,4 +66,5 @@ ENV QT_QPA_PLATFORM=xcb
 
 # Run the application
 WORKDIR /app/src
-CMD ["python3", "graphviz_test.py"]
+# Default to running BricksSchemata.py, but can be overridden in the run command
+# CMD ["python3", "TreeSchemata.py"]
