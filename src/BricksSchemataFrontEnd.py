@@ -230,6 +230,8 @@ class OntobuilderUI(QMainWindow):
   def on_pushBrickAddItem_pressed(self):
     debugging("-- pushBrickAddItem")
 
+    item = self.ui.brickTree.currentItem()
+    path = self.__makePath(item)
     dialog = UI_String("name for the new item",
                        placeholdertext="name -- will be camelised",
                        limiting_list=self.allNames,
@@ -260,7 +262,7 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushBrickAddPrimitive_pressed(self):
     item = self.ui.brickTree.currentItem()
-    parent_name = item.text(0)
+    path = self.__makePath(item)
     dialog = UI_String("name for the new primitive",
                        placeholdertext="name -- will be camelised",
                        limiting_list=self.allNames,
@@ -426,6 +428,16 @@ class OntobuilderUI(QMainWindow):
             items[s] = item
             # debugging("items", s, p, o)
             self.__makeTree(tuples, origin=s, stack=stack, items=items)
+
+
+  def __makePath(self, item):
+    i = item
+    x = []
+    while i.parent():
+      x.append(i.text(0))
+      i = i.parent()
+    x.append(i.text(0))
+    return x
 
   # enable moving the window --https://www.youtube.com/watch?v=R4jfg9mP_zo&t=152s
   def mousePressEvent(self, event, QMouseEvent=None):
