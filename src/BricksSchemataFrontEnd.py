@@ -234,7 +234,7 @@ class OntobuilderUI(QMainWindow):
     path = self.__makePath(item)
     dialog = UI_String("name for the new item",
                        placeholdertext="name -- will be camelised",
-                       limiting_list=self.allNames,
+                       limiting_list=path, #self.allNames,
                        validator="camel")
     name = dialog.text
     if name:
