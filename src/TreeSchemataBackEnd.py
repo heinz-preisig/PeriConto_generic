@@ -12,6 +12,7 @@ from TreeAutomaton import UI_state
 from Utilities import TreePlot
 from Utilities import camelCase
 from Utilities import debugging
+from resources.pop_up_message_box import makeMessageBox
 
 TIMING = False
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -239,7 +240,9 @@ class BackEnd():
     os.remove(file_name_bricks)
 
     path = file_name_bricks + ".pdf"
-    if sys.platform.startswith('linux'):
+    if os.path.exists("/.dockerenv"):
+        makeMessageBox("cannot display pdf-file, open it locally", buttons=["OK"])
+    elif sys.platform.startswith('linux'):
       subprocess.Popen(['xdg-open', str(path)])
     elif sys.platform.startswith('win32'):
       subprocess.Popen(['start', str(path)], shell=True)

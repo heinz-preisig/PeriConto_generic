@@ -55,6 +55,7 @@ docker run --rm -it \
   -e DISPLAY=$DISPLAY_ENV \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v "$LOCAL_ONTOLOGY_REPOSITORY:$DOKER_ONTOLOGY_REPOSITORY" \
+  -u 1000:1000 \
   --network="host" \
   "$IMAGE_NAME" "${CMD[@]}"
 
