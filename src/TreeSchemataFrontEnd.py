@@ -451,14 +451,15 @@ class OntobuilderUI(QMainWindow):
     self.existing_names.add(name)
 
     for depth, node, current_branch, parent, predicate in depth_first_iter(graph, root):
-      try:
-        _, name = node.split("#")
-      except:
-        name = str(node)
-      self.existing_names.add(name)
-      _, parent_name = parent.split("#")
-      # print(depth,node,current_branch, parent, predicate)
+
+      print(depth,node,current_branch, parent, predicate)
       if node != root:
+        try:
+          _, name = node.split("#")
+        except:
+          name = str(node)
+        self.existing_names.add(name)
+        _, parent_name = parent.split("#")
         parent_item = items[parent_name]
         items[name] = QTreeWidgetItem(parent_item)
         # print("made item")

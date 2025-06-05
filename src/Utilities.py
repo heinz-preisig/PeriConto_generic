@@ -29,32 +29,65 @@ def getName(iri):
 RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 RDF = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
-def depth_first_iter(graph, node, in_branch_visited=None, branch=None, current_branch=None, parent=None, depth=0, predicate=None):
-  if not parent:
-    # parent = getName(node)
-    parent = node
-  if not in_branch_visited:
-    in_branch_visited = set()
-  if not branch:
-    branch = set()
-  if not current_branch:
-    current_branch = getName(node)
-
-  yield (depth, node, current_branch, parent, predicate)
-  in_branch_visited.add(node)
-
-  for child, p, target in sorted(graph.triples((None, None, node)), key=lambda t: t[0].split('#')[-1]):
-    if child not in in_branch_visited:
-      # parent = getName(target)
-      parent = target
-      if p == RDFS.isDefinedBy:
-        branch.add(target)
-        current_branch = getName(target)
-        yield from depth_first_iter(graph, child, in_branch_visited=set(), branch=branch,
-                                    current_branch=current_branch, parent=parent, depth=depth + 1, predicate=p)
-      else:
-        yield from depth_first_iter(graph, child, in_branch_visited=in_branch_visited, branch=branch,
-                                    current_branch=current_branch, parent=parent, depth=depth + 1,predicate=p)
+def depth_first_iter(graph, start_node):
+    """
+    Iterative depth-first search that handles branches properly.
+    
+    Args:
+        graph: The RDF graph to traverse
+        start_node: The node to start traversal from
+        
+    Yields:
+        Tuples of (depth, node, current_branch, parent, predicate)
+    """
+    # Stack items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate)
+    # We'll track visited nodes per branch to allow the same node in different branches
+    stack = [(start_node, None, 0, getName(start_node), set(), False, None)]
+    
+    while stack:
+        node, parent, depth, current_branch, visited, is_new_branch, predicate = stack.pop()
+        
+        # Create a unique key for this node in the current branch context
+        node_key = str(node)
+        
+        # Skip if we've already visited this node in the current branch
+        if node_key in visited:
+            continue
+            
+        # Mark as visited in this branch
+        visited.add(node_key)
+        
+        # Yield current node with predicate
+        yield (depth, node, current_branch, parent, predicate)
+        
+        # Get all children with their predicates
+        children = []
+        try:
+            for s, p, o in graph.triples((None, None, node)):
+                key = str(s).split('#')[-1] if '#' in str(s) else str(s)
+                children.append((s, p, o, key))
+        except Exception as e:
+            print(f"Error processing node {node}: {e}")
+            continue
+        
+        # Sort children in reverse order to maintain correct traversal order when using stack
+        children.sort(key=lambda x: x[3], reverse=True)
+        
+        # Process children
+        for child, p, target, _ in children:
+            child_key = str(child)
+            # Skip if this would create a cycle
+            if child_key == node_key:
+                continue
+                
+            if p == RDFS.isDefinedBy:
+                # New branch - start with fresh visited set
+                stack.append((child, node, depth + 1, getName(target), set(), True, p))
+            else:
+                # Same branch - pass down the visited set
+                # But allow revisiting nodes that are in different branches
+                branch_visited = set(visited)  # Copy to avoid modifying parent's visited set
+                stack.append((child, node, depth + 1, current_branch, branch_visited, False, p))
 
 
 def getFilesAndVersions(abs_name, ext):
