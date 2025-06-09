@@ -1,0 +1,15 @@
+@prefix A: <http://example.org/A#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+A:A {
+    A:A a rdfs:Class ;
+        rdfs:isDefinedBy A:A .
+
+    A:L rdfs:member A:Aa,
+            A:Ab .
+
+    A:Aa rdfs:member A:A .
+
+    A:Ab rdfs:member A:A .
+}
+

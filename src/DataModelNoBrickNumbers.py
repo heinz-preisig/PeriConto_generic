@@ -18,11 +18,12 @@ from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
+from PeriConto.src.Utilities import find_all_paths
 from Utilities import DEBUGG
 from Utilities import debugging
 from Utilities import find_path_back_triples
 from Utilities import get_subtree
-from Utilities import saveBackupFile
+from Utilities import saveBackupFile, depth_first_iter
 
 
 # DEBUGG = False
@@ -320,28 +321,70 @@ class DataModel:
     """
     graph = self.TREE_GRAPHS[tree_name]
     prefix = makeItemURI(tree_name, "")
-    for primitive in PRIMITIVES:
-      primitive_uri = URIRef(prefix + primitive)
-      serach_triple = (URIRef(prefix), RDFSTerms[primitive], None)
-      for t in graph.triples(serach_triple):
-        s, p, o = t
-        remove_triple = s, p, o
-        if "instance" not in str(o):
-          graph.remove(remove_triple)
+    root = URIRef(prefix+tree_name)
 
-          # we generate a new triple which reflects the instance with number and its value
-          value = "undefined"
-          identifier = "instance_%s" % self.instance_counter[tree_name]
-          identifier_value = identifier + ":%s" % (value)
-          s_identifier = URIRef(makeItemURI(tree_name, identifier_value))
-          self.instance_counter[tree_name] += 1
-          # first the identifier triple
-          p_identifier = RDFSTerms[primitive]
-          triple_identifier = s_identifier, p_identifier, o
-          graph.add(triple_identifier)
-          tree_uri = URIRef(makeItemURI(tree_name, tree_name))
-          path, path_names = find_path_back_triples(graph, triple_identifier, tree_uri)
-          self.instances[tree_name][identifier] = path_names
+    tree_uri = URIRef(makeItemURI(tree_name, tree_name))
+
+    st = {}
+    for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
+      print(depth, node, current_branch, parent, predicate, node_id, parent_id)
+      st[node_id] = (node, predicate, parent_id)
+      # print(st)
+
+    empty = {}
+    for node_id in st:
+      s, p, parent_id = st[node_id]
+      _, n = str(s).split("#")
+      if n == "":
+        o, _,_ =st[parent_id]
+        print(s,p,o)
+        if o not in empty:
+          empty[o] = []
+        empty[o].append((s,p,o))
+
+    count = 0
+    for o in empty:
+      p = None
+      for i in empty[o]:
+        s, p, o = i
+        # path_a, path_names_a = find_path_back_triples(graph,i,root)
+        paths = find_all_paths(graph,s,root)
+        identifier = "instance:%s" % (count)
+        id_s = URIRef(prefix + identifier)
+        print(id_s, p, o)
+        count += 1
+        triple_identifier = (id_s, p, o)
+        graph.add((triple_identifier))
+        # path, path_names = find_path_back_triples(graph, triple_identifier, tree_uri)
+        self.instances[tree_name][identifier] = path_names
+      id_remove = URIRef(prefix + "instance:")
+      graph.remove((id_remove,p,o))
+
+    pass
+    # for primitive in PRIMITIVES:
+    #   primitive_uri = URIRef(prefix + primitive)
+    #   search_triple = (URIRef(prefix), RDFSTerms[primitive], None)
+    #   for t in graph.triples(search_triple):
+    #     s, p, o = t
+    #     remove_triple = s, p, o
+    #     print("remove triple", remove_triple)
+
+        # if "instance" not in str(o):
+        #   graph.remove(remove_triple)
+        #
+        #   # we generate a new triple which reflects the instance with number and its value
+        #   value = "undefined"
+        #   identifier = "instance_%s" % self.instance_counter[tree_name]
+        #   identifier_value = identifier + ":%s" % (value)
+        #   s_identifier = URIRef(makeItemURI(tree_name, identifier_value))
+        #   self.instance_counter[tree_name] += 1
+        #   # first the identifier triple
+        #   p_identifier = RDFSTerms[primitive]
+        #   triple_identifier = s_identifier, p_identifier, o
+        #   graph.add(triple_identifier)
+        #   tree_uri = URIRef(makeItemURI(tree_name, tree_name))
+        #   path, path_names = find_path_back_triples(graph, triple_identifier, tree_uri)
+        #   self.instances[tree_name][identifier] = path_names
         # print(">>> replacing",s, p, o)
     pass
 

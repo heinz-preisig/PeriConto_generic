@@ -444,15 +444,16 @@ class OntobuilderUI(QMainWindow):
     rootItem.setSelected(False)
     rootItem.node_type = self.rules["is_class"]
     rootItem.count = count_children
+    rootItem.id = 1
     widget.addTopLevelItem(rootItem)
     self.treetop = widget.invisibleRootItem()
     self.current_class = name
-    items = {name: rootItem}
+    items = {1: rootItem}
     self.existing_names.add(name)
 
-    for depth, node, current_branch, parent, predicate in depth_first_iter(graph, root):
-
-      print(depth,node,current_branch, parent, predicate)
+    for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
+      # print(root)
+      print(depth,node,current_branch, parent, predicate, node_id, parent_id)
       if node != root:
         try:
           _, name = node.split("#")
@@ -460,34 +461,34 @@ class OntobuilderUI(QMainWindow):
           name = str(node)
         self.existing_names.add(name)
         _, parent_name = parent.split("#")
-        parent_item = items[parent_name]
-        items[name] = QTreeWidgetItem(parent_item)
+        parent_item = items[parent_id] #items[parent_name]
+        items[node_id] = QTreeWidgetItem(parent_item)
         # print("made item")
-        items[name].count = 0
-        items[parent_name].count += 1
+        items[node_id].count = 0
+        items[parent_id].count += 1
         _, node_type = predicate.split("#")
-        items[name].node_type = node_type
+        items[node_id].node_type = node_type
         if "instance" in name:
-          x = self.__makePath(items[name])
+          x = self.__makePath(items[node_id])
           x[0] = name
           for i in instances[tree_name]:
               path = instances[tree_name][i]
               if path == x:  # (path[1:] == x[1:]) and (instance == name):
-                items[name].setText(0, name)
+                items[node_id].setText(0, name)
         else:
-          items[name].setText(0, name)
-        # items[name].setText(0, name)
+          items[node_id].setText(0, name)
+        # items[node_id].setText(0, name)
 
-        if items[name].text(0) == "":
-          x = self.__makePath(items[name])
+        if items[node_id].text(0) == "":
+          x = self.__makePath(items[node_id])
           x_p = self.__makePath(parent_item)
 
           # print(">>>> found obsolete item", x, "parent_path", x_p)
           # Note: this item was generated but not named -- couldn't find another solution
-          parent_item.removeChild(items[name])
+          parent_item.removeChild(items[node_id])
 
         try:
-          items[name].setForeground(0, QBRUSHES[node_type])
+          items[node_id].setForeground(0, QBRUSHES[node_type])
         except:
           pass
 

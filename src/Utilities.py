@@ -4,7 +4,8 @@ from graphviz import Digraph
 
 from BricksAndTreeSemantics import RDF_PRIMITIVES, RDFSTerms
 from BricksAndTreeSemantics import RULES
-from rdflib import Namespace, Graph
+from rdflib import Namespace, Graph, URIRef
+from typing import List
 
 from BricksAndTreeSemantics import extractNameFromIRI
 
@@ -42,10 +43,11 @@ def depth_first_iter(graph, start_node):
     """
     # Stack items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate)
     # We'll track visited nodes per branch to allow the same node in different branches
-    stack = [(start_node, None, 0, getName(start_node), set(), False, None)]
-    
+    stack = [(start_node, None, 0, getName(start_node), set(), False, None,-1)]
+    unique_id = 0
+
     while stack:
-        node, parent, depth, current_branch, visited, is_new_branch, predicate = stack.pop()
+        node, parent, depth, current_branch, visited, is_new_branch, predicate,parent_unique_id = stack.pop()
         
         # Create a unique key for this node in the current branch context
         node_key = str(node)
@@ -56,9 +58,11 @@ def depth_first_iter(graph, start_node):
             
         # Mark as visited in this branch
         visited.add(node_key)
+
+        unique_id += 1
         
         # Yield current node with predicate
-        yield (depth, node, current_branch, parent, predicate)
+        yield (depth, node, current_branch, parent, predicate, unique_id, parent_unique_id)
         
         # Get all children with their predicates
         children = []
@@ -82,12 +86,15 @@ def depth_first_iter(graph, start_node):
                 
             if p == RDFS.isDefinedBy:
                 # New branch - start with fresh visited set
-                stack.append((child, node, depth + 1, getName(target), set(), True, p))
+                stack.append((child, node, depth + 1, getName(target), set(), True, p, unique_id))
             else:
                 # Same branch - pass down the visited set
                 # But allow revisiting nodes that are in different branches
                 branch_visited = set(visited)  # Copy to avoid modifying parent's visited set
-                stack.append((child, node, depth + 1, current_branch, branch_visited, False, p))
+                stack.append((child, node, depth + 1, current_branch, branch_visited, False, p, unique_id))
+
+
+
 
 
 def getFilesAndVersions(abs_name, ext):
@@ -123,6 +130,22 @@ def saveBackupFile(path):
     os.rename(old_path, new_path)
     return old_path, new_path, next_path
 
+def find_all_paths(graph: Graph, start: URIRef, target: URIRef, max_depth: int = 20) -> List[List[URIRef]]:
+  paths = []
+
+  def dfs(current, path, depth):
+    if depth > max_depth:
+      return
+    path.append(current)
+    if current == target:
+      paths.append(path.copy())
+    else:
+      for _, _, obj in graph.triples((current, None, None)):
+        dfs(obj, path, depth + 1)
+    path.pop()
+
+  dfs(start, [], 0)
+  return paths
 
 def find_path_back_triples(graph, leave_triple, root):
   """
