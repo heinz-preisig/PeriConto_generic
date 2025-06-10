@@ -276,13 +276,27 @@ class DataModel:
     old_graph = self.BRICK_GRAPHS[oldName]
     self.copyGraph(oldName, old_graph, newName, new_graph)
     self.BRICK_GRAPHS[newName] = new_graph
+    self.brick_namespaces[newName] = Namespace(makeItemURI(newName, newName))
     del self.BRICK_GRAPHS[oldName]
 
   def renameTree(self, oldName, newName):
     new_graph = self.__makeNewGraph(newName)
     old_graph = self.TREE_GRAPHS[oldName]
     self.copyGraph(oldName, old_graph, newName, new_graph)
+    self.TREE_GRAPHS[newName] = new_graph
+    self.tree_namespaces[newName] = Namespace(makeItemURI(newName, ""))
     del self.TREE_GRAPHS[oldName]
+    del self.tree_namespaces[oldName]
+    #fix up instances:
+    for tree in list(self.instances.keys()):
+      self.instances[newName] = {}
+      if tree == oldName:
+        paths = copy.copy(self.instances[oldName])
+        for instance in paths:
+          path = paths[instance]
+          path[-1] = newName
+          self.instances[newName][instance] = path
+        del self.instances[oldName]
 
   def copyTree(self, from_name, to_name):
 
