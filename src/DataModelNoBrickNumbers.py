@@ -17,7 +17,7 @@ from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
-from PeriConto.src.Utilities import get_all_paths_by_name
+from Utilities import get_all_paths_by_name
 from Utilities import DEBUGG
 from Utilities import debugging
 from Utilities import depth_first_iter
