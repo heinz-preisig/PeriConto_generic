@@ -226,8 +226,9 @@ class DataModel:
                      None)
     instance_ID = value.split(":")[0]
 
-    tree_uri = URIRef(makeItemURI(tree_name, tree_name))
     t = None
+    p = None
+    o = None
     for t in graph.triples(triple_search):
       s, p, o = t
     if t:
@@ -378,32 +379,6 @@ class DataModel:
         self.instances[tree_name][identifier] = new_path
       graph.remove((triple))
 
-    pass
-    # for primitive in PRIMITIVES:
-    #   primitive_uri = URIRef(prefix + primitive)
-    #   search_triple = (URIRef(prefix), RDFSTerms[primitive], None)
-    #   for t in graph.triples(search_triple):
-    #     s, p, o = t
-    #     remove_triple = s, p, o
-    #     print("remove triple", remove_triple)
-
-    # if "instance" not in str(o):
-    #   graph.remove(remove_triple)
-    #
-    #   # we generate a new triple which reflects the instance with number and its value
-    #   value = "undefined"
-    #   identifier = "instance_%s" % self.instance_counter[tree_name]
-    #   identifier_value = identifier + ":%s" % (value)
-    #   s_identifier = URIRef(makeItemURI(tree_name, identifier_value))
-    #   self.instance_counter[tree_name] += 1
-    #   # first the identifier triple
-    #   p_identifier = RDFSTerms[primitive]
-    #   triple_identifier = s_identifier, p_identifier, o
-    #   graph.add(triple_identifier)
-    #   tree_uri = URIRef(makeItemURI(tree_name, tree_name))
-    #   path, path_names = find_path_back_triples(graph, triple_identifier, tree_uri)
-    #   self.instances[tree_name][identifier] = path_names
-    # print(">>> replacing",s, p, o)
     pass
 
   def __renameURI(self, newName, oldName, uri):
