@@ -19,6 +19,7 @@ from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
 from PeriConto.src.Utilities import find_all_paths
+from PeriConto.src.Utilities import get_all_paths_by_name
 from Utilities import DEBUGG
 from Utilities import debugging
 from Utilities import find_path_back_triples
@@ -316,8 +317,22 @@ class DataModel:
 
   def replaceBlankWithUndefinedIdentifier(self, tree_name):
     """
-    the predicate string triggers the replacement of it by "instance_x" were x is the instance counter
-    an additiional triple is added to the graph which is the primitive and an empty object
+    Replace blank node identifiers with unique undefined identifiers in a tree graph.
+
+    This function traverses a tree graph starting from the given root and identifies
+    blank nodes (nodes with empty names). For each blank node found, it generates a
+    unique identifier in the format "instance_count:" and replaces the blank node
+    with this new identifier. The function then updates the graph with these changes
+    and maintains a path mapping for each new identifier.
+
+    Args:
+        tree_name (str): The name of the tree graph in which to replace blank node
+                         identifiers.
+
+    Side Effects:
+        Modifies the specified tree graph by replacing blank nodes with uniquely
+        generated identifiers and updates the instance path mapping.
+
     """
     graph = self.TREE_GRAPHS[tree_name]
     prefix = makeItemURI(tree_name, "")
@@ -331,34 +346,35 @@ class DataModel:
       st[node_id] = (node, predicate, parent_id)
       # print(st)
 
-    empty = {}
+    empty_triples = set()
     for node_id in st:
       s, p, parent_id = st[node_id]
       _, n = str(s).split("#")
       if n == "":
         o, _,_ =st[parent_id]
         print(s,p,o)
-        if o not in empty:
-          empty[o] = []
-        empty[o].append((s,p,o))
+        empty_triples.add((s, p, o))
+
+    empty = {}
+    for triple in empty_triples:
+      paths_by_names = get_all_paths_by_name(graph,s,root)
+      empty[triple] = paths_by_names
 
     count = 0
-    for o in empty:
-      p = None
-      for i in empty[o]:
-        s, p, o = i
-        # path_a, path_names_a = find_path_back_triples(graph,i,root)
-        paths = find_all_paths(graph,s,root)
-        identifier = "instance:%s" % (count)
+    for triple in empty:
+      s,p,o = triple
+      paths = empty[triple]
+      for path_names in paths:
+        identifier = "instance_%s" % (count)
+        new_path = copy.copy(path_names)
+        new_path[0] = identifier
         id_s = URIRef(prefix + identifier)
         print(id_s, p, o)
         count += 1
         triple_identifier = (id_s, p, o)
         graph.add((triple_identifier))
-        # path, path_names = find_path_back_triples(graph, triple_identifier, tree_uri)
-        self.instances[tree_name][identifier] = path_names
-      id_remove = URIRef(prefix + "instance:")
-      graph.remove((id_remove,p,o))
+        self.instances[tree_name][identifier] = new_path
+      graph.remove((triple))
 
     pass
     # for primitive in PRIMITIVES:

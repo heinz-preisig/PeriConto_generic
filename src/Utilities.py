@@ -1,27 +1,30 @@
 import os
-
-from graphviz import Digraph
-
-from BricksAndTreeSemantics import RDF_PRIMITIVES, RDFSTerms
-from BricksAndTreeSemantics import RULES
-from rdflib import Namespace, Graph, URIRef
 from typing import List
 
-from BricksAndTreeSemantics import extractNameFromIRI
+from graphviz import Digraph
+from rdflib import Graph
+from rdflib import Namespace
+from rdflib import URIRef
+
+from BricksAndTreeSemantics import RULES
 
 DEBUGG = False
 
+
 def camelCase(sentence):
-  camel = sentence.title().replace(" ","")
+  camel = sentence.title().replace(" ", "")
   return camel
+
 
 def classCase(word):
   classCase = word.upper()
   return classCase
 
+
 def debugging(*info):
   if DEBUGG:
     print("debugging", info)
+
 
 def getName(iri):
   return iri.split("#")[-1]
@@ -30,71 +33,69 @@ def getName(iri):
 RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 RDF = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
+
 def depth_first_iter(graph, start_node):
-    """
-    Iterative depth-first search that handles branches properly.
-    
-    Args:
-        graph: The RDF graph to traverse
-        start_node: The node to start traversal from
-        
-    Yields:
-        Tuples of (depth, node, current_branch, parent, predicate)
-    """
-    # Stack items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate)
-    # We'll track visited nodes per branch to allow the same node in different branches
-    stack = [(start_node, None, 0, getName(start_node), set(), False, None,-1)]
-    unique_id = 0
+  """
+  Iterative depth-first search that handles branches properly.
 
-    while stack:
-        node, parent, depth, current_branch, visited, is_new_branch, predicate,parent_unique_id = stack.pop()
-        
-        # Create a unique key for this node in the current branch context
-        node_key = str(node)
-        
-        # Skip if we've already visited this node in the current branch
-        if node_key in visited:
-            continue
-            
-        # Mark as visited in this branch
-        visited.add(node_key)
+  Args:
+      graph: The RDF graph to traverse
+      start_node: The node to start traversal from
 
-        unique_id += 1
-        
-        # Yield current node with predicate
-        yield (depth, node, current_branch, parent, predicate, unique_id, parent_unique_id)
-        
-        # Get all children with their predicates
-        children = []
-        try:
-            for s, p, o in graph.triples((None, None, node)):
-                key = str(s).split('#')[-1] if '#' in str(s) else str(s)
-                children.append((s, p, o, key))
-        except Exception as e:
-            print(f"Error processing node {node}: {e}")
-            continue
-        
-        # Sort children in reverse order to maintain correct traversal order when using stack
-        children.sort(key=lambda x: x[3], reverse=True)
-        
-        # Process children
-        for child, p, target, _ in children:
-            child_key = str(child)
-            # Skip if this would create a cycle
-            if child_key == node_key:
-                continue
-                
-            if p == RDFS.isDefinedBy:
-                # New branch - start with fresh visited set
-                stack.append((child, node, depth + 1, getName(target), set(), True, p, unique_id))
-            else:
-                # Same branch - pass down the visited set
-                # But allow revisiting nodes that are in different branches
-                branch_visited = set(visited)  # Copy to avoid modifying parent's visited set
-                stack.append((child, node, depth + 1, current_branch, branch_visited, False, p, unique_id))
+  Yields:
+      Tuples of (depth, node, current_branch, parent, predicate)
+  """
+  # Stack items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate)
+  # We'll track visited nodes per branch to allow the same node in different branches
+  stack = [(start_node, None, 0, getName(start_node), set(), False, None, -1)]
+  unique_id = 0
 
+  while stack:
+    node, parent, depth, current_branch, visited, is_new_branch, predicate, parent_unique_id = stack.pop()
 
+    # Create a unique key for this node in the current branch context
+    node_key = str(node)
 
+    # Skip if we've already visited this node in the current branch
+    if node_key in visited:
+      continue
+
+    # Mark as visited in this branch
+    visited.add(node_key)
+
+    unique_id += 1
+
+    # Yield current node with predicate
+    yield (depth, node, current_branch, parent, predicate, unique_id, parent_unique_id)
+
+    # Get all children with their predicates
+    children = []
+    try:
+      for s, p, o in graph.triples((None, None, node)):
+        key = str(s).split('#')[-1] if '#' in str(s) else str(s)
+        children.append((s, p, o, key))
+    except Exception as e:
+      print(f"Error processing node {node}: {e}")
+      continue
+
+    # Sort children in reverse order to maintain correct traversal order when using stack
+    children.sort(key=lambda x: x[3], reverse=True)
+
+    # Process children
+    for child, p, target, _ in children:
+      child_key = str(child)
+      # Skip if this would create a cycle
+      if child_key == node_key:
+        continue
+
+      if p == RDFS.isDefinedBy:
+        # New branch - start with fresh visited set
+        stack.append((child, node, depth + 1, getName(target), set(), True, p, unique_id))
+      else:
+        # Same branch - pass down the visited set
+        # But allow revisiting nodes that are in different branches
+        branch_visited = set(visited)  # Copy to avoid modifying parent's visited set
+        stack.append((child, node, depth + 1, current_branch, branch_visited, False, p, unique_id))
 
 
 def getFilesAndVersions(abs_name, ext):
@@ -130,7 +131,20 @@ def saveBackupFile(path):
     os.rename(old_path, new_path)
     return old_path, new_path, next_path
 
+
 def find_all_paths(graph: Graph, start: URIRef, target: URIRef, max_depth: int = 20) -> List[List[URIRef]]:
+  """
+    Find all paths from a start node to a target node in an RDF graph using depth-first search.
+
+    Args:
+        graph (Graph): The RDF graph to traverse.
+        start (URIRef): The starting node for pathfinding.
+        target (URIRef): The target node to reach.
+        max_depth (int): The maximum depth to search, default is 20.
+
+    Returns:
+        List[List[URIRef]]: A list of paths, where each path is a list of nodes from start to target.
+  """
   paths = []
 
   def dfs(current, path, depth):
@@ -146,6 +160,23 @@ def find_all_paths(graph: Graph, start: URIRef, target: URIRef, max_depth: int =
 
   dfs(start, [], 0)
   return paths
+
+
+def extract_path_names(path):
+  path_names = []
+  for p in path:
+    _, name = p.split("#")
+    path_names.append(name)
+  return path_names
+
+
+def get_all_paths_by_name(graph, start, target):
+  paths = find_all_paths(graph, start, target)
+  path_names = []
+  for p in paths:
+    path_names.append(extract_path_names(p))
+  return path_names
+
 
 def find_path_back_triples(graph, leave_triple, root):
   """
@@ -164,7 +195,7 @@ def find_path_back_triples(graph, leave_triple, root):
     triple = (now, None, None)
     for s, p, o in graph.triples(triple):
       t = (s, p, o)
-      if (t not in path) :
+      if (t not in path):
         if not p in RDF_PRIMITIVES and o not in RDFSTerms["class"]:
           now = o
           path.append(t)
@@ -177,12 +208,11 @@ def find_path_back_triples(graph, leave_triple, root):
   root_name = root.split("#")[1]
   path_names.append(root_name)
 
-
   reduced_path = []
   for _s, _p, _o in path:
     _, n_o = _o.split("#")
     if n_o in path_names:
-      reduced_path.append((_s,_p,_o))
+      reduced_path.append((_s, _p, _o))
 
   return reduced_path, path_names
 
@@ -211,61 +241,61 @@ EDGE_COLOURS = {
         }
 
 NODE_SPECS = {
-        "Class"    : {
+        "Class"      : {
                 "colour"   : "red",
                 "shape"    : "rectangle",
                 "fillcolor": "red",
                 "style"    : "filled",
                 },
-        "Item"   : {
+        "Item"       : {
                 "colour"   : "orange",
                 "shape"    : "",
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "Value": {
+        "Value"      : {
                 "colour"   : "green",
                 "shape"    : "",
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "integer": {
+        "integer"    : {
                 "colour"   : "blue",
                 "shape"    : "",
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "string": {
+        "string"     : {
                 "colour"   : "blue",
                 "shape"    : "",
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "boolean": {
+        "boolean"    : {
                 "colour"   : "blue",
                 "shape"    : "",
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "ROOT"     : {
+        "ROOT"       : {
                 "colour"   : "red",
                 "shape"    : "rectangle",
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "link"   : {
+        "link"       : {
                 "colour"   : "green",
                 "shape"    : "rectangle",
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "LinkedClass"   : {
+        "LinkedClass": {
                 "colour"   : "green",
                 "shape"    : "rectangle",
                 "fillcolor": "green",
                 "style"    : "filled",
                 },
-        "other"    : {
+        "other"      : {
                 "colour"   : None,
                 "shape"    : None,
                 "fillcolor": "red",
@@ -274,11 +304,11 @@ NODE_SPECS = {
         }
 NODE_SPECS["linked"] = NODE_SPECS["Class"]
 
+
 class TreePlot:
   """
     Create Digraph plot
   """
-
 
   def __init__(self, graph_name, graph_triples, class_names):
 
@@ -333,16 +363,16 @@ class TreePlot:
     new_triples = []
 
     for q in self.triples:
-      s,p,o,dir = q
+      s, p, o, dir = q
       if ":" in s:
         s = s.split(":")[-1]
       if ":" in o:
         o = o.split(":")[-1]
-      new_triples.append((s,p,o,dir))
-      nodes.add((s,p))
-      nodes.add((o,p))
+      new_triples.append((s, p, o, dir))
+      nodes.add((s, p))
+      nodes.add((o, p))
 
-    for n,p in nodes:
+    for n, p in nodes:
       type = RULES[p]
       self.addNode(n, type)
 
@@ -352,19 +382,16 @@ class TreePlot:
 
     no_nodes = len(self.nodes)
 
-    self.dot.graph_attr["label"] = "Graph of : %s with %s nodes\n"%(self.graph_name, no_nodes)  # Add a title
+    self.dot.graph_attr["label"] = "Graph of : %s with %s nodes\n" % (self.graph_name, no_nodes)  # Add a title
     self.dot.graph_attr["labelloc"] = "t"  # Position title at the top
     self.dot.graph_attr["fontsize"] = "20"  # Adjust font size of the title
     self.dot.graph_attr["ranksep"] = "1.5"
     print("number of nodes:", no_nodes)
 
 
-
-
 if __name__ == "__main__":
-
   # Example RDF Graph
-  from rdflib import Graph, URIRef, Literal
+  from rdflib import Graph, URIRef
   from BricksAndTreeSemantics import RDFSTerms
 
   # data = '''
@@ -409,7 +436,6 @@ if __name__ == "__main__":
   # for t in path:
   #   print(t)
 
-
   # print("============================================================")
   data4 = """@prefix A: <http://example.org/A#> .
   @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -438,7 +464,6 @@ if __name__ == "__main__":
   root = URIRef("http://example.org/A#A")
 
   triple = (URIRef("http://example.org/A#instance_0:undefined"), RDFSTerms["string"], URIRef("http://example.org/A#S"))
-
 
   path, names = find_path_back_triples(g4, triple, root)
   pass

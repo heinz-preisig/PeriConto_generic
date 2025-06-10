@@ -87,6 +87,7 @@ for c_hash in COLOURS.keys():
 LINK_COLOUR = QtGui.QColor(255, 100, 5, 255)
 PRIMITIVE_COLOUR = QtGui.QColor(255, 3, 23, 255)
 
+
 def PrintGraph(graph):
   print("graph")
   for s, p, o in graph.triples((None, None, None)):
@@ -224,7 +225,7 @@ class OntobuilderUI(QMainWindow):
     dialog = UI_stringSelector("select brick",
                                self.brickList)
     brick_name = dialog.selection
-    if brick_name:  #todo: reinstante tree naming, but then it must be the new root
+    if brick_name:
       dialog = UI_String("tree name", limiting_list=self.treeList, validator="name_upper")
       tree_name = dialog.text
       if not tree_name:
@@ -235,7 +236,7 @@ class OntobuilderUI(QMainWindow):
     message = {
             "event"     : "new tree",
             "tree_name" : classCase(tree_name),  # .upper(),
-            "brick_name": brick_name #classCase(tree_name) # brick_name
+            "brick_name": brick_name  # classCase(tree_name) # brick_name
             }
     self.backend.processEvent(message)
 
@@ -305,7 +306,7 @@ class OntobuilderUI(QMainWindow):
     current_item_name = current_item.text(0)
     brick_list = copy.copy(self.brickList)
     x = self.__makePath(current_item)
-    for i in x:   # RULE: make sure that no name is repeated in any path
+    for i in x:  # RULE: make sure that no name is repeated in any path
       if i in brick_list:
         brick_list.remove(i)
 
@@ -366,8 +367,6 @@ class OntobuilderUI(QMainWindow):
     linkpoint = (item.count == 0) and (type == self.rules["is_member"])
     debugging("item count", item.count, linkpoint)
     debugging("-- tree item %s, column %s" % (name, column))
-    # event = "do_nothing"
-    path = []
     if not linkpoint:
       if type in self.primitives:
         x = self.__makePath(item)
@@ -375,7 +374,10 @@ class OntobuilderUI(QMainWindow):
         value = None
         instance = None
         if name not in self.primitives:
-          instance,value = name.split(":")
+          if ":" in name:
+            instance, value = name.split(":")
+          else:
+            instance = name
         if type == "boolean":
           dialog = RadioButtonDialog(["True", "False"])
           if dialog.exec():
@@ -390,7 +392,7 @@ class OntobuilderUI(QMainWindow):
           value = dialog.text
         if not value:
           value = "undefined"
-        instance = instance+":"+value
+        instance = instance + ":" + value
         message = {
                 "event"      : "got primitive",
                 "value"      : instance,
@@ -453,7 +455,7 @@ class OntobuilderUI(QMainWindow):
 
     for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
       # print(root)
-      print(depth,node,current_branch, parent, predicate, node_id, parent_id)
+      print(depth, node, current_branch, parent, predicate, node_id, parent_id)
       if node != root:
         try:
           _, name = node.split("#")
@@ -461,7 +463,7 @@ class OntobuilderUI(QMainWindow):
           name = str(node)
         self.existing_names.add(name)
         _, parent_name = parent.split("#")
-        parent_item = items[parent_id] #items[parent_name]
+        parent_item = items[parent_id]  # items[parent_name]
         items[node_id] = QTreeWidgetItem(parent_item)
         # print("made item")
         items[node_id].count = 0
@@ -472,9 +474,9 @@ class OntobuilderUI(QMainWindow):
           x = self.__makePath(items[node_id])
           x[0] = name
           for i in instances[tree_name]:
-              path = instances[tree_name][i]
-              if path == x:  # (path[1:] == x[1:]) and (instance == name):
-                items[node_id].setText(0, name)
+            path = instances[tree_name][i]
+            if path == x:  # (path[1:] == x[1:]) and (instance == name):
+              items[node_id].setText(0, name)
         else:
           items[node_id].setText(0, name)
         # items[node_id].setText(0, name)
