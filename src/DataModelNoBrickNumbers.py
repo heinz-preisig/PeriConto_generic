@@ -345,7 +345,7 @@ class DataModel:
 
     st = {}
     for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
-      print(depth, node, current_branch, parent, predicate, node_id, parent_id)
+      # print(depth, node, current_branch, parent, predicate, node_id, parent_id)
       st[node_id] = (node, predicate, parent_id)
       # print(st)
 
@@ -355,7 +355,7 @@ class DataModel:
       _, n = str(s).split("#")
       if n == "":
         o, _, _ = st[parent_id]
-        print(s, p, o)
+        # print(s, p, o)
         empty_triples.add((s, p, o))
 
     empty = {}
