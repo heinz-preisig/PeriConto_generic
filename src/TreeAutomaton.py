@@ -353,7 +353,7 @@ actions = set()
 for a in UI_state:
   for a in UI_state[a]["action"]:
     actions.add(a)
-print("all actions", sorted(actions))
+# print("all actions", sorted(actions))
 
 
 class AutomatonPlot:
