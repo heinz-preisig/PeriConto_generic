@@ -83,6 +83,8 @@ class UI_String(QtWidgets.QDialog):
       self.ui.lineEdit.setPlaceholderText(placeholdertext)
     elif validator:
       self.ui.lineEdit.setPlaceholderText(validator)
+
+    self.adjust = None
     if validator:
       if validator == "integer":
         val = r"^[-+]?\d+$"
@@ -97,11 +99,15 @@ class UI_String(QtWidgets.QDialog):
       elif validator == "name":
         val = r"^[a-zA-Z][a-zA-Z0-9]*$"
       elif validator == "name_upper":
+        val = r"^[a-zA-Z][a-zA-Z0-9]*$"
+        self.adjust = r"^[A-Z][A-Z0-9-]*$"
+      elif validator == "url":
         val = r"^[A-Z][A-Z0-9-]*$"
       elif validator == "string":
         val = r""
       else:
         makeMessageBox(">>>> should not come here, wrong validator %s"%validator, ["OK"])
+
 
 
       v = QtGui.QRegularExpressionValidator(QtCore.QRegularExpression(val))
@@ -124,7 +130,20 @@ class UI_String(QtWidgets.QDialog):
       return
 
     if self.validator == "camel":
-      text = camelCase(text) #text.title().replace(" ","")
+      text = camelCase(text)
+      # self.ui.lineEdit.setText(text) # note: that defeats the purpose
+
+    elif self.validator == "name_upper":
+      text = text.upper()
+      self.ui.lineEdit.setText(text)
+
+    elif self.validator == "name":
+      text = text.lower()
+      self.ui.lineEdit.setText(text)
+
+    elif self.validator == "url":
+      text = text.lower()
+      self.ui.lineEdit.setText(text)
 
     if (text in self.limiting_list) or (text[0] == " "):
       self.ui.lineEdit.setStyleSheet("color: red; background-color: white")
