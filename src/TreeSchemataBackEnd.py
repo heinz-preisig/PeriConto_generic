@@ -73,8 +73,8 @@ class BackEnd():
         self.putTreeList(message)
       elif a == "removeItem":
         self.removeItem(message)
-      elif a == "renameItem":
-        self.renameItem(message)
+      # elif a == "renameItem":
+      #   self.renameItem(message)
       elif a == "saveTreeWithNewName":
         self.saveTreeWithNewName(message)
       elif a == "renameTree":
@@ -143,10 +143,12 @@ class BackEnd():
     tree_item_name = self.memory["tree_item_name"]
     item_name = message["item_name"]
     item_name_with_number = self.__getNameWithBrickNumber(item_name, tree_item_name)
+    path_to_leave = message["path_to_leave"]
     tree_name = self.memory["tree_name"]
     self.dataModel.renameItemInTree(tree_name,
                                     tree_item_name,
-                                    item_name_with_number)
+                                    item_name_with_number,
+                                    path_to_leave)
     pass
 
   def removeItem(self, message):

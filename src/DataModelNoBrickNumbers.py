@@ -12,19 +12,17 @@ from BricksAndTreeSemantics import BASE
 from BricksAndTreeSemantics import FILE_FORMAT
 from BricksAndTreeSemantics import MYTerms
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
-from BricksAndTreeSemantics import PRIMITIVES
 from BricksAndTreeSemantics import RDFSTerms
 from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
-from PeriConto.src.Utilities import find_all_paths
 from PeriConto.src.Utilities import get_all_paths_by_name
 from Utilities import DEBUGG
 from Utilities import debugging
-from Utilities import find_path_back_triples
+from Utilities import depth_first_iter
 from Utilities import get_subtree
-from Utilities import saveBackupFile, depth_first_iter
+from Utilities import saveBackupFile
 
 
 # DEBUGG = False
@@ -39,7 +37,6 @@ class DataModel:
     self.file_name_bricks = self.makeFileName(root, what="bricks")
     self.file_name_trees = self.makeFileName(root, what="trees")
     self.file_name_instances = self.makeFileName(root, what="instances")
-    # self.brick_counter = {}
     self.instance_counter = {}
     self.instances = {}
 
@@ -47,35 +44,41 @@ class DataModel:
 
   def loadFromFile(self, project_name):
     """
-    that's a bit tricky. We need the brick numbers for each tree
+    Loads the graphs and namespaces from the stored files.
     """
+    # load the brick graphs
     self.BRICK_GRAPHS, self.brick_namespaces = self.__loadFromFile(self.file_name_bricks)
+
+    # check if the tree file exists
     exists = os.path.exists(self.file_name_trees)
     if exists:
+      # load the tree graphs and namespaces
       self.TREE_GRAPHS, self.tree_namespaces = self.__loadFromFile(self.file_name_trees)
 
+    # check if the instances file exists
     exists = os.path.exists(self.file_name_instances)
     if exists:
+      # load the instances from the file
       self.loadInstances(self.file_name_instances)
 
-  def __extractNumber(self, s):
-    """
-    that's a bit tricky. We need the brick numbers for each tree
-    """
-    n = "0"
-    s = str(s)
-    try:
-      ss = s.split("#")[-1].split("_")[0]
-      name = s.split("#")[-1].split("_")[1]
-      no = int(ss)
-    except:
-      ss = None
-      no = -1
-      try:
-        name = s.split("#")[1]
-      except:
-        name = s
-    return no, name
+  # def __extractNumber(self, s):
+  #   """
+  #   that's a bit tricky. We need the brick numbers for each tree
+  #   """
+  #   n = "0"
+  #   s = str(s)
+  #   try:
+  #     ss = s.split("#")[-1].split("_")[0]
+  #     name = s.split("#")[-1].split("_")[1]
+  #     no = int(ss)
+  #   except:
+  #     ss = None
+  #     no = -1
+  #     try:
+  #       name = s.split("#")[1]
+  #     except:
+  #       name = s
+  #   return no, name
 
   def makeFileName(self, project_name, what):
     file_name = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s." % what + FILE_FORMAT
@@ -246,7 +249,6 @@ class DataModel:
       print("end")
       print(self.instances[tree_name])
 
-
   def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
     graph = self.BRICK_GRAPHS[brick_name]
     prefix = makeItemURI(brick_name, "")
@@ -336,7 +338,7 @@ class DataModel:
     """
     graph = self.TREE_GRAPHS[tree_name]
     prefix = makeItemURI(tree_name, "")
-    root = URIRef(prefix+tree_name)
+    root = URIRef(prefix + tree_name)
 
     tree_uri = URIRef(makeItemURI(tree_name, tree_name))
 
@@ -351,18 +353,18 @@ class DataModel:
       s, p, parent_id = st[node_id]
       _, n = str(s).split("#")
       if n == "":
-        o, _,_ =st[parent_id]
-        print(s,p,o)
+        o, _, _ = st[parent_id]
+        print(s, p, o)
         empty_triples.add((s, p, o))
 
     empty = {}
     for triple in empty_triples:
-      paths_by_names = get_all_paths_by_name(graph,s,root)
+      paths_by_names = get_all_paths_by_name(graph, s, root)
       empty[triple] = paths_by_names
 
     count = 0
     for triple in empty:
-      s,p,o = triple
+      s, p, o = triple
       paths = empty[triple]
       for path_names in paths:
         identifier = "instance_%s" % (count)
@@ -385,23 +387,23 @@ class DataModel:
     #     remove_triple = s, p, o
     #     print("remove triple", remove_triple)
 
-        # if "instance" not in str(o):
-        #   graph.remove(remove_triple)
-        #
-        #   # we generate a new triple which reflects the instance with number and its value
-        #   value = "undefined"
-        #   identifier = "instance_%s" % self.instance_counter[tree_name]
-        #   identifier_value = identifier + ":%s" % (value)
-        #   s_identifier = URIRef(makeItemURI(tree_name, identifier_value))
-        #   self.instance_counter[tree_name] += 1
-        #   # first the identifier triple
-        #   p_identifier = RDFSTerms[primitive]
-        #   triple_identifier = s_identifier, p_identifier, o
-        #   graph.add(triple_identifier)
-        #   tree_uri = URIRef(makeItemURI(tree_name, tree_name))
-        #   path, path_names = find_path_back_triples(graph, triple_identifier, tree_uri)
-        #   self.instances[tree_name][identifier] = path_names
-        # print(">>> replacing",s, p, o)
+    # if "instance" not in str(o):
+    #   graph.remove(remove_triple)
+    #
+    #   # we generate a new triple which reflects the instance with number and its value
+    #   value = "undefined"
+    #   identifier = "instance_%s" % self.instance_counter[tree_name]
+    #   identifier_value = identifier + ":%s" % (value)
+    #   s_identifier = URIRef(makeItemURI(tree_name, identifier_value))
+    #   self.instance_counter[tree_name] += 1
+    #   # first the identifier triple
+    #   p_identifier = RDFSTerms[primitive]
+    #   triple_identifier = s_identifier, p_identifier, o
+    #   graph.add(triple_identifier)
+    #   tree_uri = URIRef(makeItemURI(tree_name, tree_name))
+    #   path, path_names = find_path_back_triples(graph, triple_identifier, tree_uri)
+    #   self.instances[tree_name][identifier] = path_names
+    # print(">>> replacing",s, p, o)
     pass
 
   def __renameURI(self, newName, oldName, uri):
@@ -579,7 +581,7 @@ class DataModel:
     # make path
     for i in keep_target:
       for n in range(len(i[:-1])):
-        s_n, o_n = i[n:n+2]
+        s_n, o_n = i[n:n + 2]
         print(s_n, o_n)
         s = makeItemURI(tree_name, s_n)
         o = makeItemURI(tree_name, o_n)
@@ -601,9 +603,7 @@ class DataModel:
       path[-1] = tree_name_instantiated
       self.instances[tree_name_instantiated][instance_ID] = path
 
-
     pass
-
 
   def __prepareConjunctiveGraph(self, graphs):
     pass
@@ -615,8 +615,6 @@ class DataModel:
         conjunctiveGraph.bind(cl, itemURI)
         conjunctiveGraph.get_context(classURI).add((s, p, o))
     return conjunctiveGraph
-
-
 
   def newTree(self, tree_name, brick_name):
 

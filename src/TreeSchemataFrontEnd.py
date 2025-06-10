@@ -104,22 +104,16 @@ class OntobuilderUI(QMainWindow):
     self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
     # self.ui.tabsBrickTrees.setTabVisible(1,False)
 
-    # self.DEBUGG = True
 
     roundButton(self.ui.pushOntologyLoad, "load", tooltip="load ontology")
-    # roundButton(self.ui.pushOntologyCreate, "plus", tooltip="create")
     roundButton(self.ui.pushTreeVisualise, "dot_graph", tooltip="visualise ontology")
     roundButton(self.ui.pushOntologySave, "save", tooltip="save ontology")
     roundButton(self.ui.pushExit, "exit", tooltip="exit")
     roundButton(self.ui.pushOntologySaveAs, "save_as", tooltip="save with new name")
-    # roundButton(self.ui.pushBricks, "bricks", tooltip="building bricks mode")
-    # roundButton(self.ui.pushTree, "build_tree", tooltip="building tree mode")
-    # roundButton(self.ui.pushInstantiate, "instantiate_tree", tooltip="instantiate tree mode")
 
     roundButton(self.ui.pushMinimise, "min_view", tooltip="minimise", mysize=35)
     roundButton(self.ui.pushMaximise, "max_view", tooltip="maximise", mysize=35)
     roundButton(self.ui.pushNormal, "normal_view", tooltip="normal", mysize=35)
-    # roundButton(self.ui.pushExit, "reject", tooltip="exit", mysize=35)
 
     self.signalButton = roundButton(self.ui.LED, "LED_green", tooltip="status", mysize=20)
 
@@ -128,7 +122,6 @@ class OntobuilderUI(QMainWindow):
 
     message = {"event": "start"}
     self.backend.processEvent(message)
-    # self.expanded_state = {}
     self.treetop = {}
 
   def interfaceComponents(self):
@@ -148,7 +141,7 @@ class OntobuilderUI(QMainWindow):
             "tree_copy"               : self.ui.pushTreeCopy,
             "tree_rename"             : self.ui.pushTreeRename,
             "item_insert"             : self.ui.pushTreeAddItem,
-            "item_rename"             : self.ui.pushItemRename,
+            # "item_rename"             : self.ui.pushItemRename,
             "remove_item"             : self.ui.pushRemoveItem,
             "tree_reduce"             : self.ui.pushTreeReduce,
             "tree_list"               : self.ui.listTrees,
@@ -162,8 +155,17 @@ class OntobuilderUI(QMainWindow):
     self.primitives = primitives
 
   def setInterface(self, shows):
-    pass
+    """
+    Updates the interface by displaying the specified GUI components
+    and hiding all others.
 
+    Args:
+        shows (list): A list of keys corresponding to the GUI components
+                      that should be shown.
+
+    The method iterates through the GUI components, hiding those not
+    in the 'shows' list and displaying those that are.
+    """
     set_hide = set(self.gui_objects.keys()) - set(shows)
     for hide in set_hide:
       self.gui_objects[hide].hide()
@@ -282,19 +284,33 @@ class OntobuilderUI(QMainWindow):
             }
     self.backend.processEvent(message)
 
-  def on_pushItemRename_pressed(self):
-    debugging("-- pushItemRename")
-    item_name = self.askForItemName("item name", self.existing_names)
-    if not item_name:
-      return
-    message = {
-            "event"    : "rename item",
-            "item_name": item_name
-            }
-    self.backend.processEvent(message)
+  # def on_pushItemRename_pressed(self):Note: consider using the path to inhibit duplicated names, terrible complicated -- abandon!
+  #   debugging("-- pushItemRename")
+  #   current_item = self.ui.treeTree.currentItem()
+  #   leave_item = self.__findLeaf(current_item)
+  #   path_to_leave = self.__makePath(leave_item)
+  #   if not path_to_leave:
+  #     return
+  #   item_name = self.askForItemName("item name", path_to_leave) #self.existing_names)
+  #   if not item_name:
+  #     return
+  #   message = {
+  #           "event"    : "rename item",
+  #           "item_name": item_name,
+  #           "path_to_leave": path_to_leave,
+  #           }
+  #   self.backend.processEvent(message)
 
   def on_pushRemoveItem_pressed(self):
     debugging("-- pushRemoveItem")
+
+    current_item = self.ui.treeTree.currentItem()
+    leave_item = self.__findLeaf(current_item)
+    path_to_leave = self.__makePath(leave_item)
+    if "instance" in path_to_leave[0]:
+      makeMessageBox("this path has a leave with an instance -- it cannot be removed", buttons=["OK"])
+      return
+
     message = {
             "event": "remove item",
             }
@@ -303,7 +319,6 @@ class OntobuilderUI(QMainWindow):
   def on_pushTreeLinkExistingClass_pressed(self):
     # print("-- pushTreeLinkExistingClass")
     current_item = self.ui.treeTree.currentItem()
-    current_item_name = current_item.text(0)
     brick_list = copy.copy(self.brickList)
     x = self.__makePath(current_item)
     for i in x:  # RULE: make sure that no name is repeated in any path
@@ -424,6 +439,12 @@ class OntobuilderUI(QMainWindow):
     x.append(i.text(0))
     return x
 
+  def __findLeaf(self, item):
+    while item.childCount() != 0:
+      for i in range(item.childCount()):
+        item = item.child(i)
+    return item
+
   def showTreeList(self, treeList):
     self.treeList = treeList
     self.ui.listTrees.clear()
@@ -455,7 +476,7 @@ class OntobuilderUI(QMainWindow):
 
     for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
       # print(root)
-      print(depth, node, current_branch, parent, predicate, node_id, parent_id)
+      # print(depth, node, current_branch, parent, predicate, node_id, parent_id)
       if node != root:
         try:
           _, name = node.split("#")
@@ -479,12 +500,8 @@ class OntobuilderUI(QMainWindow):
               items[node_id].setText(0, name)
         else:
           items[node_id].setText(0, name)
-        # items[node_id].setText(0, name)
 
         if items[node_id].text(0) == "":
-          x = self.__makePath(items[node_id])
-          x_p = self.__makePath(parent_item)
-
           # print(">>>> found obsolete item", x, "parent_path", x_p)
           # Note: this item was generated but not named -- couldn't find another solution
           parent_item.removeChild(items[node_id])

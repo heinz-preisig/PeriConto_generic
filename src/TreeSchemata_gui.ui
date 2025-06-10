@@ -277,13 +277,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushItemRename">
-       <property name="text">
-        <string>item rename</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="pushTreeLinkExistingClass">
        <property name="text">
         <string>link existing class</string>
