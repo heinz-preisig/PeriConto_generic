@@ -275,6 +275,7 @@ class DataModel:
     new_graph = self.__makeNewGraph(newName)
     old_graph = self.BRICK_GRAPHS[oldName]
     self.copyGraph(oldName, old_graph, newName, new_graph)
+    self.BRICK_GRAPHS[newName] = new_graph
     del self.BRICK_GRAPHS[oldName]
 
   def renameTree(self, oldName, newName):

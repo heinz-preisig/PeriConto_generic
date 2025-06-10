@@ -72,8 +72,8 @@ class BackEnd():
         self.changePrimitive(message)
       elif a == "putAllNames":
         self.putAllNames(message)
-      elif a == "renameItem":
-        self.renameItem(message)
+      # elif a == "renameItem":
+      #   self.renameItem(message)
       elif a == "renameBrick":
         self.renameBrick(message)
       elif a == "addItem":
