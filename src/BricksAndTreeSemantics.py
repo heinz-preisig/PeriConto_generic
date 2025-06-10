@@ -53,6 +53,7 @@ RULES = {
         "decimal"      : "decimal",
         "uri"          : "uri",
         "boolean"      : "boolean",
+        "comment"      : "comment",
         }
 
 MYTerms = {v: k for k, v in RDFSTerms.items()}

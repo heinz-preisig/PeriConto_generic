@@ -171,14 +171,13 @@ class BackEnd():
   def addLink(self, message):
     link_position = self.memory["tree_item_name"]
     if link_position:
-      tree_item_name = self.memory["tree_item_name"]
       brick_name = message["brick_name"]
       if not brick_name:
         return
 
       tree_name = self.memory["tree_name"]
       self.dataModel.linkBrickToItem(tree_name,
-                                     tree_item_name,
+                                     link_position,
                                      brick_name)
 
   def saveTrees(self, message):
