@@ -494,12 +494,18 @@ class OntobuilderUI(QMainWindow):
         _, node_type = predicate.split("#")
         items[node_id].node_type = node_type
         if "instance" in name:
+          instance_ID, number = name.split(":")
+          path = instances[tree_name][instance_ID]
           x = self.__makePath(items[node_id])
           x[0] = name
-          for i in instances[tree_name]:
-            path = instances[tree_name][i]
-            if path == x:  # (path[1:] == x[1:]) and (instance == name):
-              items[node_id].setText(0, name)
+          # for i in instances[tree_name]:
+          #   path = instances[tree_name][i]
+          print("path", path)
+          print("x", x)
+          # print("name", name)
+          # print("instance", instance)
+          if path == x:  # (path[1:] == x[1:]) and (instance == name):
+            items[node_id].setText(0, name)
         else:
           items[node_id].setText(0, name)
 

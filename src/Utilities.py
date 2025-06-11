@@ -34,6 +34,189 @@ RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 RDF = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
 
+# def depth_first_iter(graph, start_node, maxdepth=20):
+#   """
+#   Iterative depth-first search that handles branches properly.
+#
+#   Args:
+#       graph: The RDF graph to traverse
+#       start_node: The node to start traversal from
+#       maxdepth: Maximum depth to traverse (default: 20)
+#
+#   Yields:
+#       Tuples of (depth, node, current_branch, parent, predicate, unique_id, parent_unique_id)
+#   """
+#   # Stack items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate, parent_unique_id)
+#   # We'll track visited nodes per branch to allow the same node in different branches
+#   stack = [(start_node, None, 0, getName(start_node), set(), False, None, -1)]
+#   node_counter = 0  # Global counter for unique node IDs
+#
+#   # Dictionary to store the actual unique_id for each node in the current branch
+#   node_to_id = {}
+#
+#   while stack:
+#     node, parent, depth, current_branch, visited, is_new_branch, predicate, parent_unique_id = stack.pop()
+#
+#     # Skip if we've exceeded max depth
+#     if depth > maxdepth:
+#       continue
+#
+#     # Create a unique key for this node
+#     node_key = str(node)
+#
+#     # Skip if we've already visited this node in the current branch (prevents cycles)
+#     if node_key in visited:
+#       continue
+#
+#     # Mark as visited in this branch
+#     visited.add(node_key)
+#
+#     # Assign a unique ID to this node if it doesn't have one in this branch
+#     if node_key not in node_to_id:
+#       node_counter += 1
+#       unique_id = node_counter
+#       node_to_id[node_key] = unique_id
+#     else:
+#       unique_id = node_to_id[node_key]
+#
+#     # Yield current node with all its information
+#     yield (depth, node, current_branch, parent, predicate, unique_id, parent_unique_id)
+#
+#     # Get all children with their predicates
+#     try:
+#       # Collect all children first
+#       children = []
+#       for s, p, o in graph.triples((None, None, node)):
+#         # Skip self-references to prevent cycles
+#         if str(s) == node_key:
+#           continue
+#         # Use the last part of the URI as the sort key
+#         key = str(s).split('#')[-1] if '#' in str(s) else str(s)
+#         children.append((s, p, o, key))
+#
+#       # Sort children by their key (for consistent ordering)
+#       children.sort(key=lambda x: x[3], reverse=True)  # Reverse because we're using a stack
+#
+#       # Process children
+#       for child, p, target, _ in children:
+#         child_key = str(child)
+#
+#         # Determine if this is a new branch
+#         is_new_branch = (p == RDFS.isDefinedBy)
+#
+#         # Create a new visited set for this branch if it's a new branch
+#         branch_visited = set() if is_new_branch else set(visited)
+#
+#         # Determine the branch name
+#         branch_name = getName(target) if is_new_branch else current_branch
+#
+#         # Push onto stack with the current node as parent
+#         stack.append((
+#           child,               # The child node
+#           node,               # Current node becomes parent
+#           depth + 1,          # Increment depth
+#           branch_name,        # Branch name (same or new)
+#           branch_visited,     # Visited set (new or copied)
+#           is_new_branch,      # Whether this starts a new branch
+#           p,                  # Predicate to reach this child
+#           unique_id           # Our unique_id becomes parent_unique_id for children
+#         ))
+#
+#     except Exception as e:
+#       print(f"Error processing node {node}: {e}")
+#       continue
+
+# def depth_first_iter(graph, start_node, maxdepth=20):
+#   """
+#   Iterative depth-first search that handles branches properly.
+#
+#   Args:
+#       graph: The RDF graph to traverse
+#       start_node: The node to start traversal from
+#       maxdepth: Maximum depth to traverse (default: 20)
+#
+#   Yields:
+#       Tuples of (depth, node, current_branch, parent, predicate, node_id, parent_id)
+#   """
+#   # Stack items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate, parent_id)
+#   stack = [(start_node, None, 0, getName(start_node), set(), False, None, -1)]
+#   node_counter = 0
+#   node_to_id = {str(start_node): 0}  # Map node to its ID
+#
+#   while stack:
+#     node, parent, depth, current_branch, visited, is_new_branch, predicate, parent_id = stack.pop()
+#
+#     # Skip if we've exceeded max depth
+#     if depth > maxdepth:
+#       continue
+#
+#     # Get or create node ID
+#     node_key = str(node)
+#     if node_key not in node_to_id:
+#       node_counter += 1
+#       node_id = node_counter
+#       node_to_id[node_key] = node_id
+#     else:
+#       node_id = node_to_id[node_key]
+#
+#     # Skip if we've already visited this node in the current branch
+#     if node_key in visited:
+#       continue
+#
+#     # Mark as visited in this branch
+#     visited.add(node_key)
+#
+#     # Yield current node with all its information
+#     yield (depth, node, current_branch, parent, predicate, node_id, parent_id)
+#
+#     # Process children
+#     try:
+#       # Collect and sort children
+#       children = []
+#       for s, p, o in graph.triples((None, None, node)):
+#         child_key = str(s)
+#         if child_key == node_key:  # Skip self-references
+#           continue
+#         # Use the last part of the URI as the sort key
+#         sort_key = child_key.split('#')[-1] if '#' in child_key else child_key
+#         children.append((s, p, o, sort_key))
+#
+#       # Sort children by their key (for consistent ordering)
+#       children.sort(key=lambda x: x[3], reverse=True)  # Reverse because we're using a stack
+#
+#       # Add children to stack
+#       for child, p, target, _ in children:
+#         child_key = str(child)
+#
+#         # Skip if this would create a cycle
+#         if child_key == node_key:
+#           continue
+#
+#         # Determine if this is a new branch
+#         is_new_branch = (p == RDFS.isDefinedBy)
+#
+#         # Create a new visited set for this branch if it's a new branch
+#         branch_visited = set() if is_new_branch else set(visited)
+#
+#         # Determine the branch name
+#         branch_name = getName(target) if is_new_branch else current_branch
+#
+#         # Push onto stack with the current node as parent
+#         stack.append((
+#                 child,  # The child node
+#                 node,  # Current node becomes parent
+#                 depth + 1,  # Increment depth
+#                 branch_name,  # Branch name (same or new)
+#                 branch_visited,  # Visited set (new or copied)
+#                 is_new_branch,  # Whether this starts a new branch
+#                 p,  # Predicate to reach this child
+#                 node_id  # Our node_id becomes parent_id for children
+#                 ))
+#
+#     except Exception as e:
+#       print(f"Error processing node {node}: {e}")
+#       continue
+
 def depth_first_iter(graph, start_node, maxdepth=20):
   """
   Iterative depth-first search that handles branches properly.
@@ -41,21 +224,31 @@ def depth_first_iter(graph, start_node, maxdepth=20):
   Args:
       graph: The RDF graph to traverse
       start_node: The node to start traversal from
+      maxdepth: Maximum depth to traverse (default: 20)
 
   Yields:
-      Tuples of (depth, node, current_branch, parent, predicate)
+      Tuples of (depth, node, current_branch, parent, predicate, node_id, parent_id)
   """
-  # Stack items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate)
-  # We'll track visited nodes per branch to allow the same node in different branches
+  # Stack items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate, parent_id)
   stack = [(start_node, None, 0, getName(start_node), set(), False, None, -1)]
-  unique_id = 0
-  depth = 0
+  node_counter = 0
+  node_to_id = {str(start_node): 0}  # Map node to its ID
 
-  while stack and depth < maxdepth:
-    node, parent, depth, current_branch, visited, is_new_branch, predicate, parent_unique_id = stack.pop()
+  while stack:
+    node, parent, depth, current_branch, visited, is_new_branch, predicate, parent_id = stack.pop()
 
-    # Create a unique key for this node in the current branch context
+    # Skip if we've exceeded max depth
+    if depth > maxdepth:
+      continue
+
+    # Get or create node ID
     node_key = str(node)
+    if node_key not in node_to_id:
+      node_counter += 1
+      node_id = node_counter
+      node_to_id[node_key] = node_id
+    else:
+      node_id = node_to_id[node_key]
 
     # Skip if we've already visited this node in the current branch
     if node_key in visited:
@@ -64,39 +257,58 @@ def depth_first_iter(graph, start_node, maxdepth=20):
     # Mark as visited in this branch
     visited.add(node_key)
 
-    unique_id += 1
+    # Yield current node with all its information
+    yield (depth, node, current_branch, parent, predicate, node_id, parent_id)
 
-    # Yield current node with predicate
-    yield (depth, node, current_branch, parent, predicate, unique_id, parent_unique_id)
-
-    # Get all children with their predicates
-    children = []
+    # Process children
     try:
+      # Collect and sort children
+      children = []
       for s, p, o in graph.triples((None, None, node)):
-        key = str(s).split('#')[-1] if '#' in str(s) else str(s)
-        children.append((s, p, o, key))
+        child_key = str(s)
+        if child_key == node_key:  # Skip self-references
+          continue
+        # Use the last part of the URI as the sort key
+        sort_key = child_key.split('#')[-1] if '#' in child_key else child_key
+        children.append((s, p, o, sort_key))
+
+      # Sort children by their key (for consistent ordering)
+      children.sort(key=lambda x: x[3], reverse=True)  # Reverse because we're using a stack
+
+      # Add children to stack
+      for child, p, target, _ in children:
+        child_key = str(child)
+
+        # Skip if this would create a cycle
+        if child_key == node_key:
+          continue
+
+        # Determine if this is a new branch
+        is_new_branch = (p == RDFS.isDefinedBy)
+
+        # Create a new visited set for this branch if it's a new branch
+        branch_visited = set() if is_new_branch else set(visited)
+
+        # Determine the branch name
+        branch_name = getName(target) if is_new_branch else current_branch
+
+        # Push onto stack with the current node as parent
+        stack.append((
+                child,  # The child node
+                node,  # Current node becomes parent
+                depth + 1,  # Increment depth
+                branch_name,  # Branch name (same or new)
+                branch_visited,  # Visited set (new or copied)
+                is_new_branch,  # Whether this starts a new branch
+                p,  # Predicate to reach this child
+                node_id  # Our node_id becomes parent_id for children
+                ))
+
     except Exception as e:
       print(f"Error processing node {node}: {e}")
       continue
 
-    # Sort children in reverse order to maintain correct traversal order when using stack
-    children.sort(key=lambda x: x[3], reverse=True)
 
-    # Process children
-    for child, p, target, _ in children:
-      child_key = str(child)
-      # Skip if this would create a cycle
-      if child_key == node_key:
-        continue
-
-      if p == RDFS.isDefinedBy:
-        # New branch - start with fresh visited set
-        stack.append((child, node, depth + 1, getName(target), set(), True, p, unique_id))
-      else:
-        # Same branch - pass down the visited set
-        # But allow revisiting nodes that are in different branches
-        branch_visited = set(visited)  # Copy to avoid modifying parent's visited set
-        stack.append((child, node, depth + 1, current_branch, branch_visited, False, p, unique_id))
 
 
 def getFilesAndVersions(abs_name, ext):
