@@ -34,7 +34,7 @@ RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 RDF = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
 
-def depth_first_iter(graph, start_node):
+def depth_first_iter(graph, start_node, maxdepth=20):
   """
   Iterative depth-first search that handles branches properly.
 
@@ -49,8 +49,9 @@ def depth_first_iter(graph, start_node):
   # We'll track visited nodes per branch to allow the same node in different branches
   stack = [(start_node, None, 0, getName(start_node), set(), False, None, -1)]
   unique_id = 0
+  depth = 0
 
-  while stack:
+  while stack and depth < maxdepth:
     node, parent, depth, current_branch, visited, is_new_branch, predicate, parent_unique_id = stack.pop()
 
     # Create a unique key for this node in the current branch context

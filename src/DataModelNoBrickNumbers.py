@@ -385,8 +385,9 @@ class DataModel:
       for path_names in paths:
         identifier = "instance_%s" % (count)
         new_path = copy.copy(path_names)
-        new_path[0] = identifier
-        id_s = URIRef(prefix + identifier)
+        node_name = identifier + ":undefined"
+        new_path[0] = node_name
+        id_s = URIRef(prefix + node_name)
         print(id_s, p, o)
         count += 1
         triple_identifier = (id_s, p, o)
