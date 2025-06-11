@@ -244,7 +244,8 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushTreeRename_pressed(self):
     global tree_name
-    dialog = UI_String("new_tree name", limiting_list=self.treeList, validator="name_upper")
+    existing_names = self.treeList + list(self.existing_names)
+    dialog = UI_String("new_tree name", limiting_list=existing_names, validator="name_upper")
     tree_name = dialog.text
     if not tree_name:
       return
@@ -275,7 +276,8 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushTreeAddItem_pressed(self):
     debugging("-- pushBrickAddItem")
-    item_name = self.askForItemName("item name", self.existing_names)
+    existing_names = self.treeList + list(self.existing_names)
+    item_name = self.askForItemName("item name", existing_names)
     if not item_name:
       return
     message = {
