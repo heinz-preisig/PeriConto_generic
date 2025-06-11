@@ -10,6 +10,9 @@ FROM ubuntu:24.04
 #  --network="host" \
 #  "$IMAGE_NAME" "${CMD[@]}"
 
+# to get root access:
+# docker run -u 0 -it periconto bash
+
 
 
 
@@ -21,6 +24,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pyqt6.qtsvg \
     python3-graphviz \
     python3-rdflib \
+    evince \
+    okular \
+    qpdfview \
+    libcanberra-gtk-module \
+    libcanberra-gtk3-module \
     sudo \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -72,10 +80,17 @@ WORKDIR /app
 COPY --chown=appuser:appuser src/ /app/src/
 RUN chmod +x /app/src/BricksSchemata.py /app/src/TreeSchemata.py
 
+# allow evince to generate directory /tmp/runtime-appuser/dconf
+RUN chmod -R 777 /tmp/runtime-appuser
+
+#RUN mkdir -r /run/user/1000/at-spi/bus_0 # did not work -- remains an error message
+
 # Set environment variables for X11 forwarding
 ENV DISPLAY=:0
 ENV QT_X11_NO_MITSHM=1
 ENV QT_QPA_PLATFORM=xcb
+
+ENV NO_AT_BRIDGE=1
 
 # what is run is defined in the docker-run.sh script
 WORKDIR /app/src

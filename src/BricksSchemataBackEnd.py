@@ -226,7 +226,10 @@ class BackEnd():
 
     path = file_name_bricks + ".pdf"
     if os.path.exists("/.dockerenv"):
-        makeMessageBox("cannot display pdf-file, open it locally", buttons=["OK"])
+      subprocess.Popen(['evince', str(path)])
+      # subprocess.Popen(['okular', str(path)])
+      # subprocess.Popen(['qpdfview --unique', str(path)])
+      #   makeMessageBox("cannot display pdf-file, open it locally", buttons=["OK"])
     elif sys.platform.startswith('linux'):
       subprocess.Popen(['xdg-open', str(path)])
     elif sys.platform.startswith('win32'):
