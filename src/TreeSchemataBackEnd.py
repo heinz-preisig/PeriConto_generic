@@ -170,6 +170,7 @@ class BackEnd():
 
   def addLink(self, message):
     link_position = self.memory["tree_item_name"]
+    path = message["path"]
     if link_position:
       brick_name = message["brick_name"]
       if not brick_name:

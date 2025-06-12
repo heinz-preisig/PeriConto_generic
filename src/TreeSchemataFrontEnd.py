@@ -30,10 +30,8 @@ import sys
 
 from BricksAndTreeSemantics import FILE_FORMAT
 from TreeSchemataBackEnd import BackEnd
-from Utilities import classCase
-from Utilities import depth_first_iter
+from Utilities import classCase, breadth_first_iter, depth_first_iter
 
-# import timeit
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -103,7 +101,6 @@ class OntobuilderUI(QMainWindow):
 
     self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
     # self.ui.tabsBrickTrees.setTabVisible(1,False)
-
 
     roundButton(self.ui.pushOntologyLoad, "load", tooltip="load ontology")
     roundButton(self.ui.pushTreeVisualise, "dot_graph", tooltip="visualise ontology")
@@ -322,8 +319,8 @@ class OntobuilderUI(QMainWindow):
     # print("-- pushTreeLinkExistingClass")
     current_item = self.ui.treeTree.currentItem()
     brick_list = copy.copy(self.brickList)
-    x = self.__makePath(current_item)
-    for i in x:  # RULE: make sure that no name is repeated in any path
+    path = self.__makePath(current_item)
+    for i in path:  # RULE: make sure that no name is repeated in any path
       if i in brick_list:
         brick_list.remove(i)
 
@@ -335,6 +332,7 @@ class OntobuilderUI(QMainWindow):
     message = {
             "event"     : "link",
             "brick_name": brick_name,
+            "path"      : path,
             }
     self.backend.processEvent(message)
 
@@ -478,7 +476,7 @@ class OntobuilderUI(QMainWindow):
 
     for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
       # print(root)
-      # print(depth, node, current_branch, parent, predicate, node_id, parent_id)
+      print(depth, node, current_branch, parent, predicate, node_id, parent_id)
       if node != root:
         try:
           _, name = node.split("#")
@@ -500,8 +498,13 @@ class OntobuilderUI(QMainWindow):
           x[0] = name
           # for i in instances[tree_name]:
           #   path = instances[tree_name][i]
-          print("path", path)
-          print("x", x)
+          if path != x:
+            print("\ninstance", instance_ID)
+            print(depth, node, current_branch, parent, predicate, node_id, parent_id)
+            print("path", path)
+            print("x   ", x)
+          else:
+            print("\nOk instance", instance_ID)
           # print("name", name)
           # print("instance", instance)
           if path == x:  # (path[1:] == x[1:]) and (instance == name):

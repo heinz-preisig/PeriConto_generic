@@ -356,25 +356,30 @@ class DataModel:
     prefix = makeItemURI(tree_name, "")
     root = URIRef(prefix + tree_name)
 
-    tree_uri = URIRef(makeItemURI(tree_name, tree_name))
+    to_instantiate = URIRef(makeItemURI(tree_name, ""))
 
-    st = {}
-    for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
-      # print(depth, node, current_branch, parent, predicate, node_id, parent_id)
-      st[node_id] = (node, predicate, parent_id)
+    # st = {}
+    # for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
+    #   # print(depth, node, current_branch, parent, predicate, node_id, parent_id)
+    #   st[node_id] = (node, predicate, parent_id)
       # print(st)
+    #
+    # empty_triples = set()
+    # for node_id in st:
+    #   s, p, parent_id = st[node_id]
+    #   _, n = str(s).split("#")
+    #   if n == "":
+    #     o, _, _ = st[parent_id]
+    #     # print(s, p, o)
+    #     empty_triples.add((s, p, o))
 
     empty_triples = set()
-    for node_id in st:
-      s, p, parent_id = st[node_id]
-      _, n = str(s).split("#")
-      if n == "":
-        o, _, _ = st[parent_id]
-        # print(s, p, o)
-        empty_triples.add((s, p, o))
+    for empty_triple in graph.triples((to_instantiate, None, None)):
+      empty_triples.add(empty_triple)
 
     empty = {}
     for triple in empty_triples:
+      s, p, o = triple
       paths_by_names = get_all_paths_by_name(graph, s, root)
       empty[triple] = paths_by_names
 
