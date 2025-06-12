@@ -12,6 +12,18 @@ from treeid import ObjectTree
 class RDFToObjectTreeMapper:
     """Maps an RDF graph to an ObjectTree."""
     
+    # Define XSD primitives that should be treated as leaves
+    XSD_PRIMITIVES = {
+        XSD.boolean,
+        XSD.anyURI,
+        XSD.decimal,
+        XSD.integer,
+        XSD.string,
+        XSD.dateTime,
+        XSD.date,
+        XSD.time
+    }
+    
     def __init__(self, graph, root_name=None):
         """Initialize the mapper with an RDF graph and optional root name.
         
@@ -25,6 +37,7 @@ class RDFToObjectTreeMapper:
         self.RDF = RDF
         self.XSD = XSD
         self.A = Namespace("http://example.org/A#")
+        self.visited = set()  # Track visited nodes to prevent cycles
     
     def map_to_object_tree(self):
         """Convert the RDF graph to an ObjectTree."""
@@ -56,6 +69,54 @@ class RDFToObjectTreeMapper:
         
         return tree
     
+    def _ensure_node_exists(self, tree, node_name):
+        """Ensure a node exists in the tree, creating it as a root if needed."""
+        if node_name not in tree["IDs"]:
+            # If the node doesn't exist, add it as a root
+            # Get the root node ID to use as parent
+            root_id = tree["IDs"][tree["nodes"][0]]  # Get the ID of the root node
+            # Add the new node as a child of the root
+            new_id = tree["tree"].addChild(root_id)
+            # Update the mappings
+            tree["nodes"][new_id] = node_name
+            tree["IDs"][node_name] = new_id
+    
+    def _add_child_relationship(self, tree, child, parent):
+        """Safely add a child relationship between two nodes."""
+        # Ensure both nodes exist
+        self._ensure_node_exists(tree, child)
+        self._ensure_node_exists(tree, parent)
+        
+        # Add the child relationship if it doesn't already exist
+        if child not in tree["IDs"] or parent not in tree["IDs"]:
+            return
+            
+        # Use the ObjectTree's addChildtoNode method to add the relationship
+        try:
+            tree.addChildtoNode(child, parent)
+        except Exception as e:
+            print(f"Error adding child {child} to parent {parent}: {e}")
+    
+    def _is_primitive(self, node):
+        """Check if a node is an XSD primitive type."""
+        # Check if the node is directly an XSD type
+        if isinstance(node, URIRef) and str(node).startswith(str(XSD)):
+            return True
+        
+        # Check if the node has an rdf:type that's an XSD type
+        for _, _, type_uri in self.graph.triples((node, RDF.type, None)):
+            if str(type_uri).startswith(str(XSD)):
+                return True
+                
+        return False
+    
+    def _get_primitive_value(self, node):
+        """Get the value of a primitive node."""
+        # For nodes with rdf:value, return that
+        for _, _, value in self.graph.triples((node, RDF.value, None)):
+            return str(value)
+        return str(node)
+    
     def _build_tree_recursive(self, tree, node, parent=None, visited=None):
         """Recursively build the tree structure.
         
@@ -78,31 +139,62 @@ class RDFToObjectTreeMapper:
         # Mark this node as visited
         visited.add(node_name)
         
-        # Add the node to the tree if it's not already there
-        if node_name not in tree["nodes"] and parent is not None:
-            # Only add the node if it's not the root (which is already added)
-            tree.addChildtoNode(node_name, parent)
+        # Check if this is a primitive node
+        if self._is_primitive(node):
+            # For primitive nodes, just add them as leaves
+            if parent is not None and node_name not in tree["IDs"]:
+                self._add_child_relationship(tree, node_name, parent)
+            return
         
-        # Find all members of this node
+        # Add the node to the tree if it's not already there
+        if node_name not in tree["IDs"]:
+            if parent is not None:
+                self._add_child_relationship(tree, node_name, parent)
+            else:
+                # If no parent and not in tree, add as child of root
+                root_name = tree["nodes"][0]  # Get the name of the root node
+                if node_name != root_name:  # Don't add root as its own child
+                    self._add_child_relationship(tree, node_name, root_name)
+        
+        # Process rdfs:member relationships (subject is parent, object is child)
         for s, p, o in self.graph.triples((node, RDFS.member, None)):
-            self._build_tree_recursive(tree, o, node_name, visited)
-            
-        # Also process inverse member relationships
-        for s, p, o in self.graph.triples((None, RDFS.member, node)):
-            s_name = self._get_name_from_uri(s)
-            if s_name not in tree["nodes"] and s_name != node_name:  # Prevent self-reference
-                tree.addChildtoNode(s_name, node_name)
+            if isinstance(o, URIRef):
+                child_name = self._get_name_from_uri(o)
+                # Add the child relationship
+                self._add_child_relationship(tree, child_name, node_name)
+                # Recursively process the child
+                self._build_tree_recursive(tree, o, node_name, visited.copy())
+        
+        # Process rdf:value relationships (subject is property, object is value)
+        for s, p, o in self.graph.triples((node, RDF.value, None)):
+            if isinstance(o, URIRef):
+                value_name = self._get_name_from_uri(o)
+                # Add the value as a child of this node
+                self._add_child_relationship(tree, value_name, node_name)
+                # Recursively process the value
+                self._build_tree_recursive(tree, o, node_name, visited.copy())
+        
+        # Process properties (xsd:boolean, xsd:decimal, etc.)
+        for s, p, o in self.graph.triples((node, None, None)):
+            # Skip RDF/RDFS vocab
+            if str(p).startswith(str(RDF)) or str(p).startswith(str(RDFS)):
+                continue
                 
-        # Process boolean values (xsd:boolean predicates)
-        for s, p, o in self.graph.triples((None, XSD.boolean, None)):
-            # Get the name of the boolean property (Sa or Sb)
-            bool_prop = str(o).split('#')[-1]
-            # Get the value of the boolean (Aa or Ab)
-            for _, _, value in self.graph.triples((o, RDF.value, None)):
-                value_name = str(value).split('#')[-1]
-                # Add the boolean property as a child of its value
-                if bool_prop not in tree["nodes"] or tree["nodes"][bool_prop] != value_name:
-                    tree.addChildtoNode(bool_prop, value_name)
+            if isinstance(o, URIRef):
+                prop_name = f"{self._get_name_from_uri(p)}_{self._get_name_from_uri(o)}"
+                # Add the property as a child of this node
+                self._add_child_relationship(tree, prop_name, node_name)
+                # Recursively process the value
+                self._build_tree_recursive(tree, o, prop_name, visited.copy())
+        
+        # Process inverse relationships (where this node is the object)
+        for s, p, o in self.graph.triples((None, RDFS.member, node)):
+            if isinstance(s, URIRef):
+                parent_name = self._get_name_from_uri(s)
+                # Add the parent relationship
+                self._add_child_relationship(tree, node_name, parent_name)
+                # Recursively process the parent
+                self._build_tree_recursive(tree, s, None, visited.copy())
     
     def _get_name_from_uri(self, uri):
         """Extract the local name from a URI."""
@@ -227,6 +319,78 @@ class TestRDFToObjectTreeMapping(unittest.TestCase):
         print("\nTree structure:")
         for node, data in tree_structure.items():
             print(f"{node}: {data}")
+
+    def test_map_tree2_to_object_tree(self):
+        """Test mapping the test-tree2+bricks.ttl file to an ObjectTree."""
+        # Load the RDF file
+        rdf_file = os.path.join(os.path.dirname(__file__), "test-tree2+bricks.ttl")
+        
+        # Parse the RDF file into a graph
+        g = Graph()
+        g.parse(rdf_file, format="turtle")
+        
+        # Print all triples for debugging
+        print("\nAll triples in the test-tree2+bricks.ttl graph:")
+        for s, p, o in g:
+            print(f"{s} {p} {o}")
+        
+        # Create the mapper with the graph
+        mapper = RDFToObjectTreeMapper(g, root_name="A")
+        
+        # Map to ObjectTree
+        object_tree = mapper.map_to_object_tree()
+        
+        # Get the tree structure for assertions
+        tree_structure = object_tree.makeTaggedTree()
+        
+        # Print the tree structure for debugging
+        print("\nTree structure from test-tree2+bricks.ttl:")
+        for node, data in sorted(tree_structure.items()):
+            print(f"{node}: {data}")
+        
+        # Print all nodes in the tree
+        print("\nAll nodes in the tree:", sorted(tree_structure.keys()))
+        
+        # Print all triples for reference
+        print("\nAll triples in the graph:")
+        for s, p, o in g:
+            print(f"{s} {p} {o}")
+        
+        # Check that all expected nodes are in the tree
+        expected_nodes = ['A', 'Aa', 'Ab', 'Aba', 'Bb', 'Bbb', 'Bbc', 'I', 'Sa', 'Sb', 'Uri']
+        missing_nodes = [node for node in expected_nodes if node not in tree_structure]
+        
+        if missing_nodes:
+            print(f"\nMissing nodes: {missing_nodes}")
+            
+        # Check each expected node
+        for node in expected_nodes:
+            self.assertIn(node, tree_structure, f"Node '{node}' should exist in the tree")
+            
+        # Check specific relationships
+        if 'A' in tree_structure and 'Aa' in tree_structure:
+            self.assertIn('Aa', tree_structure['A']['children'], "'Aa' should be a child of 'A'")
+        if 'A' in tree_structure and 'Ab' in tree_structure:
+            self.assertIn('Ab', tree_structure['A']['children'], "'Ab' should be a child of 'A'")
+        if 'Ab' in tree_structure and 'Aba' in tree_structure:
+            self.assertIn('Aba', tree_structure['Ab']['children'], "'Aba' should be a child of 'Ab'")
+        
+        # Verify some key relationships
+        self.assertIn('Aa', tree_structure['A']['children'], "'Aa' should be a child of 'A'")
+        self.assertIn('Ab', tree_structure['A']['children'], "'Ab' should be a child of 'A'")
+        self.assertIn('Bb', tree_structure['A']['children'], "'Bb' should be a child of 'A'")
+        
+        # Verify leaf nodes
+        self.assertEqual(tree_structure['Sa']['children'], [], "'Sa' should be a leaf node")
+        self.assertEqual(tree_structure['Sb']['children'], [], "'Sb' should be a leaf node")
+        self.assertEqual(tree_structure['Uri']['children'], [], "'Uri' should be a leaf node")
+        self.assertEqual(tree_structure['Bbc']['children'], [], "'Bbc' should be a leaf node")
+        self.assertEqual(tree_structure['I']['children'], [], "'I' should be a leaf node")
+        
+        # Verify some ancestor relationships
+        self.assertEqual(tree_structure['Aa']['ancestors'], ['A'], "'Aa' should have 'A' as ancestor")
+        self.assertIn('A', tree_structure['Bbb']['ancestors'], "'Bbb' should have 'A' as ancestor")
+        self.assertIn('Bb', tree_structure['Bbb']['ancestors'], "'Bbb' should have 'Bb' as ancestor")
 
 if __name__ == "__main__":
     unittest.main()
