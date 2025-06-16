@@ -258,6 +258,15 @@ def get_all_paths_by_name(graph, start, target):
   return path_names
 
 
+def find_all_leaves(graph):
+  subjects = set()
+  objects = set()
+  for s,p,o in graph.triples((None, None, None)):
+    subjects.add(s)
+    objects.add(o)
+  leaves = subjects - objects
+  return leaves
+
 def find_path_back_triples(graph, leave_triple, root):
   """
   Find a path from a primitive, which is a leave to the root.

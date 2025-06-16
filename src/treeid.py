@@ -127,6 +127,25 @@ class ObjectTree(dict):
       taggedTree[self["nodes"][i]]["ancestors"] = ancestors
     return taggedTree
 
+  def hasChild(self, parent, child):
+    """
+    Check if a parent node has a specific child.
+    
+    Args:
+        parent (str): The tag of the parent node
+        child (str): The tag of the child node to check for
+        
+    Returns:
+        bool: True if the parent has the specified child, False otherwise
+    """
+    if parent not in self["IDs"] or child not in self["IDs"]:
+      return False
+    
+    parent_id = self["IDs"][parent]
+    child_id = self["IDs"][child]
+    
+    return child_id in self["tree"][parent_id]["children"]
+
 
 
 
@@ -651,3 +670,7 @@ if __name__ == '__main__':
   for i in tags:
     ancestor_tags = g.getAncestors(i)
     print((i, ' - ', ancestor_tags))
+
+  tg = g.makeTaggedTree()
+  
+  pass
