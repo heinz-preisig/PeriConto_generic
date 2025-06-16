@@ -370,7 +370,10 @@ class DataModel:
     for triple in empty_triples:
       s, p, o = triple
       paths_by_names = get_all_paths_by_name(graph, s, root)
-      for path in paths_by_names:
+      paths = find_all_paths(graph, s, root)
+      # for path in paths_by_names:
+      #   empty.add(tuple(path))
+      for path in paths:
         empty.add(tuple(path))
 
     count = 0
