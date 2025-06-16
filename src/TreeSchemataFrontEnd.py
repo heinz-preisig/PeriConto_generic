@@ -450,6 +450,56 @@ class OntobuilderUI(QMainWindow):
     self.ui.listTrees.clear()
     self.ui.listTrees.addItems(treeList)
 
+
+  def showNewNewTreeTree(self, root_name, leaves, paths, instances):
+    widget = self.ui.treeTree
+    # PrintGraph(graph)
+
+    self.existing_names = set()
+
+    # _, name = root.split("#")
+    count_children = 0
+    widget.clear()
+    rootItem = QTreeWidgetItem(widget)
+    widget.setColumnCount(1)
+    rootItem.root = root_name
+    rootItem.setText(0, root_name)
+    rootItem.setSelected(False)
+    rootItem.node_type = self.rules["is_class"]
+    rootItem.count = count_children
+    rootItem.id = 1
+    widget.addTopLevelItem(rootItem)
+    self.treetop = widget.invisibleRootItem()
+    self.current_class = root_name
+    # items = {1: rootItem}
+    self.existing_names.add(root_name)
+    pass
+    parent_item = rootItem
+
+    for leave in paths:
+      for path in paths[leave]:
+        path_with_root = path + [root_name]
+        current_item = QTreeWidgetItem(parent_item)
+        current_item.setText(0, leave)
+        current_item.node_type = self.rules["is_member"]
+        current_item.count = 0
+        for i in reversed(path_with_root[:-1]):
+          no_children = parent_item.childCount()
+          if no_children != 0:
+            for child_item in range(no_children):
+              if parent_item.child(child_item).text(0) != i and i != root_name:
+                current_item = QTreeWidgetItem(parent_item)
+                current_item.setText(0, i)
+                parent_item = current_item
+                break
+          else:
+            current_item = QTreeWidgetItem(parent_item)
+            current_item.setText(0, i)
+            parent_item = current_item
+    widget.show()
+    widget.expandAll()
+    # self.__ui_state("show_tree")
+
   def showNewTreeTree(self, graph, root, instances):
     pass
     widget = self.ui.treeTree

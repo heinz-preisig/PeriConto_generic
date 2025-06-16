@@ -17,6 +17,8 @@ from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
+from Utilities import find_all_leaves
+from Utilities import find_all_paths
 from Utilities import get_all_paths_by_name
 from Utilities import DEBUGG
 from Utilities import debugging
@@ -60,6 +62,8 @@ class DataModel:
     if exists:
       # load the instances from the file
       self.loadInstances(self.file_name_instances)
+
+    pass
 
   # def __extractNumber(self, s):
   #   """
@@ -358,30 +362,16 @@ class DataModel:
 
     to_instantiate = URIRef(makeItemURI(tree_name, ""))
 
-    # st = {}
-    # for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
-    #   # print(depth, node, current_branch, parent, predicate, node_id, parent_id)
-    #   st[node_id] = (node, predicate, parent_id)
-      # print(st)
-    #
-    # empty_triples = set()
-    # for node_id in st:
-    #   s, p, parent_id = st[node_id]
-    #   _, n = str(s).split("#")
-    #   if n == "":
-    #     o, _, _ = st[parent_id]
-    #     # print(s, p, o)
-    #     empty_triples.add((s, p, o))
-
     empty_triples = set()
     for empty_triple in graph.triples((to_instantiate, None, None)):
       empty_triples.add(empty_triple)
 
-    empty = {}
+    empty = set()
     for triple in empty_triples:
       s, p, o = triple
       paths_by_names = get_all_paths_by_name(graph, s, root)
-      empty[triple] = paths_by_names
+      for path in paths_by_names:
+        empty.add(tuple(path))
 
     count = 0
     for triple in empty:
@@ -625,6 +615,17 @@ class DataModel:
   def getTreeList(self):
     tree_list = sorted(self.TREE_GRAPHS.keys())
     return tree_list
+
+  def getTreePaths(self, tree_name):
+    namespace = self.tree_namespaces[tree_name]
+    root_uri = URIRef(namespace + tree_name)
+    tree_graph = self.TREE_GRAPHS[tree_name]
+    leaves = find_all_leaves(tree_graph)
+
+    paths = {}
+    for start in leaves:
+        paths[start] = get_all_paths_by_name(tree_graph, start, root_uri)
+    return paths, leaves
 
   def __writeQuadFile(self, conjunctiveGraph, f):
     saveBackupFile(f)
