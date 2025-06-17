@@ -476,6 +476,7 @@ class OntobuilderUI(QMainWindow):
     self.existing_names.add(root_name)
     pass
 
+
     for leave in leaves:
       for path in paths[leave]:
         parent_item = rootItem
@@ -483,12 +484,11 @@ class OntobuilderUI(QMainWindow):
           no_children = parent_item.childCount()
           if no_children != 0:
             for child_item in range(no_children):
-              if parent_item.child(child_item).text(0) != i and i != root_name:
-                current_item = QTreeWidgetItem(parent_item)
+              child = parent_item.child(child_item)
+              if child.text(0) != i:
+                current_item = QTreeWidgetItem(child)
                 current_item.setText(0, i)
-                current_item.count = 0
                 parent_item = current_item
-                break
           else:
             current_item = QTreeWidgetItem(parent_item)
             current_item.setText(0, i)

@@ -313,6 +313,8 @@ class DataModel:
 
   def deleteTree(self, tree_name):
     del self.TREE_GRAPHS[tree_name]
+    del self.tree_namespaces[tree_name]
+    del self.instances[tree_name]
     return
 
   def __makeNewGraph(self, newName):
