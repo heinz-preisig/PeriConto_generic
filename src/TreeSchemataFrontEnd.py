@@ -469,27 +469,24 @@ class OntobuilderUI(QMainWindow):
     rootItem.count = count_children
     rootItem.id = 1
     widget.addTopLevelItem(rootItem)
+    rootItem.count = 0
     self.treetop = widget.invisibleRootItem()
     self.current_class = root_name
     # items = {1: rootItem}
     self.existing_names.add(root_name)
     pass
-    parent_item = rootItem
 
-    for leave in paths:
+    for leave in leaves:
       for path in paths[leave]:
-        path_with_root = path + [root_name]
-        current_item = QTreeWidgetItem(parent_item)
-        current_item.setText(0, leave)
-        current_item.node_type = self.rules["is_member"]
-        current_item.count = 0
-        for i in reversed(path_with_root[:-1]):
+        parent_item = rootItem
+        for i in reversed(path[:-1]):
           no_children = parent_item.childCount()
           if no_children != 0:
             for child_item in range(no_children):
               if parent_item.child(child_item).text(0) != i and i != root_name:
                 current_item = QTreeWidgetItem(parent_item)
                 current_item.setText(0, i)
+                current_item.count = 0
                 parent_item = current_item
                 break
           else:

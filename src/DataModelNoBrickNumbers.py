@@ -359,39 +359,33 @@ class DataModel:
     graph = self.TREE_GRAPHS[tree_name]
     prefix = makeItemURI(tree_name, "")
     root = URIRef(prefix + tree_name)
+    count = self.instance_counter[tree_name]
 
     to_instantiate = URIRef(makeItemURI(tree_name, ""))
+    set_primitives = set()
+    for p in RDF_PRIMITIVES:
+      for t in graph.triples((to_instantiate, p, None)):
+        o = t[2]
+        set_primitives.add((p,o))
 
-    empty_triples = set()
-    for empty_triple in graph.triples((to_instantiate, None, None)):
-      empty_triples.add(empty_triple)
 
-    empty = set()
-    for triple in empty_triples:
-      s, p, o = triple
-      paths_by_names = get_all_paths_by_name(graph, s, root)
-      paths = find_all_paths(graph, s, root)
-      # for path in paths_by_names:
-      #   empty.add(tuple(path))
-      for path in paths:
-        empty.add(tuple(path))
+    for p,o in set_primitives:
+      paths_by_names = get_all_paths_by_name(graph, o, root)
 
-    count = 0
-    for triple in empty:
-      s, p, o = triple
-      paths = empty[triple]
-      for path_names in paths:
-        identifier = "instance_%s" % (count)
-        new_path = copy.copy(path_names)
-        node_name = identifier + ":undefined"
-        new_path[0] = node_name
-        id_s = URIRef(prefix + node_name)
-        print(id_s, p, o)
+      if paths_by_names == []:
+        return
+      for i in range(len(paths_by_names)):
+        instance_ID = "instance_%s" % (count)
         count += 1
-        triple_identifier = (id_s, p, o)
-        graph.add((triple_identifier))
-        self.instances[tree_name][identifier] = new_path
-      graph.remove((triple))
+        uri_instance = URIRef(prefix + instance_ID)
+        path = paths_by_names[i]
+        path[0] = o.split("#")[1]
+        path = [instance_ID+":undefined"] + path
+
+        self.instances[tree_name][instance_ID] = path
+        graph.add((uri_instance, p, o))
+
+      graph.remove((to_instantiate, p, o))
 
     pass
 
