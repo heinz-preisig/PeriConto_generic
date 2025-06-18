@@ -1,4 +1,5 @@
 import os
+from typing import Any
 from typing import List
 
 from graphviz import Digraph
@@ -212,35 +213,63 @@ def saveBackupFile(path):
     return old_path, new_path, next_path
 
 
-def find_all_paths(graph: Graph, start: URIRef, target: URIRef, max_depth: int = 20) -> List[List[URIRef]]:
-  """
-    Find all paths from a start node to a target node in an RDF graph using depth-first search.
+# def find_all_paths(graph: Graph, start: URIRef, target: URIRef, max_depth: int = 20) -> tuple[list[Any], list[Any]]:
+#   """
+#     Find all paths from a start node to a target node in an RDF graph using depth-first search.
+#
+#     Args:
+#         graph (Graph): The RDF graph to traverse.
+#         start (URIRef): The starting node for pathfinding.
+#         target (URIRef): The target node to reach.
+#         max_depth (int): The maximum depth to search, default is 20.
+#
+#     Returns:
+#         List[List[URIRef]]: A list of paths, where each path is a list of nodes from start to target.
+#   """
+#   paths = []
+#   properties = []
+#
+#   def dfs(current, current_property, path, properties,depth):
+#     if depth > max_depth:
+#       return
+#     path.append(current)
+#     if current == target:
+#       paths.append(path.copy())
+#       properties.append(current_property)
+#     else:
+#       for _, p, obj in graph.triples((current, None, None)):
+#         prop = p.split("#")[1]
+#         properties.append(prop)
+#         dfs(obj, prop, path, properties, depth + 1)
+#     path.pop()
+#     properties.pop()
+#
+#   dfs(start, "class",[], [], 0)
+#   return paths, properties
 
-    Args:
-        graph (Graph): The RDF graph to traverse.
-        start (URIRef): The starting node for pathfinding.
-        target (URIRef): The target node to reach.
-        max_depth (int): The maximum depth to search, default is 20.
-
-    Returns:
-        List[List[URIRef]]: A list of paths, where each path is a list of nodes from start to target.
-  """
+def find_all_paths(graph: Graph, property, start: URIRef, target: URIRef, max_depth: int = 20) -> tuple[list[Any], list[dict]]:
   paths = []
+  all_properties = []  # This will store a list of property dictionaries for each path
 
-  def dfs(current, path, depth):
+  def dfs(current, current_path, current_props, depth):
     if depth > max_depth:
       return
-    path.append(current)
     if current == target:
-      paths.append(path.copy())
-    else:
-      for _, _, obj in graph.triples((current, None, None)):
-        dfs(obj, path, depth + 1)
-    path.pop()
+      paths.append(current_path + [current])
+      all_properties.append(dict(current_props))  # Convert list of tuples to dict
+      return
+    for _, p, obj in graph.triples((current, None, None)):
+      object_name = obj.split("#")[1] if "#" in obj else str(obj)
+      prop = p.split("#")[1] if "#" in p else str(p)
+      # Store the property for this object in the current path
+      props = current_props + [(object_name, prop)]
+      dfs(obj, current_path + [current], props, depth + 1)
 
-  dfs(start, [], 0)
-  return paths
-
+  # Start with empty path and properties
+  start_name = start.split("#")[1] if "#" in start else str(start)
+  property_name = property.split("#")[1] if "#" in property else str(property)
+  dfs(start, [], [(start_name,property_name)], 0)
+  return paths, all_properties
 
 def extract_path_names(path):
   path_names = []
@@ -250,22 +279,30 @@ def extract_path_names(path):
   return path_names
 
 
-def get_all_paths_by_name(graph, start, target):
-  paths = find_all_paths(graph, start, target)
+def get_all_paths_by_name(graph, property,start, target):
+  paths, properties = find_all_paths(graph, property, start, target)
   path_names = []
   for p in paths:
     path_names.append(extract_path_names(p))
-  return path_names
+  return path_names, properties
 
 
 def find_all_leaves(graph):
   subjects = set()
   objects = set()
+  predicates = {}
   for s,p,o in graph.triples((None, None, None)):
     subjects.add(s)
     objects.add(o)
+    predicates[s]= p
   leaves = subjects - objects
-  return leaves
+  properties = {}
+  for s in predicates:
+    if s in leaves:
+      o_name = s.split("#")[1]
+      properties[o_name] = predicates[s]
+
+  return leaves, properties
 
 def find_path_back_triples(graph, leave_triple, root):
   """

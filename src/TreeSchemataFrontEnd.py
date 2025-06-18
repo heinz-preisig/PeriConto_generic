@@ -451,7 +451,7 @@ class OntobuilderUI(QMainWindow):
     self.ui.listTrees.addItems(treeList)
 
 
-  def showNewNewTreeTree(self, root_name, leaves, paths, instances):
+  def showNewNewTreeTree(self, root_name, paths, properties, leaves, instances):
     widget = self.ui.treeTree
     # PrintGraph(graph)
 
@@ -481,18 +481,25 @@ class OntobuilderUI(QMainWindow):
       for path in paths[leave]:
         parent_item = rootItem
         for i in reversed(path[:-1]):
+          if "instance" in i:
+            node_text = instances[tree_name][i]
+          else:
+            node_text = i
           no_children = parent_item.childCount()
           if no_children != 0:
             for child_item in range(no_children):
               child = parent_item.child(child_item)
-              if child.text(0) != i:
+              if child.text(0) != node_text:
                 current_item = QTreeWidgetItem(child)
-                current_item.setText(0, i)
+                current_item.setText(0, node_text)
                 parent_item = current_item
           else:
             current_item = QTreeWidgetItem(parent_item)
-            current_item.setText(0, i)
+            current_item.setText(0, node_text)
             parent_item = current_item
+
+          type = instances[tree_name][node_text]
+          current_item.type = self.rules[type]
     widget.show()
     widget.expandAll()
     # self.__ui_state("show_tree")

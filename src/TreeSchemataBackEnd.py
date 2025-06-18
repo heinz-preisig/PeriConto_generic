@@ -205,11 +205,11 @@ class BackEnd():
     if TIMING: print("getting tuples", time.time() - start)
     instances = self.dataModel.instances
 
-    paths, leaves = self.dataModel.getTreePaths(tree_name)
+    paths, properties, leaves = self.dataModel.getTreePaths(tree_name)
 
     # graph, root = self.dataModel.getGraph(tree_name, "tree_name")
     # self.frontEnd.showNewTreeTree(graph, root, instances)
-    self.frontEnd.showNewNewTreeTree(tree_name, leaves, paths, instances)
+    self.frontEnd.showNewNewTreeTree(tree_name, paths, properties, leaves, instances)
     pass
 
     # ======================== trees

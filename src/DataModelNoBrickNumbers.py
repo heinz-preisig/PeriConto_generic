@@ -372,7 +372,7 @@ class DataModel:
 
 
     for p,o in set_primitives:
-      paths_by_names = get_all_paths_by_name(graph, o, root)
+      paths_by_names, properties = get_all_paths_by_name(graph, p, o, root)
 
       if paths_by_names == []:
         return
@@ -384,7 +384,7 @@ class DataModel:
         path[0] = o.split("#")[1]
         path = [instance_ID+":undefined"] + path
 
-        self.instances[tree_name][instance_ID] = path
+        self.instances[tree_name][instance_ID] = "undefined"
         graph.add((uri_instance, p, o))
 
       graph.remove((to_instantiate, p, o))
@@ -619,12 +619,13 @@ class DataModel:
     namespace = self.tree_namespaces[tree_name]
     root_uri = URIRef(namespace + tree_name)
     tree_graph = self.TREE_GRAPHS[tree_name]
-    leaves = find_all_leaves(tree_graph)
+    leaves, properties = find_all_leaves(tree_graph)
 
     paths = {}
     for start in leaves:
-        paths[start] = get_all_paths_by_name(tree_graph, start, root_uri)
-    return paths, leaves
+      prop = properties[start.split("#")[1] if "#" in start else str(start)].split("#")[1]
+      paths[start], properties[start] = get_all_paths_by_name(tree_graph, prop, start, root_uri)
+    return paths, properties, leaves
 
   def __writeQuadFile(self, conjunctiveGraph, f):
     saveBackupFile(f)
