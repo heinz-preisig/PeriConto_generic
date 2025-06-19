@@ -379,8 +379,8 @@ class OntobuilderUI(QMainWindow):
       parent_name = item.parent().text(0)
     else:
       parent_name = None
-    linkpoint = (item.count == 0) and (type == self.rules["is_member"])
-    debugging("item count", item.count, linkpoint)
+    linkpoint = (item.childCount() == 0) and (type == self.rules["is_member"])
+    debugging("item count", item.childCount(), linkpoint)
     debugging("-- tree item %s, column %s" % (name, column))
     if not linkpoint:
       if type in self.primitives:
@@ -497,9 +497,12 @@ class OntobuilderUI(QMainWindow):
             current_item = QTreeWidgetItem(parent_item)
             current_item.setText(0, node_text)
             parent_item = current_item
-
-          type = instances[tree_name][node_text]
-          current_item.type = self.rules[type]
+          if node_text != "undefined":
+            type = properties[leave][0][node_text]
+            print(">>", node_text, type)
+            current_item.node_type = type #self.rules[type]
+          else:
+            current_item.node_type = properties[leave][0][path[0]]
     widget.show()
     widget.expandAll()
     # self.__ui_state("show_tree")

@@ -258,8 +258,8 @@ def find_all_paths(graph: Graph, property, start: URIRef, target: URIRef, max_de
       paths.append(current_path + [current])
       all_properties.append(dict(current_props))  # Convert list of tuples to dict
       return
-    for _, p, obj in graph.triples((current, None, None)):
-      object_name = obj.split("#")[1] if "#" in obj else str(obj)
+    for s, p, obj in graph.triples((current, None, None)):
+      object_name = s.split("#")[1] if "#" in obj else str(obj)
       prop = p.split("#")[1] if "#" in p else str(p)
       # Store the property for this object in the current path
       props = current_props + [(object_name, prop)]

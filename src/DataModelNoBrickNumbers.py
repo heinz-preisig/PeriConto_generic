@@ -618,13 +618,14 @@ class DataModel:
   def getTreePaths(self, tree_name):
     namespace = self.tree_namespaces[tree_name]
     root_uri = URIRef(namespace + tree_name)
-    tree_graph = self.TREE_GRAPHS[tree_name]
-    leaves, properties = find_all_leaves(tree_graph)
+    graph = self.TREE_GRAPHS[tree_name]
+    leaves, leave_properties = find_all_leaves(graph)
 
     paths = {}
+    properties = {}
     for start in leaves:
-      prop = properties[start.split("#")[1] if "#" in start else str(start)].split("#")[1]
-      paths[start], properties[start] = get_all_paths_by_name(tree_graph, prop, start, root_uri)
+      prop = leave_properties[start.split("#")[1] if "#" in start else str(start)].split("#")[1]
+      paths[start], properties[start] = get_all_paths_by_name(graph, prop, start, root_uri)
     return paths, properties, leaves
 
   def __writeQuadFile(self, conjunctiveGraph, f):
