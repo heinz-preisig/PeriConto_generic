@@ -92,6 +92,11 @@ def PrintGraph(graph):
     print(s, p, o)
   print("end graph")
 
+class DebugTreeWidgetItem(QTreeWidgetItem):
+  def __setattr__(self, name, value):
+    if name == 'node_type':
+      print(f"Setting node_type for item '{self.text(0)}' from {getattr(self, 'node_type', 'None')} to {value}")
+    super().__setattr__(name, value)
 
 class OntobuilderUI(QMainWindow):
   def __init__(self):
@@ -375,6 +380,7 @@ class OntobuilderUI(QMainWindow):
     self.ui.treeTree.expandItem(item)
     self.save_expanded_state()
     type = item.node_type
+    print("name, type:", name, type)
     if type != "Class":
       parent_name = item.parent().text(0)
     else:
@@ -460,12 +466,13 @@ class OntobuilderUI(QMainWindow):
     # _, name = root.split("#")
     count_children = 0
     widget.clear()
-    rootItem = QTreeWidgetItem(widget)
+    rootItem = DebugTreeWidgetItem(widget)
     widget.setColumnCount(1)
     rootItem.root = root_name
     rootItem.setText(0, root_name)
     rootItem.setSelected(False)
-    rootItem.node_type = self.rules["is_class"]
+    type = self.rules["is_class"]
+    rootItem.node_type = type
     rootItem.count = count_children
     rootItem.id = 1
     widget.addTopLevelItem(rootItem)
@@ -480,29 +487,60 @@ class OntobuilderUI(QMainWindow):
     for leave in leaves:
       for path in paths[leave]:
         parent_item = rootItem
+        current_path = []
+        
+        # Build the path from leaf to root
         for i in reversed(path[:-1]):
           if "instance" in i:
             node_text = instances[tree_name][i]
           else:
             node_text = i
-          no_children = parent_item.childCount()
-          if no_children != 0:
-            for child_item in range(no_children):
-              child = parent_item.child(child_item)
-              if child.text(0) != node_text:
-                current_item = QTreeWidgetItem(child)
-                current_item.setText(0, node_text)
-                parent_item = current_item
-          else:
-            current_item = QTreeWidgetItem(parent_item)
-            current_item.setText(0, node_text)
-            parent_item = current_item
-          if node_text != "undefined":
-            type = properties[leave][0][node_text]
-            print(">>", node_text, type)
-            current_item.node_type = type #self.rules[type]
-          else:
-            current_item.node_type = properties[leave][0][path[0]]
+          current_path.append((parent_item, node_text))
+          
+          # Find or create the child item
+          found = None
+          for child_idx in range(parent_item.childCount()):
+            child = parent_item.child(child_idx)
+            if child.text(0) == node_text:
+              found = child
+              break
+              
+          if found is None:
+            found = DebugTreeWidgetItem(parent_item)
+            found.setText(0, node_text)
+            
+            # Set the node type for new items
+            if node_text != "undefined":
+              node_type = properties[leave][0].get(node_text, "unknown")
+              print(f"Creating new node '{node_text}' with type: {node_type}")
+              found.node_type = node_type
+            else:
+              node_type = properties[leave][0].get(path[0], "unknown")
+              print(f"Creating new undefined node with type from {path[0]}: {node_type}")
+              found.node_type = node_type
+              
+          parent_item = found
+          
+        # The last node in the path is the leaf
+        if path and len(path) > 1:
+          node_text = path[-1].split('#')[-1] if '#' in path[-1] else path[-1]
+          # For leaf nodes, use the first property in the path if node_text is undefined
+          if node_text == "undefined" and path[0] in properties[leave][0]:
+            node_type = properties[leave][0][path[0]]
+            print(f"Setting undefined leaf node type using {path[0]}: {node_type}")
+            parent_item.node_type = node_type
+          elif node_text in properties[leave][0]:
+            node_type = properties[leave][0][node_text]
+            print(f"Setting leaf node '{node_text}' type to: {node_type}")
+            parent_item.node_type = node_type
+          # if node_text != "undefined":
+          #   type = properties[leave][0][node_text]
+          #   print(">>!leave", node_text, type)
+          #   current_item.node_type = type #self.rules[type]
+          # else:
+          #   type = properties[leave][0][path[0]]
+          #   current_item.node_type = type
+          #   print(">> leave", node_text, type)
     widget.show()
     widget.expandAll()
     # self.__ui_state("show_tree")
