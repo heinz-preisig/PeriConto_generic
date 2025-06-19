@@ -221,14 +221,14 @@ class DataModel:
     self.BRICK_GRAPHS[Class].add(triple)
     pass
 
-  def modifyPrimitiveValue(self, tree_name, primitive_name, primitive_type, value, path):
+  def modifyPrimitiveValue(self, tree_name, primitive_name, primitive_type, instance_value, path):
     pass
+    instance, value = instance_value.split(":")
     graph = self.TREE_GRAPHS[tree_name]
     prefix = makeItemURI(tree_name, "")
-    triple_search = (URIRef(prefix + path[0]),
+    triple_search = (URIRef(prefix + instance),
                      RDFSTerms[primitive_type],
                      None)
-    instance_ID = value.split(":")[0]
 
     t = None
     p = None
@@ -237,13 +237,13 @@ class DataModel:
       s, p, o = t
     if t:
       graph.remove(t)
-      s = URIRef(prefix + value)
+      s = URIRef(prefix + instance)
       triple_add = s, p, o
       graph.add(triple_add)
-      old_path = self.instances[tree_name][instance_ID]
-      new_path = old_path
-      new_path[0] = value
-      self.instances[tree_name][instance_ID] = new_path
+      # old_path = self.instances[tree_name][instance]
+      # new_path = old_path
+      # new_path[0] = value
+      self.instances[tree_name][instance] = value
     else:
       print(">>> something went wrong, Not triple found")
     pass

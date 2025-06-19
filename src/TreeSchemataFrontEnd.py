@@ -492,7 +492,7 @@ class OntobuilderUI(QMainWindow):
         # Build the path from leaf to root
         for i in reversed(path[:-1]):
           if "instance" in i:
-            node_text = instances[tree_name][i]
+            node_text = i+":"+ instances[tree_name][i]
           else:
             node_text = i
           current_path.append((parent_item, node_text))
@@ -510,7 +510,7 @@ class OntobuilderUI(QMainWindow):
             found.setText(0, node_text)
             
             # Set the node type for new items
-            if node_text != "undefined":
+            if "undefined" not in node_text:#node_text != "undefined":
               node_type = properties[leave][0].get(node_text, "unknown")
               print(f"Creating new node '{node_text}' with type: {node_type}")
               found.node_type = node_type
