@@ -221,7 +221,7 @@ class DataModel:
     self.BRICK_GRAPHS[Class].add(triple)
     pass
 
-  def modifyPrimitiveValue(self, tree_name, primitive_name, primitive_type, instance_value, path):
+  def modifyPrimitiveValue(self, tree_name, primitive_type, instance_value):
     pass
     instance, value = instance_value.split(":")
     graph = self.TREE_GRAPHS[tree_name]
@@ -240,9 +240,6 @@ class DataModel:
       s = URIRef(prefix + instance)
       triple_add = s, p, o
       graph.add(triple_add)
-      # old_path = self.instances[tree_name][instance]
-      # new_path = old_path
-      # new_path[0] = value
       self.instances[tree_name][instance] = value
     else:
       print(">>> something went wrong, Not triple found")

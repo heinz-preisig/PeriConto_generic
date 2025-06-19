@@ -159,12 +159,10 @@ class BackEnd():
 
   def instantiatePrimitive(self, message):
     pass
-    primitive_name = message["parent_name"]
     tree_name = self.memory["tree_name"]
     primitive_type = message["type"]
     value = message["value"]
-    path = message["path"]
-    self.dataModel.modifyPrimitiveValue(tree_name, primitive_name, primitive_type, value, path)
+    self.dataModel.modifyPrimitiveValue(tree_name, primitive_type, value)
 
     pass
 
