@@ -539,7 +539,7 @@ class DataModel:
         self.instance_counter[tree_name] = 0
     pass
 
-  def reduceGraph(self, tree_name):
+  def reduceGraph(self, tree_name): #todo: fix
     pass
     prefix = makeItemURI(tree_name, "")
     tree_graph = self.TREE_GRAPHS[tree_name]
@@ -548,7 +548,7 @@ class DataModel:
 
     keep_target = []
     for instance_ID in instances:
-      instance_value = instances[instance_ID][0].split(":")[1]
+      instance_value = instances[instance_ID]#[0].split(":")[1]
       instance_path = instances[instance_ID]
       if instance_value != "undefined":
         keep_target.append(instance_path)
