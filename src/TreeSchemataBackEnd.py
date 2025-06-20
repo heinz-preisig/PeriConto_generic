@@ -167,10 +167,17 @@ class BackEnd():
     pass
 
   def addLink(self, message):
+    # check for no name in the brick is already in the path
+
     link_position = self.memory["tree_item_name"]
     path = message["path"]
+    brick_name = message["brick_name"]
+    brick_names = self.dataModel.getAllNamesInABrickOrATree(brick_name, "brick")
+    for name in brick_names:
+      if name in path:
+        makeMessageBox("the name %s is defined in the brick and the path -- link is not allowed" % name)
+        return
     if link_position:
-      brick_name = message["brick_name"]
       if not brick_name:
         return
 
