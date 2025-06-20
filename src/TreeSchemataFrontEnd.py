@@ -510,7 +510,7 @@ class OntobuilderUI(QMainWindow):
             found.setText(0, node_text)
             
             # Set the node type for new items
-            if "undefined" not in node_text:#node_text != "undefined":
+            if "undefined" not in node_text:#node_text != "undefined": #TODO this does not worked for initiated instances
               node_type = properties[leave][0].get(node_text, "unknown")
               print(f"Creating new node '{node_text}' with type: {node_type}")
               found.node_type = node_type

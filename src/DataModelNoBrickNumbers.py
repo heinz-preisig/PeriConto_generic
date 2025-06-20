@@ -17,6 +17,7 @@ from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
+from PeriConto.src.Utilities import find_path_back_triples
 from Utilities import find_all_leaves
 from Utilities import find_all_paths
 from Utilities import get_all_paths_by_name
@@ -548,10 +549,9 @@ class DataModel:
 
     keep_target = []
     for instance_ID in instances:
-      instance_value = instances[instance_ID]#[0].split(":")[1]
-      instance_path = instances[instance_ID]
+      instance_value = instances[instance_ID]
       if instance_value != "undefined":
-        keep_target.append(instance_path)
+        keep_target.append(instance_ID)
 
     pass
     if not keep_target:
@@ -561,30 +561,28 @@ class DataModel:
     self.tree_namespaces[tree_name_instantiated] = Namespace(makeItemURI(tree_name_instantiated, ""))
     graph = self.TREE_GRAPHS[tree_name_instantiated] = Graph("Memory")
     # make path
+
+
     for i in keep_target:
-      for n in range(len(i[:-1])):
-        s_n, o_n = i[n:n + 2]
-        print(s_n, o_n)
-        s = makeItemURI(tree_name, s_n)
-        o = makeItemURI(tree_name, o_n)
+      instance_uri = URIRef(prefix + i)
+      root_uri = URIRef(prefix + tree_name)
+      for t in tree_graph.triples((instance_uri, None, None)):
+        s,p,o = t
 
-        triple_search = (URIRef(s), None, URIRef(o))
+      if not t:
+        print(">>>> no triple found")
+      path_triples = find_path_back_triples(tree_graph, t, root_uri)
+      for i in range(len(path_triples[0])):
+        t_ = path_triples[0][i]
+        s_,p_,o_ = t_
 
-        s_new = self.__renameURI(tree_name_instantiated, tree_name, s)
-        o_new = self.__renameURI(tree_name_instantiated, tree_name, o)
-        for _, p, _ in tree_graph.triples(triple_search):
-          triple = (s_new, p, o_new)
-          graph.add(triple)
-
-    pass
+        s_new = self.__renameURI(tree_name_instantiated, tree_name, s_)
+        o_new = self.__renameURI(tree_name_instantiated, tree_name, o_)
+        triple = (s_new, p_, o_new)
+        graph.add(triple)
 
     # finally, copy instantiated instances
     self.instances[tree_name_instantiated] = copy.deepcopy(self.instances[tree_name])
-    for instance_ID in self.instances[tree_name_instantiated]:
-      path = copy.copy(self.instances[tree_name_instantiated][instance_ID])
-      path[-1] = tree_name_instantiated
-      self.instances[tree_name_instantiated][instance_ID] = path
-
     pass
 
   def __prepareConjunctiveGraph(self, graphs):
