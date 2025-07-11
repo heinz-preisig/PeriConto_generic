@@ -300,7 +300,7 @@ UI_state = {
                            "showBrickTree",
                            ],
                 },
-        "remove item from brick tree"   : {
+        "remove item"   : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",

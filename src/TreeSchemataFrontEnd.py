@@ -315,8 +315,14 @@ class OntobuilderUI(QMainWindow):
       makeMessageBox("this path has a leave with an instance -- it cannot be removed", buttons=["OK"])
       return
 
+    item_name = current_item.text(0)
+    parent_name = current_item.parent().text(0)
+
+
     message = {
             "event": "remove item",
+            "item_name" : item_name,
+            "parent_name": parent_name,
             }
     self.backend.processEvent(message)
 
@@ -334,6 +340,9 @@ class OntobuilderUI(QMainWindow):
     dialog = UI_stringSelector("select brick",
                                brick_list)
     brick_name = dialog.selection
+    if brick_name == "":
+      return
+
     message = {
             "event"     : "link",
             "brick_name": brick_name,
@@ -510,15 +519,17 @@ class OntobuilderUI(QMainWindow):
             found.setText(0, node_text)
             
             # Set the node type for new items
-            if "undefined" not in node_text:#node_text != "undefined": #TODO this does not worked for initiated instances
-              node_type = properties[leave][0].get(node_text, "unknown")
+            if "undefined" not in node_text:
+              node_type = properties[leave][0].get(node_text.split(":")[0], "unknown")
               print(f"Creating new node '{node_text}' with type: {node_type}")
               found.node_type = node_type
             else:
               node_type = properties[leave][0].get(path[0], "unknown")
               print(f"Creating new undefined node with type from {path[0]}: {node_type}")
               found.node_type = node_type
-              
+
+            if node_type == "unknown":
+              print(f">>> Node type for '{node_text}' is still unknown")
           parent_item = found
           
         # The last node in the path is the leaf
@@ -533,97 +544,94 @@ class OntobuilderUI(QMainWindow):
             node_type = properties[leave][0][node_text]
             print(f"Setting leaf node '{node_text}' type to: {node_type}")
             parent_item.node_type = node_type
-          # if node_text != "undefined":
-          #   type = properties[leave][0][node_text]
-          #   print(">>!leave", node_text, type)
-          #   current_item.node_type = type #self.rules[type]
-          # else:
-          #   type = properties[leave][0][path[0]]
-          #   current_item.node_type = type
-          #   print(">> leave", node_text, type)
     widget.show()
     widget.expandAll()
     # self.__ui_state("show_tree")
 
-  def showNewTreeTree(self, graph, root, instances):
-    pass
-    widget = self.ui.treeTree
-    # PrintGraph(graph)
-
-    self.existing_names = set()
-
-    _, name = root.split("#")
-    count_children = 0
-    widget.clear()
-    rootItem = QTreeWidgetItem(widget)
-    widget.setColumnCount(1)
-    rootItem.root = name
-    rootItem.setText(0, name)
-    rootItem.setSelected(False)
-    rootItem.node_type = self.rules["is_class"]
-    rootItem.count = count_children
-    rootItem.id = 1
-    widget.addTopLevelItem(rootItem)
-    self.treetop = widget.invisibleRootItem()
-    self.current_class = name
-    items = {1: rootItem}
-    self.existing_names.add(name)
-
-    for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
-      # print(root)
-      print(depth, node, current_branch, parent, predicate, node_id, parent_id)
-      if node != root:
-        try:
-          _, name = node.split("#")
-        except:
-          name = str(node)
-        self.existing_names.add(name)
-        _, parent_name = parent.split("#")
-        parent_item = items[parent_id]  # items[parent_name]
-        items[node_id] = QTreeWidgetItem(parent_item)
-        # print("made item")
-        items[node_id].count = 0
-        items[parent_id].count += 1
-        _, node_type = predicate.split("#")
-        items[node_id].node_type = node_type
-        if "instance" in name:
-          instance_ID, number = name.split(":")
-          path = instances[tree_name][instance_ID]
-          x = self.__makePath(items[node_id])
-          x[0] = name
-          # for i in instances[tree_name]:
-          #   path = instances[tree_name][i]
-          if path != x:
-            print("\ninstance", instance_ID)
-            print(depth, node, current_branch, parent, predicate, node_id, parent_id)
-            print("path", path)
-            print("x   ", x)
-          else:
-            print("\nOk instance", instance_ID)
-          # print("name", name)
-          # print("instance", instance)
-          if path == x:  # (path[1:] == x[1:]) and (instance == name):
-            items[node_id].setText(0, name)
-        else:
-          items[node_id].setText(0, name)
-
-        if items[node_id].text(0) == "":
-          # print(">>>> found obsolete item", x, "parent_path", x_p)
-          # Note: this item was generated but not named -- couldn't find another solution
-          parent_item.removeChild(items[node_id])
-
-        try:
-          items[node_id].setForeground(0, QBRUSHES[node_type])
-        except:
-          pass
-
-    widget.show()
-    widget.expandAll()
-    # widget.collapseAll()
     try:
       self.restore_expanded_state()
     except:
       pass
+
+  # def showNewTreeTree(self, graph, root, instances):
+  #   pass
+  #   widget = self.ui.treeTree
+  #   # PrintGraph(graph)
+  #
+  #   self.existing_names = set()
+  #
+  #   _, name = root.split("#")
+  #   count_children = 0
+  #   widget.clear()
+  #   rootItem = QTreeWidgetItem(widget)
+  #   widget.setColumnCount(1)
+  #   rootItem.root = name
+  #   rootItem.setText(0, name)
+  #   rootItem.setSelected(False)
+  #   rootItem.node_type = self.rules["is_class"]
+  #   rootItem.count = count_children
+  #   rootItem.id = 1
+  #   widget.addTopLevelItem(rootItem)
+  #   self.treetop = widget.invisibleRootItem()
+  #   self.current_class = name
+  #   items = {1: rootItem}
+  #   self.existing_names.add(name)
+  #
+  #   for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
+  #     # print(root)
+  #     print(depth, node, current_branch, parent, predicate, node_id, parent_id)
+  #     if node != root:
+  #       try:
+  #         _, name = node.split("#")
+  #       except:
+  #         name = str(node)
+  #       self.existing_names.add(name)
+  #       _, parent_name = parent.split("#")
+  #       parent_item = items[parent_id]  # items[parent_name]
+  #       items[node_id] = QTreeWidgetItem(parent_item)
+  #       # print("made item")
+  #       items[node_id].count = 0
+  #       items[parent_id].count += 1
+  #       _, node_type = predicate.split("#")
+  #       items[node_id].node_type = node_type
+  #       if "instance" in name:
+  #         instance_ID, number = name.split(":")
+  #         path = instances[tree_name][instance_ID]
+  #         x = self.__makePath(items[node_id])
+  #         x[0] = name
+  #         # for i in instances[tree_name]:
+  #         #   path = instances[tree_name][i]
+  #         if path != x:
+  #           print("\ninstance", instance_ID)
+  #           print(depth, node, current_branch, parent, predicate, node_id, parent_id)
+  #           print("path", path)
+  #           print("x   ", x)
+  #         else:
+  #           print("\nOk instance", instance_ID)
+  #         # print("name", name)
+  #         # print("instance", instance)
+  #         if path == x:  # (path[1:] == x[1:]) and (instance == name):
+  #           items[node_id].setText(0, name)
+  #       else:
+  #         items[node_id].setText(0, name)
+  #
+  #       if items[node_id].text(0) == "":
+  #         # print(">>>> found obsolete item", x, "parent_path", x_p)
+  #         # Note: this item was generated but not named -- couldn't find another solution
+  #         parent_item.removeChild(items[node_id])
+  #
+  #       try:
+  #         items[node_id].setForeground(0, QBRUSHES[node_type])
+  #       except:
+  #         pass
+  #
+  #   widget.show()
+  #   widget.expandAll()
+  #   # widget.collapseAll()
+  #   try:
+  #     self.restore_expanded_state()
+  #   except:
+  #     pass
 
   def putTreeList(self, tree_list):
     self.treeList = tree_list

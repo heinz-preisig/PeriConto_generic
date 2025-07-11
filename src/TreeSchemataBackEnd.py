@@ -57,8 +57,8 @@ class BackEnd():
         self.deleteTree(message)
       elif a == "extractInstance":
         self.extractInstance(message)
-      elif a == "getTreeDataTuples":
-        self.getTreeDataTuples(message)
+      elif a == "showTree":
+        self.showTree(message)
       elif a == "instantiatePrimitive":
         self.instantiatePrimitive(message)
       elif a == "loadOntology": #
@@ -152,9 +152,11 @@ class BackEnd():
     pass
 
   def removeItem(self, message):
-    tree_item_name = self.memory["tree_item_name"]
+    # tree_item_name = self.memory["tree_item_name"]
+    item_name = message["item_name"]
+    parent_name = message["parent_name"]
     tree_name = self.memory["tree_name"]
-    self.dataModel.removeItem("trees", tree_name, tree_item_name)
+    self.dataModel.removeItem("trees", tree_name,  parent_name, item_name)
     pass
 
   def instantiatePrimitive(self, message):
@@ -201,7 +203,7 @@ class BackEnd():
   # def rememberTreeSelection(self, message):
   #   self.memory["tree_name"] = message["tree_name"]
 
-  def getTreeDataTuples(self, message):
+  def showTree(self, message):
     if TIMING: start = time.time()
     try:
       tree_name = message["tree_name"]

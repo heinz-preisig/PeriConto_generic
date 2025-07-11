@@ -197,20 +197,24 @@ class BackEnd():
     self.frontEnd.markSaved()
 
   def renameItem(self, message):
-    old_name = self.memory["brick"]
-    item_name = self.memory["item"]
-    item_names = self.dataModel.getAllNamesInABrickOrATree(old_name, "brick")
-    newName = self.frontEnd.askForItemName("provide new name for item %s" % item_name, item_names)
+    old_name = message["item_name"]
+    parent_name = message["parent_name"]
+    current_brick = self.memory["brick"]
+    # old_name = self.memory["brick"]
+    # item_name = self.memory["item"]
+    item_names = self.dataModel.getAllNamesInABrickOrATree(current_brick, "brick")
+    newName = self.frontEnd.askForItemName("provide new name for item %s" % old_name, item_names)
     if newName:
-      self.dataModel.renameItem(old_name, item_name, camelCase(newName))
+      self.dataModel.renameItem(current_brick,old_name, parent_name, camelCase(newName))
 
-      self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(old_name, "bricks")
-      self.frontEnd.showBrickTree(self.dataBrickTuples, old_name)
+      self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(current_brick, "bricks")
+      self.frontEnd.showBrickTree(self.dataBrickTuples, current_brick)
 
   def removeItemFromBrickTree(self, message):
-    name = self.memory["item"]
-    brick = self.memory["brick"]
-    self.dataModel.removeItem("bricks", brick, name)
+    item_name = message["item_name"]
+    parent_name = message["parent_name"]
+    current_brick = self.memory["brick"]
+    self.dataModel.removeItem("bricks", current_brick,  parent_name, item_name)
     pass
 
   def visualise(self, message):

@@ -163,12 +163,18 @@ class DataModel:
       names.add(o)
     return names
 
-  def removeItem(self, what_type_of_graph, brick, item):
-    subject = URIRef(makeItemURI(brick, item))
-    triple = (subject, None, None)
-    self.__removeItemFromGraph(what_type_of_graph, brick, subject, triple)
+  # def removeItem(self, what_type_of_graph, brick, item):
+  #   subject = URIRef(makeItemURI(brick, item))
+  #   triple = (subject, None, None)
+  #   self.__removeItemFromGraph(what_type_of_graph, brick, subject, triple)
 
-  def __removeItemFromGraph(self, what_type_of_graph, name, subject, triple):
+  def removeItem(self, what_type_of_graph, tree_name,parent_name, item_name):
+    subject = URIRef(makeItemURI(tree_name, item_name))
+    object = URIRef(makeItemURI(tree_name, parent_name))
+    triple = (subject, None, object)
+    self.__removeItemFromGraph(what_type_of_graph, tree_name, triple)
+
+  def __removeItemFromGraph(self, what_type_of_graph, name, triple):
     if what_type_of_graph == "bricks":
       graph = self.BRICK_GRAPHS[name]
     else:
@@ -397,9 +403,19 @@ class DataModel:
     uri_new = URIRef(makeItemURI(newName, uri_name))
     return uri_new
 
-  def renameItem(self, brick, item, newName):
+  def renameItem(self, brick, old_name, parent_name, new_name):
     g = self.BRICK_GRAPHS[brick]
-    self.__renameItem(brick, g, item, newName)
+    old_subject = URIRef(makeItemURI(brick, old_name))
+    new_subject = URIRef(makeItemURI(brick, new_name))
+    object = URIRef(makeItemURI(brick, parent_name))
+    triple = (old_subject, None, object)
+    for s, p, o in g.triples(triple):
+      g.remove((s, p, o))
+      new_triple = (new_subject, p, object)
+      g.add(new_triple)
+
+
+    # self.__renameItem(brick, g, item, newName)
     pass
 
   def renameItemInTree(self, brick, item, newName):

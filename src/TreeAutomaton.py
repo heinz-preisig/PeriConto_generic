@@ -66,7 +66,7 @@ UI_state = {
                 "except": [],
                 "action": [  # "newTree",
                         # "rememberTreeSelection",
-                        "getTreeDataTuples",
+                        "showTree",
                         ],
                 },
         "rename tree"                                     : {
@@ -242,7 +242,7 @@ UI_state = {
                 "except": [],
                 "action": ["addItem",
                            "markChanged",
-                           "getTreeDataTuples"
+                           "showTree"
                            ],
                 },
         # "rename item"                                     : {
@@ -256,7 +256,7 @@ UI_state = {
         #         "except": [],
         #         "action": ["renameItem",
         #                    "markChanged",
-        #                    "getTreeDataTuples"
+        #                    "showTree"
         #                    ],
         #         },
         "remove item"                                     : {
@@ -270,7 +270,7 @@ UI_state = {
                 "except": [],
                 "action": ["removeItem",
                            "markChanged",
-                           "getTreeDataTuples"
+                           "showTree"
                            ],
                 },
         "got primitive"                                   : {
@@ -284,7 +284,7 @@ UI_state = {
                 "except": [],
                 "action": ["instantiatePrimitive",
                            "markChanged",
-                           "getTreeDataTuples"
+                           "showTree"
                            ],
                 },
         "link"                                            : {
@@ -297,7 +297,7 @@ UI_state = {
                            ],
                 "except": [],
                 "action": ["addLink",
-                           "getTreeDataTuples",
+                           "showTree",
                            "markChanged"],
                 },
         "reduce"                                          : {
