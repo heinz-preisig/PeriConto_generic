@@ -365,7 +365,6 @@ class DataModel:
     graph = self.TREE_GRAPHS[tree_name]
     prefix = makeItemURI(tree_name, "")
     root = URIRef(prefix + tree_name)
-    count = self.instance_counter[tree_name]
 
     to_instantiate = URIRef(makeItemURI(tree_name, ""))
     set_primitives = set()
@@ -381,8 +380,9 @@ class DataModel:
       if paths_by_names == []:
         return
       for i in range(len(paths_by_names)):
-        instance_ID = "instance_%s" % (count)
-        count += 1
+        self.instance_counter[tree_name] += 1
+        instance_ID = "instance_%s" % (self.instance_counter[tree_name])
+        print("counter", self.instance_counter[tree_name])
         uri_instance = URIRef(prefix + instance_ID)
         path = paths_by_names[i]
         path[0] = o.split("#")[1]
@@ -559,9 +559,9 @@ class DataModel:
           if i:
             s = i
             counter = s.split("_")[1]
-            self.instance_counter[tree_name] = int(counter) + 1
+            self.instance_counter[tree_name] = int(counter)
       else:
-        self.instance_counter[tree_name] = 0
+        self.instance_counter[tree_name] = -1
     pass
 
   def reduceGraph(self, tree_name): #todo: fix
