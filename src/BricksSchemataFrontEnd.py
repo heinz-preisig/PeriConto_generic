@@ -327,12 +327,13 @@ class OntobuilderUI(QMainWindow):
     item_name = current_item.text(0)
     parent_name = current_item.parent().text(0)
     # item = self.ui.brickTree.currentItem()
-    type = current_item.type
+    type = current_item.child(0).type
 
     message = {
-            "event": "%s rename" % type,
+            "event": "rename item",
             "item_name" : item_name,
             "parent_name": parent_name,
+            "type": type,
             }
     self.backend.processEvent(message)
 

@@ -200,13 +200,14 @@ class BackEnd():
     old_name = message["item_name"]
     parent_name = message["parent_name"]
     current_brick = self.memory["brick"]
-    # old_name = self.memory["brick"]
-    # item_name = self.memory["item"]
+    type = message["type"]
     item_names = self.dataModel.getAllNamesInABrickOrATree(current_brick, "brick")
     newName = self.frontEnd.askForItemName("provide new name for item %s" % old_name, item_names)
     if newName:
-      self.dataModel.renameItem(current_brick,old_name, parent_name, camelCase(newName))
-
+      new_name = camelCase(newName)
+      self.dataModel.renameItem(current_brick,old_name, parent_name, new_name)
+      if type in PRIMITIVES:
+        self.dataModel.renameValue(current_brick, old_name, new_name, type)
       self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(current_brick, "bricks")
       self.frontEnd.showBrickTree(self.dataBrickTuples, current_brick)
 

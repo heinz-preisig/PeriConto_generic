@@ -6,7 +6,7 @@ import rdflib
 from rdflib import ConjunctiveGraph
 from rdflib import Graph
 from rdflib import Namespace
-from rdflib import URIRef
+from rdflib import URIRef, Literal
 
 from BricksAndTreeSemantics import BASE
 from BricksAndTreeSemantics import FILE_FORMAT
@@ -413,9 +413,17 @@ class DataModel:
       g.remove((s, p, o))
       new_triple = (new_subject, p, object)
       g.add(new_triple)
+    pass
 
-
-    # self.__renameItem(brick, g, item, newName)
+  def renameValue(self, brick, old_name, new_name, type):
+    g = self.BRICK_GRAPHS[brick]
+    old_object = URIRef(makeItemURI(brick, old_name))
+    new_object = URIRef(makeItemURI(brick, new_name))
+    # object = URIRef(makeItemURI(brick, parent_name))
+    triple = (Literal(""),RDFSTerms[type], old_object)
+    g.remove(triple)
+    triple = (Literal(""),RDFSTerms[type], new_object)
+    g.add(triple)
     pass
 
   def renameItemInTree(self, brick, item, newName):
