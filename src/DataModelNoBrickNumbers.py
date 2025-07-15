@@ -30,6 +30,15 @@ from Utilities import saveBackupFile
 
 # DEBUGG = False
 
+class Instances(dict):
+  def __init__(self):
+    super(Instances, self).__init__()
+    self = {}
+
+  def addInstance(self, instance, value="undefined", path=[]):
+    self[instance] = {}
+    self[instance]["value"] = value
+    self[instance]["path"] = path
 
 class DataModel:
   def __init__(self, root):
@@ -247,16 +256,16 @@ class DataModel:
       s = URIRef(prefix + instance)
       triple_add = s, p, o
       graph.add(triple_add)
-      self.instances[tree_name][instance] = value
+      self.instances[tree_name][instance]["value"] = value
     else:
       print(">>> something went wrong, Not triple found")
     pass
 
-    if DEBUGG:
-      for ttt in graph.triples((None, None, None)):
-        print(ttt)
-      print("end")
-      print(self.instances[tree_name])
+    # if DEBUGG:
+    #   for ttt in graph.triples((None, None, None)):
+    #     print(ttt)
+    #   print("end")
+    #   print(self.instances[tree_name])
 
   def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
     graph = self.BRICK_GRAPHS[brick_name]
@@ -295,16 +304,25 @@ class DataModel:
     self.tree_namespaces[newName] = Namespace(makeItemURI(newName, ""))
     del self.TREE_GRAPHS[oldName]
     del self.tree_namespaces[oldName]
+
+
     #fix up instances:
-    for tree in list(self.instances.keys()):
-      self.instances[newName] = {}
-      if tree == oldName:
-        paths = copy.copy(self.instances[oldName])
-        for instance in paths:
-          path = paths[instance]
-          path[-1] = newName
-          self.instances[newName][instance] = path
-        del self.instances[oldName]
+    self.instances[newName] = copy.deepcopy(self.instances[oldName])
+
+    for instance in self.instances[newName]:
+      path = self.instances[newName][instance]["path"]
+      newpath = path[0:-1]+newName
+      self.instances[newName][instance]["path"] = newpath
+
+    # for tree in list(self.instances.keys()):
+    #   self.instances[newName] = {}
+    #   if tree == oldName:
+    #     paths = copy.copy(self.instances[oldName])
+    #     for instance in paths:
+    #       path = paths[instance]
+    #       path[-1] = newName
+    #       self.instances[newName][instance] = path
+      del self.instances[oldName]
 
   def copyTree(self, from_name, to_name):
 
@@ -364,34 +382,40 @@ class DataModel:
     """
     graph = self.TREE_GRAPHS[tree_name]
     prefix = makeItemURI(tree_name, "")
-    root = URIRef(prefix + tree_name)
-
-    to_instantiate = URIRef(makeItemURI(tree_name, ""))
-    set_primitives = set()
-    for p in RDF_PRIMITIVES:
-      for t in graph.triples((to_instantiate, p, None)):
-        o = t[2]
-        set_primitives.add((p,o))
 
 
-    for p,o in set_primitives:
-      paths_by_names, properties = get_all_paths_by_name(graph, p, o, root)
+    paths, properties, leaves = self.getTreePaths(tree_name)
 
-      if paths_by_names == []:
-        return
-      for i in range(len(paths_by_names)):
-        self.instance_counter[tree_name] += 1
-        instance_ID = "instance_%s" % (self.instance_counter[tree_name])
-        print("counter", self.instance_counter[tree_name])
-        uri_instance = URIRef(prefix + instance_ID)
-        path = paths_by_names[i]
-        path[0] = o.split("#")[1]
-        path = [instance_ID+":undefined"] + path
+    defined_paths = []
+    for instance in self.instances[tree_name]:
+      defined_path = self.instances[tree_name][instance]["path"]
+      defined_paths.append(defined_path[1:])
 
-        self.instances[tree_name][instance_ID] = "undefined"
-        graph.add((uri_instance, p, o))
+    for p in paths:
+      if not "instance" in p:
+        for i in range(len(paths[p])):
+          path = paths[p][i]
+          empty = path[0] == ""
+          defined = path[1:] in defined_paths
+          if empty and not defined:
+            print("found an empty leaf", path)
+            self.instance_counter[tree_name] += 1
+            instance_ID = "instance_%s" % (self.instance_counter[tree_name])
+            print("counter", self.instance_counter[tree_name])
+            subject_instance = URIRef(prefix + instance_ID)
+            subject_empty = URIRef(prefix + "")
+            type = properties[p][0][path[0]]
+            predicate = RDFSTerms[type]
+            object = URIRef(prefix + path[1])
+            instance_path = [instance_ID+":undefined"] + path[1:]
 
-      graph.remove((to_instantiate, p, o))
+            # self.instances[tree_name][instance_ID] = (instance_path, "undefined")
+            # self.instances[tree_name][instance_ID]["value"] = "undefined"
+            self.instances[tree_name].addInstance(instance_ID,
+                                                  value="undefined",
+                                                  path=instance_path)
+            graph.add((subject_instance, predicate, object))
+            graph.remove((subject_empty, predicate, object))
 
     pass
 
@@ -550,7 +574,15 @@ class DataModel:
 
   def loadInstances(self, file_name=None):
     with open(file_name) as f:
-      self.instances = json.load(f)
+      instances = json.load(f)
+
+    self.instances = {}
+    for tree_name in instances:
+      self.instances[tree_name] = Instances()
+      for i in instances[tree_name]:
+        path = instances[tree_name][i]["path"]
+        value = instances[tree_name][i]["value"]
+        self.instances[tree_name].addInstance(i,value=value, path=path)
 
     self.instance_counter = {}
     for tree_name in self.instances:
@@ -573,7 +605,7 @@ class DataModel:
 
     keep_target = []
     for instance_ID in instances:
-      instance_value = instances[instance_ID]
+      instance_value = instances[instance_ID]["value"]
       if instance_value != "undefined":
         keep_target.append(instance_ID)
 
@@ -622,8 +654,8 @@ class DataModel:
 
   def newTree(self, tree_name, brick_name):
 
-    self.instance_counter[tree_name] = 0
-    self.instances[tree_name] = {}
+    self.instance_counter[tree_name] = -1
+    self.instances[tree_name] =Instances()
 
     tree_graph = self.__makeNewGraph(tree_name)
     self.TREE_GRAPHS[tree_name] = tree_graph
@@ -642,9 +674,20 @@ class DataModel:
 
     paths = {}
     properties = {}
+    instance_paths = self.instances[tree_name]
     for start in leaves:
       prop = leave_properties[start.split("#")[1] if "#" in start else str(start)].split("#")[1]
       paths[start], properties[start] = get_all_paths_by_name(graph, prop, start, root_uri)
+
+      instance = start.split("#")[1]
+      if  instance in instance_paths:       # remove duplicated paths
+        paths[start] = [instance_paths[instance]["path"]]
+        for i in properties[start]:
+          test_path = list(i.keys())
+          if paths[start][0][1:-1] == test_path[1:]:
+            print("found it")
+            properties[start] = [i]
+    pass
     return paths, properties, leaves
 
   def __writeQuadFile(self, conjunctiveGraph, f):

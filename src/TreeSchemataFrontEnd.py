@@ -230,7 +230,8 @@ class OntobuilderUI(QMainWindow):
                                self.brickList)
     brick_name = dialog.selection
     if brick_name:
-      dialog = UI_String("tree name", limiting_list=self.treeList, validator="name_upper")
+      forbidden = self.treeList + self.brickList
+      dialog = UI_String("tree name", limiting_list=forbidden, validator="name_upper")
       tree_name = dialog.text
       if not tree_name:
         return
@@ -475,7 +476,8 @@ class OntobuilderUI(QMainWindow):
     # _, name = root.split("#")
     count_children = 0
     widget.clear()
-    rootItem = DebugTreeWidgetItem(widget)
+    # rootItem = DebugTreeWidgetItem(widget)
+    rootItem = QTreeWidgetItem(widget)
     widget.setColumnCount(1)
     rootItem.root = root_name
     rootItem.setText(0, root_name)
@@ -501,7 +503,11 @@ class OntobuilderUI(QMainWindow):
         # Build the path from leaf to root
         for i in reversed(path[:-1]):
           if "instance" in i:
-            node_text = i+":"+ instances[tree_name][i]
+            instance = i.split(":")[0]
+            try:
+              node_text = instance+":"+ instances[tree_name][instance]["value"]
+            except:
+              pass
           else:
             node_text = i
           current_path.append((parent_item, node_text))
@@ -515,7 +521,8 @@ class OntobuilderUI(QMainWindow):
               break
               
           if found is None:
-            found = DebugTreeWidgetItem(parent_item)
+            # found = DebugTreeWidgetItem(parent_item)
+            found = QTreeWidgetItem(parent_item)
             found.setText(0, node_text)
             
             # Set the node type for new items
@@ -524,7 +531,7 @@ class OntobuilderUI(QMainWindow):
               print(f"Creating new node '{node_text}' with type: {node_type}")
               found.node_type = node_type
             else:
-              node_type = properties[leave][0].get(path[0], "unknown")
+              node_type = properties[leave][0][instance]
               print(f"Creating new undefined node with type from {path[0]}: {node_type}")
               found.node_type = node_type
 
