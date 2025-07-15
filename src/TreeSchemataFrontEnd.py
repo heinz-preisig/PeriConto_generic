@@ -61,11 +61,12 @@ tree_name = None
 changed = False
 
 COLOURS = {
+        "Class"         : QtGui.QColor(0, 199, 255),
         "ROOT"         : QtGui.QColor(0, 199, 255),
         "is_member"    : QtGui.QColor(0, 0, 0, 255),
         "member"       : QtGui.QColor(0, 0, 0, 255),
         "is_defined_by": QtGui.QColor(255, 100, 5, 255),
-        "isdefinedby"  : QtGui.QColor(255, 100, 5, 255),
+        "isDefinedBy"  : QtGui.QColor(255, 100, 5, 255),
         "value"        : QtGui.QColor(230, 165, 75),
         "data_type"    : QtGui.QColor(100, 100, 100),
         "integer"      : QtGui.QColor(155, 155, 255),
@@ -490,7 +491,8 @@ class OntobuilderUI(QMainWindow):
     rootItem.count = 0
     self.treetop = widget.invisibleRootItem()
     self.current_class = root_name
-    # items = {1: rootItem}
+    node_id = 0
+    items = {node_id: rootItem}
     self.existing_names.add(root_name)
     pass
 
@@ -524,11 +526,13 @@ class OntobuilderUI(QMainWindow):
             # found = DebugTreeWidgetItem(parent_item)
             found = QTreeWidgetItem(parent_item)
             found.setText(0, node_text)
+            node_id += 1
+            items[node_id] = found
             
             # Set the node type for new items
             if "undefined" not in node_text:
               node_type = properties[leave][0].get(node_text.split(":")[0], "unknown")
-              print(f"Creating new node '{node_text}' with type: {node_type}")
+              # print(f"Creating new node '{node_text}' with type: {node_type}")
               found.node_type = node_type
             else:
               node_type = properties[leave][0][instance]
@@ -551,6 +555,12 @@ class OntobuilderUI(QMainWindow):
             node_type = properties[leave][0][node_text]
             print(f"Setting leaf node '{node_text}' type to: {node_type}")
             parent_item.node_type = node_type
+
+    for i in items:
+      node_type = items[i].node_type
+      items[i].setForeground(0, QBRUSHES[node_type])
+      print(">>> node",items[i].text(0), node_type)
+
     widget.show()
     widget.expandAll()
     # self.__ui_state("show_tree")

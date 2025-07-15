@@ -373,13 +373,13 @@ NODE_SPECS = {
                 "fillcolor": "red",
                 "style"    : "filled",
                 },
-        "Item"       : {
+        "member"       : {
                 "colour"   : "orange",
                 "shape"    : "",
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "Value"      : {
+        "value"      : {
                 "colour"   : "green",
                 "shape"    : "",
                 "fillcolor": "white",
@@ -403,22 +403,22 @@ NODE_SPECS = {
                 "fillcolor": "white",
                 "style"    : "filled",
                 },
-        "ROOT"       : {
+        # "ROOT"       : {
+        #         "colour"   : "red",
+        #         "shape"    : "rectangle",
+        #         "fillcolor": "white",
+        #         "style"    : "filled",
+        #         },
+        # "link"       : {
+        #         "colour"   : "green",
+        #         "shape"    : "rectangle",
+        #         "fillcolor": "white",
+        #         "style"    : "filled",
+        #         },
+        "isDefinedBy": {
                 "colour"   : "red",
                 "shape"    : "rectangle",
                 "fillcolor": "white",
-                "style"    : "filled",
-                },
-        "link"       : {
-                "colour"   : "green",
-                "shape"    : "rectangle",
-                "fillcolor": "white",
-                "style"    : "filled",
-                },
-        "LinkedClass": {
-                "colour"   : "green",
-                "shape"    : "rectangle",
-                "fillcolor": "green",
                 "style"    : "filled",
                 },
         "other"      : {
@@ -450,7 +450,7 @@ class TreePlot:
     self.nodes = set()
 
   def addNode(self, node, type):
-    # print(type)
+    print("plot", node, type)
     try:
       specs = NODE_SPECS[type]
     except:
@@ -496,7 +496,7 @@ class TreePlot:
         o = o.split(":")[-1]
       new_triples.append((s, p, o, dir))
       nodes.add((s, p))
-      nodes.add((o, p))
+      # nodes.add((o, p))
 
     for n, p in nodes:
       type = RULES[p]

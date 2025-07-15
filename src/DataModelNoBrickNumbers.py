@@ -129,6 +129,8 @@ class DataModel:
                        RDFSTerms["value"],
                        RDFSTerms["data_type"],
                        ] + RDF_PRIMITIVES:
+        if "instance" in s and what != "bricks":
+          s = s + " -- " + self.instances[graphName][s]["value"]
         triple = s, p, o, -1
       else:
         triple = s, p, o, 1
@@ -685,7 +687,7 @@ class DataModel:
         for i in properties[start]:
           test_path = list(i.keys())
           if paths[start][0][1:-1] == test_path[1:]:
-            print("found it")
+            # print("found it")
             properties[start] = [i]
     pass
     return paths, properties, leaves
