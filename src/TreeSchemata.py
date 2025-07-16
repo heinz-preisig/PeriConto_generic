@@ -11,7 +11,6 @@ from PyQt6.QtWidgets import *
 
 from TreeSchemataFrontEnd import OntobuilderUI
 
-
 if __name__ == "__main__":
   import sys
 

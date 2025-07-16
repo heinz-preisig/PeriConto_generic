@@ -418,5 +418,5 @@ class AutomatonPlot:
 if __name__ == "__main__":
   g = AutomatonPlot()
   g.makeAutomatonPlot()
-  file_name = "brick_automaton"
+  file_name = "../attic/brick_automaton"
   g.dot.render(file_name, format="pdf")

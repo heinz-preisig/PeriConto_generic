@@ -30,8 +30,7 @@ import sys
 
 from BricksAndTreeSemantics import FILE_FORMAT
 from TreeSchemataBackEnd import BackEnd
-from Utilities import classCase, breadth_first_iter, depth_first_iter
-
+from Utilities import classCase
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -61,7 +60,7 @@ tree_name = None
 changed = False
 
 COLOURS = {
-        "Class"         : QtGui.QColor(0, 199, 255),
+        "Class"        : QtGui.QColor(0, 199, 255),
         "ROOT"         : QtGui.QColor(0, 199, 255),
         "is_member"    : QtGui.QColor(0, 0, 0, 255),
         "member"       : QtGui.QColor(0, 0, 0, 255),
@@ -93,11 +92,13 @@ def PrintGraph(graph):
     print(s, p, o)
   print("end graph")
 
+
 class DebugTreeWidgetItem(QTreeWidgetItem):
   def __setattr__(self, name, value):
     if name == 'node_type':
       print(f"Setting node_type for item '{self.text(0)}' from {getattr(self, 'node_type', 'None')} to {value}")
     super().__setattr__(name, value)
+
 
 class OntobuilderUI(QMainWindow):
   def __init__(self):
@@ -320,10 +321,9 @@ class OntobuilderUI(QMainWindow):
     item_name = current_item.text(0)
     parent_name = current_item.parent().text(0)
 
-
     message = {
-            "event": "remove item",
-            "item_name" : item_name,
+            "event"      : "remove item",
+            "item_name"  : item_name,
             "parent_name": parent_name,
             }
     self.backend.processEvent(message)
@@ -467,7 +467,6 @@ class OntobuilderUI(QMainWindow):
     self.ui.listTrees.clear()
     self.ui.listTrees.addItems(treeList)
 
-
   def showNewNewTreeTree(self, root_name, paths, properties, leaves, instances):
     widget = self.ui.treeTree
     # PrintGraph(graph)
@@ -496,24 +495,23 @@ class OntobuilderUI(QMainWindow):
     self.existing_names.add(root_name)
     pass
 
-
     for leave in leaves:
       for path in paths[leave]:
         parent_item = rootItem
         current_path = []
-        
+
         # Build the path from leaf to root
         for i in reversed(path[:-1]):
           if "instance" in i:
             instance = i.split(":")[0]
             try:
-              node_text = instance+":"+ instances[tree_name][instance]["value"]
+              node_text = instance + ":" + instances[tree_name][instance]["value"]
             except:
               pass
           else:
             node_text = i
           current_path.append((parent_item, node_text))
-          
+
           # Find or create the child item
           found = None
           for child_idx in range(parent_item.childCount()):
@@ -521,14 +519,14 @@ class OntobuilderUI(QMainWindow):
             if child.text(0) == node_text:
               found = child
               break
-              
+
           if found is None:
             # found = DebugTreeWidgetItem(parent_item)
             found = QTreeWidgetItem(parent_item)
             found.setText(0, node_text)
             node_id += 1
             items[node_id] = found
-            
+
             # Set the node type for new items
             if "undefined" not in node_text:
               node_type = properties[leave][0].get(node_text.split(":")[0], "unknown")
@@ -542,7 +540,7 @@ class OntobuilderUI(QMainWindow):
             if node_type == "unknown":
               print(f">>> Node type for '{node_text}' is still unknown")
           parent_item = found
-          
+
         # The last node in the path is the leaf
         if path and len(path) > 1:
           node_text = path[-1].split('#')[-1] if '#' in path[-1] else path[-1]
@@ -559,7 +557,7 @@ class OntobuilderUI(QMainWindow):
     for i in items:
       node_type = items[i].node_type
       items[i].setForeground(0, QBRUSHES[node_type])
-      print(">>> node",items[i].text(0), node_type)
+      # print(">>> node", items[i].text(0), node_type)
 
     widget.show()
     widget.expandAll()

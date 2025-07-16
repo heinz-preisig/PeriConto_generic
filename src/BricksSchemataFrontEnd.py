@@ -49,7 +49,6 @@ from Utilities import debugging
 
 changed = False
 
-
 COLOURS = {
         "ROOT"         : QtGui.QColor(0, 199, 255),
         "is_member"    : QtGui.QColor(0, 0, 0, 255),
@@ -165,7 +164,6 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
     self.ui.labelProject.setText(name)
 
-
   def on_pushOntologyLoad_pressed(self):
     debugging("-- ontology_load")
     file_spec, extension = QFileDialog.getOpenFileName(None,
@@ -234,7 +232,7 @@ class OntobuilderUI(QMainWindow):
     path = self.__makePath(item)
     dialog = UI_String("name for the new item",
                        placeholdertext="name -- will be camelised",
-                       limiting_list=path, #self.allNames,
+                       limiting_list=path,  # self.allNames,
                        validator="camel")
     name = dialog.text
     if name:
@@ -261,8 +259,8 @@ class OntobuilderUI(QMainWindow):
     item_name = current_item.text(0)
     parent_name = current_item.parent().text(0)
     message = {
-            "event": "remove item",
-            "item_name" : item_name,
+            "event"      : "remove item",
+            "item_name"  : item_name,
             "parent_name": parent_name,
             }
     self.backend.processEvent(message)
@@ -330,10 +328,10 @@ class OntobuilderUI(QMainWindow):
     type = current_item.child(0).type
 
     message = {
-            "event": "rename item",
-            "item_name" : item_name,
+            "event"      : "rename item",
+            "item_name"  : item_name,
             "parent_name": parent_name,
-            "type": type,
+            "type"       : type,
             }
     self.backend.processEvent(message)
 
@@ -443,7 +441,6 @@ class OntobuilderUI(QMainWindow):
             items[s] = item
             # debugging("items", s, p, o)
             self.__makeTree(tuples, origin=s, stack=stack, items=items)
-
 
   def __makePath(self, item):
     i = item

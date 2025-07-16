@@ -1,6 +1,5 @@
 import os
 from typing import Any
-from typing import List
 
 from graphviz import Digraph
 from rdflib import Graph
@@ -36,147 +35,147 @@ RDF = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 
 
 def depth_first_iter(graph, start_node):
-    """
-    Iterative depth-first search that handles branches properly.
+  """
+  Iterative depth-first search that handles branches properly.
 
-    Args:
-        graph: The RDF graph to traverse
-        start_node: The node to start traversal from
+  Args:
+      graph: The RDF graph to traverse
+      start_node: The node to start traversal from
 
-    Yields:
-        Tuples of (depth, node, current_branch, parent, predicate, node_id, parent_id)
-    """
-    # Stack items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate, parent_id, node_id)
-    # We'll track visited nodes per branch to allow the same node in different branches
-    stack = [(start_node, None, 0, getName(start_node), set(), False, None, -1, 1)]
-    # Dictionary to store node to ID mapping
-    node_to_id = {str(start_node): 1}
-    # Counter for unique IDs
-    next_id = 2
+  Yields:
+      Tuples of (depth, node, current_branch, parent, predicate, node_id, parent_id)
+  """
+  # Stack items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate, parent_id, node_id)
+  # We'll track visited nodes per branch to allow the same node in different branches
+  stack = [(start_node, None, 0, getName(start_node), set(), False, None, -1, 1)]
+  # Dictionary to store node to ID mapping
+  node_to_id = {str(start_node): 1}
+  # Counter for unique IDs
+  next_id = 2
 
-    while stack:
-        node, parent, depth, current_branch, visited, is_new_branch, predicate, parent_id, node_id = stack.pop()
-        
-        # Create a unique key for this node in the current branch context
-        node_key = str(node)
-        
-        # Skip if we've already visited this node in the current branch
-        if node_key in visited:
-            continue
+  while stack:
+    node, parent, depth, current_branch, visited, is_new_branch, predicate, parent_id, node_id = stack.pop()
 
-        # If this is a new node, assign it an ID
-        if node_key not in node_to_id:
-            node_to_id[node_key] = next_id
-            next_id += 1
-        
-        # Get the actual node ID
-        current_node_id = node_to_id[node_key]
-        
-        # Mark as visited in this branch
-        visited.add(node_key)
-        
-        # Yield current node with predicate and IDs
-        yield (depth, node, current_branch, parent, predicate, current_node_id, parent_id)
-        
-        # Get all children with their predicates
-        children = []
-        try:
-            for s, p, o in graph.triples((None, None, node)):
-                key = str(s).split('#')[-1] if '#' in str(s) else str(s)
-                children.append((s, p, o, key))
-        except Exception as e:
-            print(f"Error processing node {node}: {e}")
-            continue
-        
-        # Sort children in reverse order to maintain correct traversal order when using stack
-        children.sort(key=lambda x: x[3], reverse=True)
-        
-        # Process children
-        for child, p, target, _ in children:
-            child_key = str(child)
-            # Skip if this would create a cycle
-            if child_key == node_key:
-                continue
-                
-            # Get or assign an ID to the child
-            if child_key not in node_to_id:
-                node_to_id[child_key] = next_id
-                next_id += 1
-            
-            if p == RDFS.isDefinedBy:
-                # New branch - start with fresh visited set
-                stack.append((child, node, depth + 1, getName(target), set(), True, p, current_node_id, node_to_id[child_key]))
-            else:
-                # Same branch - pass down the visited set
-                branch_visited = set(visited)  # Copy to avoid modifying parent's visited set
-                stack.append((child, node, depth + 1, current_branch, branch_visited, False, p, current_node_id, node_to_id[child_key]))
+    # Create a unique key for this node in the current branch context
+    node_key = str(node)
+
+    # Skip if we've already visited this node in the current branch
+    if node_key in visited:
+      continue
+
+    # If this is a new node, assign it an ID
+    if node_key not in node_to_id:
+      node_to_id[node_key] = next_id
+      next_id += 1
+
+    # Get the actual node ID
+    current_node_id = node_to_id[node_key]
+
+    # Mark as visited in this branch
+    visited.add(node_key)
+
+    # Yield current node with predicate and IDs
+    yield (depth, node, current_branch, parent, predicate, current_node_id, parent_id)
+
+    # Get all children with their predicates
+    children = []
+    try:
+      for s, p, o in graph.triples((None, None, node)):
+        key = str(s).split('#')[-1] if '#' in str(s) else str(s)
+        children.append((s, p, o, key))
+    except Exception as e:
+      print(f"Error processing node {node}: {e}")
+      continue
+
+    # Sort children in reverse order to maintain correct traversal order when using stack
+    children.sort(key=lambda x: x[3], reverse=True)
+
+    # Process children
+    for child, p, target, _ in children:
+      child_key = str(child)
+      # Skip if this would create a cycle
+      if child_key == node_key:
+        continue
+
+      # Get or assign an ID to the child
+      if child_key not in node_to_id:
+        node_to_id[child_key] = next_id
+        next_id += 1
+
+      if p == RDFS.isDefinedBy:
+        # New branch - start with fresh visited set
+        stack.append((child, node, depth + 1, getName(target), set(), True, p, current_node_id, node_to_id[child_key]))
+      else:
+        # Same branch - pass down the visited set
+        branch_visited = set(visited)  # Copy to avoid modifying parent's visited set
+        stack.append((child, node, depth + 1, current_branch, branch_visited, False, p, current_node_id, node_to_id[child_key]))
 
 
 def breadth_first_iter(graph, start_node):
-    """
-    Iterative breadth-first search that handles branches properly.
+  """
+  Iterative breadth-first search that handles branches properly.
 
-    Args:
-        graph: The RDF graph to traverse
-        start_node: The node to start traversal from
+  Args:
+      graph: The RDF graph to traverse
+      start_node: The node to start traversal from
 
-    Yields:
-        Tuples of (depth, node, current_branch, parent, predicate, node_id, parent_id)
-    """
-    from collections import deque
-    
-    # Queue items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate, parent_unique_id)
-    # We'll track visited nodes per branch to allow the same node in different branches
-    queue = deque()
-    queue.append((start_node, None, 0, getName(start_node), set(), False, None, -1))
-    unique_id = 0
-    
-    while queue:
-        node, parent, depth, current_branch, visited, is_new_branch, predicate, parent_unique_id = queue.popleft()
-        
-        # Create a unique key for this node in the current branch context
-        node_key = str(node)
-        
-        # Skip if we've already visited this node in the current branch
-        if node_key in visited:
-            continue
-            
-        # Mark as visited in this branch
-        visited.add(node_key)
-        
-        unique_id += 1
-        
-        # Yield current node with predicate
-        yield (depth, node, current_branch, parent, predicate, unique_id, parent_unique_id)
-        
-        # Get all children with their predicates
-        children = []
-        try:
-            for s, p, o in graph.triples((None, None, node)):
-                key = str(s).split('#')[-1] if '#' in str(s) else str(s)
-                children.append((s, p, o, key))
-        except Exception as e:
-            print(f"Error processing node {node}: {e}")
-            continue
-            
-        # Sort children to maintain consistent order
-        children.sort(key=lambda x: x[3])
-        
-        # Process children
-        for child, p, target, _ in children:
-            child_key = str(child)
-            # Skip if this would create a cycle
-            if child_key == node_key:
-                continue
-                
-            if p == RDFS.isDefinedBy:
-                # New branch - start with fresh visited set
-                queue.append((child, node, depth + 1, getName(target), set(), True, p, unique_id))
-            else:
-                # Same branch - pass down the visited set
-                # But allow revisiting nodes that are in different branches
-                branch_visited = set(visited)  # Copy to avoid modifying parent's visited set
-                queue.append((child, node, depth + 1, current_branch, branch_visited, False, p, unique_id))
+  Yields:
+      Tuples of (depth, node, current_branch, parent, predicate, node_id, parent_id)
+  """
+  from collections import deque
+
+  # Queue items are (node, parent, depth, current_branch, visited_in_branch, is_new_branch, predicate, parent_unique_id)
+  # We'll track visited nodes per branch to allow the same node in different branches
+  queue = deque()
+  queue.append((start_node, None, 0, getName(start_node), set(), False, None, -1))
+  unique_id = 0
+
+  while queue:
+    node, parent, depth, current_branch, visited, is_new_branch, predicate, parent_unique_id = queue.popleft()
+
+    # Create a unique key for this node in the current branch context
+    node_key = str(node)
+
+    # Skip if we've already visited this node in the current branch
+    if node_key in visited:
+      continue
+
+    # Mark as visited in this branch
+    visited.add(node_key)
+
+    unique_id += 1
+
+    # Yield current node with predicate
+    yield (depth, node, current_branch, parent, predicate, unique_id, parent_unique_id)
+
+    # Get all children with their predicates
+    children = []
+    try:
+      for s, p, o in graph.triples((None, None, node)):
+        key = str(s).split('#')[-1] if '#' in str(s) else str(s)
+        children.append((s, p, o, key))
+    except Exception as e:
+      print(f"Error processing node {node}: {e}")
+      continue
+
+    # Sort children to maintain consistent order
+    children.sort(key=lambda x: x[3])
+
+    # Process children
+    for child, p, target, _ in children:
+      child_key = str(child)
+      # Skip if this would create a cycle
+      if child_key == node_key:
+        continue
+
+      if p == RDFS.isDefinedBy:
+        # New branch - start with fresh visited set
+        queue.append((child, node, depth + 1, getName(target), set(), True, p, unique_id))
+      else:
+        # Same branch - pass down the visited set
+        # But allow revisiting nodes that are in different branches
+        branch_visited = set(visited)  # Copy to avoid modifying parent's visited set
+        queue.append((child, node, depth + 1, current_branch, branch_visited, False, p, unique_id))
 
 
 def getFilesAndVersions(abs_name, ext):
@@ -268,8 +267,9 @@ def find_all_paths(graph: Graph, property, start: URIRef, target: URIRef, max_de
   # Start with empty path and properties
   start_name = start.split("#")[1] if "#" in start else str(start)
   property_name = property.split("#")[1] if "#" in property else str(property)
-  dfs(start, [], [(start_name,property_name)], 0)
+  dfs(start, [], [(start_name, property_name)], 0)
   return paths, all_properties
+
 
 def extract_path_names(path):
   path_names = []
@@ -279,7 +279,7 @@ def extract_path_names(path):
   return path_names
 
 
-def get_all_paths_by_name(graph, property,start, target):
+def get_all_paths_by_name(graph, property, start, target):
   paths, properties = find_all_paths(graph, property, start, target)
   path_names = []
   for p in paths:
@@ -291,10 +291,10 @@ def find_all_leaves(graph):
   subjects = set()
   objects = set()
   predicates = {}
-  for s,p,o in graph.triples((None, None, None)):
+  for s, p, o in graph.triples((None, None, None)):
     subjects.add(s)
     objects.add(o)
-    predicates[s]= p
+    predicates[s] = p
   leaves = subjects - objects
   properties = {}
   for s in predicates:
@@ -303,6 +303,7 @@ def find_all_leaves(graph):
       properties[o_name] = predicates[s]
 
   return leaves, properties
+
 
 def find_path_back_triples(graph, leave_triple, root):
   """
@@ -373,7 +374,7 @@ NODE_SPECS = {
                 "fillcolor": "red",
                 "style"    : "filled",
                 },
-        "member"       : {
+        "member"     : {
                 "colour"   : "orange",
                 "shape"    : "",
                 "fillcolor": "white",

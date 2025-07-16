@@ -5,8 +5,9 @@ import os
 import rdflib
 from rdflib import ConjunctiveGraph
 from rdflib import Graph
+from rdflib import Literal
 from rdflib import Namespace
-from rdflib import URIRef, Literal
+from rdflib import URIRef
 
 from BricksAndTreeSemantics import BASE
 from BricksAndTreeSemantics import FILE_FORMAT
@@ -17,13 +18,10 @@ from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
-from PeriConto.src.Utilities import find_path_back_triples
-from Utilities import find_all_leaves
-from Utilities import find_all_paths
-from Utilities import get_all_paths_by_name
-from Utilities import DEBUGG
+from Utilities import find_path_back_triples
 from Utilities import debugging
-from Utilities import depth_first_iter
+from Utilities import find_all_leaves
+from Utilities import get_all_paths_by_name
 from Utilities import get_subtree
 from Utilities import saveBackupFile
 
@@ -39,6 +37,7 @@ class Instances(dict):
     self[instance] = {}
     self[instance]["value"] = value
     self[instance]["path"] = path
+
 
 class DataModel:
   def __init__(self, root):
@@ -74,25 +73,6 @@ class DataModel:
       self.loadInstances(self.file_name_instances)
 
     pass
-
-  # def __extractNumber(self, s):
-  #   """
-  #   that's a bit tricky. We need the brick numbers for each tree
-  #   """
-  #   n = "0"
-  #   s = str(s)
-  #   try:
-  #     ss = s.split("#")[-1].split("_")[0]
-  #     name = s.split("#")[-1].split("_")[1]
-  #     no = int(ss)
-  #   except:
-  #     ss = None
-  #     no = -1
-  #     try:
-  #       name = s.split("#")[1]
-  #     except:
-  #       name = s
-  #   return no, name
 
   def makeFileName(self, project_name, what):
     file_name = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s." % what + FILE_FORMAT
@@ -179,7 +159,7 @@ class DataModel:
   #   triple = (subject, None, None)
   #   self.__removeItemFromGraph(what_type_of_graph, brick, subject, triple)
 
-  def removeItem(self, what_type_of_graph, tree_name,parent_name, item_name):
+  def removeItem(self, what_type_of_graph, tree_name, parent_name, item_name):
     subject = URIRef(makeItemURI(tree_name, item_name))
     object = URIRef(makeItemURI(tree_name, parent_name))
     triple = (subject, None, object)
@@ -307,23 +287,22 @@ class DataModel:
     del self.TREE_GRAPHS[oldName]
     del self.tree_namespaces[oldName]
 
-
-    #fix up instances:
+    # fix up instances:
     self.instances[newName] = copy.deepcopy(self.instances[oldName])
 
     for instance in self.instances[newName]:
       path = self.instances[newName][instance]["path"]
-      newpath = path[0:-1]+newName
+      newpath = path[0:-1] + newName
       self.instances[newName][instance]["path"] = newpath
 
-    # for tree in list(self.instances.keys()):
-    #   self.instances[newName] = {}
-    #   if tree == oldName:
-    #     paths = copy.copy(self.instances[oldName])
-    #     for instance in paths:
-    #       path = paths[instance]
-    #       path[-1] = newName
-    #       self.instances[newName][instance] = path
+      # for tree in list(self.instances.keys()):
+      #   self.instances[newName] = {}
+      #   if tree == oldName:
+      #     paths = copy.copy(self.instances[oldName])
+      #     for instance in paths:
+      #       path = paths[instance]
+      #       path[-1] = newName
+      #       self.instances[newName][instance] = path
       del self.instances[oldName]
 
   def copyTree(self, from_name, to_name):
@@ -385,7 +364,6 @@ class DataModel:
     graph = self.TREE_GRAPHS[tree_name]
     prefix = makeItemURI(tree_name, "")
 
-
     paths, properties, leaves = self.getTreePaths(tree_name)
 
     defined_paths = []
@@ -409,7 +387,7 @@ class DataModel:
             type = properties[p][0][path[0]]
             predicate = RDFSTerms[type]
             object = URIRef(prefix + path[1])
-            instance_path = [instance_ID+":undefined"] + path[1:]
+            instance_path = [instance_ID + ":undefined"] + path[1:]
 
             # self.instances[tree_name][instance_ID] = (instance_path, "undefined")
             # self.instances[tree_name][instance_ID]["value"] = "undefined"
@@ -446,9 +424,9 @@ class DataModel:
     old_object = URIRef(makeItemURI(brick, old_name))
     new_object = URIRef(makeItemURI(brick, new_name))
     # object = URIRef(makeItemURI(brick, parent_name))
-    triple = (Literal(""),RDFSTerms[type], old_object)
+    triple = (Literal(""), RDFSTerms[type], old_object)
     g.remove(triple)
-    triple = (Literal(""),RDFSTerms[type], new_object)
+    triple = (Literal(""), RDFSTerms[type], new_object)
     g.add(triple)
     pass
 
@@ -584,7 +562,7 @@ class DataModel:
       for i in instances[tree_name]:
         path = instances[tree_name][i]["path"]
         value = instances[tree_name][i]["value"]
-        self.instances[tree_name].addInstance(i,value=value, path=path)
+        self.instances[tree_name].addInstance(i, value=value, path=path)
 
     self.instance_counter = {}
     for tree_name in self.instances:
@@ -598,7 +576,7 @@ class DataModel:
         self.instance_counter[tree_name] = -1
     pass
 
-  def reduceGraph(self, tree_name): #todo: fix
+  def reduceGraph(self, tree_name):  # todo: fix
     pass
     prefix = makeItemURI(tree_name, "")
     tree_graph = self.TREE_GRAPHS[tree_name]
@@ -620,19 +598,18 @@ class DataModel:
     graph = self.TREE_GRAPHS[tree_name_instantiated] = Graph("Memory")
     # make path
 
-
     for i in keep_target:
       instance_uri = URIRef(prefix + i)
       root_uri = URIRef(prefix + tree_name)
       for t in tree_graph.triples((instance_uri, None, None)):
-        s,p,o = t
+        s, p, o = t
 
       if not t:
         print(">>>> no triple found")
       path_triples = find_path_back_triples(tree_graph, t, root_uri)
       for i in range(len(path_triples[0])):
         t_ = path_triples[0][i]
-        s_,p_,o_ = t_
+        s_, p_, o_ = t_
 
         s_new = self.__renameURI(tree_name_instantiated, tree_name, s_)
         o_new = self.__renameURI(tree_name_instantiated, tree_name, o_)
@@ -657,7 +634,7 @@ class DataModel:
   def newTree(self, tree_name, brick_name):
 
     self.instance_counter[tree_name] = -1
-    self.instances[tree_name] =Instances()
+    self.instances[tree_name] = Instances()
 
     tree_graph = self.__makeNewGraph(tree_name)
     self.TREE_GRAPHS[tree_name] = tree_graph
@@ -682,7 +659,7 @@ class DataModel:
       paths[start], properties[start] = get_all_paths_by_name(graph, prop, start, root_uri)
 
       instance = start.split("#")[1]
-      if  instance in instance_paths:       # remove duplicated paths
+      if instance in instance_paths:  # remove duplicated paths
         paths[start] = [instance_paths[instance]["path"]]
         for i in properties[start]:
           test_path = list(i.keys())

@@ -1,7 +1,6 @@
 import os
 import subprocess
 import sys
-
 import time
 
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
@@ -61,7 +60,7 @@ class BackEnd():
         self.showTree(message)
       elif a == "instantiatePrimitive":
         self.instantiatePrimitive(message)
-      elif a == "loadOntology": #
+      elif a == "loadOntology":  #
         self.loadOntology(message)
       elif a == "markChanged":
         self.markChanged(message)
@@ -94,7 +93,7 @@ class BackEnd():
     self.previousEvent = event
 
     self.memory.update(message)
-    if TIMING: print("processing time", time.time()-start)
+    if TIMING: print("processing time", time.time() - start)
 
   def loadOntology(self, message):
     name = message["project_name"]
@@ -156,7 +155,7 @@ class BackEnd():
     item_name = message["item_name"]
     parent_name = message["parent_name"]
     tree_name = self.memory["tree_name"]
-    self.dataModel.removeItem("trees", tree_name,  parent_name, item_name)
+    self.dataModel.removeItem("trees", tree_name, parent_name, item_name)
     pass
 
   def instantiatePrimitive(self, message):
@@ -244,7 +243,7 @@ class BackEnd():
     tree = self.memory["tree_name"]
     dataBrickTuples = self.dataModel.makeDataTuplesForGraph(tree,
                                                             "tree_name")
-    class_names = [tree] #sorted(self.dataModel.BRICK_GRAPHS.keys())
+    class_names = [tree]  # sorted(self.dataModel.BRICK_GRAPHS.keys())
     graph = TreePlot(graph_name=tree, graph_triples=dataBrickTuples, class_names=class_names)
     graph.makeMe(tree)
     file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, self.project_name) + "+%s_tree" % tree
@@ -257,7 +256,7 @@ class BackEnd():
       subprocess.Popen(['evince', str(path)])
       # subprocess.Popen(['okular', str(path)])
       # subprocess.Popen(['qpdfview --unique', str(path)])
-        # makeMessageBox("cannot display pdf-file, open it locally", buttons=["OK"])
+      # makeMessageBox("cannot display pdf-file, open it locally", buttons=["OK"])
     elif sys.platform.startswith('linux'):
       subprocess.Popen(['xdg-open', str(path)])
     elif sys.platform.startswith('win32'):

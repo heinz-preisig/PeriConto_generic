@@ -3,7 +3,6 @@ from rdflib import RDF
 from rdflib import URIRef
 from rdflib import XSD
 from rdflib import namespace
-from rdflib import DCTERMS
 
 # https://www.w3.org/TR/rdf12-concepts/#dfn-rdf-dataset
 # https://www.w3.org/TR/rdf-schema/#ch_resource
@@ -23,7 +22,7 @@ ONTOLOGY_REPOSITORY = "../../PeriConto-Ontologies"
 FILE_FORMAT = "trig"
 FILE_FORMAT_ = "json-ld"
 
-IDENTIFIER_predicate = URIRef(BASE + ITEM_SEPARATOR+"identifier")
+IDENTIFIER_predicate = URIRef(BASE + ITEM_SEPARATOR + "identifier")
 
 RDFSTerms = {
         "class"        : RDFS.Class,

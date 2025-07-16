@@ -12,8 +12,6 @@ from Utilities import camelCase
 from Utilities import classCase
 from Utilities import debugging
 
-from resources.pop_up_message_box import makeMessageBox
-
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 root = os.path.abspath(os.path.join("."))
@@ -205,7 +203,7 @@ class BackEnd():
     newName = self.frontEnd.askForItemName("provide new name for item %s" % old_name, item_names)
     if newName:
       new_name = camelCase(newName)
-      self.dataModel.renameItem(current_brick,old_name, parent_name, new_name)
+      self.dataModel.renameItem(current_brick, old_name, parent_name, new_name)
       if type in PRIMITIVES:
         self.dataModel.renameValue(current_brick, old_name, new_name, type)
       self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(current_brick, "bricks")
@@ -215,7 +213,7 @@ class BackEnd():
     item_name = message["item_name"]
     parent_name = message["parent_name"]
     current_brick = self.memory["brick"]
-    self.dataModel.removeItem("bricks", current_brick,  parent_name, item_name)
+    self.dataModel.removeItem("bricks", current_brick, parent_name, item_name)
     pass
 
   def visualise(self, message):
