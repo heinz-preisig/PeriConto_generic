@@ -78,7 +78,7 @@ UI_state = {
                 "except": [],
                 "action": ["removeBrick",
                            "putBrickList",
-                           "putAllNames",
+                           # "putAllNames",
                            "markChanged", ],
                 },
         "selected brick"                : {

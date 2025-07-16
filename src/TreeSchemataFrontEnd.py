@@ -391,6 +391,8 @@ class OntobuilderUI(QMainWindow):
     self.ui.treeTree.expandItem(item)
     self.save_expanded_state()
     type = item.node_type
+
+    found = False
     print("name, type:", name, type)
     if type != "Class":
       parent_name = item.parent().text(0)
@@ -436,13 +438,19 @@ class OntobuilderUI(QMainWindow):
         return
 
       else:
+        # # check if there is a instance in the path where the current item is part of
+        # for p in self.paths:
+        #   for pp in self.paths[p]:
+        #     if name in pp and "instance" in pp[0]:
+        #       found = True
         event = "%s in treeTree selected" % type
     else:
       event = "item in treeTree selected can be linked"
     message = {
             "event"         : event,
             "tree_item_name": name,
-            "item_type"     : type
+            "item_type"     : type,
+            # "branch_has_instance" : found,
             }
     debugging("message:", message)
     self.backend.processEvent(message)
@@ -457,7 +465,8 @@ class OntobuilderUI(QMainWindow):
     return x
 
   def __findLeaf(self, item):
-    while item.childCount() != 0:
+    # old_item = item
+    while item.childCount() > 0:
       for i in range(item.childCount()):
         item = item.child(i)
     return item
@@ -469,6 +478,9 @@ class OntobuilderUI(QMainWindow):
 
   def showNewNewTreeTree(self, root_name, paths, properties, leaves, instances):
     widget = self.ui.treeTree
+
+    self.leaves = leaves
+    self.paths = paths
     # PrintGraph(graph)
 
     self.existing_names = set()

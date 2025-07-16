@@ -20,7 +20,7 @@ root = os.path.abspath(os.path.join("."))
 sys.path.extend([root, os.path.join(root, "resources")])
 
 
-class BackEnd():
+class BackEnd:
   def __init__(self, frontEnd):
     self.memory = {
             "brick"            : None,
@@ -39,6 +39,9 @@ class BackEnd():
     self.rules = RULES
     self.frontEnd.setRules(RULES, PRIMITIVES)
     self.primitive_counter = 0
+
+    self.project_name = None
+    self.dataModel = None
 
   def processEvent(self, message):
     if TIMING: start = time.time()
@@ -99,7 +102,7 @@ class BackEnd():
     name = message["project_name"]
     self.project_name = name
     self.dataModel = DataModel(name)
-    self.dataModel.loadFromFile(name)
+    self.dataModel.loadFromFile()
     pass
 
   def markChanged(self, message):

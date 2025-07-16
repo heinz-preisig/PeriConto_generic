@@ -111,7 +111,7 @@ class BackEnd():
     name = message["name"]
     self.project_name = name
     self.dataModel = DataModel(name)
-    self.dataModel.loadFromFile(name)
+    self.dataModel.loadFromFile()
     pass
 
   def selectedBrick(self, message):
