@@ -25,7 +25,7 @@ from PyQt6 import QtGui
 from PyQt6 import QtWidgets
 
 from Utilities import camelCase
-from resources.pop_up_message_box import makeMessageBox
+from pop_up_message_box import makeMessageBox
 from resources_icons import roundButton
 # from ui_string_dialog import  Ui_Dialog
 from ui_string_dialog import Ui_Dialog
@@ -84,7 +84,7 @@ class UI_String(QtWidgets.QDialog):
     elif validator:
       self.ui.lineEdit.setPlaceholderText(validator)
 
-    self.adjust = None
+    # self.adjust = None
     if validator:
       if validator == "integer":
         val = r"^[-+]?\d+$"
@@ -99,8 +99,9 @@ class UI_String(QtWidgets.QDialog):
       elif validator == "name":
         val = r"^[a-zA-Z][a-zA-Z0-9]*$"
       elif validator == "name_upper":
-        val = r"^[a-zA-Z][a-zA-Z0-9]*$"
-        self.adjust = r"^[A-Z][A-Z0-9-]*$"
+        # val = r"^[a-zA-Z][a-zA-Z0-9]*$"
+        val = r"^([a-zA-Z][a-zA-Z0-9]+\s)*$"
+        # self.adjust = r"^[A-Z][A-Z0-9-]*$"
       elif validator == "url":
         val = r"^[A-Z][A-Z0-9-]*$"
       elif validator == "string":
@@ -134,7 +135,8 @@ class UI_String(QtWidgets.QDialog):
       # self.ui.lineEdit.setText(text) # note: that defeats the purpose
 
     elif self.validator == "name_upper":
-      text = text.upper()
+      text = text.upper().replace(" ","-")
+      # text = text.replace(" ","-")
       self.ui.lineEdit.setText(text)
 
     elif self.validator == "name":
@@ -213,5 +215,5 @@ if __name__ == '__main__':
   w.show()
   s = w.text
   print(s)
-  z = camelCase(s) # s.title().replace(" ","")
-  print(z)
+  # z = camelCase(s) # s.title().replace(" ","")
+  # print(z)

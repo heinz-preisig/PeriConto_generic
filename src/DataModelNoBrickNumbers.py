@@ -412,7 +412,8 @@ class DataModel:
     from_graph = self.TREE_GRAPHS[from_name]
     to_graph = do__makeNewGraph(to_name)
     self.TREE_GRAPHS[to_name] = to_graph
-    self.tree_namespaces[to_name] = Namespace(makeItemURI(to_name, to_name))
+    self.tree_namespaces[to_name] = Namespace(makeItemURI(to_name, ""))
+    self.instances[to_name] = copy.deepcopy(self.instances[from_name])
     copyGraph(from_name, from_graph, to_name, to_graph)
     pass
 

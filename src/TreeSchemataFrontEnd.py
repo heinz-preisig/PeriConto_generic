@@ -582,87 +582,8 @@ class OntobuilderUI(QMainWindow):
     try:
       self.restore_expanded_state()
     except:
+      print("could not restore tree expansion state")
       pass
-
-  # def showNewTreeTree(self, graph, root, instances):
-  #   pass
-  #   widget = self.ui.treeTree
-  #   # PrintGraph(graph)
-  #
-  #   self.existing_names = set()
-  #
-  #   _, name = root.split("#")
-  #   count_children = 0
-  #   widget.clear()
-  #   rootItem = QTreeWidgetItem(widget)
-  #   widget.setColumnCount(1)
-  #   rootItem.root = name
-  #   rootItem.setText(0, name)
-  #   rootItem.setSelected(False)
-  #   rootItem.node_type = self.rules["is_class"]
-  #   rootItem.count = count_children
-  #   rootItem.id = 1
-  #   widget.addTopLevelItem(rootItem)
-  #   self.treetop = widget.invisibleRootItem()
-  #   self.current_class = name
-  #   items = {1: rootItem}
-  #   self.existing_names.add(name)
-  #
-  #   for depth, node, current_branch, parent, predicate, node_id, parent_id in depth_first_iter(graph, root):
-  #     # print(root)
-  #     print(depth, node, current_branch, parent, predicate, node_id, parent_id)
-  #     if node != root:
-  #       try:
-  #         _, name = node.split("#")
-  #       except:
-  #         name = str(node)
-  #       self.existing_names.add(name)
-  #       _, parent_name = parent.split("#")
-  #       parent_item = items[parent_id]  # items[parent_name]
-  #       items[node_id] = QTreeWidgetItem(parent_item)
-  #       # print("made item")
-  #       items[node_id].count = 0
-  #       items[parent_id].count += 1
-  #       _, node_type = predicate.split("#")
-  #       items[node_id].node_type = node_type
-  #       if "instance" in name:
-  #         instance_ID, number = name.split(":")
-  #         path = instances[tree_name][instance_ID]
-  #         x = self.__makePath(items[node_id])
-  #         x[0] = name
-  #         # for i in instances[tree_name]:
-  #         #   path = instances[tree_name][i]
-  #         if path != x:
-  #           print("\ninstance", instance_ID)
-  #           print(depth, node, current_branch, parent, predicate, node_id, parent_id)
-  #           print("path", path)
-  #           print("x   ", x)
-  #         else:
-  #           print("\nOk instance", instance_ID)
-  #         # print("name", name)
-  #         # print("instance", instance)
-  #         if path == x:  # (path[1:] == x[1:]) and (instance == name):
-  #           items[node_id].setText(0, name)
-  #       else:
-  #         items[node_id].setText(0, name)
-  #
-  #       if items[node_id].text(0) == "":
-  #         # print(">>>> found obsolete item", x, "parent_path", x_p)
-  #         # Note: this item was generated but not named -- couldn't find another solution
-  #         parent_item.removeChild(items[node_id])
-  #
-  #       try:
-  #         items[node_id].setForeground(0, QBRUSHES[node_type])
-  #       except:
-  #         pass
-  #
-  #   widget.show()
-  #   widget.expandAll()
-  #   # widget.collapseAll()
-  #   try:
-  #     self.restore_expanded_state()
-  #   except:
-  #     pass
 
   def putTreeList(self, tree_list):
     self.treeList = tree_list
