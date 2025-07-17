@@ -312,11 +312,11 @@ class OntobuilderUI(QMainWindow):
     debugging("-- pushRemoveItem")
 
     current_item = self.ui.treeTree.currentItem()
-    leave_item = self.__findLeaf(current_item)
-    path_to_leave = self.__makePath(leave_item)
-    if "instance" in path_to_leave[0]:
-      makeMessageBox("this path has a leave with an instance -- it cannot be removed", buttons=["OK"])
-      return
+    # leave_item = self.__findLeaf(current_item)
+    # path_to_leave = self.__makePath(leave_item)
+    # if "instance" in path_to_leave[0]:
+    #   makeMessageBox("this path has a leave with an instance -- it cannot be removed", buttons=["OK"])
+    #   return
 
     item_name = current_item.text(0)
     parent_name = current_item.parent().text(0)
@@ -546,7 +546,7 @@ class OntobuilderUI(QMainWindow):
               found.node_type = node_type
             else:
               node_type = properties[leave][0][instance]
-              print(f"Creating new undefined node with type from {path[0]}: {node_type}")
+              # print(f"Creating new undefined node with type from {path[0]}: {node_type}")
               found.node_type = node_type
 
             if node_type == "unknown":
@@ -568,7 +568,11 @@ class OntobuilderUI(QMainWindow):
 
     for i in items:
       node_type = items[i].node_type
-      items[i].setForeground(0, QBRUSHES[node_type])
+
+      try:
+        items[i].setForeground(0, QBRUSHES[node_type])
+      except:
+        pass
       # print(">>> node", items[i].text(0), node_type)
 
     widget.show()

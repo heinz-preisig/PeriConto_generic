@@ -145,7 +145,7 @@ def do__prepareConjunctiveGraph(graphs):
 
 
 def do__writeQuadFile(conjunctiveGraph, f):
-  saveBackupFile(f)
+  # saveBackupFile(f)
   inf = open(f, "w")
   inf.write(conjunctiveGraph.serialize(format=FILE_FORMAT))
   inf.close()

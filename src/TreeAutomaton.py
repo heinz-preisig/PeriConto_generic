@@ -166,7 +166,7 @@ UI_state = {
                            "tree_list",
                            "tree_tree",
                            "item_insert",
-                           # "remove_item",
+                           "remove_item",
                            ],
                 "except": [],
                 "action": [],
