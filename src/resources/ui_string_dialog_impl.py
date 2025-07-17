@@ -104,6 +104,8 @@ class UI_String(QtWidgets.QDialog):
         # self.adjust = r"^[A-Z][A-Z0-9-]*$"
       elif validator == "url":
         val = r"^[A-Z][A-Z0-9-]*$"
+      elif validator == "comment":
+        val = r""
       elif validator == "string":
         val = r""
       else:
