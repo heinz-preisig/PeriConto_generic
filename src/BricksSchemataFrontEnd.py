@@ -111,22 +111,28 @@ class OntobuilderUI(QMainWindow):
             }
 
     self.gui_objects = {
-            "exit"                          : self.ui.pushExit,
-            "brick_tree"                    : self.ui.brickTree,
-            "brick_list"                    : self.ui.listBricks,
-            "brick_add_item"                : self.ui.pushBrickAddItem,
-            "brick_add_primitive"           : self.ui.pushBrickAddPrimitive,
-            "brick_change_primitive"        : self.ui.pushBrickChangePrimitive,
-            "brick_create"                  : self.ui.pushBrickCreate,
-            "brick_item_or_primitive_rename": self.ui.pushBrickItemOrPrimitiveRename,
-            "brick_remove"                  : self.ui.pushBrickRemove,
-            "brick_remove_item"             : self.ui.pushBrickRemoveItem,
-            "brick_rename"                  : self.ui.pushBrickRename,
-            "ontology_create"               : self.ui.pushOntologyCreate,
-            "ontology_load"                 : self.ui.pushOntologyLoad,
-            "ontology_save"                 : self.ui.pushOntologySave,
-            "ontology_save_as"              : self.ui.pushOntologySaveAs,
-            "tree_visualise"                : self.ui.pushTreeVisualise,
+            "exit"             : self.ui.pushExit,
+            #
+            "brick_tree"       : self.ui.brickTree,
+            "brick_list"       : self.ui.listBricks,
+            "brick_create"     : self.ui.pushBrickCreate,
+            "brick_remove"     : self.ui.pushBrickRemove,
+            "brick_rename"     : self.ui.pushBrickRename,
+            #
+            "item_add"         : self.ui.pushItemAdd,
+            "item_rename"      : self.ui.pushItemRename,  # self.ui.pushBrickItemOrPrimitiveRename,
+            "item_remove"      : self.ui.pushItemRemove,  # self.ui.pushBrickItemOrPrimitiveRename,
+            #
+            "primitive_add"    : self.ui.pushPrimitiveAdd,  # self.ui.pushBrickAddPrimitive,
+            "primitive_remove"    : self.ui.pushPrimitiveRemove,  # self.ui.pushBrickAddPrimitive,
+            "primitive_rename" : self.ui.pushPrimitiveRename,  # self.ui.pushBrickItemOrPrimitiveRename,
+            "primitive_change" : self.ui.pushPrimitiveChange,  # self.ui.pushBrickChangePrimitive,
+            #
+            "ontology_create"  : self.ui.pushOntologyCreate,
+            "ontology_load"    : self.ui.pushOntologyLoad,
+            "ontology_save"    : self.ui.pushOntologySave,
+            "ontology_save_as" : self.ui.pushOntologySaveAs,
+            "tree_visualise"   : self.ui.pushTreeVisualise,
             }
 
   def setRules(self, rules, primitives):
@@ -225,7 +231,7 @@ class OntobuilderUI(QMainWindow):
     message = {"event": "remove brick"}
     self.backend.processEvent(message)
 
-  def on_pushBrickAddItem_pressed(self):
+  def on_pushItemAdd_pressed(self):
     debugging("-- pushBrickAddItem")
 
     item = self.ui.brickTree.currentItem()
@@ -253,19 +259,19 @@ class OntobuilderUI(QMainWindow):
     name = dialog.text
     return name
 
-  def on_pushBrickRemoveItem_pressed(self):
+  def on_pushItemRemove_pressed(self):
     debugging("-- pushBrickRemoveItem")
     current_item = self.ui.brickTree.currentItem()
     item_name = current_item.text(0)
     parent_name = current_item.parent().text(0)
     message = {
             "event"      : "remove item",
-            "item_name"  : item_name,
+            "name"  : item_name,
             "parent_name": parent_name,
             }
     self.backend.processEvent(message)
 
-  def on_pushBrickAddPrimitive_pressed(self):
+  def on_pushPrimitiveAdd_pressed(self):
     item = self.ui.brickTree.currentItem()
     path = self.__makePath(item)
     dialog = UI_String("name for the new primitive",
@@ -289,7 +295,23 @@ class OntobuilderUI(QMainWindow):
     if event:
       self.backend.processEvent(message)
 
-  def on_pushBrickChangePrimitive_pressed(self):
+
+
+  def on_pushPrimitiveRemove_pressed(self):
+    debugging("-- pushBrickRemovePrimitive")
+    current_item = self.ui.brickTree.currentItem()
+    item_name = current_item.text(0)
+    parent_name = current_item.parent().text(0)
+    type =current_item.type
+    message = {
+            "event"      : "remove primitive",
+            "name"  : item_name,
+            "parent_name": parent_name,
+            "type"       : type,
+            }
+    self.backend.processEvent(message)
+
+  def on_pushPrimitiveChange_pressed(self):
     debugging("-- pushBrickChangePrimitive")
     dialog = RadioButtonDialog(self.primitives)
     if dialog.exec():
@@ -320,23 +342,42 @@ class OntobuilderUI(QMainWindow):
             }
     self.backend.processEvent(message)
 
-  def on_pushBrickItemOrPrimitiveRename_pressed(self):
+  def on_pushPrimitiveRename_pressed(self):
     current_item = self.ui.brickTree.currentItem()
     item_name = current_item.text(0)
     parent_name = current_item.parent().text(0)
     # item = self.ui.brickTree.currentItem()
-    type = current_item.child(0).type
+    type = current_item.type
+    if type in self.primitives:
+      type = current_item.child(0).type
+
+    message = {
+            "event"      : "rename primitive",
+            "name"  : item_name,
+            "parent_name": parent_name,
+            "type"       : type,
+            }
+    self.backend.processEvent(message)
+
+  def on_pushItemRename_pressed(self):
+    current_item = self.ui.brickTree.currentItem()
+    item_name = current_item.text(0)
+    parent_name = current_item.parent().text(0)
+    # item = self.ui.brickTree.currentItem()
+    type = current_item.type
+    if type in self.primitives:
+      type = current_item.child(0).type
 
     message = {
             "event"      : "rename item",
-            "item_name"  : item_name,
+            "name"  : item_name,
             "parent_name": parent_name,
             "type"       : type,
             }
     self.backend.processEvent(message)
 
   def on_pushTreeVisualise_pressed(self):
-    event = "visualise"
+    event = "BrickVisualise"
     message = {"event": event}
     self.backend.processEvent(message)
 
@@ -361,16 +402,16 @@ class OntobuilderUI(QMainWindow):
             }
     self.backend.processEvent(message)
 
-  def on_listTrees_itemClicked(self, item):
-    name = item.text()
-    debugging("-- listTrees -- item", name)
-    event = "selected tree"
-    message = {
-            "event": event,
-            "name" : name
-            }
-    debugging("message:", message)
-    self.backend.processEvent(message)
+  # def on_listTrees_itemClicked(self, item):
+  #   name = item.text()
+  #   debugging("-- listTrees -- item", name)
+  #   event = "selected tree"
+  #   message = {
+  #           "event": event,
+  #           "name" : name
+  #           }
+  #   debugging("message:", message)
+  #   self.backend.processEvent(message)
 
   def on_brickTree_itemClicked(self, item, column):
     name = item.text(column)
@@ -403,7 +444,7 @@ class OntobuilderUI(QMainWindow):
   def showTreeList(self, treeList):
     self.treeList = treeList
 
-  def showBrickTree(self, tuples, origin):
+  def BrickTreeShow(self, tuples, origin):
     widget = self.ui.brickTree
     self.__instantiateTree(origin, tuples, widget)
 
@@ -459,7 +500,7 @@ class OntobuilderUI(QMainWindow):
     self.move(self.pos() + event.globalPosition().toPoint() - self.dragPos)
     self.dragPos = event.globalPosition().toPoint()
 
-  def markChanged(self):
+  def OntologyChanged(self):
     global changed
     changed = True
     self.signalButton.changeIcon("LED_red")

@@ -97,19 +97,19 @@ def do__renameURI(newName, oldName, uri):
   return uri_new
 
 
-def do__renameItem(brick, g, item, newName):
-  item_uri = URIRef(makeItemURI(brick, item))
-  new_item_uri = URIRef(makeItemURI(brick, newName))
-  triple = (item_uri, None, None)
-  for s, p, o in g.triples(triple):
-    g.remove((s, p, o))
+def do__renameItem(graph_name, graph, oldName, type,newName):
+  item_uri = URIRef(makeItemURI(graph_name, oldName))
+  new_item_uri = URIRef(makeItemURI(graph_name, newName))
+  triple = item_uri, None, None
+  for s, p, o in graph.triples(triple):
+    graph.remove((s, p, o))
     new_triple = (new_item_uri, p, o)
-    g.add(new_triple)
+    graph.add(new_triple)
   triple = None, None, item_uri
-  for s, p, o in g.triples(triple):
-    g.remove((s, p, o))
+  for s, p, o in graph.triples(triple):
+    graph.remove((s, p, o))
     new_triple = (s, p, new_item_uri)
-    g.add(new_triple)
+    graph.add(new_triple)
 
 
 def do__attachBrick(brick_name, s_or_o, tree_name):
@@ -297,7 +297,7 @@ class DataModel:
 
     pass
 
-  def addItem(self, Class, ClassOrSubClass, name):
+  def item_add(self, Class, ClassOrSubClass, name):
     g = self.BRICK_GRAPHS[Class]
     do__addItemToGraph(Class, ClassOrSubClass, g, name)
 
@@ -305,7 +305,7 @@ class DataModel:
     g = self.TREE_GRAPHS[Class]
     do__addItemToGraph(Class, ClassOrSubClass, g, name)
 
-  def addPrimitive(self, Class, ClassOrSubClass, name, type):
+  def primitive_add(self, Class, ClassOrSubClass, name, type):
     classURI = makeClassURI(Class)
     itemURI = makeItemURI(Class, "")
     if Class == ClassOrSubClass:
@@ -481,17 +481,9 @@ class DataModel:
 
     pass
 
-  def renameItem(self, brick, old_name, parent_name, new_name):
+  def renameItemInBrick(self, brick, old_name, type, new_name):
     g = self.BRICK_GRAPHS[brick]
-    old_subject = URIRef(makeItemURI(brick, old_name))
-    new_subject = URIRef(makeItemURI(brick, new_name))
-    object = URIRef(makeItemURI(brick, parent_name))
-    triple = (old_subject, None, object)
-    for s, p, o in g.triples(triple):
-      g.remove((s, p, o))
-      new_triple = (new_subject, p, object)
-      g.add(new_triple)
-    pass
+    do__renameItem(brick,g , old_name, type , new_name)
 
   def renameValue(self, brick, old_name, new_name, type):
     g = self.BRICK_GRAPHS[brick]
@@ -504,9 +496,9 @@ class DataModel:
     g.add(triple)
     pass
 
-  def renameItemInTree(self, brick, item, newName):
-    g = self.TREE_GRAPHS[brick]
-    do__renameItem(brick, g, item, newName)
+  def renameItemInTree(self, brick, old_name, newName):
+    graph = self.TREE_GRAPHS[brick]
+    do__renameItem(brick, graph, old_name, newName)
     pass
 
   def linkBrickToItem(self, tree_name, tree_item_name, brick_name, new_tree=False):

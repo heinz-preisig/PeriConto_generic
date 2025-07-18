@@ -44,48 +44,57 @@ class BackEnd():
     event = message["event"]
     # self.fail = False
     for a in self.UI_state[event]["action"]:
-      if a == "createOntology":
-        self.createOntology(message)
-      elif a == "putBrickList":
-        self.putBrickList(message)
-      elif a == "markChanged":
-        self.markChanged(message)
-      elif a == "loadOntology":
-        self.loadOntology(message)
-      elif a == "newBrick":
-        self.newBrick(message)
-      elif a == "selectedBrick":
-        self.selectedBrick(message)
-      elif a == "showBrickTree":
-        self.showBrickTree(message)
-      elif a == "removeBrick":
-        self.removeBrick(message)
-      elif a == "selectedClassInBrickTree":
-        self.selectedClassInBrickTree(message)
-      elif a == "selectedItemInBrickTree":
-        self.selectedItemInBrickTree(message)
-      elif a == "selectedValueInBrickTree":
-        self.selectedValueInBrickTree(message)
-      elif a == "changePrimitive":
-        self.changePrimitive(message)
+      # ontology
+      if a == "OntologyCreate":
+        self.OntologyCreate(message)
+      elif a == "OntologyLoad":
+        self.OntologyLoad(message)
+      elif a == "OntologyChanged":
+        self.OntologyChanged(message)
+      elif a == "OntologySave":
+        self.OntologySave(message)
+      elif a == "OntologySaveWithNewName":
+        self.OntologySaveWithNewName(message)
+        # bricks
+      elif a == "BrickListPut":
+        self.BrickListPut(message)
+      elif a == "BrickNew":
+        self.BrickNew(message)
+      elif a == "BrickSelected":
+        self.BrickSelected(message)
+      elif a == "BrickTreeShow":
+        self.BrickTreeShow(message)
+      elif a == "BrickRename":
+        self.BrickRename(message)
+      elif a == "BrickRemove":
+        self.BrickRemove(message)
+      elif a == "BrickClassSelected":
+        self.BrickClassSelected(message)
+      elif a == "BrickItemSelected":
+        self.BrickItemSelected(message)
+      elif a == "BrickValueSelected":
+        self.BrickValueSelected(message)
+      elif a == "BrickVisualise":
+        self.BrickVisualise(message)
+        # items
+      elif a == "ItemAdd":
+        self.ItemAdd(message)
+      elif a == "ItemRemove":
+        self.ItemRemove(message)
+      elif a == "ItemRename":
+        self.ItemRename(message)
+      # primitives
+      elif a == "PrimitiveAdd":
+        self.PrimitiveAdd(message)
+      elif a == "PrimitiveRemove":
+        self.PrimitiveRemove(message)
+      elif a == "PrimitiveRename":
+        self.PrimitiveRename(message)
+      elif a == "PrimitiveChange":
+        self.PrimitiveChange(message)
+      # tree
       elif a == "putAllNames":
         self.putAllNames(message)
-      elif a == "renameItem":
-        self.renameItem(message)
-      elif a == "renameBrick":
-        self.renameBrick(message)
-      elif a == "addItem":
-        self.addItem(message)
-      elif a == "addPrimitive":
-        self.addPrimitive(message)
-      elif a == "removeItemFromBrickTree":
-        self.removeItemFromBrickTree(message)
-      elif a == "saveBricks":
-        self.saveBricks(message)
-      elif a == "saveBricksWithNewName":
-        self.saveBricksWithNewName(message)
-      elif a == "visualise":
-        self.visualise(message)
       else:
         print(">>>>>>>>>>> -- no such command: ", a)
         print("\n message was:", message)
@@ -100,33 +109,33 @@ class BackEnd():
 
     self.memory.update(message)
 
-  def createOntology(self, message):
+  def OntologyCreate(self, message):
     debugging("> action", message)
     name = message["name"]
     self.project_name = name
     self.dataModel = DataModel(name)
     pass
 
-  def loadOntology(self, message):
+  def OntologyLoad(self, message):
     name = message["name"]
     self.project_name = name
     self.dataModel = DataModel(name)
     self.dataModel.loadFromFile()
     pass
 
-  def selectedBrick(self, message):
+  def BrickSelected(self, message):
     self.memory["brick"] = message["name"]
     debugging("selected brick is ", message["name"])
 
-  def markChanged(self, message):
-    self.frontEnd.markChanged()
+  def OntologyChanged(self, message):
+    self.frontEnd.OntologyChanged()
 
-  def showBrickTree(self, message):
+  def BrickTreeShow(self, message):
     brick_name = self.memory["brick"]
     self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(brick_name, "bricks")
-    self.frontEnd.showBrickTree(self.dataBrickTuples, brick_name)
+    self.frontEnd.BrickTreeShow(self.dataBrickTuples, brick_name)
 
-  def putBrickList(self, message):
+  def BrickListPut(self, message):
     self.brick_list = self.dataModel.getBrickList()
     self.frontEnd.showBrickList(self.brick_list)
 
@@ -135,88 +144,99 @@ class BackEnd():
     names = self.dataModel.getAllNamesInABrickOrATree(brick_name, "brick")
     self.frontEnd.setAllNames(names)
 
-  def newBrick(self, message):
+  def BrickNew(self, message):
     name = message["name"]
     self.dataModel.newBrick(name)
     self.memory["brick"] = name
 
-  def removeBrick(self, message):
+  def BrickRemove(self, message):
     name = self.memory["name"]
     self.dataModel.removeBrick(name)
 
-  def selectedClassInBrickTree(self, message):
+  def BrickClassSelected(self, message):
     self.memory["item"] = message["name"]
     # type = message["type"]
 
-  def selectedValueInBrickTree(self, message):
+  def BrickValueSelected(self, message):
     self.memory["item"] = message["name"]
 
-  def selectedItemInBrickTree(self, message):
+  def BrickItemSelected(self, message):
     self.memory["item"] = message["name"]
     pass
 
-  def addItem(self, message):
+  def ItemAdd(self, message):
     ClassOrSubClass = self.memory["item"]
     brick_name = self.memory["brick"]
     name = message["name"]
-    self.dataModel.addItem(brick_name, ClassOrSubClass, name)
+    self.dataModel.item_add(brick_name, ClassOrSubClass, name)
 
-  def addPrimitive(self, message):
+  def PrimitiveAdd(self, message):
     brick_name = self.memory["brick"]
     primitive = message["type"]
     ClassOrSubClass = self.memory["item"]
     name = message["name"]
-    self.dataModel.addPrimitive(brick_name,
-                                ClassOrSubClass,
-                                name, primitive)
+    self.dataModel.primitive_add(brick_name,
+                                 ClassOrSubClass,
+                                 name, primitive)
 
-  def changePrimitive(self, message):
-    debugging("-- changePrimitive")
+  def PrimitiveChange(self, message):
+    debugging("-- PrimitiveChange")
     parent_name = self.memory["name"]
     brick_name = self.memory["brick"]
     new_type = message["type"]
     self.dataModel.modifyPrimitiveType(brick_name, parent_name, new_type)
 
-  def renameBrick(self, message):
+  def BrickRename(self, message):
     old_name = self.memory["brick"]
     new_name = message["name"]
     if new_name:
       self.dataModel.renameBrick(old_name, classCase(new_name))
       self.memory["brick"] = new_name
 
-  def saveBricks(self, message):
+  def OntologySave(self, message):
     self.dataModel.saveBricks(self.project_name)
     self.frontEnd.markSaved()
 
-  def saveBricksWithNewName(self, message):
+  def OntologySaveWithNewName(self, message):
     name = message["name"]
-    # file_name = self.dataModel.makeFileName(name, what="bricks")
     self.dataModel.saveBricks(name)
     self.frontEnd.markSaved()
 
-  def renameItem(self, message):
-    old_name = message["item_name"]
-    parent_name = message["parent_name"]
+  def ItemRename(self, message):
+    old_name = message["name"]
     current_brick = self.memory["brick"]
     type = message["type"]
     item_names = self.dataModel.getAllNamesInABrickOrATree(current_brick, "brick")
     newName = self.frontEnd.askForItemName("provide new name for item %s" % old_name, item_names)
     if newName:
       new_name = camelCase(newName)
-      self.dataModel.renameItem(current_brick, old_name, parent_name, new_name)
-      if type in PRIMITIVES:
-        self.dataModel.renameValue(current_brick, old_name, new_name, type)
-      self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(current_brick, "bricks")
-      self.frontEnd.showBrickTree(self.dataBrickTuples, current_brick)
+      self.dataModel.renameItemInBrick(current_brick, old_name, type, new_name)
 
-  def removeItemFromBrickTree(self, message):
-    item_name = message["item_name"]
+
+  def PrimitiveRename(self, message):
+    old_name = message["name"]
+    parent_name = message["parent_name"]
+    current_brick = self.memory["brick"]
+    type = message["type"]
+    item_names = self.dataModel.getAllNamesInABrickOrATree(current_brick, "brick")
+    newName = self.frontEnd.askForItemName("provide new name for item %s" % old_name, item_names)
+    if newName:
+      new_name = newName.title().replace(" ", "") #camelCase(newName)
+      self.dataModel.renameItemInBrick(current_brick, old_name, parent_name, new_name)
+      self.dataBrickTuples = self.dataModel.makeDataTuplesForGraph(current_brick, "bricks")
+      self.frontEnd.BrickTreeShow(self.dataBrickTuples, current_brick)
+
+  def PrimitiveRemove(self, message):
+    self.ItemRemove(message)
+
+  def ItemRemove(self, message):
+    item_name = message["name"]
     parent_name = message["parent_name"]
     current_brick = self.memory["brick"]
     self.dataModel.removeItem("bricks", current_brick, parent_name, item_name)
     pass
 
-  def visualise(self, message):
+  def BrickVisualise(self, message):
     tree = self.memory["brick"]
     dataBrickTuples = self.dataModel.makeDataTuplesForGraph(tree, "bricks")
     class_names = sorted(self.dataModel.BRICK_GRAPHS.keys())
@@ -230,9 +250,6 @@ class BackEnd():
     path = file_name_bricks + ".pdf"
     if os.path.exists("/.dockerenv"):
       subprocess.Popen(['evince', str(path)])
-      # subprocess.Popen(['okular', str(path)])
-      # subprocess.Popen(['qpdfview --unique', str(path)])
-      #   makeMessageBox("cannot display pdf-file, open it locally", buttons=["OK"])
     elif sys.platform.startswith('linux'):
       subprocess.Popen(['xdg-open', str(path)])
     elif sys.platform.startswith('win32'):

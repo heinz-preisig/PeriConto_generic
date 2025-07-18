@@ -142,9 +142,10 @@ class BackEnd:
     return item_name_
 
   def renameItem(self, message):
-    tree_item_name = self.memory["tree_item_name"]
+    # tree_item_name = message["item_name"] #self.memory["tree_item_name"]
+    old_name = self.memory["name"]
     item_name = message["item_name"]
-    item_name_with_number = self.__getNameWithBrickNumber(item_name, tree_item_name)
+    # item_name_with_number = self.__getNameWithBrickNumber(item_name, tree_item_name)
     path_to_leave = message["path_to_leave"]
     tree_name = self.memory["tree_name"]
     self.dataModel.renameItemInTree(tree_name,

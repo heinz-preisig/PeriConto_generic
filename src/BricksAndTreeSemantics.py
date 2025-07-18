@@ -43,8 +43,8 @@ RDFSTerms = {
 
 RULES = {
         "is_class"     : "Class",
-        "is_member"    : "member",
-        "is_defined_by": "isDefinedBy",
+        "is_member"    : "is_member",
+        "is_defined_by": "is_defined_by", #"isDefinedBy",
         "value"        : "value",
         "identifier"   : "identifier",
         "string"       : "string",

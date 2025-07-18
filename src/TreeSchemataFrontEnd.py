@@ -291,32 +291,11 @@ class OntobuilderUI(QMainWindow):
             }
     self.backend.processEvent(message)
 
-  # def on_pushItemRename_pressed(self):Note: consider using the path to inhibit duplicated names, terrible complicated -- abandon!
-  #   debugging("-- pushItemRename")
-  #   current_item = self.ui.treeTree.currentItem()
-  #   leave_item = self.__findLeaf(current_item)
-  #   path_to_leave = self.__makePath(leave_item)
-  #   if not path_to_leave:
-  #     return
-  #   item_name = self.askForItemName("item name", path_to_leave) #self.existing_names)
-  #   if not item_name:
-  #     return
-  #   message = {
-  #           "event"    : "rename item",
-  #           "item_name": item_name,
-  #           "path_to_leave": path_to_leave,
-  #           }
-  #   self.backend.processEvent(message)
 
   def on_pushRemoveItem_pressed(self):
     debugging("-- pushRemoveItem")
 
     current_item = self.ui.treeTree.currentItem()
-    # leave_item = self.__findLeaf(current_item)
-    # path_to_leave = self.__makePath(leave_item)
-    # if "instance" in path_to_leave[0]:
-    #   makeMessageBox("this path has a leave with an instance -- it cannot be removed", buttons=["OK"])
-    #   return
 
     item_name = current_item.text(0)
     parent_name = current_item.parent().text(0)
@@ -392,7 +371,7 @@ class OntobuilderUI(QMainWindow):
     self.save_expanded_state()
     type = item.node_type
 
-    found = False
+    # found = False
     print("name, type:", name, type)
     if type != "Class":
       parent_name = item.parent().text(0)
