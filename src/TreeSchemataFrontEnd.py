@@ -522,11 +522,11 @@ class OntobuilderUI(QMainWindow):
             if "undefined" not in node_text:
               node_type = properties[leave][0].get(node_text.split(":")[0], "unknown")
               # print(f"Creating new node '{node_text}' with type: {node_type}")
-              found.node_type = node_type
+              found.node_type = self.rules[node_type]
             else:
               node_type = properties[leave][0][instance]
               # print(f"Creating new undefined node with type from {path[0]}: {node_type}")
-              found.node_type = node_type
+              found.node_type = self.rules[node_type]
 
             if node_type == "unknown":
               print(f">>> Node type for '{node_text}' is still unknown")

@@ -44,7 +44,9 @@ RDFSTerms = {
 RULES = {
         "is_class"     : "Class",
         "is_member"    : "is_member",
-        "is_defined_by": "is_defined_by", #"isDefinedBy",
+        "member"    : "is_member",         # tree graph
+        "is_defined_by": "is_defined_by",
+        "isDefinedBy"  : "is_defined_by",  # tree graph
         "value"        : "value",
         "identifier"   : "identifier",
         "string"       : "string",
